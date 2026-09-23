@@ -3,7 +3,8 @@ const env=(key:string)=>Deno.env.get(key)||'';
 const origin='https://postispop.com';
 const cors={'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Headers':'authorization, apikey, content-type','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Vary':'Origin'};
 const reply=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,'Content-Type':'application/json','Cache-Control':'no-store'}});
-const ready=()=>Boolean(env('STRIPE_SECRET_KEY')&&env('STRIPE_WEBHOOK_SECRET'));
+const ready=()=>Boolean(env('STRIPE_PAYMENTS_ENABLED')==='true'&&env('STRIPE_SECRET_KEY')&&env('STRIPE_WEBHOOK_SECRET'));
+const liveKey=()=>/^(?:sk|rk)_live_/.test(env('STRIPE_SECRET_KEY'));
 async function db(path:string,method='GET',body?:unknown,prefer='') {
   const response=await fetch(env('SUPABASE_URL')+'/rest/v1/'+path,{method,headers:{apikey:env('SUPABASE_SERVICE_ROLE_KEY'),Authorization:'Bearer '+env('SUPABASE_SERVICE_ROLE_KEY'),'Content-Type':'application/json',...(prefer?{Prefer:prefer}:{})},body:body?JSON.stringify(body):undefined});
   if(!response.ok) throw new Error('DATABASE_ERROR');
@@ -17,7 +18,7 @@ async function grant(session:any,expectedUser?:string) {
   if(session.payment_status!=='paid'||session.status!=='complete') return false;
   const user=session.metadata?.postispop_user,slug=session.metadata?.postispop_product;
   if(!user||!slug||(expectedUser&&user!==expectedUser)) throw new Error('PURCHASE_ACCOUNT_MISMATCH');
-  if(session.livemode!==env('STRIPE_SECRET_KEY').startsWith('sk_live_')) throw new Error('PAYMENT_MODE_MISMATCH');
+  if(session.livemode!==liveKey()) throw new Error('PAYMENT_MODE_MISMATCH');
   const products=await db('store_products?slug=eq.'+encodeURIComponent(slug)+'&select=slug,price_cents,currency');
   const product=products?.[0];
   if(!product||session.amount_total!==product.price_cents||session.currency!==product.currency||session.client_reference_id!==user) throw new Error('PURCHASE_MISMATCH');
