@@ -159,7 +159,10 @@ async function tick() {
   }catch{}finally{busy=false;}
 }
 function mount() {
-  document.title='Bloc de notas online y pizarra virtual | PostisPop';
+  const seoTitle='Bloc de notas online y pizarra virtual | PostisPop';
+  const retainTitle=()=>{if(document.title!==seoTitle)document.title=seoTitle;};
+  retainTitle();
+  new MutationObserver(retainTitle).observe(document.head,{childList:true,subtree:true,characterData:true});
   const dock=document.createElement('nav');dock.className='pp-commerce-dock';dock.setAttribute('aria-label','Tienda y recordatorios');
   dock.innerHTML='<button class="pp-clock-trigger pp-clock-pulse" data-pp-action="clock"><svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="17" r="11" fill="white" stroke="currentColor" stroke-width="3"/><path d="M16 10v7l5 3M5 5l-3 4M27 5l3 4M8 27l-2 3M24 27l2 3" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><span>Reloj</span></button><button class="pp-shop-trigger" data-pp-action="shop">Tienda</button>';
   document.body.append(dock);sync().catch(()=>{});setInterval(tick,1000);
