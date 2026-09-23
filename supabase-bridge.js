@@ -132,6 +132,10 @@ async function api(endpoint, init) {
 
   if (endpoint === "auth/logout") { localStorage.removeItem(sessionKey); return json({ ok: true }); }
   if (endpoint === "auth/settings") return json({ google: true, email: true });
+  if (endpoint === "store/products" && method === "GET") {
+    const products = await rest("store_products", "?active=eq.true&select=*&order=sort_order.asc");
+    return json({ products });
+  }
   if (endpoint === "session" && method === "GET") return json({ actor: actorFor(await currentUser()) });
 
   const user = await currentUser();
