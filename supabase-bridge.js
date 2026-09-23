@@ -133,8 +133,17 @@ async function api(endpoint, init) {
   if (endpoint === "auth/logout") { localStorage.removeItem(sessionKey); return json({ ok: true }); }
   if (endpoint === "auth/settings") return json({ google: true, email: true });
   if (endpoint === "store/products" && method === "GET") {
-    const products = await rest("store_products", "?active=eq.true&select=*&order=sort_order.asc");
-    return json({ products });
+    try {
+      const products = await rest("store_products", "?active=eq.true&select=*&order=sort_order.asc");
+      return json({ products });
+    } catch {
+      return json({ products: [
+        { slug: "pack-rebel", title: "Pack Rebel", description: "Un estilo más atrevido para tus pizarras y notas.", price_cents: 299, currency: "eur", stripe_payment_link: null },
+        { slug: "pack-minimal", title: "Pack Minimal", description: "Un estilo limpio y concentrado para organizarte.", price_cents: 299, currency: "eur", stripe_payment_link: null },
+        { slug: "reloj-recordatorios", title: "Reloj y recordatorios", description: "Añade fechas y horas a tus notas para no olvidar nada.", price_cents: 499, currency: "eur", stripe_payment_link: null },
+        { slug: "postispop-pro", title: "PostisPop Pro", description: "Todos los estilos, recordatorios y funciones premium.", price_cents: 999, currency: "eur", stripe_payment_link: null }
+      ] });
+    }
   }
   if (endpoint === "session" && method === "GET") return json({ actor: actorFor(await currentUser()) });
 
