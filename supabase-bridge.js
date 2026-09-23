@@ -186,5 +186,8 @@ window.fetch = async (input, init = {}) => {
   if (apiIndex === -1) return originalFetch(input, init);
   const endpoint = parts.slice(apiIndex + 1).join("/");
   try { return await api(endpoint, init); }
-  catch (error) { return json({ error: error.body?.message || error.message || "REQUEST_FAILED" }, error.status || 500); }
+  catch (error) {
+    document.documentElement.dataset.postispopError = `${endpoint}: ${error.body?.message || error.message || "REQUEST_FAILED"}`;
+    return json({ error: error.body?.message || error.message || "REQUEST_FAILED" }, error.status || 500);
+  }
 };
