@@ -1,12 +1,7 @@
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
 const SUPABASE_URL = "https://htfyjefmviwlgmfqrwue.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ox1LUYhmz57iSU7mPtGStg_-FZl-zQT";
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const originalFetch = window.fetch.bind(window);
 const sessionKey = "postispop-supabase-session";
-
-window.postispopSupabase = supabase;
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
   status,
@@ -111,7 +106,7 @@ async function api(endpoint, init) {
     return json({ confirmation: !data.access_token, actor: actorFor(data.user) });
   }
 
-  if (endpoint === "auth/logout") { localStorage.removeItem(sessionKey); await supabase.auth.signOut(); return json({ ok: true }); }
+  if (endpoint === "auth/logout") { localStorage.removeItem(sessionKey); return json({ ok: true }); }
   if (endpoint === "auth/settings") return json({ google: false, email: true });
   if (endpoint === "session" && method === "GET") return json({ actor: actorFor(await currentUser()) });
 
