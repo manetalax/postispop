@@ -217,6 +217,7 @@ async function api(endpoint, init) {
   if (noteMatch && method === "POST") {
     const id = noteMatch[1];
     const kind = noteMatch[2];
+    if(kind==='paper'&&(!Number.isInteger(payload?.paper)||payload.paper<0||payload.paper>5||!Number.isInteger(payload.revision))) return json({error:'INVALID_NOTE'},400);
     const update = kind === "paper" ? { paper: payload.paper } : kind === "doodle" ? { doodle: payload.doodle } : kind === "image" ? { image_url: payload.url || payload.image?.url || null } : kind === "lock" ? { locked_until: new Date(Date.now() + 45000).toISOString(), editing: user.id } : kind === "unlock" ? { locked_until: null, editing: null } : { text: payload.text, marks: payload.marks || [], revision: (payload.revision || 0) + 1 };
     update.updated_ms = Date.now();
     const query=`?id=eq.${encodeURIComponent(id)}`+(kind==='lock'?`&or=(locked_until.is.null,locked_until.lt.${encodeURIComponent(new Date().toISOString())},editing.eq.${user.id})`:kind==='unlock'?`&editing=eq.${user.id}`:Number.isInteger(payload.revision)?`&revision=eq.${payload.revision}`:'');
