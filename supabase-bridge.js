@@ -76,8 +76,8 @@ async function createBoard(user) {
     await rest("notes", "", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify(notes) });
     return board;
   } catch {
-    const board = await rest("rpc/create_my_postispop_board", "", { method: "POST", body: "{}" });
-    return board;
+    const result = await rest("rpc/create_my_postispop_board", "", { method: "POST", body: "{}" });
+    return Array.isArray(result) ? result[0] : result;
   }
 }
 
