@@ -60,6 +60,16 @@ const mapBoard = (b, notes, members = []) => ({
   notes: notes.map(mapNote), members
 });
 
+const guestBoard = () => {
+  const id = "guest-board";
+  const notes = Array.from({ length: 12 }, (_, position) => ({
+    id: `guest-note-${position}`, paper: position % 5, text: "", marks: [], doodle: "",
+    author_id: "guest", revision: 1, created_ms: Date.now(), updated_ms: Date.now(),
+    locked_until: null, editing: null, image_url: null
+  }));
+  return { id, title: "Mi pizarra", revision: 1, order: notes.map(n => n.id), expires: null, role: "owner", owner: "guest", notes: notes.map(mapNote), members: [] };
+};
+
 async function createBoard(user) {
   const boardRows = await rest("boards", "", {
     method: "POST", headers: { Prefer: "return=representation" },
@@ -107,11 +117,12 @@ async function api(endpoint, init) {
 
   const user = await currentUser();
   if (endpoint === "me" && method === "GET") {
-    if (!user) return json({ actor: actorFor(null), boards: [] });
+    if (!user) return json({ actor: actorFor(null), boards: [{ id: "guest-board", title: "Mi pizarra", owner: "guest", expires: null, role: "owner" }] });
     let boards = await rest("boards", `?owner_id=eq.${user.id}&select=*`);
     if (!boards.length) boards = [await createBoard(user)];
     return json({ actor: actorFor(user), boards: boards.map(b => ({ id: b.id, title: b.title || "", owner: b.owner_id, expires: b.expires_at, role: "owner" })) });
   }
+  if (!user && endpoint === "boards" && method === "POST") return json(guestBoard());
   if (!user) return json({ error: "SESSION_REQUIRED" }, 401);
 
   if (endpoint === "boards" && method === "POST") {
@@ -122,6 +133,7 @@ async function api(endpoint, init) {
   const boardMatch = endpoint.match(/^board\/([^/]+)$/);
   if (boardMatch && method === "GET") {
     const id = boardMatch[1];
+    if (id === "guest-board") return json(guestBoard());
     const boards = await rest("boards", `?id=eq.${id}&select=*`);
     if (!boards.length) return json({ error: "NOT_FOUND" }, 404);
     const notes = await rest("notes", `?board_id=eq.${id}&select=*&order=position.asc`);
