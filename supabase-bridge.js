@@ -106,8 +106,32 @@ async function api(endpoint, init) {
     return json({ confirmation: !data.access_token, actor: actorFor(data.user) });
   }
 
+  if (endpoint === "auth/oauth" && method === "POST") {
+    const provider = payload?.provider;
+    if (provider !== "google") return json({ error: "PROVIDER_UNAVAILABLE" }, 400);
+    const params = new URLSearchParams({
+      provider,
+      redirect_to: `${location.origin}/`,
+      code_challenge: payload.challenge || "",
+      code_challenge_method: "S256"
+    });
+    return json({ url: `${SUPABASE_URL}/auth/v1/authorize?${params.toString()}` });
+  }
+
+  if (endpoint === "auth/exchange" && method === "POST") {
+    const response = await originalFetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`, {
+      method: "POST",
+      headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ auth_code: payload.code, code_verifier: payload.verifier })
+    });
+    const data = await response.json();
+    if (!response.ok) return json({ error: data.error_description || data.msg || "AUTH_FAILED" }, response.status);
+    localStorage.setItem(sessionKey, JSON.stringify(data));
+    return json({ actor: actorFor(data.user) });
+  }
+
   if (endpoint === "auth/logout") { localStorage.removeItem(sessionKey); return json({ ok: true }); }
-  if (endpoint === "auth/settings") return json({ google: false, email: true });
+  if (endpoint === "auth/settings") return json({ google: true, email: true });
   if (endpoint === "session" && method === "GET") return json({ actor: actorFor(await currentUser()) });
 
   const user = await currentUser();
