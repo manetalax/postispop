@@ -15,6 +15,7 @@ export function guestRequest(endpoint, method, payload={}) {
   if(parts[0]==='board') {
     if(method==='GET') return parts[2]==='trash'?{items:board.trash||[]}:board;
     if(parts[2]==='swap') {
+      if(payload.revision!==undefined&&payload.revision!==board.revision) throw guestError('CONFLICT',409);
       const a=board.order.indexOf(payload.from),b=board.order.indexOf(payload.to);
       if(a<0||b<0) throw new Error('NOT_FOUND');
       [board.order[a],board.order[b]]=[board.order[b],board.order[a]];
