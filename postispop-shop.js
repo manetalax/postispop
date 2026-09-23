@@ -16,9 +16,12 @@ const money = product => new Intl.NumberFormat("es-ES", {
 }).format((product.price_cents || 0) / 100);
 
 async function loadProducts() {
-  const response = await fetch("api/store/products");
-  if (!response.ok) throw new Error(`STORE_PRODUCTS_FAILED_${response.status}`);
-  return (await response.json()).products || [];
+  return [
+    { slug: "pack-rebel", title: "Pack Rebel", description: "Un estilo más atrevido para tus pizarras y notas.", price_cents: 299, currency: "eur", stripe_payment_link: null },
+    { slug: "pack-minimal", title: "Pack Minimal", description: "Un estilo limpio y concentrado para organizarte.", price_cents: 299, currency: "eur", stripe_payment_link: null },
+    { slug: "reloj-recordatorios", title: "Reloj y recordatorios", description: "Añade fechas y horas a tus notas para no olvidar nada.", price_cents: 499, currency: "eur", stripe_payment_link: null },
+    { slug: "postispop-pro", title: "PostisPop Pro", description: "Todos los estilos, recordatorios y funciones premium.", price_cents: 999, currency: "eur", stripe_payment_link: null }
+  ];
 }
 
 function openShop() {
