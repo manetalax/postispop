@@ -1,3 +1,4 @@
+import { readGuest, guestRequest } from './guest-board.js';
 const SUPABASE_URL = "https://htfyjefmviwlgmfqrwue.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ox1LUYhmz57iSU7mPtGStg_-FZl-zQT";
 const originalFetch = window.fetch.bind(window);
@@ -23,7 +24,7 @@ const headers = () => {
   const token = session()?.access_token;
   return {
     apikey: SUPABASE_KEY,
-    Authorization: `Bearer ${token || SUPABASE_KEY}`,
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
     "Content-Type": "application/json"
   };
 };
@@ -76,17 +77,49 @@ async function createBoard(user) {
   return board;
 }
 
+let userCache = null, refreshPromise = null;
 async function currentUser() {
-  const token = session()?.access_token;
-  if (!token) return null;
-  const response = await originalFetch(`${SUPABASE_URL}/auth/v1/user`, { headers: headers() });
-  if (!response.ok) return null;
-  return response.json();
+  let saved = session();
+  if (!saved?.access_token) { userCache=null; return null; }
+  if (saved.expires_at && saved.expires_at * 1000 < Date.now() + 60000 && saved.refresh_token) {
+    if (!refreshPromise) refreshPromise=(async()=>{
+      const response=await originalFetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:saved.refresh_token})});
+      const data=await response.json();
+      if(!response.ok) { if(response.status===400||response.status===401) localStorage.removeItem(sessionKey); throw Object.assign(new Error('SESSION_REQUIRED'),{status:response.status}); }
+      localStorage.setItem(sessionKey,JSON.stringify(data)); userCache=null;
+    })().finally(()=>{refreshPromise=null;});
+    await refreshPromise; saved=session();
+  }
+  if(userCache?.token===saved.access_token && userCache.until>Date.now()) return userCache.user;
+  const response=await originalFetch(`${SUPABASE_URL}/auth/v1/user`,{headers:headers()});
+  if(!response.ok) { if(response.status===401) {localStorage.removeItem(sessionKey);return null;} throw new Error('AUTH_UNAVAILABLE'); }
+  const user=await response.json();userCache={token:saved.access_token,user,until:Date.now()+30000};return user;
 }
 
 async function api(endpoint, init) {
   const method = init?.method || "GET";
   const payload = init?.body ? JSON.parse(init.body) : undefined;
+  const local=guestRequest(endpoint,method,payload);
+  if(local) return json(local);
+
+  if(endpoint.startsWith('commerce/')) {
+    const user=await currentUser();
+    if(!user&&endpoint!=='commerce/catalog') return json({error:'SESSION_REQUIRED'},401);
+    if(endpoint==='commerce/status') return json(await rest('rpc/postispop_access','',{method:'POST',body:'{}'}));
+    if(endpoint==='commerce/catalog') {
+      const products=await rest('store_products','?active=eq.true&select=slug,title,description,price_cents,currency&order=sort_order.asc');
+      const response=await originalFetch(`${SUPABASE_URL}/functions/v1/postispop-commerce/status`,{headers:{apikey:SUPABASE_KEY}});
+      const state=response.ok?await response.json():{};
+      return json({products,checkoutReady:state.checkoutReady===true});
+    }
+    if(endpoint==='commerce/alarms') {
+      if(method==='GET') return json({alarms:await rest('note_alarms','?select=*&order=due_at.asc')});
+      if(payload.action==='delete') {await rest('note_alarms',`?id=eq.${encodeURIComponent(payload.id)}&user_id=eq.${user.id}`,{method:'DELETE'});return json({ok:true});}
+      if(payload.action==='ack') {const rows=await rest('note_alarms',`?id=eq.${encodeURIComponent(payload.id)}&user_id=eq.${user.id}&delivered_at=is.null`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({delivered_at:new Date().toISOString()})});return json({claimed:rows.length>0});}
+      const rows=await rest('note_alarms','',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({user_id:user.id,note_id:payload.note_id,label:String(payload.label||'Recordatorio').slice(0,200),due_at:payload.due_at})});return json({alarm:rows[0]});
+    }
+    return originalFetch(`${SUPABASE_URL}/functions/v1/postispop-commerce/${endpoint.slice(9)}`,{method,headers:headers(),body:method==='GET'?undefined:JSON.stringify(payload)});
+  }
 
   if (endpoint === "config") return json({ features: { notes: 12, textLimit: 10000, guestDays: 90, trashDays: 30, lockSeconds: 45, payments: false, clock: false, games: false, awards: false, phoneRequired: false, captures: true }, authReady: true, currency: "EUR" });
 
@@ -148,30 +181,36 @@ async function api(endpoint, init) {
   if (endpoint === "session" && method === "GET") return json({ actor: actorFor(await currentUser()) });
 
   const user = await currentUser();
-  if (!user && endpoint === "board/guest-board" && method === "GET") return json(guestBoard());
   if (endpoint === "me" && method === "GET") {
     if (!user) return json({ actor: actorFor(null), boards: [{ id: "guest-board", title: "Mi pizarra", owner: "guest", expires: null, role: "owner" }] });
-    let boards = await rest("boards", `?owner_id=eq.${user.id}&select=*`);
+    let boards = await rest("boards", "?select=*&order=created_at.asc");
     if (!boards.length) boards = [await createBoard(user)];
-    return json({ actor: actorFor(user), boards: boards.map(b => ({ id: b.id, title: b.title || "", owner: b.owner_id, expires: b.expires_at, role: "owner" })) });
+    return json({ actor: actorFor(user), boards: boards.map(b => ({ id: b.id, title: b.title || "", owner: b.owner_id, expires: b.expires_at, role: b.owner_id===user.id?"owner":"member" })) });
   }
-  if (!user && endpoint === "boards" && method === "POST") return json(guestBoard());
+  if (!user && endpoint === "boards" && method === "POST") return json(readGuest());
   if (!user) return json({ error: "SESSION_REQUIRED" }, 401);
 
   if (endpoint === "boards" && method === "POST") {
     const board = await createBoard(user);
-    return json(await api(`board/${board.id}`, { method: "GET" }));
+    return api(`board/${board.id}`, { method: "GET" });
   }
 
   const boardMatch = endpoint.match(/^board\/([^/]+)$/);
   if (boardMatch && method === "GET") {
     const id = boardMatch[1];
-    if (id === "guest-board") return json(guestBoard());
+    if (id === "guest-board") return json(readGuest());
     const boards = await rest("boards", `?id=eq.${id}&select=*`);
     if (!boards.length) return json({ error: "NOT_FOUND" }, 404);
     const notes = await rest("notes", `?board_id=eq.${id}&select=*&order=position.asc`);
     const members = await rest("board_members", `?board_id=eq.${id}&select=*`);
     return json(mapBoard(boards[0], notes, members));
+  }
+
+  const titleMatch=endpoint.match(/^board\/([^/]+)\/title$/);
+  if(titleMatch&&method==='POST') {
+    const rows=await rest('boards',`?id=eq.${encodeURIComponent(titleMatch[1])}&owner_id=eq.${user.id}`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({title:String(payload.title||'').slice(0,80)})});
+    if(!rows.length)return json({error:'OWNER_REQUIRED'},403);
+    return api('board/'+titleMatch[1],{method:'GET'});
   }
 
   const noteMatch = endpoint.match(/^note\/([^/]+)(?:\/(text|paper|doodle|image|lock|unlock))?$/);
@@ -180,18 +219,21 @@ async function api(endpoint, init) {
     const kind = noteMatch[2];
     const update = kind === "paper" ? { paper: payload.paper } : kind === "doodle" ? { doodle: payload.doodle } : kind === "image" ? { image_url: payload.url || payload.image?.url || null } : kind === "lock" ? { locked_until: new Date(Date.now() + 45000).toISOString(), editing: user.id } : kind === "unlock" ? { locked_until: null, editing: null } : { text: payload.text, marks: payload.marks || [], revision: (payload.revision || 0) + 1 };
     update.updated_ms = Date.now();
-    const rows = await rest("notes", `?id=eq.${id}`, { method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify(update) });
-    return json({ note: mapNote(rows[0]) });
+    const query=`?id=eq.${encodeURIComponent(id)}`+(kind==='lock'?`&or=(locked_until.is.null,locked_until.lt.${encodeURIComponent(new Date().toISOString())},editing.eq.${user.id})`:kind==='unlock'?`&editing=eq.${user.id}`:Number.isInteger(payload.revision)?`&revision=eq.${payload.revision}`:'');
+    if(!['lock','unlock'].includes(kind)&&Number.isInteger(payload.revision))update.revision=payload.revision+1;
+    const rows = await rest("notes", query, { method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify(update) });
+    if(!rows?.length) return json({error:kind==='lock'?'NOTE_LOCKED':'CONFLICT'},409);
+    return json({ note: mapNote(rows[0]), ...(kind==='lock'?{lock:user.id}:{}) });
   }
 
-  return json({ ok: true });
+  return json({ error: "UNSUPPORTED_OPERATION" }, 400);
 }
 
 window.fetch = async (input, init = {}) => {
   const url = new URL(typeof input === "string" ? input : input.url, location.href);
   const parts = url.pathname.split("/").filter(Boolean);
   const apiIndex = parts.indexOf("api");
-  if (apiIndex === -1) return originalFetch(input, init);
+  if (url.origin !== location.origin || apiIndex === -1) return originalFetch(input, init);
   const endpoint = parts.slice(apiIndex + 1).join("/");
   try { return await api(endpoint, init); }
   catch (error) { return json({ error: error.body?.message || error.message || "REQUEST_FAILED" }, error.status || 500); }
