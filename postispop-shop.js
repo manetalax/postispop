@@ -1,2 +1,2 @@
 // Compatibility entry for already cached HTML.
-import './commerce-ui.js?v=1';
+import './commerce-ui.js?v=2';
