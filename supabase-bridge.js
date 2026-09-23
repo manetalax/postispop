@@ -66,19 +66,14 @@ const guestBoard = () => {
 };
 
 async function createBoard(user) {
-  try {
-    const boardRows = await rest("boards", "", {
-      method: "POST", headers: { Prefer: "return=representation" },
-      body: JSON.stringify({ owner_id: user.id, title: "Mi pizarra" })
-    });
-    const board = boardRows[0];
-    const notes = Array.from({ length: 12 }, (_, position) => ({ board_id: board.id, author_id: user.id, position, paper: position % 5, marks: [], text: "" }));
-    await rest("notes", "", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify(notes) });
-    return board;
-  } catch {
-    const result = await rest("rpc/create_my_postispop_board", "", { method: "POST", body: "{}" });
-    return Array.isArray(result) ? result[0] : result;
-  }
+  const boardRows = await rest("boards", "", {
+    method: "POST", headers: { Prefer: "return=representation" },
+    body: JSON.stringify({ owner_id: user.id, title: "Mi pizarra" })
+  });
+  const board = boardRows[0];
+  const notes = Array.from({ length: 12 }, (_, position) => ({ board_id: board.id, author_id: user.id, position, paper: position % 5, marks: [], text: "" }));
+  await rest("notes", "", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify(notes) });
+  return board;
 }
 
 async function currentUser() {
@@ -186,8 +181,5 @@ window.fetch = async (input, init = {}) => {
   if (apiIndex === -1) return originalFetch(input, init);
   const endpoint = parts.slice(apiIndex + 1).join("/");
   try { return await api(endpoint, init); }
-  catch (error) {
-    document.documentElement.dataset.postispopError = `${endpoint}: ${error.body?.message || error.message || "REQUEST_FAILED"}`;
-    return json({ error: error.body?.message || error.message || "REQUEST_FAILED" }, error.status || 500);
-  }
+  catch (error) { return json({ error: error.body?.message || error.message || "REQUEST_FAILED" }, error.status || 500); }
 };
