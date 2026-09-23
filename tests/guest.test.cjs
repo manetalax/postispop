@@ -23,3 +23,31 @@ test('Trash can be restored and note order can be swapped',async()=>{
 test('Guest sharing requests sign-in rather than pretending to succeed',async()=>{
   assert.equal((await request('note/guest-note-0/share',{})).data.error,'SESSION_REQUIRED');
 });
+test('All six colors survive save, reload, reorder, trash and restore',async()=>{
+  storage.clear();
+  let board=(await request('board/guest-board')).data;
+  let note=board.notes.find(n=>n.id==='guest-note-1');
+  const initialRevision=note.revision;
+  let revision=note.revision;
+  for(let paper=0;paper<6;paper++){
+    const saved=await request(`note/${note.id}/paper`,{paper,revision});
+    assert.equal(saved.status,200);
+    revision=saved.data.note.revision;
+    board=(await request('board/guest-board')).data;
+    note=board.notes.find(n=>n.id==='guest-note-1');
+    assert.equal(note.paper,paper);
+  }
+  assert.equal((await request(`note/${note.id}/paper`,{paper:2,revision:initialRevision})).status,409);
+  for(const paper of [-1,6,1.5]) assert.equal((await request(`note/${note.id}/paper`,{paper,revision})).status,400);
+
+  await request('board/guest-board/swap',{from:'guest-note-1',to:'guest-note-2'});
+  board=(await request('board/guest-board')).data;
+  assert.equal(board.notes.find(n=>n.id==='guest-note-1').paper,5);
+
+  const trashed=await request(`note/${note.id}/trash`,{});
+  assert.equal(trashed.data.board.trash[0].note.paper,5);
+  const restored=await request(`restore/${trashed.data.trashId}`,{});
+  assert.equal(restored.data.notes.find(n=>n.id==='guest-note-0').paper,5);
+  board=(await request('board/guest-board')).data;
+  assert.equal(board.notes.find(n=>n.id==='guest-note-0').paper,5);
+});

@@ -1,6 +1,8 @@
 // Guest notes stay on this device. No network session or account is required.
 const KEY = 'postispop-guest-board-v1';
+const PAPER_COUNT = 6;
 const makeNote = (position) => ({id:`guest-note-${position}`,paper:position%5,text:'',marks:[],doodle:'',author:'guest',revision:1,created:Date.now(),updated:Date.now(),lockedUntil:0,editing:'',image:null});
+const guestError = (code,status=400) => Object.assign(new Error(code),{status});
 export function readGuest() {
   try { const saved=JSON.parse(localStorage.getItem(KEY)); if(saved?.id==='guest-board' && Array.isArray(saved.notes)) return saved; } catch {}
   const notes=Array.from({length:12},(_,i)=>makeNote(i));
@@ -45,7 +47,8 @@ export function guestRequest(endpoint, method, payload={}) {
     if(payload.revision!==undefined&&payload.revision!==note.revision) throw new Error('CONFLICT');
     note.text=payload.text;note.marks=payload.marks||[];
   } else if(kind==='paper') {
-    if(!Number.isInteger(payload.paper)||payload.paper<0||payload.paper>10) throw new Error('INVALID_NOTE');
+    if(!Number.isInteger(payload.paper)||payload.paper<0||payload.paper>=PAPER_COUNT) throw guestError('INVALID_NOTE');
+    if(payload.revision!==undefined&&payload.revision!==note.revision) throw guestError('CONFLICT',409);
     note.paper=payload.paper;
   } else if(kind==='doodle') note.doodle=payload.doodle||'';
   else throw new Error('UNSUPPORTED_OPERATION');
