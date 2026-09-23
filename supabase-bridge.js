@@ -190,6 +190,48 @@ async function api(endpoint, init) {
   if (!user && endpoint === "boards" && method === "POST") return json(readGuest());
   if (!user) return json({ error: "SESSION_REQUIRED" }, 401);
 
+  const trashMatch = endpoint.match(/^note\/([^/]+)\/trash$/);
+  if (trashMatch && method === "POST") {
+    if (!Number.isInteger(payload?.revision)) return json({ error: "INVALID_NOTE" }, 400);
+    const result = await rest("rpc/postispop_trash_note", "", {
+      method: "POST", body: JSON.stringify({
+        p_note_id: trashMatch[1], p_revision: payload.revision, p_lock: payload.lock || ""
+      })
+    });
+    const board = await api(`board/${result.board_id}`, { method: "GET" });
+    return json({ board: await board.json(), trashId: result.trash_id });
+  }
+
+  const restoreMatch = endpoint.match(/^restore\/([^/]+)$/);
+  if (restoreMatch && method === "POST") {
+    const result = await rest("rpc/postispop_restore_note", "", {
+      method: "POST", body: JSON.stringify({ p_trash_id: restoreMatch[1] })
+    });
+    return api(`board/${result.board_id}`, { method: "GET" });
+  }
+
+  const boardTrashMatch = endpoint.match(/^board\/([^/]+)\/trash$/);
+  if (boardTrashMatch && method === "GET") {
+    const boardId = encodeURIComponent(boardTrashMatch[1]);
+    const until = encodeURIComponent(new Date().toISOString());
+    const rows = await rest("note_trash", `?board_id=eq.${boardId}&expires_at=gt.${until}&select=id,note_data,expires_at&order=created_at.desc`);
+    return json({ items: rows.map(row => ({
+      id: row.id, note: mapNote(row.note_data), text: row.note_data.text || "",
+      doodle: row.note_data.doodle || "", expires: Date.parse(row.expires_at)
+    })) });
+  }
+
+  const swapMatch = endpoint.match(/^board\/([^/]+)\/swap$/);
+  if (swapMatch && method === "POST") {
+    if (typeof payload?.from !== "string" || typeof payload?.to !== "string" || !Number.isInteger(payload?.revision)) {
+      return json({ error: "INVALID_NOTE" }, 400);
+    }
+    await rest("rpc/postispop_swap_notes", "", { method: "POST", body: JSON.stringify({
+      p_board_id: swapMatch[1], p_from: payload.from, p_to: payload.to, p_revision: payload.revision
+    }) });
+    return api(`board/${swapMatch[1]}`, { method: "GET" });
+  }
+
   if (endpoint === "boards" && method === "POST") {
     const board = await createBoard(user);
     return api(`board/${board.id}`, { method: "GET" });
@@ -237,5 +279,9 @@ window.fetch = async (input, init = {}) => {
   if (url.origin !== location.origin || apiIndex === -1) return originalFetch(input, init);
   const endpoint = parts.slice(apiIndex + 1).join("/");
   try { return await api(endpoint, init); }
-  catch (error) { return json({ error: error.body?.message || error.message || "REQUEST_FAILED" }, error.status || 500); }
+  catch (error) {
+    const message = error.body?.message || error.message || "REQUEST_FAILED";
+    const status = ({ CONFLICT: 409, BOARD_FULL: 409, NOTE_LOCKED: 423, NOT_FOUND: 404, SESSION_REQUIRED: 401 })[message] || error.status || 500;
+    return json({ error: message }, status);
+  }
 };
