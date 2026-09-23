@@ -17,10 +17,10 @@ const money = product => new Intl.NumberFormat("es-ES", {
 
 async function loadProducts() {
   return [
-    { slug: "pack-rebel", title: "Pack Rebel", description: "Un estilo más atrevido para tus pizarras y notas.", price_cents: 299, currency: "eur", stripe_payment_link: null },
-    { slug: "pack-minimal", title: "Pack Minimal", description: "Un estilo limpio y concentrado para organizarte.", price_cents: 299, currency: "eur", stripe_payment_link: null },
-    { slug: "reloj-recordatorios", title: "Reloj y recordatorios", description: "Añade fechas y horas a tus notas para no olvidar nada.", price_cents: 499, currency: "eur", stripe_payment_link: null },
-    { slug: "postispop-pro", title: "PostisPop Pro", description: "Todos los estilos, recordatorios y funciones premium.", price_cents: 999, currency: "eur", stripe_payment_link: null }
+    { slug: "pack-rebel", title: "Pack Rebel", description: "Un estilo más atrevido para tus pizarras y notas.", price_cents: 299, currency: "eur", stripe_payment_link: "https://buy.stripe.com/eVq5kDfPW1ffgXQd4E0oM04" },
+    { slug: "pack-minimal", title: "Pack Minimal", description: "Un estilo limpio y concentrado para organizarte.", price_cents: 299, currency: "eur", stripe_payment_link: "https://buy.stripe.com/bJe28r7jq1ff9vo3u40oM06" },
+    { slug: "reloj-recordatorios", title: "Reloj y recordatorios", description: "Añade fechas y horas a tus notas para no olvidar nada.", price_cents: 499, currency: "eur", stripe_payment_link: "https://buy.stripe.com/aFa8wPeLSf656jcc0A0oM05" },
+    { slug: "postispop-pro", title: "PostisPop Pro", description: "Todos los estilos, recordatorios y funciones premium.", price_cents: 999, currency: "eur", stripe_payment_link: "https://buy.stripe.com/00w00j1Z68HH4b43u40oM07" }
   ];
 }
 
