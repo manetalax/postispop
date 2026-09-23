@@ -116,6 +116,7 @@ async function api(endpoint, init) {
   if (endpoint === "session" && method === "GET") return json({ actor: actorFor(await currentUser()) });
 
   const user = await currentUser();
+  if (!user && endpoint === "board/guest-board" && method === "GET") return json(guestBoard());
   if (endpoint === "me" && method === "GET") {
     if (!user) return json({ actor: actorFor(null), boards: [{ id: "guest-board", title: "Mi pizarra", owner: "guest", expires: null, role: "owner" }] });
     let boards = await rest("boards", `?owner_id=eq.${user.id}&select=*`);
