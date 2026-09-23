@@ -17,7 +17,7 @@ const money = product => new Intl.NumberFormat("es-ES", {
 
 async function loadProducts() {
   const response = await fetch("api/store/products");
-  if (!response.ok) throw new Error("STORE_PRODUCTS_FAILED");
+  if (!response.ok) throw new Error(`STORE_PRODUCTS_FAILED_${response.status}`);
   return (await response.json()).products || [];
 }
 
