@@ -8,7 +8,8 @@ interface Props {
   eager?: boolean;
 }
 
-const { product, baseUrl = import.meta.env.BASE_URL, eager = false } = Astro.props;
+const storeBase = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const { product, baseUrl = storeBase, eager = false } = Astro.props;
 const formattedPrice = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(product.data.price);
 const productUrl = `${baseUrl}producto/${product.id}/`;
 ---

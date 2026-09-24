@@ -15,7 +15,7 @@ interface Props {
 
 const { title, description, canonicalPath, pageKind = 'catalog', noindex = false, preloadImage } = Astro.props;
 const siteUrl = 'https://postispop.com';
-const baseUrl = import.meta.env.BASE_URL;
+const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 const canonical = new URL(`${baseUrl}${canonicalPath.replace(/^\/+/, '')}`, siteUrl).href;
 const shareImage = `${siteUrl}/assets/postispop-og.webp`;
 const organizationId = `${siteUrl}/#organization`;

@@ -1,5 +1,6 @@
 let pagefind;
-const base = import.meta.env.BASE_URL;
+const rawBase = import.meta.env.BASE_URL;
+const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
 
 async function loadIndex() {
   if (!pagefind) pagefind = import(/* @vite-ignore */ `${base}pagefind/pagefind.js`).then(async (mod) => {

@@ -4,6 +4,7 @@ import Layout from '../layouts/Layout.astro';
 import ProductCard from '../components/ProductCard.astro';
 
 const products = (await getCollection('products')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
+const storeBase = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 const franchises = [...new Set(products.map(({ data }) => data.franchise))];
 const categories = [...new Set(products.map(({ data }) => data.category))];
 const description = 'Descubre papelería digital, recordatorios con alarma y mejoras para organizar tus notas. Explora el catálogo PostisPop y elige tu herramienta.';
@@ -41,7 +42,7 @@ const description = 'Descubre papelería digital, recordatorios con alarma y mej
     </section>
 
     <section class="content-section mb-16 rounded-3xl bg-ink p-6 text-white sm:p-9" aria-labelledby="clock-title">
-      <div class="max-w-3xl"><p class="text-sm font-semibold text-red-300">Recordatorios puntuales</p><h2 id="clock-title" class="mt-2 text-2xl font-extrabold sm:text-3xl">Convierte una nota en una alarma</h2><p class="mt-3 leading-relaxed text-white/75">El Reloj y recordatorios añade fecha y hora a tus notas. Regístrate y úsalo gratis durante 30 días; después puedes comprarlo para seguir creando notas con alarma.</p><a href="/producto/reloj-recordatorios/" class="mt-5 inline-flex min-h-12 items-center rounded-full bg-white px-5 font-bold text-ink" data-astro-prefetch>Ver Reloj y recordatorios</a></div>
+      <div class="max-w-3xl"><p class="text-sm font-semibold text-red-300">Recordatorios puntuales</p><h2 id="clock-title" class="mt-2 text-2xl font-extrabold sm:text-3xl">Convierte una nota en una alarma</h2><p class="mt-3 leading-relaxed text-white/75">El Reloj y recordatorios añade fecha y hora a tus notas. Regístrate y úsalo gratis durante 30 días; después puedes comprarlo para seguir creando notas con alarma.</p><a href={`${storeBase}producto/reloj-recordatorios/`} class="mt-5 inline-flex min-h-12 items-center rounded-full bg-white px-5 font-bold text-ink" data-astro-prefetch>Ver Reloj y recordatorios</a></div>
     </section>
   </main>
 </Layout>
