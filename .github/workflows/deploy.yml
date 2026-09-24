@@ -37,7 +37,7 @@ jobs:
           for file in "${files[@]}"; do
             if [[ -f "$file" ]]; then cp --parents "$file" _site/; fi
           done
-          for dir in assets _next api; do
+          for dir in assets _next api .well-known; do
             if [[ -d "$dir" ]]; then cp -a "$dir" _site/; fi
           done
           touch _site/.nojekyll

@@ -1,0 +1,39 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.postispop.android'
+    compileSdk 36
+    buildToolsVersion '36.0.0'
+    defaultConfig {
+        applicationId 'com.postispop.android'
+        minSdk 23
+        targetSdk 36
+        versionCode 1
+        versionName '0.1.0'
+        manifestPlaceholders = [appLabel: 'PostisPop']
+    }
+    signingConfigs {
+        debug {
+            storeFile file('.signing/beta.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+    }
+    buildTypes {
+        debug {
+            applicationIdSuffix '.beta'
+            if (project.hasProperty('unsignedBeta')) { signingConfig null }
+            versionNameSuffix '-beta'
+            manifestPlaceholders = [appLabel: 'PostisPop Beta']
+        }
+        release {
+            minifyEnabled false
+            // Unsigned candidate. Production signing is configured by the owner in Play Console.
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.7.3'
+}
