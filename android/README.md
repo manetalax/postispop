@@ -30,5 +30,9 @@ La clave beta usa alias androiddebugkey y contraseña de desarrollo android. No 
 
 GitHub Actions compila recursos y APK/AAB sin firmar. El APK de entrega se firma localmente con la clave conservada. Para futuras versiones hay que actualizar versionCode/versionName.
 
+## Verificación de la interfaz local
+
+Después de empaquetar los assets: `npx playwright install chromium` y `npm run test:mobile`. La prueba bloquea todos los destinos externos, comprueba arranque, edición y persistencia de notas de invitado, catálogo local y búsqueda Pagefind. No sustituye las pruebas Android en móvil ni un pago real.
+
 ## Google Play e iOS
 El AAB de release es un candidato sin firmar, NO listo para Play Console. Faltan firma de producción, pagos digitales admitidos por Play, ficha/políticas y validación en dispositivos. Esta entrega no incluye binario iOS. La carpeta mobile y los recursos empaquetados permiten reutilizar la interfaz, pero iOS requerirá host WKWebView/Capacitor, Xcode, firma y pruebas propias.

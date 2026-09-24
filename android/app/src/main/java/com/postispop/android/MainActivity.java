@@ -1,6 +1,7 @@
 package com.postispop.android;
 
-import android.app.Activity;
+import androidx.activity.ComponentActivity;
+import androidx.activity.OnBackPressedCallback;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,7 +20,7 @@ import java.io.*;
 import java.util.*;
 
 /** Runs only APK-bundled UI. Supabase requests remain authenticated network requests. */
-public final class MainActivity extends Activity {
+public final class MainActivity extends ComponentActivity {
     private static final String HOST = "postispop.com";
     private static final String HOME_URL = "https://" + HOST + "/";
     private WebView web;
@@ -38,6 +39,11 @@ public final class MainActivity extends Activity {
         web = new WebView(this);
         root.addView(web, new FrameLayout.LayoutParams(-1, -1));
         setContentView(root);
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override public void handleOnBackPressed() {
+                if (web.canGoBack()) web.goBack(); else finish();
+            }
+        });
         WebSettings settings = web.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
@@ -152,7 +158,6 @@ public final class MainActivity extends Activity {
         }
     }
     @Override protected void onSaveInstanceState(Bundle state) { web.saveState(state); super.onSaveInstanceState(state); }
-    @Override public void onBackPressed() { if (web.canGoBack()) web.goBack(); else super.onBackPressed(); }
     @Override protected void onPause() { web.onPause(); CookieManager.getInstance().flush(); super.onPause(); }
     @Override protected void onResume() { super.onResume(); if (web != null) web.onResume(); }
     @Override protected void onDestroy() { if (fileResult != null) fileResult.onReceiveValue(null); web.destroy(); super.onDestroy(); }
