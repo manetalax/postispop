@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://postispop.com/</loc></url>
+  <url><loc>https://postispop.com/tienda/</loc></url>
+  <url><loc>https://postispop.com/tienda/producto/pack-rebel/</loc></url>
+  <url><loc>https://postispop.com/tienda/producto/pack-minimal/</loc></url>
+  <url><loc>https://postispop.com/tienda/producto/reloj-recordatorios/</loc></url>
+  <url><loc>https://postispop.com/tienda/producto/postispop-pro/</loc></url>
   <url><loc>https://postispop.com/privacy.html</loc></url>
   <url><loc>https://postispop.com/terms.html</loc></url>
   <url><loc>https://postispop.com/legal.html</loc></url>

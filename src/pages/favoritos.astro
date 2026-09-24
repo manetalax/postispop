@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import ProductCard from '../components/ProductCard.astro';
+const products = (await getCollection('products')).sort((a, b) => a.data.sortOrder - b.data.sortOrder);
+const description = 'Consulta los productos PostisPop que guardaste como favoritos en este dispositivo.';
+---
+<Layout title="Mis favoritos | PostisPop" description={description} canonicalPath="favoritos/" pageKind="favorites" noindex>
+  <main id="contenido" class="mx-auto min-h-[65vh] max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
+    <h1 class="text-3xl font-black">Mis favoritos</h1>
+    <p class="mt-2 text-muted">Tus productos guardados en este dispositivo.</p>
+    <p class="mt-5 hidden rounded-xl bg-paper-soft p-4 text-sm text-muted" data-favorites-empty>Aún no has guardado favoritos. Puedes marcarlos con el corazón del catálogo.</p>
+    <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4" data-favorites-grid>
+      {products.map((product) => <ProductCard product={product} />)}
+    </div>
+  </main>
+</Layout>

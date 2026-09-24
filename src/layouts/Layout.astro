@@ -1,0 +1,144 @@
+---
+import { Image } from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
+import logo from '../../assets/postispop-logo.png';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath: string;
+  pageKind?: 'catalog' | 'product' | 'search' | 'favorites';
+  noindex?: boolean;
+  preloadImage?: string;
+}
+
+const { title, description, canonicalPath, pageKind = 'catalog', noindex = false, preloadImage } = Astro.props;
+const siteUrl = 'https://postispop.com';
+const baseUrl = import.meta.env.BASE_URL;
+const canonical = new URL(`${baseUrl}${canonicalPath.replace(/^\/+/, '')}`, siteUrl).href;
+const shareImage = `${siteUrl}/assets/postispop-og.webp`;
+const organizationId = `${siteUrl}/#organization`;
+const webSiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'PostisPop',
+  url: `${siteUrl}${baseUrl}`,
+  inLanguage: 'es-ES',
+  publisher: { '@id': organizationId },
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: `${siteUrl}${baseUrl}buscar/?q={search_term_string}`,
+    'query-input': 'required name=search_term_string',
+  },
+};
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': organizationId,
+  name: 'PostisPop',
+  url: siteUrl,
+  logo: `${siteUrl}/assets/postispop-logo.png`,
+};
+const jsonLd = (value: unknown) => JSON.stringify(value).replace(/</g, '\\u003c');
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#fffdf9" />
+    <title>{title}</title>
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {preloadImage && <link rel="preload" as="image" href={preloadImage} type="image/avif" fetchpriority="high" />}
+    <meta property="og:type" content={pageKind === 'product' ? 'product' : 'website'} />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content="PostisPop" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={shareImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/webp" />
+    <meta property="og:image:alt" content="PostisPop: papelería digital y herramientas para organizar tus notas." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={shareImage} />
+    <meta name="twitter:image:alt" content="Catálogo de herramientas digitales de PostisPop." />
+    <script type="application/ld+json" set:html={jsonLd(organizationSchema)}></script>
+    <script type="application/ld+json" set:html={jsonLd(webSiteSchema)}></script>
+    <ClientRouter fallback="swap" />
+    <slot name="head" />
+  </head>
+  <body data-page={pageKind} class="min-h-screen pb-24 sm:pb-0">
+    <a class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-xl focus:bg-white focus:px-4 focus:py-3" href="#contenido">Saltar al contenido</a>
+    <header class="sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+        <a href={baseUrl} aria-label="PostisPop, inicio de la tienda" data-astro-prefetch>
+          <Image src={logo} alt="PostisPop" width={152} height={51} loading="eager" fetchpriority="high" class="h-9 w-auto" />
+        </a>
+        <nav aria-label="Navegación del sitio" class="hidden items-center gap-6 text-sm font-semibold sm:flex">
+          <a href={baseUrl} data-astro-prefetch>Catálogo</a>
+          <a href={`${baseUrl}buscar/`} data-astro-prefetch>Búsqueda</a>
+          <a href={`${baseUrl}favoritos/`} data-astro-prefetch>Favoritos</a>
+          <a href="/" data-astro-reload class="rounded-full bg-pop px-4 py-2 text-white hover:bg-pop-dark">Abrir mi pizarra</a>
+        </nav>
+        <a href={`${baseUrl}buscar/`} aria-label="Buscar productos" class="grid size-12 place-items-center rounded-full border border-line sm:hidden" data-astro-prefetch>
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
+        </a>
+      </div>
+    </header>
+
+    <slot />
+
+    <footer class="border-t border-line bg-paper-soft px-4 py-8 pb-28 text-sm text-muted sm:px-6 sm:pb-8">
+      <div class="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <p>PostisPop · Herramientas digitales para ordenar tus ideas.</p>
+        <nav aria-label="Información legal" class="flex flex-wrap gap-x-5 gap-y-2">
+          <a href="/privacy.html" data-astro-reload>Privacidad</a>
+          <a href="/terms.html" data-astro-reload>Condiciones</a>
+          <a href="/legal.html" data-astro-reload>Aviso legal</a>
+          <a href="/cookies.html" data-astro-reload>Cookies</a>
+        </nav>
+      </div>
+    </footer>
+
+    <nav class="mobile-bottom-nav fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-line bg-white/95 px-2 pt-2 shadow-[0_-4px_18px_rgba(24,20,15,.08)] backdrop-blur sm:hidden" aria-label="Navegación principal">
+      <a href={baseUrl} data-astro-prefetch class="grid min-h-12 place-items-center gap-0.5 rounded-xl text-xs font-semibold" aria-label="Inicio">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1z"/></svg><span>Inicio</span>
+      </a>
+      <a href={`${baseUrl}#productos`} data-astro-prefetch class="grid min-h-12 place-items-center gap-0.5 rounded-xl text-xs font-semibold" aria-label="Explorar categorías">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Explorar</span>
+      </a>
+      <a href={`${baseUrl}buscar/`} data-astro-prefetch class="grid min-h-12 place-items-center gap-0.5 rounded-xl text-xs font-semibold" aria-label="Buscar">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><span>Buscar</span>
+      </a>
+      <a href={`${baseUrl}favoritos/`} data-astro-prefetch class="grid min-h-12 place-items-center gap-0.5 rounded-xl text-xs font-semibold" aria-label="Mis favoritos">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20.8 8.7c0 5.2-8.8 11.1-8.8 11.1S3.2 13.9 3.2 8.7A4.7 4.7 0 0 1 12 6.3a4.7 4.7 0 0 1 8.8 2.4Z"/></svg><span>Favoritos</span>
+      </a>
+    </nav>
+
+    <script>
+      const bootPage = () => {
+        const page = document.body.dataset.page;
+        if (page === 'catalog') {
+          void Promise.all([import('../scripts/catalog-filters.js'), import('../scripts/wishlist.js')])
+            .then(([filters, wishlist]) => { filters.init(); wishlist.init(); });
+          return;
+        }
+        const loader = page === 'product' ? () => import('../scripts/wishlist.js')
+          : page === 'favorites' ? () => import('../scripts/favorites.js')
+          : page === 'search' ? () => import('../scripts/search.js')
+          : null;
+        if (loader) void loader().then((module) => module.init());
+      };
+      document.addEventListener('astro:page-load', bootPage);
+      bootPage();
+    </script>
+  </body>
+</html>

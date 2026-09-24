@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+const q = Astro.url.searchParams.get('q') ?? '';
+const description = 'Busca en el catálogo PostisPop por nombre, tipo de producto o función.';
+---
+<Layout title="Buscar en PostisPop" description={description} canonicalPath="buscar/" pageKind="search" noindex>
+  <main id="contenido" class="mx-auto min-h-[65vh] max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
+    <h1 class="text-3xl font-black">Buscar productos</h1>
+    <p class="mt-2 text-muted">Encuentra papelería digital, recordatorios y mejoras para tu pizarra.</p>
+    <form class="mt-6 flex gap-2" data-pagefind-form role="search">
+      <label class="sr-only" for="site-search">Buscar en el catálogo</label>
+      <input id="site-search" name="q" type="search" value={q} placeholder="Prueba «alarma» o «pack»" class="min-h-12 min-w-0 flex-1 rounded-xl border border-line bg-white px-4" autocomplete="off" />
+      <button class="min-h-12 rounded-xl bg-pop px-5 font-bold text-white" type="submit">Buscar</button>
+    </form>
+    <p class="mt-5 text-sm text-muted" data-search-status role="status" aria-live="polite">Escribe para buscar en el catálogo.</p>
+    <ol class="mt-4 grid gap-3" data-search-results></ol>
+  </main>
+</Layout>

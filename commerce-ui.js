@@ -83,7 +83,7 @@ async function shop(focusSlug) {
       let action=has?(p.slug.startsWith('pack-')?`<button class="pp-primary" data-action="apply" data-slug="${escape(p.slug)}">Aplicar estilo</button>`:`<button class="pp-primary" data-action="${clock?'alarms':'pro'}">Usar mejora</button>`):!actor?.registered?'<button class="pp-primary" data-action="register">Crear cuenta / Iniciar sesión</button>':checkoutReady?`<button class="pp-primary" data-action="buy" data-slug="${escape(p.slug)}">Comprar · ${price(p)}</button>`:'<button class="pp-primary" disabled>Compra próximamente</button>';
       if(clock&&active()&&!has)action='<button class="pp-primary" data-action="alarms">Usar reloj gratis</button>'+action;
       return `<article class="pp-product"><span class="pp-product-icon" aria-hidden="true">${icons[p.slug]||'🛍️'}</span><h3>${escape(p.title)}</h3><p>${escape(descriptions[p.slug]||p.description)}</p><strong>${has?'Activado en tu cuenta':price(p)}</strong><small>${has?'Disponible al iniciar sesión': 'Pago único · Sin suscripción'}</small>${action}</article>`;
-    }).join('')}</section>${!checkoutReady?'<p class="pp-muted">Estamos preparando la compra con activación automática. Todavía no se realizan cobros desde esta tienda.</p>':''}<p class="pp-muted">Las alarmas necesitan PostisPop abierto. El navegador puede retrasarlas si el dispositivo está suspendido. No sustituyen avisos críticos.</p>`;
+    }).join('')}</section><a class="pp-secondary" href="/tienda/">Explorar el catálogo completo</a>${!checkoutReady?'<p class="pp-muted">Estamos preparando la compra con activación automática. Todavía no se realizan cobros desde esta tienda.</p>':''}<p class="pp-muted">Las alarmas necesitan PostisPop abierto. El navegador puede retrasarlas si el dispositivo está suspendido. No sustituyen avisos críticos.</p>`;
   } catch(error) {if(dialog===current)current.querySelector('p').textContent=errorText(error);}
 }
 async function clock() {
@@ -171,6 +171,6 @@ function mount() {
   const params=new URLSearchParams(location.search);
   if(params.has('purchase')) {
     api('commerce/reconcile',{session_id:params.get('purchase')}).then(async result=>{if(result.granted){await sync();message('Compra confirmada. Tu mejora ya está activada.');}else message('El pago está pendiente de confirmación. Tu mejora se activará cuando se confirme.');}).catch(e=>message(errorText(e)));
-  } else if(params.has('shop'))shop();
+  } else if(params.has('shop'))shop(params.get('item') || undefined);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();

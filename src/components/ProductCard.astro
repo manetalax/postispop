@@ -1,0 +1,47 @@
+---
+import { Picture } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  product: CollectionEntry<'products'>;
+  baseUrl?: string;
+  eager?: boolean;
+}
+
+const { product, baseUrl = import.meta.env.BASE_URL, eager = false } = Astro.props;
+const formattedPrice = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(product.data.price);
+const productUrl = `${baseUrl}producto/${product.id}/`;
+---
+
+<article class="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg" data-product-card data-product-id={product.id} data-franchise={product.data.franchise.toLowerCase()} data-category={product.data.category.toLowerCase()}>
+  <a href={productUrl} data-astro-prefetch class="product-picture block">
+    <Picture
+      src={product.data.coverImage}
+      alt={product.data.coverAlt}
+      formats={['avif', 'webp']}
+      widths={[320, 480, 720]}
+      sizes="(max-width: 639px) 88vw, (max-width: 1023px) 44vw, 320px"
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+      fetchpriority={eager ? 'high' : 'auto'}
+      class="transition duration-300 group-hover:scale-[1.02]"
+    />
+  </a>
+  <div class="flex flex-1 flex-col p-4 sm:p-5">
+    <div class="mb-2 flex flex-wrap gap-2 text-xs font-semibold text-muted">
+      <span class="rounded-full bg-paper-soft px-2.5 py-1">{product.data.franchise}</span>
+      <span class="rounded-full bg-paper-soft px-2.5 py-1">{product.data.category}</span>
+    </div>
+    <h2 class="text-lg font-bold leading-snug"><a href={productUrl} data-astro-prefetch class="after:absolute after:inset-0">{product.data.title}</a></h2>
+    <p class="mt-2 line-clamp-2 text-sm leading-6 text-muted">{product.data.description}</p>
+    <div class="mt-auto flex items-end justify-between gap-3 pt-5">
+      <div>
+        <strong class="block text-xl">{formattedPrice}</strong>
+        <span class="text-xs text-muted">{product.data.inStock ? 'Disponible digitalmente' : 'Agotado'}</span>
+      </div>
+      <button type="button" data-wishlist={product.id} aria-pressed="false" aria-label={`Guardar ${product.data.title} en favoritos`} class="relative z-10 grid size-12 shrink-0 place-items-center rounded-full border border-line bg-white text-ink hover:border-pop hover:text-pop">
+        <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20.8 8.7c0 5.2-8.8 11.1-8.8 11.1S3.2 13.9 3.2 8.7A4.7 4.7 0 0 1 12 6.3a4.7 4.7 0 0 1 8.8 2.4Z"/></svg>
+      </button>
+    </div>
+  </div>
+</article>
