@@ -1,55 +1,34 @@
-# PostisPop para Android — beta 0.1.0
+# PostisPop Android 0.2.0-beta — ejecución local
 
-Aplicación Android basada en Trusted Web Activity (Android Browser Helper 2.7.3). Abre la web real https://postispop.com/ usando un navegador compatible; conserva los datos y la sesión de ese navegador. Si no se valida el dominio o el navegador no admite TWA, se muestra la interfaz segura del navegador.
+Esta beta reemplaza la TWA anterior. Incluye la pizarra, JavaScript, CSS, imágenes y la tienda Astro/Pagefind en el APK. Android WebView ejecuta los archivos locales con WebViewAssetLoader. El origen lógico https://postispop.com se resuelve íntegramente contra los assets: ningún documento de la web pública se descarga, tampoco si falta un archivo. Así se conserva la política CORS de la API existente.
 
-## APK de prueba
+La misma API Supabase gestiona cuentas, pizarras, notas y derechos con las credenciales de cada usuario y RLS. Solo se incluye la clave publicable, nunca claves de servicio ni secretos de Stripe. Los archivos api/ recuperados de la web NO se empaquetan.
 
-- Paquete: `com.postispop.android.beta`.
-- Android 6.0 o posterior (API 23); destino y compilación API 36.
-- Descarga el APK, ábrelo desde Archivos y autoriza temporalmente «Instalar aplicaciones desconocidas» para esa aplicación. Después de instalar puedes retirar ese permiso.
-- Mantén Chrome u otro navegador compatible actualizado. Necesita conexión a Internet.
-- No publiques esta beta firmada con clave de prueba en Google Play.
+## Uso
+- Android 6+; Android System WebView actualizado.
+- Paquete com.postispop.android.beta, versión 0.2.0-beta, código 2.
+- La firma de prueba es la misma de la beta 0.1.0: instalar como actualización, sin desinstalar.
+- Las sesiones/notas de la beta TWA anterior residían en el navegador. La nueva app tiene almacenamiento independiente: iniciar sesión de nuevo para recuperar notas sincronizadas. Las notas de invitado del navegador no se migran automáticamente ni se borran.
+- Sin Internet: la interfaz y la tienda arrancan; las notas de invitado se editan y conservan localmente. Una cuenta puede consultar la última pizarra leída en este dispositivo; guardar cambios en la cuenta requiere conexión. No existe aún una cola de cambios offline para cuentas.
+- Login con correo, sincronización, catálogo actualizado, derechos y pagos necesitan conexión. Google y Stripe se abren en el navegador del sistema; los enlaces verificados de postispop.com vuelven a la app. El retorno OAuth depende de que Android tenga habilitado «Abrir enlaces compatibles» para esta app.
+- Stripe se conserva sin adaptación a Play Billing, por petición del propietario. Los pagos no se habilitan si el backend los tiene desactivados.
+- Las alarmas actuales requieren la app abierta; no se ha añadido un planificador nativo en segundo plano.
 
-## Compilación
-
-Requiere JDK 17, Gradle 8.13, SDK Platform 36 y Build Tools 36.0.0.
+## Compilar
+Requiere Node 22, JDK 17, Gradle 8.13, SDK 36 y Build Tools 36.0.0.
 
 ```sh
-cd android
-# Define ANDROID_HOME o sdk.dir en local.properties.
-mkdir -p app/.signing
-# Para actualizar el APK entregado, restaura SU beta.keystore del respaldo privado.
-# Solo para una instalación de desarrollo nueva:
-keytool -genkeypair -keystore app/.signing/beta.keystore -storepass android \
-  -keypass android -alias androiddebugkey -keyalg RSA -keysize 2048 \
-  -validity 10000 -dname 'CN=PostisPop Android Beta,O=PostisPop,C=ES'
-gradle assembleDebug lintDebug
-# Salida: app/build/outputs/apk/debug/app-debug.apk
+npm ci
+npm run build
+node scripts/package-mobile.mjs
+# Restaurar la clave beta privada en android/app/.signing/beta.keystore.
+# Configurar ANDROID_HOME o android/local.properties con sdk.dir.
+gradle -p android assembleDebug lintDebug
 ```
 
-Una clave nueva produce otra firma. No se podrá actualizar una instalación anterior sin desinstalarla; también hay que publicar su huella en `.well-known/assetlinks.json`. La clave de la beta entregada se guarda en el respaldo privado, nunca en el repositorio ni en el sitio web. Su contraseña estándar de desarrollo es `android`; NO usar esta clave para producción.
+La clave beta usa alias androiddebugkey y contraseña de desarrollo android. No usarla en producción ni subirla a GitHub. Sin clave, `-PunsignedBeta` genera un APK sin firmar para firmarlo después en un entorno privado.
 
-## Estado y límites
+GitHub Actions compila recursos y APK/AAB sin firmar. El APK de entrega se firma localmente con la clave conservada. Para futuras versiones hay que actualizar versionCode/versionName.
 
-- La envoltura Android no cambia la lógica de pagos, cuentas ni productos de la web.
-- Los pagos Stripe y la concesión de mejoras siguen pendientes de una prueba completa; no se certifican por compilar este APK.
-- No incluye un planificador nativo de alarmas ni garantiza avisos con la aplicación cerrada, el móvil bloqueado o sin conexión. Hay que implementar y probar notificaciones/push o alarmas nativas antes de prometer ese comportamiento.
-- Los datos web viven en el perfil del navegador, no en un WebView independiente. Borrar los datos de ese navegador puede borrar notas locales sin sincronizar.
-- Esta entrega se verifica por compilación, análisis estático, manifiesto y firma; la prueba en un móvil físico queda pendiente.
-
-## Preparación para Google Play
-
-La variante release usa `com.postispop.android`. `gradle bundleRelease` genera un AAB candidato SIN FIRMAR; no está listo para subir ni aprobado por Google.
-
-Antes de publicar:
-
-1. Configurar Play Console, Play App Signing y una clave de subida de producción propia, distinta de la beta.
-2. Implementar Play Billing para mejoras digitales o completar un programa de pagos alternativos aplicable. La web usa Stripe y no se da por válida para Play automáticamente.
-3. Añadir al assetlinks público el paquete de producción y la huella de **firma de aplicación de Google Play**, conservando las asociaciones necesarias.
-4. Completar ficha, capturas, política de privacidad, seguridad de datos, clasificación y eliminación de cuenta si corresponde.
-5. Validar login, compra, restauración de derechos, enlaces de retorno, accesibilidad y alarmas en dispositivos; realizar las pruebas exigidas por la cuenta de Play.
-
-Referencias oficiales:
-- https://developer.chrome.com/docs/android/trusted-web-activity/quick-start
-- https://support.google.com/googleplay/android-developer/answer/9858738
-- https://developer.android.com/google/play/requirements/target-sdk
+## Google Play e iOS
+El AAB de release es un candidato sin firmar, NO listo para Play Console. Faltan firma de producción, pagos digitales admitidos por Play, ficha/políticas y validación en dispositivos. Esta entrega no incluye binario iOS. La carpeta mobile y los recursos empaquetados permiten reutilizar la interfaz, pero iOS requerirá host WKWebView/Capacitor, Xcode, firma y pruebas propias.

@@ -1,23 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
-    <queries>
-        <intent><action android:name="android.support.customtabs.action.CustomTabsService" /></intent>
-        <intent><action android:name="android.intent.action.VIEW" /><data android:scheme="https" /></intent>
-    </queries>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application android:label="${appLabel}" android:icon="@drawable/app_icon"
         android:roundIcon="@drawable/app_icon" android:allowBackup="false"
         android:supportsRtl="true" android:usesCleartextTraffic="false"
-        android:theme="@android:style/Theme.Translucent.NoTitleBar">
-        <meta-data android:name="asset_statements" android:resource="@string/asset_statements" />
-        <activity android:name="com.google.androidbrowserhelper.trusted.LauncherActivity"
-            android:exported="true" android:label="${appLabel}">
-            <meta-data android:name="android.support.customtabs.trusted.DEFAULT_URL" android:value="https://postispop.com/" />
-            <meta-data android:name="android.support.customtabs.trusted.STATUS_BAR_COLOR" android:resource="@color/paper" />
-            <meta-data android:name="android.support.customtabs.trusted.NAVIGATION_BAR_COLOR" android:resource="@color/paper" />
-            <meta-data android:name="android.support.customtabs.trusted.SPLASH_IMAGE_DRAWABLE" android:resource="@drawable/app_icon" />
-            <meta-data android:name="android.support.customtabs.trusted.SPLASH_SCREEN_BACKGROUND_COLOR" android:resource="@color/paper" />
-            <meta-data android:name="android.support.customtabs.trusted.SPLASH_SCREEN_FADE_OUT_DURATION" android:value="200" />
-            <meta-data android:name="android.support.customtabs.trusted.FILE_PROVIDER_AUTHORITY" android:value="${applicationId}.fileprovider" />
+        android:theme="@android:style/Theme.Material.Light.NoActionBar">
+        <activity android:name=".MainActivity" android:exported="true"
+            android:launchMode="singleTask" android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -29,9 +18,5 @@
                 <data android:scheme="https" android:host="postispop.com" />
             </intent-filter>
         </activity>
-        <provider android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider" android:exported="false" android:grantUriPermissions="true">
-            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/filepaths" />
-        </provider>
     </application>
 </manifest>

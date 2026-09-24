@@ -4,7 +4,7 @@ const source=stripTypeScriptTypes(fs.readFileSync('functions/postispop-commerce/
 function setup(configured=true,paid=true) {
   let handle;const writes=[];
   const session={id:'cs_test_123',payment_status:paid?'paid':'unpaid',status:'complete',livemode:false,metadata:{postispop_user:'test-user',postispop_product:'reloj-recordatorios'},client_reference_id:'test-user',amount_total:499,currency:'eur'};
-  const values={SUPABASE_URL:'https://example.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'test-service',SUPABASE_ANON_KEY:'test-anon',...(configured?{STRIPE_SECRET_KEY:'sk_test_placeholder',STRIPE_WEBHOOK_SECRET:'test-webhook'}:{})};
+  const values={SUPABASE_URL:'https://example.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'test-service',SUPABASE_ANON_KEY:'test-anon',...(configured?{STRIPE_PAYMENTS_ENABLED:'true',STRIPE_SECRET_KEY:'sk_test_placeholder',STRIPE_WEBHOOK_SECRET:'test-webhook'}:{})};
   const context=vm.createContext({Response,Request,URL,URLSearchParams,TextEncoder,Uint8Array,crypto,Date,console,Deno:{env:{get:k=>values[k]},serve:f=>handle=f},fetch:async(url,options={})=>{
     if(url.includes('/auth/v1/user'))return Response.json({id:'test-user',email:'test@example.invalid'});
     if(url.includes('/v1/checkout/sessions/'))return Response.json(session);
