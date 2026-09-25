@@ -13,3 +13,7 @@ sortOrder: 2
 ---
 
 Elige un aspecto sereno para organizar tareas, notas y recordatorios sin elementos visuales que distraigan.
+
+## Una pizarra minimalista para organizar tareas
+
+Usa tus notas digitales para separar pendientes, apuntes de estudio e ideas de trabajo. El estilo Minimal mantiene tu tablero de notas despejado para consultar tus listas de un vistazo.
