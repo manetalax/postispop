@@ -13,3 +13,9 @@ sortOrder: 3
 ---
 
 Programa alarmas en tus notas. Al registrarte, el reloj se ofrece gratis durante 30 días; después puedes comprarlo como mejora.
+
+## Cómo crear recordatorios con fecha y hora
+
+Convierte una nota de tu pizarra virtual en un recordatorio para una tarea pendiente, una sesión de estudio o una gestión personal. Configura la fecha y la hora de la alarma y conserva el contexto en la propia nota.
+
+En la versión web, mantén PostisPop abierto para recibir las alarmas; no funciona como una notificación con el navegador cerrado.
