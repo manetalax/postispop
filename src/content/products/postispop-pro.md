@@ -13,3 +13,7 @@ sortOrder: 4
 ---
 
 Incluye los packs Rebel y Minimal, además del reloj con alarmas para organizar tus notas.
+
+## Papelería digital y recordatorios para tus notas
+
+Combina una pizarra personalizada con notas con alarma. El paquete reúne los estilos Rebel y Minimal y el reloj para organizar tareas, ideas y recordatorios personales desde PostisPop.
