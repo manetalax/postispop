@@ -1,11 +1,13 @@
 package com.postispop.android;
 
+import android.Manifest;
 import androidx.activity.ComponentActivity;
 import androidx.activity.OnBackPressedCallback;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.content.pm.PackageManager;
 import android.webkit.*;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -26,6 +28,7 @@ public final class MainActivity extends ComponentActivity {
     private WebView web;
     private ValueCallback<Uri[]> fileResult;
     private byte[] pendingDownload;
+    private PermissionRequest pendingWebPermission;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -78,6 +81,22 @@ public final class MainActivity extends ComponentActivity {
                 try { startActivityForResult(params.createIntent(), 10); }
                 catch (ActivityNotFoundException e) { fileResult.onReceiveValue(null); fileResult = null; }
                 return true;
+            }
+            @Override public void onPermissionRequest(PermissionRequest request) {
+                runOnUiThread(() -> {
+                    if (!isLocal(request.getOrigin()) || !Arrays.asList(request.getResources()).contains(PermissionRequest.RESOURCE_AUDIO_CAPTURE)) {
+                        request.deny(); return;
+                    }
+                    if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                        request.grant(new String[]{PermissionRequest.RESOURCE_AUDIO_CAPTURE});
+                    } else {
+                        pendingWebPermission = request;
+                        requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 12);
+                    }
+                });
+            }
+            @Override public void onPermissionRequestCanceled(PermissionRequest request) {
+                if (pendingWebPermission == request) pendingWebPermission = null;
             }
         });
         if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
@@ -158,7 +177,16 @@ public final class MainActivity extends ComponentActivity {
         }
     }
     @Override protected void onSaveInstanceState(Bundle state) { web.saveState(state); super.onSaveInstanceState(state); }
+    @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
+        super.onRequestPermissionsResult(requestCode, permissions, results);
+        if (requestCode == 12 && pendingWebPermission != null) {
+            PermissionRequest request = pendingWebPermission; pendingWebPermission = null;
+            if (results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED)
+                request.grant(new String[]{PermissionRequest.RESOURCE_AUDIO_CAPTURE});
+            else request.deny();
+        }
+    }
     @Override protected void onPause() { web.onPause(); CookieManager.getInstance().flush(); super.onPause(); }
     @Override protected void onResume() { super.onResume(); if (web != null) web.onResume(); }
-    @Override protected void onDestroy() { if (fileResult != null) fileResult.onReceiveValue(null); web.destroy(); super.onDestroy(); }
+    @Override protected void onDestroy() { if (fileResult != null) fileResult.onReceiveValue(null); if (pendingWebPermission != null) pendingWebPermission.deny(); web.destroy(); super.onDestroy(); }
 }
