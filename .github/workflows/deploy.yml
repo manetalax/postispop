@@ -33,7 +33,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _site/tienda
-          files=(index.html manifest.json robots.txt sitemap.xml CNAME favicon.svg privacy.html terms.html legal.html cookies.html postispop-shop.js commerce-ui.js commerce.css supabase-bridge.js supabase-config.js guest-board.js)
+          files=(index.html manifest.json robots.txt sitemap.xml CNAME favicon.svg privacy.html terms.html legal.html cookies.html postispop-shop.js commerce-ui.js commerce.css supabase-bridge.js supabase-config.js guest-board.js note-attachments.js note-attachments.css)
           for file in "${files[@]}"; do
             if [[ -f "$file" ]]; then cp --parents "$file" _site/; fi
           done
