@@ -3,6 +3,8 @@ name: Build and deploy PostisPop to GitHub Pages
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -11,7 +13,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -25,23 +27,15 @@ jobs:
         with:
           node-version: 22
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
-      - name: Build Astro storefront and Pagefind index
+        run: npm ci --no-audit --no-fund
+      - name: Lint and test
+        run: npm run lint && npm test
+      - name: Build application, content and storefront
         run: npm run build
-      - name: Stage existing app and Astro shop
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p _site/tienda
-          files=(index.html manifest.json robots.txt sitemap.xml CNAME favicon.svg privacy.html terms.html legal.html cookies.html postispop-shop.js commerce-ui.js commerce.css supabase-bridge.js supabase-config.js guest-board.js note-attachments.js note-attachments.css)
-          for file in "${files[@]}"; do
-            if [[ -f "$file" ]]; then cp --parents "$file" _site/; fi
-          done
-          for dir in assets _next api .well-known; do
-            if [[ -d "$dir" ]]; then cp -a "$dir" _site/; fi
-          done
-          touch _site/.nojekyll
-          cp -a astro-dist/. _site/tienda/
+      - name: Install browser for functional checks
+        run: npx playwright install --with-deps chromium
+      - name: Verify desktop, mobile, offline and bundled app
+        run: npm run test:site && node tests/pwa-ui.cjs && node scripts/package-mobile.mjs && npm run test:mobile
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload Pages artifact
@@ -49,6 +43,7 @@ jobs:
         with:
           path: _site
   deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
