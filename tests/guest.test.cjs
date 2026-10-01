@@ -82,3 +82,15 @@ test('Invalid or oversized imports are atomic and never replace saved notes',asy
     assert.equal(storage.get('postispop-guest-board-v1'),before);
   }
 });
+
+test('Exported app doodles can be imported into an empty board',async()=>{
+  storage.clear();
+  await request('note/guest-note-0',{text:'Recordar',marks:[],revision:1});
+  await request('note/guest-note-0/doodle',{doodle:'heart'});
+  const backup=(await request('board/guest-board/export')).data;
+  storage.clear();
+  const imported=await request('board/guest-board/import',backup);
+  assert.equal(imported.status,200);
+  assert.equal(imported.data.notes[0].doodle,'heart');
+  assert.equal(imported.data.notes[0].text,'Recordar');
+});

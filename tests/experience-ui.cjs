@@ -1,6 +1,8 @@
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict');
 const fs=require('node:fs/promises');const path=require('node:path');
+let reviewPage;
+const results=path.resolve(__dirname,'../test-results');
 (async()=>{
   const root=path.resolve(__dirname,'../_site');
   const browser=await chromium.launch({headless:true});
@@ -14,7 +16,8 @@ const fs=require('node:fs/promises');const path=require('node:path');
     const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.webmanifest':'application/manifest+json','.wasm':'application/wasm','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.avif':'image/avif','.ico':'image/x-icon','.woff':'font/woff'};
     try{await route.fulfill({status:200,contentType:types[path.extname(file)]||'application/octet-stream',body:await fs.readFile(file)});}catch{missing.push(name);await route.fulfill({status:404,body:'Missing staged asset'});}
   });
-  const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
+  const page=reviewPage=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
+  await fs.mkdir(results,{recursive:true});
   await page.goto('https://postispop.com/');await page.waitForSelector('.sticky-note:not([disabled])');await page.waitForSelector('.pp-tools');
   assert.equal(await page.locator('html').getAttribute('lang'),'es');
   assert.equal(await page.locator('h1').count(),1);
@@ -37,10 +40,12 @@ const fs=require('node:fs/promises');const path=require('node:path');
   await page.waitForFunction(()=>document.querySelectorAll('.note-cell.pp-filtered').length===0);
   const downloadPromise=page.waitForEvent('download');await page.getByRole('button',{name:'Copia JSON',exact:true}).click();
   const download=await downloadPromise;const backup=JSON.parse(await fs.readFile(await download.path(),'utf8'));assert.equal(backup.notes[0].text,'Nota guardada sin Internet #estudio');assert.ok(!JSON.stringify(backup).includes('access_token'));
-  await page.getByRole('button',{name:'Plantillas',exact:true}).click();await page.getByRole('button',{name:'Compras',exact:true}).click();await page.waitForSelector('.pp-tools');
+  await page.getByRole('button',{name:'Plantillas',exact:true}).click();
+  await Promise.all([page.waitForNavigation(),page.getByRole('button',{name:'Compras',exact:true}).click()]);await page.waitForSelector('.pp-tools');
   await page.waitForFunction(()=>JSON.parse(localStorage.getItem('postispop-guest-board-v1'))?.notes.some(n=>n.text==='Alimentación\n#compras'));
   assert.match(await page.locator('.sticky-note').first().innerText(),/Nota guardada sin Internet/);
-  await fs.mkdir(path.join(root,'../test-results'),{recursive:true});
+  const pngPromise=page.waitForEvent('download');await page.getByRole('button',{name:'PNG',exact:true}).click();
+  const png=await fs.readFile(await(await pngPromise).path());assert.equal(png.subarray(1,4).toString(),'PNG');await fs.writeFile(path.join(results,'export.png'),png);
   for(const width of [360,390,768,1440]){
     await page.setViewportSize({width,height:900});
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1);assert.equal(overflow,false,`Root overflow at ${width}`);
@@ -53,4 +58,4 @@ const fs=require('node:fs/promises');const path=require('node:path');
   assert.deepEqual(missing,[]);assert.deepEqual(errors,[]);
   console.log('PASS: Spanish default, truthful save status, guest offline save and reload, onboarding dismissal, search, JSON export, non-destructive templates, 4 viewports, shop and 8 guides.');
   await browser.close();
-})().catch(e=>{console.error(e);process.exit(1)});
+})().catch(async e=>{if(reviewPage)await reviewPage.screenshot({path:path.join(results,'failure.png'),fullPage:true}).catch(()=>{});console.error(e);process.exit(1)});
