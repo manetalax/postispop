@@ -21,7 +21,7 @@ export function guestRequest(endpoint, method, payload={}) {
         if(!n||typeof n.text!=='string'||n.text.length>10000) throw guestError('INVALID_BACKUP');
         const paper=n.paper??0, marks=n.marks??[], doodle=n.doodle??'';
         if(!Number.isInteger(paper)||paper<0||paper>=PAPER_COUNT||typeof doodle!=='string'||doodle.length>500000||!Array.isArray(marks)||marks.length>10000)throw guestError('INVALID_BACKUP');
-        if(doodle && !/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(doodle))throw guestError('INVALID_BACKUP');
+        if(doodle && !['heart','idea','smile','cart','star','check','ticket'].includes(doodle))throw guestError('INVALID_BACKUP');
         if(marks.some(m=>!m||!Number.isInteger(m.start)||!Number.isInteger(m.end)||m.start<0||m.end<m.start||m.end>n.text.length||typeof m.ink!=='string'||!/^[a-z-]{1,30}$/.test(m.ink)))throw guestError('INVALID_BACKUP');
         return {text:n.text,paper,marks:marks.map(m=>({start:m.start,end:m.end,ink:m.ink})),doodle};
       }).filter(n=>n.text.trim()||n.doodle);

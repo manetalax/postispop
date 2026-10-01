@@ -26,6 +26,8 @@ function update() {
     }
   });
   initBoardTools();
+  const installButton=document.querySelector('[data-experience="install"]');
+  if(installButton)installButton.hidden=!installPrompt;
 }
 window.addEventListener('postispop:save',event=>{lastSave=event.detail;update();});
 window.addEventListener('postispop:activity',event=>track(event.detail?.name));

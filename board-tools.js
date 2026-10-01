@@ -42,7 +42,7 @@ async function exportPng() {
   const board=await currentBoard(), notes=ordered(board);
   const canvas=document.createElement('canvas');canvas.width=1600;canvas.height=1200;const ctx=canvas.getContext('2d');
   ctx.fillStyle='#f6f2e9';ctx.fillRect(0,0,1600,1200);ctx.fillStyle='#172339';ctx.font='bold 40px sans-serif';ctx.fillText((board.title||'Mi pizarra').slice(0,60),50,64);
-  const colors=['#fff0a2','#f6c4d7','#cde7f5','#d8ecc2','#e4d2f4','#f9d0a1'];
+  const colors=['#ffec86','#ffc5d2','#b9e0f8','#f9f0d7','#c5e7bd','#d9c8f3'];
   notes.forEach((n,i)=>{
     const x=50+(i%4)*385,y=100+Math.floor(i/4)*342;
     ctx.fillStyle=colors[n.paper]||colors[0];ctx.fillRect(x,y,360,315);ctx.fillStyle='#172339';ctx.font='bold 17px sans-serif';ctx.fillText('NOTA '+(i+1),x+20,y+30);ctx.font='22px sans-serif';
@@ -85,7 +85,7 @@ async function filter(){
   try{
     const board=await currentBoard(),query=tools.querySelector('[type=search]').value.trim().toLocaleLowerCase('es'),color=tools.querySelector('select').value;
     let matches=0;const notes=ordered(board),cells=document.querySelectorAll('.board-grid .note-cell');
-    cells.forEach((cell,i)=>{const note=notes[i],match=note&&(!query||note.text.toLocaleLowerCase('es').includes(query))&&(!color||String(note.paper)===color);cell.classList.toggle('pp-filtered',!match);const button=cell.querySelector('.sticky-note');if(button)button.tabIndex=match?0:-1;if(match)matches++;});
+    cells.forEach(cell=>{const button=cell.querySelector('.sticky-note'),note=notes.find(n=>n.id===button?.dataset.noteId),match=note?(!query||note.text.toLocaleLowerCase('es').includes(query))&&(!color||String(note.paper)===color):!query&&!color;cell.classList.toggle('pp-filtered',!match);if(button)button.tabIndex=match?0:-1;if(match&&note)matches++;});
     message(query||color?`${matches} notas coinciden. Las demás siguen guardadas. Usa #etiqueta en el texto para agrupar notas.`:'Puedes buscar por texto o por #etiqueta.');
   }catch{message('No se pudo actualizar la búsqueda. Tus notas se conservan.');}
 }
@@ -94,7 +94,7 @@ export function initBoardTools(){
   if(tools?.isConnected)return;
   tools=document.createElement('div');tools.className='pp-tools';tools.setAttribute('aria-label','Herramientas de la pizarra');
   const search=document.createElement('input');search.type='search';search.placeholder='Buscar notas o #etiqueta';search.setAttribute('aria-label','Buscar notas o etiquetas');tools.append(search);
-  const colors=document.createElement('select');colors.setAttribute('aria-label','Filtrar por color');['Todos los colores','Amarillo','Rosa','Azul','Verde','Violeta','Naranja'].forEach((label,i)=>{const opt=text('option',label);opt.value=i===0?'':String(i-1);colors.append(opt);});tools.append(colors);
+  const colors=document.createElement('select');colors.setAttribute('aria-label','Filtrar por color');['Todos los colores','Amarillo','Rosa','Azul','Crema','Verde','Violeta'].forEach((label,i)=>{const opt=text('option',label);opt.value=i===0?'':String(i-1);colors.append(opt);});tools.append(colors);
   let timer;search.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(filter,180);});colors.addEventListener('change',filter);
   const operations=[['Copia JSON',exportJson],['Importar',showImport],['PNG',exportPng],['PDF / Imprimir',printPdf],['Plantillas',showTemplates]];
   operations.forEach(([name,fn])=>{const button=text('button',name);button.type='button';button.addEventListener('click',async()=>{button.disabled=true;try{await fn();}catch{message('No se pudo completar la operación. Tus notas se conservan.');}finally{button.disabled=false;}});tools.append(button);});
