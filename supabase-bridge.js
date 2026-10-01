@@ -195,6 +195,15 @@ async function api(endpoint, init) {
     return api(`board/${board.id}`, { method: "GET" });
   }
 
+  const exportMatch = endpoint.match(/^board\/([^/]+)\/export$/);
+  if (exportMatch && method === 'GET') {
+    // Reuse the authorized board read. Never bypass the existing RLS policies.
+    const response = await api('board/'+exportMatch[1], {method:'GET'});
+    if(!response.ok) return response;
+    const board=await response.json();
+    return json({format:'postispop',version:1,title:board.title,notes:board.order.map(id=>board.notes.find(n=>n.id===id)).filter(Boolean).map(({text,marks,paper,doodle,image})=>({text,marks,paper,doodle,image})),exportedAt:new Date().toISOString()});
+  }
+
   const boardMatch = endpoint.match(/^board\/([^/]+)$/);
   if (boardMatch && method === "GET") {
     const id = boardMatch[1];
@@ -236,6 +245,26 @@ window.fetch = async (input, init = {}) => {
   const apiIndex = parts.indexOf("api");
   if (url.origin !== location.origin || apiIndex === -1) return originalFetch(input, init);
   const endpoint = parts.slice(apiIndex + 1).join("/");
-  try { return await api(endpoint, init); }
-  catch (error) { return json({ error: error.body?.message || error.message || "REQUEST_FAILED" }, error.status || 500); }
+  const mutatesNote=(init.method||'GET')==='POST' && /^note\/[^/]+(?:\/(?:text|paper|doodle|image))?$/.test(endpoint);
+  const announce=(kind,detail)=>{if(typeof window.dispatchEvent==='function'&&typeof CustomEvent==='function')window.dispatchEvent(new CustomEvent(kind,{detail}));};
+  const mode=endpoint.includes('guest-')?'local':'cloud';
+  if(mutatesNote)announce('postispop:save',{state:'saving',mode});
+  try {
+    const response=await api(endpoint, init);
+    if(mutatesNote) {
+      announce('postispop:save',{state:response.ok?'saved':'error',mode,at:response.ok?Date.now():null});
+      if(response.ok && typeof JSON.parse(init.body||'{}').text==='string' && JSON.parse(init.body||'{}').text.trim()) { announce('postispop:activity',{name:'first_note_created'}); announce('postispop:activity',{name:'first_board_created'}); }
+    }
+    if(response.ok && mode==='cloud' && /^board\/[^/]+$/.test(endpoint))announce('postispop:activity',{name:'first_sync'});
+    if(response.ok && endpoint==='commerce/alarms' && init.method==='POST') {
+      const payload=init.body?JSON.parse(init.body):{};
+      if(!payload.action)announce('postispop:activity',{name:'reminder_created'});
+    }
+    if(response.ok && endpoint==='auth/signup')announce('postispop:activity',{name:'signup_completed'});
+    return response;
+  }
+  catch (error) {
+    if(mutatesNote)announce('postispop:save',{state:'error',mode});
+    return json({ error: error.body?.message || error.message || "REQUEST_FAILED" }, error.status || 500);
+  }
 };
