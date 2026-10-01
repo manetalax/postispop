@@ -1,4 +1,8 @@
 import './supabase-bridge.js?v=5';
+import { calendarFile } from './app/board-core.js';
+import { track } from './app/analytics.js';
+import { download } from './app/ui.js';
+import { entitlements } from './app/plans.js';
 
 const icons={'pack-rebel':'🎨','pack-minimal':'✨','reloj-recordatorios':'⏰','postispop-pro':'🚀'};
 const descriptions={'pack-rebel':'Colores intensos y papel con personalidad para tu pizarra.','pack-minimal':'Un acabado limpio, claro y sin distracciones.','reloj-recordatorios':'Programa alarmas en tus notas. Avisos con PostisPop abierto.','postispop-pro':'Incluye los packs Rebel y Minimal y el reloj con alarmas.'};
@@ -10,7 +14,7 @@ async function api(endpoint,payload) {
   const response=await fetch('/api/'+endpoint,{method:payload===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:payload===undefined?undefined:JSON.stringify(payload)});
   const body=await response.json();if(!response.ok) throw Object.assign(new Error(body.error||'REQUEST_FAILED'),{status:response.status});return body;
 }
-const owned=slug=>Boolean(access?.products?.includes(slug)||access?.products?.includes('postispop-pro'));
+const owned=slug=>Boolean(access?.products?.includes(slug)||entitlements(access,Date.now()+offset).legacyPack);
 const active=()=>owned('reloj-recordatorios')||Boolean(access?.clock_active&&Date.parse(access.trial_expires_at)>Date.now()+offset);
 function message(text) {
   let el=document.querySelector('.pp-toast');if(!el){el=document.createElement('p');el.className='pp-toast';el.setAttribute('role','status');document.body.append(el);}
@@ -47,6 +51,7 @@ async function sync() {
     access=await api('commerce/status');offset=Date.parse(access.server_now)-Date.now();
     alarms=(await api('commerce/alarms')).alarms;
   } else {access=null;alarms=[];offset=0;}
+  if(actor?.registered&&active()&&!owned('reloj-recordatorios'))track('trial_started',true);
   lastSync=Date.now();applyPack();renderClock();
   clearTimeout(expiryTimer);
   if(active()&&!owned('reloj-recordatorios')) expiryTimer=setTimeout(()=>{renderClock();noticeExpiry();},Math.min(2147483647,Math.max(100,Date.parse(access.trial_expires_at)-Date.now()-offset+100)));
@@ -72,6 +77,7 @@ function applyPack() {
   document.body.dataset.ppPack=selected&&owned(selected)?selected:'';
 }
 async function shop(focusSlug) {
+  track('pricing_viewed');
   showDialog('Papelería · Tienda PostisPop','<p role="status">Cargando productos…</p>');
   const current=dialog;
   try {
@@ -83,7 +89,7 @@ async function shop(focusSlug) {
       let action=has?(p.slug.startsWith('pack-')?`<button class="pp-primary" data-action="apply" data-slug="${escape(p.slug)}">Aplicar estilo</button>`:`<button class="pp-primary" data-action="${clock?'alarms':'pro'}">Usar mejora</button>`):!actor?.registered?'<button class="pp-primary" data-action="register">Crear cuenta / Iniciar sesión</button>':checkoutReady?`<button class="pp-primary" data-action="buy" data-slug="${escape(p.slug)}">Comprar · ${price(p)}</button>`:'<button class="pp-primary" disabled>Compra próximamente</button>';
       if(clock&&active()&&!has)action='<button class="pp-primary" data-action="alarms">Usar reloj gratis</button>'+action;
       return `<article class="pp-product"><span class="pp-product-icon" aria-hidden="true">${icons[p.slug]||'🛍️'}</span><h3>${escape(p.title)}</h3><p>${escape(descriptions[p.slug]||p.description)}</p><strong>${has?'Activado en tu cuenta':price(p)}</strong><small>${has?'Disponible al iniciar sesión': 'Pago único · Sin suscripción'}</small>${action}</article>`;
-    }).join('')}</section><a class="pp-secondary" href="/tienda/">Explorar el catálogo completo</a>${!checkoutReady?'<p class="pp-muted">Estamos preparando la compra con activación automática. Todavía no se realizan cobros desde esta tienda.</p>':''}<p class="pp-muted">Las alarmas necesitan PostisPop abierto. El navegador puede retrasarlas si el dispositivo está suspendido. No sustituyen avisos críticos.</p>`;
+    }).join('')}</section><button class="pp-secondary" data-action="restore-purchases">Restaurar compras de mi cuenta</button><a class="pp-secondary" href="/tienda/">Explorar el catálogo completo</a>${!checkoutReady?'<p class="pp-muted">Estamos preparando la compra con activación automática. Todavía no se realizan cobros desde esta tienda.</p>':''}<p class="pp-muted">Las alarmas necesitan PostisPop abierto. El navegador puede retrasarlas si el dispositivo está suspendido. No sustituyen avisos críticos.</p>`;
   } catch(error) {if(dialog===current)current.querySelector('p').textContent=errorText(error);}
 }
 async function clock() {
@@ -97,12 +103,12 @@ async function alarmDialog() {
     if(dialog!==current)return;
     const notes=boards.flatMap(b=>b.notes.map((n,i)=>({...n,label:`${b.title||'Pizarra'} · Nota ${i+1}: ${(n.text||'Sin texto').slice(0,70)}`})));
     const upcoming=alarms.filter(a=>!a.delivered_at);
-    current.querySelector('p').outerHTML=`<p class="pp-trial">${escape(trialText())}</p><form id="pp-alarm-form"><label>Nota<select name="note_id" required>${notes.map(n=>`<option value="${escape(n.id)}">${escape(n.label)}</option>`).join('')}</select></label><label>Recordatorio<input name="label" maxlength="200" placeholder="¿Qué necesitas recordar?" required></label><label>Fecha y hora<input name="due_at" type="datetime-local" required></label><p class="pp-muted">Hora local de tu dispositivo. Mantén PostisPop abierto y el dispositivo activo para recibir el aviso.</p><button class="pp-primary" type="submit">Guardar alarma</button><button class="pp-secondary" data-action="notifications" type="button">Permitir notificaciones</button><p class="pp-form-status" role="status"></p></form><section class="pp-alarm-list"><h3>Alarmas pendientes</h3>${upcoming.length?upcoming.map(a=>`<article><p><strong>${escape(a.label)}</strong><br><time>${escape(new Date(a.due_at).toLocaleString('es-ES'))}</time></p><button data-action="delete-alarm" data-id="${escape(a.id)}" aria-label="Eliminar alarma ${escape(a.label)}">Eliminar</button></article>`).join(''):'<p>No tienes alarmas pendientes.</p>'}</section>`;
+    current.querySelector('p').outerHTML=`<p class="pp-trial">${escape(trialText())}</p><form id="pp-alarm-form"><label>Nota<select name="note_id" required>${notes.map(n=>`<option value="${escape(n.id)}">${escape(n.label)}</option>`).join('')}</select></label><label>Recordatorio<input name="label" maxlength="200" placeholder="¿Qué necesitas recordar?" required></label><label>Fecha y hora<input name="due_at" type="datetime-local" required></label><p class="pp-muted">Zona horaria: ${escape(Intl.DateTimeFormat().resolvedOptions().timeZone)}. Guardamos el instante en UTC. Mantén PostisPop abierto y el dispositivo activo para recibir el aviso.</p><button class="pp-primary" type="submit">Guardar alarma</button><button class="pp-secondary" data-action="notifications" type="button">Permitir notificaciones</button><p class="pp-form-status" role="status"></p></form><section class="pp-alarm-list"><h3>Alarmas pendientes</h3>${upcoming.length?upcoming.map(a=>`<article><p><strong>${escape(a.label)}</strong><br><time>${escape(new Date(a.due_at).toLocaleString('es-ES'))}</time></p><button data-action="calendar" data-id="${escape(a.id)}">Añadir al calendario (.ics)</button><button data-action="delete-alarm" data-id="${escape(a.id)}" aria-label="Eliminar alarma ${escape(a.label)}">Eliminar</button></article>`).join(''):'<p>No tienes alarmas pendientes.</p>'}</section>`;
     const date=current.querySelector('[name=due_at]');const min=new Date(Date.now()+60000);date.min=new Date(+min-min.getTimezoneOffset()*60000).toISOString().slice(0,16);
   }catch(e){if(dialog===current)current.querySelector('p').textContent=errorText(e);}
 }
 async function buy(slug,button) {
-  button.disabled=true;
+  button.disabled=true;track('premium_clicked');
   try {const data=await api('commerce/checkout',{slug});const url=new URL(data.url);if(url.protocol!=='https:'||url.hostname!=='checkout.stripe.com')throw new Error('INVALID_CHECKOUT');location.assign(url.href);}catch(e){button.disabled=false;message(errorText(e));}
 }
 function register() {
@@ -120,6 +126,8 @@ document.addEventListener('click',async event=>{
     if(action==='shop')await shop();
     if(action==='clock'||action==='alarms')await clock();
     if(action==='register')register();
+    if(action==='restore-purchases'){button.disabled=true;try{await sync();if(!actor?.registered)register();else{message('Compras verificadas en tu cuenta. '+(access?.products?.length?'Tus mejoras están activadas.':'No hay compras confirmadas en esta cuenta.'));await shop();}}finally{button.disabled=false;}}
+    if(action==='calendar'){const alarm=alarms.find(a=>a.id===button.dataset.id);if(alarm)download('postispop-recordatorio.ics',calendarFile(alarm.label,alarm.due_at),'text/calendar;charset=utf-8');}
     if(action==='buy')await buy(button.dataset.slug,button);
     if(action==='apply'){if(!owned(button.dataset.slug))return;localStorage.setItem('pp:pack:'+actor.id,button.dataset.slug);applyPack();message('Estilo aplicado a tu pizarra.');}
     if(action==='pro')showDialog('PostisPop Pro', '<p>Todos tus artículos están activados.</p><button class="pp-primary" data-action="alarms">Programar alarmas</button><button class="pp-secondary" data-action="apply" data-slug="pack-rebel">Aplicar Rebel</button><button class="pp-secondary" data-action="apply" data-slug="pack-minimal">Aplicar Minimal</button>');
@@ -137,7 +145,7 @@ document.addEventListener('submit',async event=>{
     if(!owned('reloj-recordatorios')&&+due>=Date.parse(access.trial_expires_at)){status.textContent='La alarma debe ser anterior al final de tu prueba gratuita.';return;}
     if(!audio&&window.AudioContext)audio=new AudioContext();await audio?.resume();
     await api('commerce/alarms',{note_id:data.get('note_id'),label:String(data.get('label')).trim(),due_at:due.toISOString()});
-    await sync();await alarmDialog();message('Alarma guardada en tu cuenta. Mantén PostisPop abierto para recibirla.');
+    track('reminder_created');await sync();await alarmDialog();message('Alarma guardada en tu cuenta. Mantén PostisPop abierto para recibirla.');
   }catch(e){status.textContent=e.message==='INVALID_DATE'?'Elige una fecha y hora futuras.':errorText(e);}finally{button.disabled=false;}
 });
 function ring(alarm) {
@@ -159,7 +167,7 @@ async function tick() {
   }catch{}finally{busy=false;}
 }
 function mount() {
-  const seoTitle='Bloc de notas online y pizarra virtual | PostisPop';
+  const seoTitle='Bloc de notas online gratis y pizarra de post-it compartida | PostisPop';
   const retainTitle=()=>{if(document.title!==seoTitle)document.title=seoTitle;};
   retainTitle();
   new MutationObserver(retainTitle).observe(document.head,{childList:true,subtree:true,characterData:true});
@@ -170,7 +178,7 @@ function mount() {
   window.addEventListener('focus',()=>{lastSync=0;tick();});window.addEventListener('storage',()=>{lastSync=0;tick();});
   const params=new URLSearchParams(location.search);
   if(params.has('purchase')) {
-    api('commerce/reconcile',{session_id:params.get('purchase')}).then(async result=>{if(result.granted){await sync();message('Compra confirmada. Tu mejora ya está activada.');}else message('El pago está pendiente de confirmación. Tu mejora se activará cuando se confirme.');}).catch(e=>message(errorText(e)));
+    api('commerce/reconcile',{session_id:params.get('purchase')}).then(async result=>{if(result.granted){track('purchase',true);await sync();message('Compra confirmada. Tu mejora ya está activada.');}else message('El pago está pendiente de confirmación. Tu mejora se activará cuando se confirme.');}).catch(e=>message(errorText(e)));
   } else if(params.has('shop'))shop(params.get('item') || undefined);
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
+window.addEventListener('postispop:board',mount,{once:true});

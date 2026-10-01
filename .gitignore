@@ -3,3 +3,5 @@ node_modules/
 astro-dist/
 dist/
 _site/
+content-dist/
+test-results/
