@@ -7,7 +7,7 @@ coverImage: ../../../assets/clay-tools.webp
 coverAlt: Herramientas de papelería digital de PostisPop Pro.
 inStock: true
 featured: true
-description: Todos los estilos, recordatorios y funciones premium de PostisPop en un solo paquete digital.
+description: Incluye los estilos Rebel y Minimal y el reloj con alarmas. Pago único, sin suscripción.
 variants: []
 sortOrder: 4
 ---
