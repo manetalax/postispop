@@ -2,13 +2,13 @@ import { cp, mkdir, rm, readFile, writeFile, stat } from 'node:fs/promises';
 import { resolve } from 'node:path';
 const root = resolve(import.meta.dirname, '..');
 const out = resolve(root, 'android/app/src/main/assets/www');
-await stat(resolve(root, 'astro-dist/index.html')); // Build the shop first.
+await stat(resolve(root, '_site/index.html')); // Build the shop first.
 await rm(out, {recursive:true, force:true});
 await mkdir(out, {recursive:true});
-for (const name of ['index.html','manifest.json','favicon.svg','privacy.html','terms.html','legal.html','cookies.html','commerce-ui.js','commerce.css','supabase-bridge.js','supabase-config.js','guest-board.js','guest-status.js','postispop-shop.js','note-attachments.js','note-attachments.css']) {
-  await cp(resolve(root,name),resolve(out,name));
+for (const name of ['index.html','manifest.json','manifest.webmanifest','favicon.svg','favicon.ico','privacy.html','terms.html','legal.html','cookies.html','commerce-ui.js','commerce.css','supabase-bridge.js','supabase-config.js','guest-board.js','guest-status.js','postispop-shop.js','note-attachments.js','note-attachments.css']) {
+  await cp(resolve(root,'_site',name),resolve(out,name));
 }
-for (const name of ['assets','_next']) await cp(resolve(root,name),resolve(out,name),{recursive:true});
+for (const name of ['assets','_next','app']) await cp(resolve(root,'_site',name),resolve(out,name),{recursive:true});
 await cp(resolve(root,'astro-dist'),resolve(out,'tienda'),{recursive:true});
 // Stored API snapshots from the recovered website must never ship as personal data.
 await cp(resolve(root,'mobile/mobile-entry.js'),resolve(out,'mobile-entry.js'));
