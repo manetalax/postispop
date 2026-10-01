@@ -174,7 +174,8 @@ async function renderList() {
     } else {
       open.textContent = item.url;
     }
-    const meta = document.createElement('small'); meta.textContent = item.kind === 'link' ? item.name : `${kind.toUpperCase()} · ${humanSize(item.size)}`;
+    const categoryName = ({ image: 'Imagen', video: 'Vídeo', file: 'Archivo' })[kind] || kind.toUpperCase();
+    const meta = document.createElement('small'); meta.textContent = item.kind === 'link' ? item.name : `${categoryName} · ${humanSize(item.size)}`;
     details.append(open, meta);
     const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'pp-attachment-remove';
     remove.setAttribute('aria-label', labels.remove); remove.title = labels.remove; remove.textContent = '×';
