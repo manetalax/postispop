@@ -50,12 +50,15 @@ Estado: implementación parcial preparada en rama separada; no desplegada. Base:
 
 ## Validación
 
-- `npm test`: 19/19 casos correctos en el entorno local, incluidos importación atómica, no sobrescritura, exportación ordenada, privacidad de contadores, metadatos y manifest.
+- `npm test`: 20/20 casos correctos en el entorno local, incluidos importación atómica, no sobrescritura, exportación ordenada, privacidad de contadores, metadatos y manifest.
 - `npm run lint`: comprobación sintáctica de los módulos modificados, correcta. No es una auditoría ESLint completa.
 - `npm run build`: Astro check sin errores, advertencias ni hints; tienda y Pagefind compilados.
 - `git diff --check`: correcto.
-- Chromium local no pudo arrancar debido a una restricción del entorno sobre sockets. Las pruebas visuales/móviles y de interacción se ejecutarán en el workflow `Review PostisPop changes`.
-- No se ha medido Lighthouse ni Web Vitals reales. No se afirma 90+, LCP/CLS/INP objetivo ni ausencia de errores de consola hasta validar navegador.
+- Chromium local no pudo arrancar por una restricción de sockets; se validó en GitHub Actions. Ejecución correcta: https://github.com/manetalax/postispop/actions/runs/36931790011 (commit `33fb85a`).
+- Navegador: español inicial incluso con locale portugués; guardado local sin conexión y tras recarga; cierre del onboarding; búsqueda, copia JSON, PNG y plantillas que conservan notas. Portada sin desbordamiento horizontal a 360, 390, 768 y 1440 px; tienda con cuatro productos y ocho guías cargadas. Sin recursos internos ausentes ni excepciones de JavaScript en este recorrido.
+- Capturas de escritorio, móvil y exportación PNG inspeccionadas visualmente. 282 enlaces internos comprobados contra el paquete publicado, incluidos alias HTML de GitHub Pages.
+- Los workflows conservan las versiones v4 de las acciones existentes; GitHub avisa de la transición de su runtime Node 20 y de ubuntu-latest. La ejecución es correcta; actualizar esas acciones en mantenimiento.
+- No se ha medido Lighthouse ni Web Vitals reales. No se afirma 90+, LCP/CLS/INP objetivo. Las pruebas no cubren la autenticación ni cobros contra producción, Safari o Android nativo.
 - No se realizaron cobros, registros reales, invitaciones ni cambios en producción durante las pruebas.
 
 ## Pendientes y decisiones del propietario
@@ -77,3 +80,50 @@ Estado: implementación parcial preparada en rama separada; no desplegada. Base:
 4. Comprobar portada, tienda, guías, login, iconos, manifest y persistencia local desde un navegador limpio.
 5. No hay migraciones ni nuevas variables para esta entrega.
 6. Para revertir, revertir el commit de integración de esta PR y dejar que Pages republique; no borrar tablas ni datos.
+
+## Archivos modificados
+
+- `.github/workflows/deploy.yml`
+- `.github/workflows/qa.yml`
+- `.gitignore`
+- `REVISION_POSTISPOP_20261001.md`
+- `_next/static/chunks/Board-BrRAatyY.js`
+- `assets/apple-touch-icon.png`
+- `assets/icon-192.png`
+- `assets/icon-512.png`
+- `bloc-de-notas-online.html`
+- `board-tools.js`
+- `commerce-ui.js`
+- `cookies.html`
+- `experience-content.js`
+- `experience.css`
+- `experience.js`
+- `favicon.ico`
+- `guest-board.js`
+- `index.html`
+- `legal.html`
+- `lluvia-de-ideas-online.html`
+- `manifest.json`
+- `manifest.webmanifest`
+- `mobile/mobile-entry.js`
+- `notas-adhesivas-online.html`
+- `notas-para-estudiar.html`
+- `organizador-visual-de-tareas.html`
+- `package.json`
+- `pizarra-colaborativa.html`
+- `pizarra-para-reuniones.html`
+- `pizarra-virtual.html`
+- `privacy.html`
+- `robots.txt`
+- `scripts/build-guides.mjs`
+- `scripts/package-mobile.mjs`
+- `scripts/stage-site.mjs`
+- `sitemap.xml`
+- `src/layouts/Layout.astro`
+- `supabase-bridge.js`
+- `terms.html`
+- `tests/experience-ui.cjs`
+- `tests/guest.test.cjs`
+- `tests/metrics.test.cjs`
+- `tests/site.test.cjs`
+- `usage-metrics.js`
