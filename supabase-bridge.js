@@ -77,23 +77,30 @@ async function createBoard(user) {
   return board;
 }
 
-let userCache = null, refreshPromise = null;
+let userCache = null, refreshPromise = null, sessionGeneration = 0;
 async function currentUser() {
+  const generation = sessionGeneration;
   let saved = session();
   if (!saved?.access_token) { userCache=null; return null; }
   if (saved.expires_at && saved.expires_at * 1000 < Date.now() + 60000 && saved.refresh_token) {
     if (!refreshPromise) refreshPromise=(async()=>{
       const response=await originalFetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:saved.refresh_token})});
       const data=await response.json();
+      // A late refresh must not restore credentials after logout or replace a newer session.
+      if(generation!==sessionGeneration || session()?.access_token!==saved.access_token) return;
       if(!response.ok) { if(response.status===400||response.status===401) localStorage.removeItem(sessionKey); throw Object.assign(new Error('SESSION_REQUIRED'),{status:response.status}); }
       localStorage.setItem(sessionKey,JSON.stringify(data)); userCache=null;
     })().finally(()=>{refreshPromise=null;});
     await refreshPromise; saved=session();
   }
+  if(generation!==sessionGeneration || !saved?.access_token) return null;
   if(userCache?.token===saved.access_token && userCache.until>Date.now()) return userCache.user;
   const response=await originalFetch(`${SUPABASE_URL}/auth/v1/user`,{headers:headers()});
+  if(generation!==sessionGeneration || session()?.access_token!==saved.access_token) return null;
   if(!response.ok) { if(response.status===401) {localStorage.removeItem(sessionKey);return null;} throw new Error('AUTH_UNAVAILABLE'); }
-  const user=await response.json();userCache={token:saved.access_token,user,until:Date.now()+30000};return user;
+  const user=await response.json();
+  if(generation!==sessionGeneration || session()?.access_token!==saved.access_token) return null;
+  userCache={token:saved.access_token,user,until:Date.now()+30000};return user;
 }
 
 async function api(endpoint, init) {
@@ -163,7 +170,25 @@ async function api(endpoint, init) {
     return json({ actor: actorFor(data.user) });
   }
 
-  if (endpoint === "auth/logout") { localStorage.removeItem(sessionKey); return json({ ok: true }); }
+  if (endpoint === "auth/logout") {
+    const token = session()?.access_token;
+    // Local logout must succeed even offline; invalidate pending auth responses first.
+    sessionGeneration++; userCache = null;
+    localStorage.removeItem(sessionKey);
+    if (!token) return json({ ok: true, serverRevoked: null });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    let serverRevoked = false;
+    try {
+      const response = await originalFetch(`${SUPABASE_URL}/auth/v1/logout?scope=local`, {
+        method: "POST", signal: controller.signal,
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${token}` }
+      });
+      serverRevoked = response.ok;
+    } catch { /* Local credentials stay removed when revocation cannot be confirmed. */ }
+    finally { clearTimeout(timeout); }
+    return json({ ok: true, serverRevoked, ...(serverRevoked ? {} : { warning: "REMOTE_LOGOUT_UNCONFIRMED" }) });
+  }
   if (endpoint === "auth/settings") return json({ google: true, email: true });
   if (endpoint === "store/products" && method === "GET") {
     try {
