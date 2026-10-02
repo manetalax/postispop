@@ -40,7 +40,7 @@ const fs=require('node:fs/promises');const path=require('node:path');
  await p.waitForFunction(()=>document.querySelector('[data-search-status]')?.textContent.includes('resultado'),null,{timeout:10000});
  await p.goto('https://postispop.com/descargas/');
  if(await p.locator('h1').innerText()!=='Descargas')throw Error('Missing bundled downloads page');
- if(await p.locator('[data-platform]').count()!==5)throw Error('Missing download platform information');
+ if(await p.locator('[data-platform]').count()!==7)throw Error('Missing download platform information');
  await p.getByRole('link',{name:'Ver cómo instalar',exact:true}).click();
  if(await p.locator('h1').innerText()!=='Tus ideas, también en tu dispositivo.')throw Error('Missing bundled installation guide');
  if(await p.locator('#install').isVisible())throw Error('Install button shown without install support');
