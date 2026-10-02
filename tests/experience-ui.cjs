@@ -6,7 +6,8 @@ const results=path.resolve(__dirname,'../test-results');
 (async()=>{
   const root=path.resolve(__dirname,'../_site');
   const browser=await chromium.launch({headless:true,executablePath:process.env.POSTISPOP_CHROME});
-  const context=await browser.newContext({locale:'pt-BR',viewport:{width:390,height:844},acceptDownloads:true});
+  // This suite serves only staged files through route(); workers can bypass routing and hit production.
+  const context=await browser.newContext({locale:'pt-BR',viewport:{width:390,height:844},acceptDownloads:true,serviceWorkers:'block'});
   const errors=[],missing=[];
   await context.route('**/*',async route=>{
     const url=new URL(route.request().url());
@@ -14,7 +15,7 @@ const results=path.resolve(__dirname,'../test-results');
     let name=decodeURIComponent(url.pathname);if(name.endsWith('/'))name+='index.html';
     const file=path.resolve(root,'.'+name);if(!file.startsWith(root+path.sep))return route.abort();
     const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.webmanifest':'application/manifest+json','.wasm':'application/wasm','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.avif':'image/avif','.ico':'image/x-icon','.woff':'font/woff'};
-    try{await route.fulfill({status:200,contentType:types[path.extname(file)]||'application/octet-stream',body:await fs.readFile(file)});}catch{missing.push(name);await route.fulfill({status:404,body:'Missing staged asset'});}
+    try{await route.fulfill({status:200,headers:{'x-postispop-test-source':'staged'},contentType:types[path.extname(file)]||'application/octet-stream',body:await fs.readFile(file)});}catch{missing.push(name);await route.fulfill({status:404,body:'Missing staged asset'});}
   });
   const page=reviewPage=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
   await fs.mkdir(results,{recursive:true});
@@ -79,7 +80,10 @@ const results=path.resolve(__dirname,'../test-results');
     await page.setViewportSize({width,height:900});
     assert.equal(await page.locator('.sticky-note .note-text').first().evaluate(el=>{const text=el.getBoundingClientRect(),paper=el.closest('.sticky-note').getBoundingClientRect();return text.left>=paper.left-1&&text.right<=paper.right+1&&text.top>=paper.top-1&&text.bottom<=paper.bottom+1;}),true,`Note text stays on paper at ${width}`);
   }
-  await page.goto('https://postispop.com/instalar.html');assert.equal(await page.locator('h1').innerText(),'Tus ideas, también en tu dispositivo.');
+  const installResponse=await page.goto('https://postispop.com/instalar.html');
+  assert.equal(installResponse.status(),200,'Installation guide is present in the staged build');
+  assert.equal(installResponse.headers()['x-postispop-test-source'],'staged','Installation guide comes from staged files, never production');
+  assert.equal(await page.locator('h1').innerText(),'Tus ideas, también en tu dispositivo.');
   assert.equal(await page.locator('#install').isVisible(),false);
   await page.evaluate(()=>document.documentElement.dataset.colorScheme='dark');
   assert.equal(await page.locator('article').first().evaluate(el=>getComputedStyle(el).backgroundColor!==getComputedStyle(el).color),true,'Installation cards remain readable in dark mode');
