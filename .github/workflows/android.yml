@@ -1,9 +1,9 @@
-name: Build Android beta
+name: Verify Android build (internal, unsigned)
 on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['android/**', 'mobile/**', 'scripts/package-mobile.mjs', '.github/workflows/android.yml']
+    paths: ['android/**', 'mobile/**', 'scripts/**', 'src/**', 'assets/**', '_next/**', '*.js', '*.css', '*.html', 'package*.json', '.github/workflows/android.yml']
 permissions:
   contents: read
 jobs:
@@ -15,7 +15,11 @@ jobs:
         with:
           node-version: 22
       - name: Bundle local UI and shop
-        run: npm ci && npm run build && node scripts/package-mobile.mjs
+        run: npm ci && npm test && npm run lint && npm run build && node scripts/package-mobile.mjs
+      - name: Install browser for local payload verification
+        run: npx playwright install --with-deps chromium
+      - name: Verify bundled resources, offline data and Android CSP
+        run: node --test tests/packaging.test.cjs && npm run test:mobile
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -28,13 +32,14 @@ jobs:
           gradle-version: '8.13'
       - name: Install Android SDK
         run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
-      - name: Build unsigned beta APK and unsigned Play candidate
-        run: gradle -p android --no-daemon assembleDebug bundleRelease lintDebug -PunsignedBeta
+      - name: Validate unsigned build candidates (not distributable installers)
+        run: gradle -p android --no-daemon assembleDebug bundleRelease lintDebug lintRelease -PunsignedBeta
       - uses: actions/upload-artifact@v4
         with:
-          name: postispop-android-unsigned
+          name: postispop-internal-build-validation-NOT-AN-INSTALLER
           path: |
             android/app/build/outputs/apk/debug/*.apk
             android/app/build/outputs/bundle/release/*.aab
             android/app/build/reports/lint-results-debug.*
+            android/app/build/reports/lint-results-release.*
           retention-days: 30
