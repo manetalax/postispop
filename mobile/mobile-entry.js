@@ -1,4 +1,4 @@
-import './supabase-bridge.js?v=5';
+import './supabase-bridge.js?v=6';
 // The native host serves this entire origin from APK assets, including /tienda/.
 // Remote requests are exclusively the existing authenticated Supabase/Stripe flows.
 const upstream = window.fetch.bind(window);

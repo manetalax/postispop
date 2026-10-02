@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /share/
+Disallow: /invite/
+Disallow: /tienda/favoritos/
+Disallow: /tienda/buscar/
 
 Sitemap: https://postispop.com/sitemap.xml

@@ -51,3 +51,46 @@ test('All six colors survive save, reload, reorder, trash and restore',async()=>
   board=(await request('board/guest-board')).data;
   assert.equal(board.notes.find(n=>n.id==='guest-note-0').paper,5);
 });
+
+test('Backup import preserves existing notes, colors and order in exported copy',async()=>{
+  storage.clear();
+  await request('note/guest-note-0',{text:'No sustituir',marks:[],revision:1});
+  const imported=await request('board/guest-board/import',{notes:[{text:'Nueva #estudio',paper:5,marks:[{start:0,end:5,ink:'blue'}]}]});
+  assert.equal(imported.status,200);
+  assert.equal(imported.data.notes[0].text,'No sustituir');
+  assert.equal(imported.data.notes[1].text,'Nueva #estudio');
+  assert.equal(imported.data.notes[1].paper,5);
+  await request('board/guest-board/swap',{from:'guest-note-0',to:'guest-note-1'});
+  const exported=(await request('board/guest-board/export')).data;
+  assert.equal(exported.format,'postispop');
+  assert.equal(exported.notes[0].text,'Nueva #estudio');
+  assert.equal(exported.notes[1].text,'No sustituir');
+});
+
+test('Invalid or oversized imports are atomic and never replace saved notes',async()=>{
+  storage.clear();
+  await request('note/guest-note-0',{text:'Conservar',marks:[],revision:1});
+  const before=storage.get('postispop-guest-board-v1');
+  for(const notes of [
+    [{text:'Buena'},{text:'Mala',paper:6}],
+    [{text:'Buena'},{text:'x'.repeat(10001)}],
+    [{text:'Buena'},{text:'Mala',doodle:'<svg onload=alert(1)>'}],
+    [{text:'Mala',marks:[{start:0,end:999,ink:'blue'}]}],
+    Array.from({length:12},()=>({text:'Sin espacio'}))
+  ]){
+    assert.ok((await request('board/guest-board/import',{notes})).status>=400);
+    assert.equal(storage.get('postispop-guest-board-v1'),before);
+  }
+});
+
+test('Exported app doodles can be imported into an empty board',async()=>{
+  storage.clear();
+  await request('note/guest-note-0',{text:'Recordar',marks:[],revision:1});
+  await request('note/guest-note-0/doodle',{doodle:'heart'});
+  const backup=(await request('board/guest-board/export')).data;
+  storage.clear();
+  const imported=await request('board/guest-board/import',backup);
+  assert.equal(imported.status,200);
+  assert.equal(imported.data.notes[0].doodle,'heart');
+  assert.equal(imported.data.notes[0].text,'Recordar');
+});

@@ -13,7 +13,23 @@ export function guestRequest(endpoint, method, payload={}) {
   const board=readGuest(), parts=endpoint.split('/');
   const save=()=>{board.revision++;localStorage.setItem(KEY,JSON.stringify(board));return board;};
   if(parts[0]==='board') {
-    if(method==='GET') return parts[2]==='trash'?{items:board.trash||[]}:board;
+    if(method==='GET') return parts[2]==='trash'?{items:board.trash||[]}:parts[2]==='export'?{format:'postispop',version:1,title:board.title,notes:board.order.map(id=>board.notes.find(n=>n.id===id)).filter(Boolean),exportedAt:new Date().toISOString()}:board;
+    if(parts[2]==='import' && method==='POST') {
+      // Validate the entire copy before saving anything. Only fill empty slots.
+      if(!Array.isArray(payload.notes)||payload.notes.length>12) throw guestError('INVALID_BACKUP');
+      const imported=payload.notes.map(n=>{
+        if(!n||typeof n.text!=='string'||n.text.length>10000) throw guestError('INVALID_BACKUP');
+        const paper=n.paper??0, marks=n.marks??[], doodle=n.doodle??'';
+        if(!Number.isInteger(paper)||paper<0||paper>=PAPER_COUNT||typeof doodle!=='string'||doodle.length>500000||!Array.isArray(marks)||marks.length>10000)throw guestError('INVALID_BACKUP');
+        if(doodle && !['heart','idea','smile','cart','star','check','ticket'].includes(doodle))throw guestError('INVALID_BACKUP');
+        if(marks.some(m=>!m||!Number.isInteger(m.start)||!Number.isInteger(m.end)||m.start<0||m.end<m.start||m.end>n.text.length||typeof m.ink!=='string'||!/^[a-z-]{1,30}$/.test(m.ink)))throw guestError('INVALID_BACKUP');
+        return {text:n.text,paper,marks:marks.map(m=>({start:m.start,end:m.end,ink:m.ink})),doodle};
+      }).filter(n=>n.text.trim()||n.doodle);
+      const empty=board.order.map(id=>board.notes.find(n=>n.id===id)).filter(n=>n&&!n.text&&!n.doodle&&!n.image);
+      if(imported.length>empty.length)throw guestError('BOARD_FULL',409);
+      imported.forEach((n,i)=>Object.assign(empty[i],n,{revision:empty[i].revision+1,updated:Date.now()}));
+      return save();
+    }
     if(parts[2]==='swap') {
       const a=board.order.indexOf(payload.from),b=board.order.indexOf(payload.to);
       if(a<0||b<0) throw new Error('NOT_FOUND');

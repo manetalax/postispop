@@ -1,4 +1,5 @@
-import './supabase-bridge.js?v=5';
+import {track} from './usage-metrics.js';
+import './supabase-bridge.js?v=6';
 
 const icons={'pack-rebel':'🎨','pack-minimal':'✨','reloj-recordatorios':'⏰','postispop-pro':'🚀'};
 const descriptions={'pack-rebel':'Colores intensos y papel con personalidad para tu pizarra.','pack-minimal':'Un acabado limpio, claro y sin distracciones.','reloj-recordatorios':'Programa alarmas en tus notas. Avisos con PostisPop abierto.','postispop-pro':'Incluye los packs Rebel y Minimal y el reloj con alarmas.'};
@@ -72,6 +73,7 @@ function applyPack() {
   document.body.dataset.ppPack=selected&&owned(selected)?selected:'';
 }
 async function shop(focusSlug) {
+  track('pricing_viewed');
   showDialog('Papelería · Tienda PostisPop','<p role="status">Cargando productos…</p>');
   const current=dialog;
   try {
@@ -159,7 +161,7 @@ async function tick() {
   }catch{}finally{busy=false;}
 }
 function mount() {
-  const seoTitle='Bloc de notas online y pizarra virtual | PostisPop';
+  const seoTitle='Bloc de notas online gratis y pizarra de post-it compartida | PostisPop';
   const retainTitle=()=>{if(document.title!==seoTitle)document.title=seoTitle;};
   retainTitle();
   new MutationObserver(retainTitle).observe(document.head,{childList:true,subtree:true,characterData:true});
