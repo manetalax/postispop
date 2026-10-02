@@ -10,7 +10,7 @@ const templates = {
   'Compras':['Alimentación\n#compras','Hogar\n#compras','Otros\n#compras'],
   'Hábitos':['Hábito que quiero practicar','Cuándo y dónde','Versión mínima para días difíciles','Revisión semanal']
 };
-let tools=null, lastFocus=null;
+let tools=null, options=null, lastFocus=null;
 export function download(name,body,type='application/json') {
   const url=URL.createObjectURL(body instanceof Blob?body:new Blob([body],{type}));
   const link=document.createElement('a');link.href=url;link.download=name;link.click();
@@ -49,7 +49,7 @@ async function exportPng() {
     const lines=[];for(const paragraph of (n.text||'').split('\n')){let line='';for(const word of paragraph.split(/\s+/)){for(const piece of word.match(/.{1,24}/gu)||['']){const next=line?line+' '+piece:piece;if(ctx.measureText(next).width>320&&line){lines.push(line);line=piece;}else line=next;}}lines.push(line);}
     lines.slice(0,8).forEach((line,j)=>ctx.fillText(line+(j===7&&lines.length>8?'…':''),x+20,y+65+j*28,320));
   });
-  ctx.font='16px sans-serif';ctx.fillText('PostisPop · Vista de texto resumida · Usa la copia JSON para conservar todo el texto.',50,1175);
+  ctx.font='16px sans-serif';ctx.fillText('PostisPop · Vista de texto resumida · Guarda una copia de seguridad para conservar todo el texto.',50,1175);
   canvas.toBlob(blob=>{if(blob){download('PostisPop-pizarra.png',blob,'image/png');track('export');message('PNG descargado: vista resumida del texto y los colores, sin adjuntos ni dibujos.');}},'image/png');
 }
 async function printPdf() {
@@ -64,7 +64,7 @@ async function printPdf() {
 async function showTemplates(){
   const board=await currentBoard();const el=dialog('Plantillas para empezar');
   el.append(text('p','Las plantillas añaden notas en espacios vacíos de la pizarra local. No sustituyen tus notas.'));
-  if(board.id!=='guest-board'){el.append(text('p','La aplicación de plantillas en la nube necesita una importación transaccional y está pendiente. Puedes descargar una plantilla JSON.'));}
+  if(board.id!=='guest-board'){el.append(text('p','La aplicación de plantillas en la nube necesita una importación transaccional y está pendiente. Puedes descargar una plantilla como archivo.'));}
   const grid=document.createElement('div');grid.className='pp-template-grid';el.append(grid);
   Object.entries(templates).forEach(([name,notes])=>{
     const button=text('button',name);button.type='button';grid.append(button);
@@ -72,7 +72,7 @@ async function showTemplates(){
   });
 }
 async function showImport(){
-  const board=await currentBoard(),el=dialog('Importar una copia JSON');
+  const board=await currentBoard(),el=dialog('Restaurar una copia de seguridad');
   el.append(text('p','Añade texto, colores y dibujos compatibles a notas vacías. No importa archivos adjuntos ni enlaces a imágenes. Las notas actuales se conservan.'));
   if(board.id!=='guest-board'){el.append(text('p','La importación en la nube está pendiente de una operación transaccional. Esta función está disponible en la pizarra local.'));return;}
   const label=text('label','Selecciona una copia de PostisPop');const file=document.createElement('input');file.type='file';file.accept='.json,application/json';label.append(file);el.append(label);
@@ -92,17 +92,19 @@ async function filter(){
 export function initBoardTools(){
   const board=document.querySelector('.board-frame:not(.is-loading)');if(!board)return;
   if(tools?.isConnected)return;
+  options=document.createElement('details');options.className='pp-board-options';
+  const summary=text('summary','Opciones avanzadas');options.append(summary);
   tools=document.createElement('div');tools.className='pp-tools';tools.setAttribute('aria-label','Herramientas de la pizarra');
   const search=document.createElement('input');search.type='search';search.placeholder='Buscar notas o #etiqueta';search.setAttribute('aria-label','Buscar notas o etiquetas');tools.append(search);
   const colors=document.createElement('select');colors.setAttribute('aria-label','Filtrar por color');['Todos los colores','Amarillo','Rosa','Azul','Crema','Verde','Violeta'].forEach((label,i)=>{const opt=text('option',label);opt.value=i===0?'':String(i-1);colors.append(opt);});tools.append(colors);
   let timer;search.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(filter,180);});colors.addEventListener('change',filter);
-  const operations=[['Copia JSON',exportJson],['Importar',showImport],['PNG',exportPng],['PDF / Imprimir',printPdf],['Plantillas',showTemplates]];
+  const operations=[['Guardar una copia',exportJson],['Restaurar una copia',showImport],['Descargar imagen',exportPng],['Imprimir',printPdf],['Plantillas',showTemplates]];
   operations.forEach(([name,fn])=>{const button=text('button',name);button.type='button';button.addEventListener('click',async()=>{button.disabled=true;try{await fn();}catch{message('No se pudo completar la operación. Tus notas se conservan.');}finally{button.disabled=false;}});tools.append(button);});
   const install=text('button','Instalar aplicación');install.type='button';install.dataset.experience='install';install.hidden=true;tools.append(install);
-  const status=text('span','Buscar: / · Exportar JSON: Ctrl + Mayús + E · Etiquetas: escribe #tema en una nota.');status.setAttribute('role','status');tools.append(status);board.before(tools);
+  const status=text('span','');status.setAttribute('role','status');tools.append(status);options.append(tools);board.after(options);
 }
 document.addEventListener('keydown',event=>{
   if(event.target.closest('input,textarea,[contenteditable=true],dialog,[role=dialog]'))return;
-  if(event.key==='/'&&!event.ctrlKey&&!event.metaKey){event.preventDefault();tools?.querySelector('[type=search]')?.focus();}
-  if(event.ctrlKey&&event.shiftKey&&event.key.toLowerCase()==='e'){event.preventDefault();exportJson().catch(()=>message('No se pudo exportar la copia.'));}
+  if(event.key==='/'&&!event.ctrlKey&&!event.metaKey){if(!tools?.isConnected)return;event.preventDefault();options.open=true;tools.querySelector('[type=search]')?.focus();}
+  if(event.ctrlKey&&event.shiftKey&&event.key.toLowerCase()==='e'){if(!tools?.isConnected)return;event.preventDefault();options.open=true;exportJson().catch(()=>message('No se pudo exportar la copia.'));}
 });

@@ -18,7 +18,7 @@ const results=path.resolve(__dirname,'../test-results');
   });
   const page=reviewPage=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
   await fs.mkdir(results,{recursive:true});
-  await page.goto('https://postispop.com/');await page.waitForSelector('.sticky-note:not([disabled])');await page.waitForSelector('.pp-tools');
+  await page.goto('https://postispop.com/');await page.waitForSelector('.sticky-note:not([disabled])');await page.waitForSelector('.pp-board-options');
   assert.equal(await page.locator('html').getAttribute('lang'),'es');
   assert.equal(await page.locator('h1').count(),1);
   assert.match(await page.title(),/Bloc de notas online gratis/);
@@ -30,26 +30,48 @@ const results=path.resolve(__dirname,'../test-results');
   await context.setOffline(true);
   await page.locator('textarea').fill('Nota guardada sin Internet #estudio');
   await page.waitForFunction(()=>JSON.parse(localStorage.getItem('postispop-guest-board-v1'))?.notes[0]?.text==='Nota guardada sin Internet #estudio');
-  await context.setOffline(false);await page.reload();await page.waitForSelector('.pp-tools');
+  await context.setOffline(false);await page.reload();await page.waitForSelector('.pp-board-options');
   assert.match(await page.locator('.sticky-note').first().innerText(),/Nota guardada sin Internet/);
   assert.equal(await page.locator('.onboarding-card').count(),0);
+  assert.equal(await page.locator('.pp-board-options').getAttribute('open'),null);
+  assert.equal(await page.getByRole('button',{name:'Guardar una copia',exact:true}).isVisible(),false);
+  await page.getByText('Opciones avanzadas',{exact:true}).click();
   await page.getByRole('searchbox',{name:'Buscar notas o etiquetas'}).fill('#estudio');
   await page.waitForFunction(()=>document.querySelector('.pp-tools [role=status]')?.textContent.startsWith('1 notas'));
   assert.equal(await page.locator('.note-cell.pp-filtered').count(),11);
   await page.getByRole('searchbox',{name:'Buscar notas o etiquetas'}).fill('');
   await page.waitForFunction(()=>document.querySelectorAll('.note-cell.pp-filtered').length===0);
-  const downloadPromise=page.waitForEvent('download');await page.getByRole('button',{name:'Copia JSON',exact:true}).click();
+  const downloadPromise=page.waitForEvent('download');await page.getByRole('button',{name:'Guardar una copia',exact:true}).click();
   const download=await downloadPromise;const backup=JSON.parse(await fs.readFile(await download.path(),'utf8'));assert.equal(backup.notes[0].text,'Nota guardada sin Internet #estudio');assert.ok(!JSON.stringify(backup).includes('access_token'));
   await page.getByRole('button',{name:'Plantillas',exact:true}).click();
-  await Promise.all([page.waitForNavigation(),page.getByRole('button',{name:'Compras',exact:true}).click()]);await page.waitForSelector('.pp-tools');
+  await Promise.all([page.waitForNavigation(),page.getByRole('button',{name:'Compras',exact:true}).click()]);await page.waitForSelector('.pp-board-options');
   await page.waitForFunction(()=>JSON.parse(localStorage.getItem('postispop-guest-board-v1'))?.notes.some(n=>n.text==='Alimentación\n#compras'));
   assert.match(await page.locator('.sticky-note').first().innerText(),/Nota guardada sin Internet/);
-  const pngPromise=page.waitForEvent('download');await page.getByRole('button',{name:'PNG',exact:true}).click();
+  await page.getByText('Opciones avanzadas',{exact:true}).click();
+  const pngPromise=page.waitForEvent('download');await page.getByRole('button',{name:'Descargar imagen',exact:true}).click();
   const png=await fs.readFile(await(await pngPromise).path());assert.equal(png.subarray(1,4).toString(),'PNG');await fs.writeFile(path.join(results,'export.png'),png);
+  await page.getByText('Opciones avanzadas',{exact:true}).click();
+  assert.equal(await page.locator('.pp-board-options').getAttribute('open'),null);
+  assert.equal(await page.locator('.pp-tools').isVisible(),false);
+  assert.equal(await page.locator('.board-frame').evaluate(board=>board.nextElementSibling?.classList.contains('pp-board-options')),true);
   for(const width of [360,390,768,1440]){
     await page.setViewportSize({width,height:900});
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1);assert.equal(overflow,false,`Root overflow at ${width}`);
     await page.screenshot({path:path.join(root,`../test-results/home-${width}.png`),fullPage:true});
+  }
+  await page.goto('https://postispop.com/');await page.waitForSelector('.sticky-note:not([disabled])');
+  await page.locator('.sticky-note').first().click();
+  const longText='https://example.com/'+ 'palabramuylarga'.repeat(35)+'\n'+ 'Texto en su nota. '.repeat(80);
+  await page.locator('textarea').fill(longText);
+  for(const width of [360,390,768,1440]){
+    await page.setViewportSize({width,height:900});
+    assert.equal(await page.locator('.rich-paper-input textarea').evaluate(el=>el.scrollWidth<=el.clientWidth+1),true,`Editor wraps at ${width}`);
+    assert.equal(await page.locator('.rich-paper-mirror').evaluate(el=>el.scrollWidth<=el.clientWidth+1),true,`Mirror wraps at ${width}`);
+  }
+  await page.reload();await page.waitForSelector('.sticky-note:not([disabled])');
+  for(const width of [360,390,768,1440]){
+    await page.setViewportSize({width,height:900});
+    assert.equal(await page.locator('.sticky-note .note-text').first().evaluate(el=>{const text=el.getBoundingClientRect(),paper=el.closest('.sticky-note').getBoundingClientRect();return text.left>=paper.left-1&&text.right<=paper.right+1&&text.top>=paper.top-1&&text.bottom<=paper.bottom+1;}),true,`Note text stays on paper at ${width}`);
   }
   await page.goto('https://postispop.com/tienda/');assert.equal(await page.locator('[data-product-card]').count(),4);
   for(const name of ['bloc-de-notas-online','pizarra-virtual','notas-adhesivas-online','pizarra-colaborativa','organizador-visual-de-tareas','notas-para-estudiar','pizarra-para-reuniones','lluvia-de-ideas-online']){

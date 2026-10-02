@@ -1,5 +1,5 @@
 import {track, metricsEnabled, setMetricsEnabled, readMetrics, recordVisit} from './usage-metrics.js';
-import {initBoardTools, download} from './board-tools.js';
+import {initBoardTools, download} from './board-tools.js?v=2';
 
 const SEO_TITLE='Bloc de notas online gratis y pizarra de post-it compartida | PostisPop';
 let lastSave=null, installPrompt=null;
@@ -53,7 +53,7 @@ document.addEventListener('click',async event=>{
 document.addEventListener('click',event=>{
   if(event.target.closest('.group-button,.header-share')){
     event.preventDefault();event.stopImmediatePropagation();
-    notice('Los enlaces y las invitaciones están en revisión. Puedes descargar una copia desde Herramientas para conservar o compartir tus notas.');
+    notice('Los enlaces y las invitaciones están en revisión. Puedes descargar una copia desde «Opciones avanzadas» para conservar o compartir tus notas.');
   }
 },true);
 let scheduled=false;
