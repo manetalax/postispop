@@ -6,7 +6,7 @@ const files=['index.html','instalar.html','install-page.js','manifest.json','man
 for(const name of await readdir(root))if(/(?:-online|pizarra-virtual|pizarra-colaborativa|organizador-visual-de-tareas|notas-para-estudiar|pizarra-para-reuniones)\.html$/.test(name))files.push(name);
 for(const name of files)await cp(new URL(name,root),new URL(name,out));
 // Never publish captured API snapshots.
-for(const name of ['assets','_next','.well-known'])await cp(new URL(name,root),new URL(name,out),{recursive:true});
+for(const name of ['assets','_next','.well-known','descargas'])await cp(new URL(name,root),new URL(name,out),{recursive:true});
 await cp(new URL('astro-dist/',root),new URL('tienda/',out),{recursive:true});await writeFile(new URL('.nojekyll',out),'');
 
 // Resize decorative images to their actual display budget. Sharp is provided by Astro.
