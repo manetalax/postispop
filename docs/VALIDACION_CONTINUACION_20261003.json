@@ -1,0 +1,53 @@
+{
+  "baseCommit": "23bb88517007457f58a24b2985c31f78396ab1c1",
+  "branch": "feature/continue-postispop-20261003",
+  "dateMadrid": "2026-10-03",
+  "unitTests": {
+    "passed": 94,
+    "failed": 0
+  },
+  "syntaxModules": 86,
+  "astro": {
+    "errors": 0,
+    "pages": 7
+  },
+  "sql": {
+    "status": "passed",
+    "engine": "PGlite",
+    "schema": "reference",
+    "production": false,
+    "multiConnectionConcurrencyTested": false
+  },
+  "cloudImportUI": {
+    "status": "passed",
+    "backend": "mocked",
+    "twoConcurrentTabs": true,
+    "missingMigrationAndRetry": true
+  },
+  "offlineShell": {
+    "status": "passed",
+    "originStopped": true,
+    "reloadAndTabReopen": true,
+    "editPersists": true,
+    "noPrivateResponsesCached": true
+  },
+  "web": {
+    "files": 555,
+    "serviceWorkerResources": 541,
+    "contentHash": "16a92e320fa4eff6c2b068c12226c3d26ef018bcd7dbd2286839de53bc78342b"
+  },
+  "runtime": {
+    "playwright": "1.56.1",
+    "chromium": "141.0.7390.37"
+  },
+  "publication": {
+    "pushed": false,
+    "deployed": false,
+    "supabaseMigrationApplied": false,
+    "reason": "No authenticated GitHub credential or administrative Supabase connection; browser backend did not start"
+  },
+  "android": {
+    "rebuilt": false,
+    "physicalDeviceTested": false
+  }
+}
