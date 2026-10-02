@@ -1,0 +1,562 @@
+{
+  "AF": {
+    "landmark": {
+      "name": "Minarete de Jam",
+      "source": "https://whc.unesco.org/en/list/211/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Qabeli palaw",
+      "source": "https://www.afghanhouse.org/cuisine/dish/qabeli-pilau",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal. Fuente culinaria: asociación cultural House of Afghanistan; no se afirma origen exclusivo ni se adopta la etiqueta de plato nacional."
+  },
+  "DZ": {
+    "landmark": {
+      "name": "Casba de Argel",
+      "source": "https://whc.unesco.org/en/list/565/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": null,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país."
+  },
+  "AM": {
+    "landmark": {
+      "name": "Monasterios de Haghpat y Sanahin",
+      "source": "https://whc.unesco.org/en/list/777/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Lavash",
+      "source": "https://ich.unesco.org/es/RL/el-lavash-preparacion-significado-y-aspecto-del-pan-tradicional-como-expresion-cultural-en-armenia-00985",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal. La inscripción armenia del lavash no atribuye exclusividad sobre todos los panes planos de la región."
+  },
+  "AZ": {
+    "landmark": {
+      "name": "Ciudad amurallada de Bakú",
+      "source": "https://whc.unesco.org/en/list/958/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": null,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país."
+  },
+  "BH": {
+    "landmark": {
+      "name": "Qal'at al-Bahrain",
+      "source": "https://whc.unesco.org/en/list/1192/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Balaleet",
+      "source": "https://www.bahrain.com/en/try-these-places-for-a-taste-of-authentic-bahraini-breakfast",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal."
+  },
+  "BD": {
+    "landmark": {
+      "name": "Los Sundarbans",
+      "source": "https://whc.unesco.org/en/list/798/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Pitha",
+      "source": "https://www.beautifulbangladesh.gov.bd/newsletter/single/476",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal."
+  },
+  "GE": {
+    "landmark": {
+      "name": "Monumentos históricos de Mtskheta",
+      "source": "https://whc.unesco.org/en/list/708/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Khachapuri de Imericia",
+      "source": "https://georgia.travel/imeretian-khachapuri",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal. Se ha elegido la variante de Imericia."
+  },
+  "IR": {
+    "landmark": {
+      "name": "Persépolis",
+      "source": "https://whc.unesco.org/en/list/114/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": null,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país."
+  },
+  "IQ": {
+    "landmark": {
+      "name": "Babilonia",
+      "source": "https://whc.unesco.org/en/list/278/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Masgouf",
+      "source": "https://iraqiembassy.us/art-and-culture/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal."
+  },
+  "IL": {
+    "landmark": {
+      "name": "Masada",
+      "source": "https://whc.unesco.org/en/list/1040/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Shakshuka de berenjena",
+      "source": "https://foodish.anumuseum.org.il/en/recipe/eggplant-shakshouka/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal. Variante de berenjena documentada por el museo ANU a través de una historia familiar; la shakshuka es una tradición compartida y no se le atribuye origen exclusivo israelí."
+  },
+  "JO": {
+    "landmark": {
+      "name": "Petra",
+      "source": "https://whc.unesco.org/en/list/326/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Mansaf",
+      "source": "https://ich.unesco.org/en/RL/al-mansaf-in-jordan-a-festive-banquet-and-its-social-and-cultural-meanings-01849",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal."
+  },
+  "KZ": {
+    "landmark": {
+      "name": "Mausoleo de Khoja Ahmed Yasawi",
+      "source": "https://whc.unesco.org/en/list/1103/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": null,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país."
+  },
+  "KP": {
+    "landmark": {
+      "name": "Conjunto de tumbas de Koguryo",
+      "source": "https://whc.unesco.org/en/list/1091/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Raengmyon de Pyongyang",
+      "source": "https://ich.unesco.org/en/RL/pyongyang-raengmyon-custom-01695",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal. La referencia a raengmyon se centra en Pyongyang."
+  },
+  "KG": {
+    "landmark": {
+      "name": "Montaña sagrada de Sulaiman-Too",
+      "source": "https://whc.unesco.org/en/list/1230/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": null,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país."
+  },
+  "LA": {
+    "landmark": {
+      "name": "Luang Prabang",
+      "source": "https://whc.unesco.org/en/list/479/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Khao niew (arroz glutinoso)",
+      "source": "https://www.tourismlaos.org/welcome/food-flavours/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal."
+  },
+  "LB": {
+    "landmark": {
+      "name": "Baalbek",
+      "source": "https://whc.unesco.org/en/list/294/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Man'ouché",
+      "source": "https://ich.unesco.org/es/RL/al-man-ouche-una-practica-culinaria-emblematica-en-libano-02000",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal."
+  },
+  "MR": {
+    "landmark": {
+      "name": "Parque nacional del Banc d'Arguin",
+      "source": "https://whc.unesco.org/en/list/506/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": null,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país."
+  },
+  "MN": {
+    "landmark": {
+      "name": "Paisaje cultural del valle del Orkhon",
+      "source": "https://whc.unesco.org/en/list/1081/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Buuz",
+      "source": "https://m.mongolia.travel/themes/taste",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal."
+  },
+  "MM": {
+    "landmark": {
+      "name": "Bagan",
+      "source": "https://whc.unesco.org/en/list/1588/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Mohinga",
+      "source": "https://www.moi.gov.mm/nlm/sites/default/files/newspaper-pdf/2025-12/25_Dec_25_gnlm.pdf",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal."
+  },
+  "OM": {
+    "landmark": {
+      "name": "Fuerte de Bahla",
+      "source": "https://whc.unesco.org/en/list/433/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Harees",
+      "source": "https://ich.unesco.org/en/RL/harees-dish-know-how-skills-and-practices-01744",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal. La tradición del harees está documentada conjuntamente para Emiratos Árabes Unidos, Omán y Arabia Saudita."
+  },
+  "PK": {
+    "landmark": {
+      "name": "Ruinas de Mohenjo-Daro",
+      "source": "https://whc.unesco.org/en/list/138/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Biryani",
+      "source": "https://mofa.gov.pk/pakistani-food",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal."
+  },
+  "PS": {
+    "landmark": {
+      "name": "Paisaje cultural de Battir",
+      "source": "https://whc.unesco.org/en/list/1492/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Musakhan",
+      "source": "https://www.travelpalestine.ps/en/Category/2/Cuisine",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal."
+  },
+  "PH": {
+    "landmark": {
+      "name": "Terrazas de arroz de las cordilleras filipinas",
+      "source": "https://whc.unesco.org/en/list/722/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Adobo filipino",
+      "source": "https://nnc.gov.ph/mindanao-region/what-makes-an-adobo-dish-an-adobo/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal."
+  },
+  "QA": {
+    "landmark": {
+      "name": "Yacimiento arqueológico de Al Zubarah",
+      "source": "https://whc.unesco.org/en/list/1402/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Machboos",
+      "source": "https://visitqatar.com/intl-en/about-qatar/cuisine",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal."
+  },
+  "SA": {
+    "landmark": {
+      "name": "Yacimiento arqueológico de Hegra",
+      "source": "https://whc.unesco.org/en/list/1293/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Harees",
+      "source": "https://ich.unesco.org/en/RL/harees-dish-know-how-skills-and-practices-01744",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal. La tradición del harees está documentada conjuntamente para Emiratos Árabes Unidos, Omán y Arabia Saudita."
+  },
+  "LK": {
+    "landmark": {
+      "name": "Antigua ciudad de Sigiriya",
+      "source": "https://whc.unesco.org/en/list/202/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Hoppers (appa)",
+      "source": "https://srilanka.travel/food",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal."
+  },
+  "SY": {
+    "landmark": {
+      "name": "Palmira",
+      "source": "https://whc.unesco.org/en/list/23/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Kibbeh",
+      "source": "https://ich.unesco.org/doc/src/38275-EN.pdf?t=1509979714",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal. El informe de UNESCO documenta variedades de kibbeh entre mujeres sirias desplazadas; no se reduce esta tradición a una sola receta."
+  },
+  "TJ": {
+    "landmark": {
+      "name": "Yacimiento protourbano de Sarazm",
+      "source": "https://whc.unesco.org/en/list/1141/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Oshi palav",
+      "source": "https://ich.unesco.org/en/RL/oshi-palav-a-traditional-meal-and-its-social-and-cultural-contexts-in-tajikistan-01191",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal."
+  },
+  "TM": {
+    "landmark": {
+      "name": "Antigua Merv",
+      "source": "https://whc.unesco.org/en/list/886/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Chorek",
+      "source": "https://turkmenistan.gov.tm/en/post/54809/tamdyr-national-bakery-traditions",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal."
+  },
+  "AE": {
+    "landmark": {
+      "name": "Sitios culturales de Al Ain",
+      "source": "https://whc.unesco.org/en/list/1343/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Harees",
+      "source": "https://ich.unesco.org/en/RL/harees-dish-know-how-skills-and-practices-01744",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal. La tradición del harees está documentada conjuntamente para Emiratos Árabes Unidos, Omán y Arabia Saudita."
+  },
+  "UZ": {
+    "landmark": {
+      "name": "Samarcanda",
+      "source": "https://whc.unesco.org/en/list/603/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Palov",
+      "source": "https://ich.unesco.org/en/RL/palov-culture-and-tradition-01166",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal."
+  },
+  "YE": {
+    "landmark": {
+      "name": "Ciudad vieja de Saná",
+      "source": "https://whc.unesco.org/en/list/385/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Saltah",
+      "source": "https://embassy-of-yemen.pl/en/home/visit-yemen/tourism-in-yemen/must-try/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal. La fuente culinaria identifica especialmente las tierras altas del norte de Yemen."
+  },
+  "BN": {
+    "landmark": {
+      "name": "Kampong Ayer",
+      "source": "https://www.bruneitourism.com/places/kampong-ayer-cultural-and-tourism-gallery/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Ambuyat",
+      "source": "https://www.bruneitourism.com/activities-tour/ambuyat-experience-at-teratak-setiawan/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal."
+  },
+  "KH": {
+    "landmark": null,
+    "food": {
+      "name": "Amok de pescado",
+      "source": "https://akp.gov.kh/post/detail/348901",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal."
+  },
+  "BT": {
+    "landmark": null,
+    "food": {
+      "name": "Ema datshi",
+      "source": "https://www.moenr.gov.bt/wp-content/uploads/2018/11/Bhutan-eCookbook.pdf",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal."
+  },
+  "NP": {
+    "landmark": null,
+    "food": {
+      "name": "Momos",
+      "source": "https://trade.ntb.gov.np/wp-content/uploads/2018/05/Experience_Nepal_Globalizing_Nepalese_Heritage_Cuisine_Recipe_Book.pdf",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal."
+  },
+  "MV": {
+    "landmark": {
+      "name": "Atolón Baa",
+      "source": "https://visitmaldives.com/index.php/en/places/baa-atoll-biosphere-reserve",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Mas huni",
+      "source": "https://old.visitmaldives.com/portfolio-item/maldivian-side-of-life/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal."
+  },
+  "TL": {
+    "landmark": {
+      "name": "Isla de Ataúro",
+      "source": "https://timorleste.tl/destinations",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Batar da'un",
+      "source": "https://timorleste.tl/eat-drink",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal."
+  },
+  "CN": {
+    "landmark": null,
+    "food": {
+      "name": "Pato asado de Pekín",
+      "source": "https://english.visitbeijing.com.cn/article/47ONG9Wn3mb",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Selección culinaria documentada, no exclusiva ni universal. La comida seleccionada corresponde a Pekín."
+  },
+  "IN": {
+    "landmark": null,
+    "food": {
+      "name": "Dosa",
+      "source": "https://www.prod.incredibleindia.gov.in/content/incredible-india-v2/en/destinations/chennai/food-and-cuisine/dosa.html",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "Selección culinaria documentada, no exclusiva ni universal. La referencia culinaria se centra en el sur de India, en una ficha de Chennai."
+  },
+  "KW": {
+    "landmark": {
+      "name": "Torres de Kuwait",
+      "source": "https://e.gov.kw/sites/kgoenglish/Pages/Visitors/TourismInKuwait/ActivitiesInKuwaitAttractiveSpots.aspx",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "food": {
+      "name": "Machboos",
+      "source": "https://kuwaittimes.com/article/25692/lifestyle/art-fashion/kuwaiti-ramadan-tables-welcome-affordable-truffles/",
+      "verified": true,
+      "verificationLevel": "reported-local-testimony"
+    },
+    "notes": "Selección culinaria documentada, no exclusiva ni universal. La referencia culinaria procede de una entrevista a una cocinera local publicada por Kuwait Times; es una tradición compartida por varios países del Golfo."
+  }
+}

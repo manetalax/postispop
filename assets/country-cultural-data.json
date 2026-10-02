@@ -1,0 +1,4097 @@
+{
+  "AF": {
+    "landmark": {
+      "name": "Minarete de Jam",
+      "source": "https://whc.unesco.org/en/list/211/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Qabeli palaw",
+      "source": "https://www.afghanhouse.org/cuisine/dish/qabeli-pilau",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal. Fuente culinaria: asociación cultural House of Afghanistan; no se afirma origen exclusivo ni se adopta la etiqueta de plato nacional.",
+    "editorialCandidates": [
+      "Hindu Kush",
+      "Lapislázuli"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "AL": {
+    "landmark": {
+      "name": "Casco histórico de Berat",
+      "source": "https://whc.unesco.org/en/list/569",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Byrek con queso o espinacas",
+      "source": "https://akt.gov.al/en/culinary/cottage-cheese-or-spinach-pie/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Berat es una de las dos ciudades del bien UNESCO compartido con Gjirokastra. Se elige una variante albanesa del byrek, dentro de una tradición culinaria extendida por los Balcanes. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Alpes albaneses",
+      "Costa adriática"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "DZ": {
+    "landmark": {
+      "name": "Casba de Argel",
+      "source": "https://whc.unesco.org/en/list/565/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Cuscús",
+      "source": "https://ich.unesco.org/en/RL/knowledge-know-how-and-practices-pertaining-to-the-production-and-consumption-of-couscous-01602?RL=01602&lang=en",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país.",
+    "editorialCandidates": [
+      "Sáhara",
+      "Arcos de la casba"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "AD": {
+    "landmark": {
+      "name": "Valle de Madriu-Perafita-Claror",
+      "source": "https://whc.unesco.org/en/list/1160",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Escudella",
+      "source": "https://www.culturapopular.ad/categories/escudella",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Paisaje cultural pirenaico y escudella documentada en las celebraciones andorranas de Sant Antoni y Sant Sebastià. La escudella pertenece también a tradiciones vecinas; no se afirma exclusividad nacional. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Pirineos",
+      "Piedra románica"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "AO": {
+    "landmark": {
+      "name": "Mbanza Kongo",
+      "source": "https://whc.unesco.org/en/statesparties/ao",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Funge",
+      "source": "https://en.wikipedia.org/wiki/Angolan_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Baobabs",
+      "Cataratas de Kalandula"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "AG": {
+    "landmark": {
+      "name": "Astillero naval de Antigua (Nelson’s Dockyard)",
+      "source": "https://whc.unesco.org/en/list/1499",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Ducana",
+      "source": "https://uae.antiguabarbudaembassy.com/culture-tourism",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La referencia culinaria figura en la información cultural de la embajada. El astillero conserva una historia naval y colonial. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Mar Caribe",
+      "Astilleros históricos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "AR": {
+    "landmark": {
+      "name": "Parque nacional Los Glaciares",
+      "source": "https://whc.unesco.org/en/list/145/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Empanadas",
+      "source": "https://www.argentina.gob.ar/jefatura/turismo/viaja-por-argentina/empanadas",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La fuente distingue variedades provinciales. La selección no atribuye exclusividad a Argentina. El lugar y la comida son elecciones independientes; no se afirma que procedan de la misma localidad.",
+    "editorialCandidates": [
+      "Patagonia",
+      "Tango"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "AM": {
+    "landmark": {
+      "name": "Monasterios de Haghpat y Sanahin",
+      "source": "https://whc.unesco.org/en/list/777/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Lavash",
+      "source": "https://ich.unesco.org/es/RL/el-lavash-preparacion-significado-y-aspecto-del-pan-tradicional-como-expresion-cultural-en-armenia-00985",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal. La inscripción armenia del lavash no atribuye exclusividad sobre todos los panes planos de la región.",
+    "editorialCandidates": [
+      "Monasterios",
+      "Granadas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "AU": {
+    "landmark": {
+      "name": "Ópera de Sídney",
+      "source": "https://whc.unesco.org/en/list/166/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Lamington",
+      "source": "https://www.australia.com/en/things-to-do/food-and-drinks/typical-aussie-foods-to-try.html",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Dulce incluido por Tourism Australia; una selección entre muchas tradiciones culinarias. Fuente consultada el 2 de octubre de 2026. Sólo ampliación gastronómica: conservar el lugar ya documentado.",
+    "editorialCandidates": [
+      "Arrecife",
+      "Eucaliptos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "AT": {
+    "landmark": {
+      "name": "Centro histórico de Salzburgo",
+      "source": "https://whc.unesco.org/en/list/784/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Apfelstrudel vienés",
+      "source": "https://www.austria.info/en-gb/recipes/apple-strudel/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La fuente identifica la variante vienesa; la selección reconoce que el strudel también tiene tradiciones en otros lugares. El lugar y la comida son elecciones independientes; no se afirma que procedan de la misma localidad.",
+    "editorialCandidates": [
+      "Alpes",
+      "Partituras vienesas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "AZ": {
+    "landmark": {
+      "name": "Ciudad amurallada de Bakú",
+      "source": "https://whc.unesco.org/en/list/958/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Gutab de carne",
+      "source": "https://azerbaijan.travel/gutab-with-meat",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Azerbaijan Travel vincula expresamente el gutab con la comida callejera de Azerbaiyán. Esta variante consiste en masa fina doblada sobre carne picada de cordero o ternera, cocinada sobre un saj. No se afirma un origen exclusivo. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Mar Caspio",
+      "Alfombras"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BS": {
+    "landmark": {
+      "name": "Escalinata de la Reina, Nassau",
+      "source": "https://www.bahamas.com/plan-your-trip/things-to-do/the-queens-staircase",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Ensalada de caracola (conch salad)",
+      "source": "https://www.nassauparadiseisland.com/blog/where-to-eat-conch-in-nassau-paradise-island",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La ensalada está documentada por el organismo de promoción de Nassau y Paradise Island. Selección regional, sin indicar consumo universal ni sugerir recolección de fauna. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Aguas turquesas",
+      "Caracolas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BH": {
+    "landmark": {
+      "name": "Qal'at al-Bahrain",
+      "source": "https://whc.unesco.org/en/list/1192/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Balaleet",
+      "source": "https://www.bahrain.com/en/try-these-places-for-a-taste-of-authentic-bahraini-breakfast",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal.",
+    "editorialCandidates": [
+      "Perlas",
+      "Geometría arquitectónica"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BD": {
+    "landmark": {
+      "name": "Los Sundarbans",
+      "source": "https://whc.unesco.org/en/list/798/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Pitha",
+      "source": "https://www.beautifulbangladesh.gov.bd/newsletter/single/476",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal.",
+    "editorialCandidates": [
+      "Delta del Ganges",
+      "Nenúfares"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BB": {
+    "landmark": {
+      "name": "Bridgetown y su guarnición histórica",
+      "source": "https://whc.unesco.org/en/list/1376/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Cou-cou con pez volador",
+      "source": "https://www.visitbarbados.org/local-cuisine",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La oficina de turismo describe esta combinación culinaria; el patrimonio de Bridgetown requiere contexto histórico. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Coral",
+      "Caña de azúcar"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BY": {
+    "landmark": {
+      "name": "Castillo de Mir",
+      "source": "https://whc.unesco.org/en/list/625/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Draniki",
+      "source": "https://www.belarus.by/en/about-belarus/cuisine",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El castillo de Mir es un lugar concreto. Los draniki son tortitas de patata recogidas por el portal oficial bielorruso; otras cocinas regionales tienen preparaciones semejantes. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Bosques",
+      "Bordados"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BE": {
+    "landmark": {
+      "name": "Grand-Place de Bruselas",
+      "source": "https://whc.unesco.org/en/list/857/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Gofre de Bruselas",
+      "source": "https://www.visitflanders.com/en/stories/flemish-street-food-every-taste",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Variedad de gofre citada por VisitFlanders, que distingue los gofres de Bruselas de los de Lieja. La selección conserva esa distinción regional. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Art nouveau",
+      "Chocolate"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BZ": {
+    "landmark": {
+      "name": "Altun Ha",
+      "source": "https://www.travelbelize.org/es/attraction/altun-ha/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Arroz y frijoles beliceños",
+      "source": "https://www.travelbelize.org/cuisine/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Selección culinaria entre distintas tradiciones de Belice. Altun Ha es patrimonio maya; no se presenta como adorno cultural universal. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Arrecife",
+      "Selva"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BJ": {
+    "landmark": {
+      "name": "Palacios Reales de Abomey",
+      "source": "https://whc.unesco.org/en/statesparties/bj",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Amiwô",
+      "source": "https://en.wikipedia.org/wiki/Amiwo",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Arquitectura de tierra",
+      "Tejidos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BT": {
+    "landmark": {
+      "name": "Paro Taktsang",
+      "source": "https://bhutan.travel/journal/editorial/a-winter-s-tale",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Ema datshi",
+      "source": "https://www.moenr.gov.bt/wp-content/uploads/2018/11/Bhutan-eCookbook.pdf",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal.",
+    "editorialCandidates": [
+      "Himalaya",
+      "Arquitectura dzong"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BO": {
+    "landmark": {
+      "name": "Tiwanaku",
+      "source": "https://whc.unesco.org/en/list/567/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Salteña",
+      "source": "https://es.wikipedia.org/wiki/Salte%C3%B1a",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Referencia culinaria comprobada en una enciclopedia; no se afirma origen exclusivo ni uniformidad entre variantes. Fuente consultada el 2 de octubre de 2026. Sólo ampliación gastronómica: conservar el lugar ya documentado.",
+    "editorialCandidates": [
+      "Salar de Uyuni",
+      "Aguayos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BA": {
+    "landmark": {
+      "name": "Puente Viejo de Mostar",
+      "source": "https://whc.unesco.org/en/list/946",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Ćevapi de Sarajevo",
+      "source": "https://www.visitsarajevo.ba/wp-content/uploads/2018/06/visit_sarajevo-eng-web.pdf",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Se representa el puente reconstruido de Mostar y la variante de ćevapi de Sarajevo, servida con pan somun y cebolla. Son ejemplos locales de un país diverso; los ćevapi se comparten con otras cocinas balcánicas. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Puentes de piedra",
+      "Montañas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BW": {
+    "landmark": {
+      "name": "Delta del Okavango",
+      "source": "https://whc.unesco.org/en/statesparties/bw",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Seswaa",
+      "source": "https://en.wikipedia.org/wiki/Seswaa",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Delta del Okavango",
+      "Cestería"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BR": {
+    "landmark": {
+      "name": "Parque nacional de Iguaçu",
+      "source": "https://whc.unesco.org/en/list/355/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pão de queijo",
+      "source": "https://www.gov.br/turismo/pt-br/assuntos/ultimas-noticia/dia-nacional-do-cafe-aromas-e-roteiros-pelo-brasil",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Selección gastronómica vinculada aquí a Minas Gerais; no resume todas las cocinas de Brasil. El lugar y la comida son elecciones independientes; no se afirma que procedan de la misma localidad.",
+    "editorialCandidates": [
+      "Amazonia",
+      "Bossa nova"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BN": {
+    "landmark": {
+      "name": "Kampong Ayer",
+      "source": "https://www.bruneitourism.com/places/kampong-ayer-cultural-and-tourism-gallery/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Ambuyat",
+      "source": "https://www.bruneitourism.com/activities-tour/ambuyat-experience-at-teratak-setiawan/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal.",
+    "editorialCandidates": [
+      "Selva de Borneo",
+      "Arquitectura dorada"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BG": {
+    "landmark": {
+      "name": "Monasterio de Rila",
+      "source": "https://whc.unesco.org/en/list/216/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Banitsa",
+      "source": "https://bulgariatravel.org/wp-content/uploads/2020/04/discover_bulgaria.pdf",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Rila es un monasterio ortodoxo y se trata como patrimonio religioso, sin atribuir esa religión a toda la población. La banitsa es una preparación de masa horneada con distintas variantes dulces y saladas. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Rosas",
+      "Bordados"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BF": {
+    "landmark": {
+      "name": "Corte Real de Tiébélé",
+      "source": "https://whc.unesco.org/en/statesparties/bf",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Tô",
+      "source": "https://en.wikipedia.org/wiki/Cuisine_of_Burkina_Faso",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Tejidos",
+      "Baobabs"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "BI": {
+    "landmark": {
+      "name": "Cascadas de Karera",
+      "source": "https://whc.unesco.org/en/statesparties/bi",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Ibiharage",
+      "source": "https://en.wikipedia.org/wiki/Burundian_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Karera está documentado en la lista indicativa de UNESCO; no se afirma inscripción como Patrimonio Mundial. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Lago Tanganica",
+      "Tambores"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "CV": {
+    "landmark": {
+      "name": "Cidade Velha",
+      "source": "https://whc.unesco.org/en/statesparties/cv",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Cachupa",
+      "source": "https://www.visit-caboverde.com/sobre-cabo-verde/gastronomia",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades.",
+    "editorialCandidates": [
+      "Islas volcánicas",
+      "Morna"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "KH": {
+    "landmark": {
+      "name": "Angkor",
+      "source": "https://whc.unesco.org/en/list/668/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Amok de pescado",
+      "source": "https://akp.gov.kh/post/detail/348901",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal.",
+    "editorialCandidates": [
+      "Angkor",
+      "Flor de loto"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "CM": {
+    "landmark": {
+      "name": "Reserva de Fauna de Dja",
+      "source": "https://whc.unesco.org/en/statesparties/cm",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Ndolé",
+      "source": "https://en.wikipedia.org/wiki/Cameroonian_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Monte Camerún",
+      "Máscaras artesanales"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "CA": {
+    "landmark": {
+      "name": "Parques de las Montañas Rocosas canadienses",
+      "source": "https://whc.unesco.org/en/list/304/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Poutine",
+      "source": "https://travel.destinationcanada.com/en-ca/things-to-do/authentic-quebec-foods-you-need-to-try",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Selección culinaria especialmente asociada a Quebec, sin representar todas las tradiciones canadienses. El lugar y la comida son elecciones independientes; no se afirma que procedan de la misma localidad.",
+    "editorialCandidates": [
+      "Arces",
+      "Lagos y montañas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "CF": {
+    "landmark": {
+      "name": "Parque Nacional de Manovo-Gounda Saint-Floris",
+      "source": "https://whc.unesco.org/en/statesparties/cf",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Kanda ti nyma",
+      "source": "https://en.wikipedia.org/wiki/Central_African_Republic_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Selva",
+      "Río Ubangui"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "TD": {
+    "landmark": {
+      "name": "Lagos de Ounianga",
+      "source": "https://whc.unesco.org/en/statesparties/td",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Boule",
+      "source": "https://en.wikipedia.org/wiki/Chadian_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Lago Chad",
+      "Desierto de Ennedi"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "CL": {
+    "landmark": {
+      "name": "Parque nacional Rapa Nui",
+      "source": "https://whc.unesco.org/en/list/715/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pastel de choclo",
+      "source": "https://chile.travel/blog/cocina-tipica-un-viaje-por-los-sabores-de-chile/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Plato documentado por Chile Travel dentro de un recorrido por diferentes regiones. Fuente consultada el 2 de octubre de 2026. Sólo ampliación gastronómica: conservar el lugar ya documentado.",
+    "editorialCandidates": [
+      "Atacama",
+      "Cordillera andina"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "CN": {
+    "landmark": {
+      "name": "Gran Muralla",
+      "source": "https://whc.unesco.org/en/list/438/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pato asado de Pekín",
+      "source": "https://english.visitbeijing.com.cn/article/47ONG9Wn3mb",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Selección culinaria documentada, no exclusiva ni universal. La comida seleccionada corresponde a Pekín.",
+    "editorialCandidates": [
+      "Jardines",
+      "Porcelana"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "CO": {
+    "landmark": {
+      "name": "Puerto y fortificaciones de Cartagena",
+      "source": "https://whc.unesco.org/en/list/285/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Arepas",
+      "source": "https://colombia.travel/es/blog/un-recorrido-por-la-cocina-colombiana-regiones-caribe-pacifico-y-andina",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La referencia consultada corresponde a la región andina colombiana; no se atribuye exclusividad al país. El lugar y la comida son elecciones independientes; no se afirma que procedan de la misma localidad.",
+    "editorialCandidates": [
+      "Café",
+      "Palmas de cera"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "KM": {
+    "landmark": {
+      "name": "Medinas de los sultanatos históricos de Comoras",
+      "source": "https://whc.unesco.org/en/statesparties/km",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Mkatre wa djungu",
+      "source": "https://www.unesco.org/fr/articles/tisser-lheritage-lunesco-soutient-la-sauvegarde-du-patrimoine-culturel-immateriel-aux-comores-0",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La UNESCO identifica el Mkatre wa djungu, también llamado Good-Good, entre las tradiciones culinarias tratadas en un taller celebrado en Moroni con participantes de Gran Comora, Anjouan y Mohéli en febrero de 2026. Es una referencia documentada al alimento, no una inscripción de este plato en una lista UNESCO. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Ylang-ylang",
+      "Islas volcánicas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "CG": {
+    "landmark": {
+      "name": "Macizo Forestal de Odzala-Kokoua",
+      "source": "https://whc.unesco.org/en/statesparties/cg",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Saka-saka",
+      "source": "https://en.wikipedia.org/wiki/Pondu",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Cuenca del Congo",
+      "Bosque tropical"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "CD": {
+    "landmark": {
+      "name": "Parque Nacional de Virunga",
+      "source": "https://whc.unesco.org/en/statesparties/cd",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pondu",
+      "source": "https://en.wikipedia.org/wiki/Pondu",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Río Congo",
+      "Malaquita"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "CR": {
+    "landmark": {
+      "name": "Parque nacional Isla del Coco",
+      "source": "https://whc.unesco.org/en/list/820/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Gallo pinto costarricense",
+      "source": "https://www.visitcostarica.com/things-to-do/culinary-adventures",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El Instituto Costarricense de Turismo documenta esta preparación; no se reclama exclusividad frente a tradiciones culinarias compartidas de la región. Fuente consultada el 2 de octubre de 2026. Sólo ampliación gastronómica: conservar el lugar ya documentado.",
+    "editorialCandidates": [
+      "Bosque nuboso",
+      "Colibríes"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "CI": {
+    "landmark": {
+      "name": "Ciudad histórica de Grand-Bassam",
+      "source": "https://whc.unesco.org/en/statesparties/ci",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Attiéké",
+      "source": "https://ich.unesco.org/en/RL/skills-related-to-attieke-production-in-cote-d-ivoire-02086",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El attiéké remite a una tradición culinaria concreta; no se presenta como práctica de toda la población.",
+    "editorialCandidates": [
+      "Cacao",
+      "Tejidos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "HR": {
+    "landmark": {
+      "name": "Ciudad vieja de Dubrovnik",
+      "source": "https://whc.unesco.org/en/list/95/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Štrukli de Zagorje",
+      "source": "https://www.infozagreb.hr/en/news/zagorje-strukli-protected-cultural-asset-en",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La oficina de turismo de Zagreb documenta este plato de masa rellena de queso fresco y huevos, cocido u horneado. Se conserva su vínculo con Zagorje; no se atribuye a todas las regiones croatas. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Costa dálmata",
+      "Mosaicos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "CU": {
+    "landmark": {
+      "name": "Habana Vieja y sus fortificaciones",
+      "source": "https://whc.unesco.org/en/list/204/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Ajiaco cubano",
+      "source": "https://www.cuba.travel/destinos/la-habana/restaurantes-de-la-habana",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Ajiaco aparece en el repertorio de gastronomía habanera del portal turístico cubano; existen variantes locales. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Música",
+      "Arquitectura colonial"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "CY": {
+    "landmark": {
+      "name": "Sitio arqueológico de Pafos",
+      "source": "https://whc.unesco.org/en/list/79",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Queso halloumi",
+      "source": "https://www.visitcyprus.com/discover-cyprus/food-drink/local-produce/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Pafos reúne varios componentes arqueológicos; el dibujo debe corresponder a ellos y no a un templo inventado. El halloumi es un producto gastronómico chipriota; la selección no resume la diversidad cultural de la isla. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Olivos",
+      "Mosaicos mediterráneos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "CZ": {
+    "landmark": {
+      "name": "Centro histórico de Praga",
+      "source": "https://whc.unesco.org/en/list/616/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Svíčková na smetaně",
+      "source": "https://www.visitczechia.com/es-es/things-to-do/places/gastronomic-tourism/czech-cuisine-and-regional-products/g-svickova-na-smetane",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Ternera con salsa de verduras y nata, descrita por VisitCzechia. Existen variantes familiares; la ficha selecciona un plato concreto sin reducir a él la cocina checa. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Relojes astronómicos",
+      "Cristal de Bohemia"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "DK": {
+    "landmark": {
+      "name": "Castillo de Kronborg",
+      "source": "https://whc.unesco.org/en/list/696/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Smørrebrød",
+      "source": "https://www.visitdenmark.com/denmark/things-to-do/eat-drink/traditional-danish-food",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "VisitDenmark describe este bocadillo abierto sobre pan de centeno con combinaciones diversas de ingredientes. La ficha no impone una cobertura única. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Diseño nórdico",
+      "Faros"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "DJ": {
+    "landmark": {
+      "name": "Lago Assal",
+      "source": "https://whc.unesco.org/en/statesparties/dj",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Lahoh",
+      "source": "https://en.wikipedia.org/wiki/Djiboutian_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Assal está documentado en la lista indicativa de UNESCO; no se afirma inscripción como Patrimonio Mundial. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Lago Assal",
+      "Sal y volcanes"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "DM": {
+    "landmark": {
+      "name": "Parque nacional Morne Trois Pitons",
+      "source": "https://whc.unesco.org/en/list/814",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Sopa callaloo",
+      "source": "https://legacy.discoverdominica.com/en/posts/42/a-taste-of-the-island-dominicas-delicious-culinary-experiences",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La oficina de turismo documenta esta sopa dentro de la cocina de Dominica; no confundir el país con República Dominicana. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Bosque tropical",
+      "Cascadas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "DO": {
+    "landmark": {
+      "name": "Ciudad Colonial de Santo Domingo",
+      "source": "https://whc.unesco.org/en/list/526",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "La bandera dominicana",
+      "source": "https://es.godominicanrepublic.com/blog/post/5-platos-imperdibles-de-la-gastronomia-dominicana",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Nombre culinario para una combinación de arroz, habichuelas y carne; no implica que todos sigan una misma dieta. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Merengue",
+      "Palmeras"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "EC": {
+    "landmark": {
+      "name": "Islas Galápagos",
+      "source": "https://whc.unesco.org/en/list/1/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Encebollado",
+      "source": "https://ecuador.travel/en/elementor-5966-2-2/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El portal turístico ecuatoriano lo incluye entre los platos guayaquileños; selección regional. Fuente consultada el 2 de octubre de 2026. Sólo ampliación gastronómica: conservar el lugar ya documentado.",
+    "editorialCandidates": [
+      "Andes",
+      "Fauna de Galápagos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "EG": {
+    "landmark": {
+      "name": "Pirámides de Guiza",
+      "source": "https://www.experienceegypt.eg/en/attraction/18/archeological-sites",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Koshary",
+      "source": "https://www.experienceegypt.eg/en",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Uno de los platos destacados por el portal oficial de turismo; no representa toda la cocina egipcia.",
+    "editorialCandidates": [
+      "Pirámides",
+      "Papiros"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SV": {
+    "landmark": {
+      "name": "Joya de Cerén",
+      "source": "https://whc.unesco.org/en/activities/751/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pupusas",
+      "source": "https://elsalvador.travel/preforocimap/gastronomia-salvadorena/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Plato documentado por el portal turístico salvadoreño; los rellenos varían. El lugar remite al patrimonio arqueológico maya. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Volcanes",
+      "Añil"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "GQ": {
+    "landmark": {
+      "name": "Parque Nacional de Monte Alén",
+      "source": "https://whc.unesco.org/en/statesparties/gq",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pepesup",
+      "source": "https://en.wikipedia.org/wiki/Cuisine_of_Equatorial_Guinea",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Monte Alén está documentado en la lista indicativa de UNESCO; no se afirma inscripción como Patrimonio Mundial. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Bosques",
+      "Isla de Bioko"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "ER": {
+    "landmark": {
+      "name": "Arquitectura modernista de Asmara",
+      "source": "https://whc.unesco.org/en/statesparties/er",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Injera",
+      "source": "https://1997-2001.state.gov/about_state/business/com_guides/1999/africa/eritrea99_09.html",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La referencia culinaria consultada es una guía gubernamental archivada de 1999, usada sólo para el nombre del alimento.",
+    "editorialCandidates": [
+      "Mar Rojo",
+      "Arquitectura de Asmara"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "EE": {
+    "landmark": {
+      "name": "Casco histórico de Tallin",
+      "source": "https://whc.unesco.org/en/list/822/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Kama con kéfir",
+      "source": "https://visitestonia.com/en/what-to-do/five-classic-foods-to-try-in-estonia",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Se elige el conjunto histórico de Tallin. Kama es una mezcla de harinas de cereales y guisante que puede servirse con leche agria o kéfir; es un ejemplo concreto de la gastronomía estonia. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Bosques bálticos",
+      "Diseño digital"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SZ": {
+    "landmark": {
+      "name": "Minas de Ngwenya",
+      "source": "https://whc.unesco.org/en/statesparties/sz",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pap",
+      "source": "https://www.thekingdomofeswatini.com/food-drink/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Ngwenya está documentado en la lista indicativa de UNESCO; no se afirma inscripción como Patrimonio Mundial.",
+    "editorialCandidates": [
+      "Tejidos",
+      "Colinas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "ET": {
+    "landmark": {
+      "name": "Iglesias excavadas en la roca de Lalibela",
+      "source": "https://whc.unesco.org/en/list/18/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Injera",
+      "source": "https://ethiopianembassy.org/culture/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades.",
+    "editorialCandidates": [
+      "Café",
+      "Tierras altas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "FJ": {
+    "landmark": {
+      "name": "Ciudad portuaria histórica de Levuka",
+      "source": "https://whc.unesco.org/en/list/1399",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Kokoda",
+      "source": "https://www.fiji.travel/fiji-guide/things-to-know/destination-guide/culture-language-region-of-fiji",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Tourism Fiji identifica kokoda entre las comidas iTaukei y distingue otras cocinas presentes en Fiyi. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Coral",
+      "Tejidos de corteza"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "FI": {
+    "landmark": {
+      "name": "Fortaleza de Suomenlinna",
+      "source": "https://whc.unesco.org/en/list/583/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pastel de Carelia (karjalanpiirakka)",
+      "source": "https://finland.fi/life-society/rolling-out-pies-rye-bread-and-other-essential-eastern-finnish-recipes/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "ThisisFINLAND documenta este pequeño pastel de corteza fina y relleno de arroz. Procede de Carelia, en el este, y actualmente se encuentra en todo el país; se mantiene explícito su contexto regional. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Lagos",
+      "Auroras"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "FR": {
+    "landmark": {
+      "name": "Mont-Saint-Michel",
+      "source": "https://montsaintmichel.gouv.fr/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Baguette",
+      "source": "https://ich.unesco.org/es/RL/la-artesania-y-la-cultura-de-la-baguette-barra-de-pan-01883",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La referencia patrimonial es al saber hacer y la cultura del pan; no a una licencia de marca.",
+    "editorialCandidates": [
+      "Atelier parisino",
+      "Lavanda"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "GA": {
+    "landmark": {
+      "name": "Parque Nacional de Ivindo",
+      "source": "https://whc.unesco.org/en/statesparties/ga",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Nyembwe",
+      "source": "https://en.wikipedia.org/wiki/Gabonese_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Bosque ecuatorial",
+      "Costa atlántica"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "GM": {
+    "landmark": {
+      "name": "Círculos de piedra de Senegambia",
+      "source": "https://whc.unesco.org/en/statesparties/gm",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Domoda",
+      "source": "https://en.wikipedia.org/wiki/Gambian_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "El sitio de círculos de piedra es compartido con Senegal. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Río Gambia",
+      "Aves"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "GE": {
+    "landmark": {
+      "name": "Monumentos históricos de Mtskheta",
+      "source": "https://whc.unesco.org/en/list/708/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Khachapuri de Imericia",
+      "source": "https://georgia.travel/imeretian-khachapuri",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal. Se ha elegido la variante de Imericia.",
+    "editorialCandidates": [
+      "Viñedos",
+      "Cáucaso"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "DE": {
+    "landmark": {
+      "name": "Catedral de Colonia",
+      "source": "https://whc.unesco.org/en/list/292/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Currywurst",
+      "source": "https://www.germany.travel/en/campaign/culinary-germany/home.html",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Salchicha con salsa de curry, destacada como comida callejera de Berlín por la oficina alemana de turismo. Su origen se disputa entre varias ciudades; esta selección no atribuye un origen único. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Bauhaus",
+      "Bosques"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "GH": {
+    "landmark": {
+      "name": "Edificaciones tradicionales asante",
+      "source": "https://whc.unesco.org/en/statesparties/gh",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Banku con salsa de okra",
+      "source": "https://visitghana.com/oti-region/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El ejemplo de banku con okra está documentado por la oficina de turismo para la región de Oti.",
+    "editorialCandidates": [
+      "Kente",
+      "Cacao"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "GR": {
+    "landmark": {
+      "name": "Acrópolis de Atenas",
+      "source": "https://www.visitgreece.gr/en/experiences/culture/archaeological-sites-monuments/acropolis-of-Athens",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Moussaka",
+      "source": "https://visitgreece.gr/experiences/gastronomy/traditional-cuisine/?pg=4",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La fuente destaca expresamente que la cocina griega ofrece mucho más que este plato.",
+    "editorialCandidates": [
+      "Columnas",
+      "Olivos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "GD": {
+    "landmark": {
+      "name": "Fort George",
+      "source": "https://www.puregrenada.com/fort-george-2/?v=0b3b97fa6688",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Oil down",
+      "source": "https://www.puregrenada.com/grenada-the-spice-of-the-caribbean-officially-becomes-the-first-culinary-capital/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La oficina de turismo incluye oil down en su patrimonio culinario. El fuerte es una referencia histórica concreta. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Nuez moscada",
+      "Playas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "GT": {
+    "landmark": {
+      "name": "Parque Nacional Tikal",
+      "source": "https://whc.unesco.org/en/list/00064/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pepián",
+      "source": "https://biblioteca.inguat.gob.gt/library/index.php?lang=es&mode=advanced&query=%40title%3DSpecial%3AGSMSearchPage%40process%3D%40field1%3Dencabezamiento%40value1%3DGASTRONOMIA.+%40mode%3Dadvanced&recnum=60&title=9392",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La ficha Ruta Gastronómica de la biblioteca INGUAT menciona pepián en el sur. Tikal es patrimonio maya; ambas referencias son selecciones parciales. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Textiles mayas",
+      "Volcanes"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "GN": {
+    "landmark": {
+      "name": "Reserva Natural del Monte Nimba",
+      "source": "https://whc.unesco.org/en/statesparties/gn",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Konkoé",
+      "source": "https://en.wikipedia.org/wiki/Guinean_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "La reserva del Monte Nimba es compartida con Côte d'Ivoire. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Tierras altas",
+      "Percusión"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "GW": {
+    "landmark": {
+      "name": "Archipiélago de Bijagós · Omatí Minhô",
+      "source": "https://whc.unesco.org/en/statesparties/gw",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Caldo de mancarra",
+      "source": "https://en.wikipedia.org/wiki/Guinea-Bissauan_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Archipiélago de Bijagós",
+      "Manglares"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "GY": {
+    "landmark": {
+      "name": "Cataratas Kaieteur",
+      "source": "https://guyanatourism.com/kaieteur-falls/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pepperpot guyanés",
+      "source": "https://en.wikipedia.org/wiki/Guyanese_pepperpot",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "La referencia culinaria se comprobó en una enciclopedia, que identifica un guiso y su uso festivo; no se atribuye a toda comida cotidiana. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Cascada Kaieteur",
+      "Selva"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "HT": {
+    "landmark": {
+      "name": "Parque Histórico Nacional: Ciudadela, Sans Souci y Ramiers",
+      "source": "https://whc.unesco.org/en/list/180",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Sopa joumou",
+      "source": "https://ich.unesco.org/es/RL/la-sopa-joumou-01853",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La UNESCO documenta la sopa como patrimonio cultural inmaterial vinculado a la historia haitiana. Conservar su contexto de libertad y celebración. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Pintura haitiana",
+      "Montañas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "HN": {
+    "landmark": {
+      "name": "Sitio maya de Copán",
+      "source": "https://whc.unesco.org/en/list/129/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Baleadas",
+      "source": "https://www.consuladohondurasmadrid.es/conoce-honduras/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La referencia culinaria aparece en la información del consulado hondureño. Copán es patrimonio maya; la cocina del país contiene muchas otras tradiciones. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Copán",
+      "Arrecifes"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "HU": {
+    "landmark": {
+      "name": "Budapest y las orillas del Danubio",
+      "source": "https://whc.unesco.org/en/list/400/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Sopa goulash (gulyás)",
+      "source": "https://visithungary.com/documents/a/af/af6/af6b60d1f3140320e50d3ebbecca34921166197.pdf",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La guía Treasures of Hungary de VisitHungary presenta el goulash como sopa con dados de ternera y verduras, en el apartado Culinary Treasures de la página 12 del PDF. La guía también subraya la diversidad de la cocina húngara. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Termas",
+      "Bordados"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "IS": {
+    "landmark": {
+      "name": "Parque nacional de Þingvellir",
+      "source": "https://whc.unesco.org/en/list/1152/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Skyr",
+      "source": "https://www.visiticeland.com/article/enjoy-icelandic-food/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "VisitIceland presenta el skyr como producto lácteo elaborado con leche desnatada y recoge su servicio con arándanos silvestres y nata. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Volcanes",
+      "Auroras"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "IN": {
+    "landmark": {
+      "name": "Taj Mahal",
+      "source": "https://whc.unesco.org/en/list/252/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Dosa",
+      "source": "https://www.prod.incredibleindia.gov.in/content/incredible-india-v2/en/destinations/chennai/food-and-cuisine/dosa.html",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Selección culinaria documentada, no exclusiva ni universal. La referencia culinaria se centra en el sur de India, en una ficha de Chennai.",
+    "editorialCandidates": [
+      "Arquitectura",
+      "Estampados textiles"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "ID": {
+    "landmark": {
+      "name": "Conjunto de templos de Borobudur",
+      "source": "https://whc.unesco.org/en/list/592/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Nasi goreng",
+      "source": "https://www.indonesia.travel/gb/en/travel-ideas/gastronomy/don-t-leave-indonesia-before-you-get-a-taste-of-these-12-favorite-local-foods",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Una selección entre las numerosas cocinas de Indonesia; las guarniciones y preparaciones varían. El lugar y la comida son elecciones independientes; no se afirma que procedan de la misma localidad.",
+    "editorialCandidates": [
+      "Batik",
+      "Islas y volcanes"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "IR": {
+    "landmark": {
+      "name": "Persépolis",
+      "source": "https://whc.unesco.org/en/list/114/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Kelane del Kurdistán iraní",
+      "source": "https://visitiran.ir/en/cuisine/kelane",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "VisitIran documenta el kelane como pan relleno de verduras de la provincia iraní de Kurdistán, también preparado en las zonas kurdas de Azerbaiyán Occidental. Se mantiene ese contexto regional y no se atribuye a todas las cocinas iraníes. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Jardines persas",
+      "Azulejos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "IQ": {
+    "landmark": {
+      "name": "Babilonia",
+      "source": "https://whc.unesco.org/en/list/278/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Masgouf",
+      "source": "https://iraqiembassy.us/art-and-culture/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal.",
+    "editorialCandidates": [
+      "Mesopotamia",
+      "Palmeras datileras"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "IE": {
+    "landmark": {
+      "name": "Sceilg Mhichíl (Skellig Michael)",
+      "source": "https://whc.unesco.org/en/list/757/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Estofado irlandés (Irish stew)",
+      "source": "https://www.bordbia.ie/recipes/lamb-recipes/irish-stew",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Bord Bia, el organismo irlandés de alimentación, documenta este estofado de cordero o carnero con patatas y cebollas. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Tréboles",
+      "Acantilados"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "IL": {
+    "landmark": {
+      "name": "Masada",
+      "source": "https://whc.unesco.org/en/list/1040/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Shakshuka de berenjena",
+      "source": "https://foodish.anumuseum.org.il/en/recipe/eggplant-shakshouka/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal. Variante de berenjena documentada por el museo ANU a través de una historia familiar; la shakshuka es una tradición compartida y no se le atribuye origen exclusivo israelí.",
+    "editorialCandidates": [
+      "Olivos",
+      "Arquitectura de piedra"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "IT": {
+    "landmark": {
+      "name": "Coliseo de Roma",
+      "source": "https://www.italia.it/it/lazio/roma/colosseo",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pizza napolitana",
+      "source": "https://www.italia.it/en/campania/naples/things-to-do/pizza",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Selección vinculada a Nápoles; existen otras tradiciones regionales.",
+    "editorialCandidates": [
+      "Renacimiento",
+      "Café"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "JM": {
+    "landmark": {
+      "name": "Montañas Blue y John Crow",
+      "source": "https://whc.unesco.org/en/list/1356/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Ackee con pescado salado",
+      "source": "https://www.visitjamaica.com/blog/post/ackee-and-saltfish-in-jamaica/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Referencia culinaria de la oficina jamaicana de turismo. No se ofrecen instrucciones de preparación de ackee ni recolección de plantas. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Reggae",
+      "Montañas Azules"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "JP": {
+    "landmark": {
+      "name": "Monte Fuji",
+      "source": "https://faq.japan-travel.jnto.go.jp/en/fuji-guide/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Onigiri",
+      "source": "https://www.maff.go.jp/e/policies/market/japan-cuisine/japan/7/index.html",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Preparación de arroz con múltiples formas y rellenos; selección editorial.",
+    "editorialCandidates": [
+      "Washi",
+      "Cerezos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "JO": {
+    "landmark": {
+      "name": "Petra",
+      "source": "https://whc.unesco.org/en/list/326/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Mansaf",
+      "source": "https://ich.unesco.org/en/RL/al-mansaf-in-jordan-a-festive-banquet-and-its-social-and-cultural-meanings-01849",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal.",
+    "editorialCandidates": [
+      "Petra",
+      "Desierto"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "KZ": {
+    "landmark": {
+      "name": "Mausoleo de Khoja Ahmed Yasawi",
+      "source": "https://whc.unesco.org/en/list/1103/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Baursak",
+      "source": "https://www.gov.kz/memleket/entities/mfa-istanbul/press/news/details/899316?lang=tr",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El consulado de Kazajistán en Estambul documentó un concurso de elaboración de baursak y lo identificó expresamente como un alimento tradicional kazajo. La noticia del 6 de diciembre de 2024 menciona distintas recetas; no se afirma un origen exclusivo. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Estepa",
+      "Ornamentos textiles"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "KE": {
+    "landmark": {
+      "name": "Monte Kenia",
+      "source": "https://whc.unesco.org/en/list/800/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Ugali con sukuma wiki",
+      "source": "https://bucketlist.magicalkenya.com/experiences/kenyan-western-culture-culinary-experience/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Ejemplo documentado en una experiencia de cocina del oeste de Kenia.",
+    "editorialCandidates": [
+      "Acacias",
+      "Gran Valle del Rift"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "KI": {
+    "landmark": {
+      "name": "Área protegida de las Islas Fénix",
+      "source": "https://whc.unesco.org/en/list/1325",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Babai (taro gigante de pantano)",
+      "source": "https://crga48.spc.int/sites/default/files/documents_uploads/Pacific%20Community%20Results%20Report%202017.pdf",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La Comunidad del Pacífico documenta el cultivo alimentario babai en Kiribati. Se elige un alimento concreto; no se inventa un plato preparado ni una receta. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Atolones",
+      "Cocoteros"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "KP": {
+    "landmark": {
+      "name": "Conjunto de tumbas de Koguryo",
+      "source": "https://whc.unesco.org/en/list/1091/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Raengmyon de Pyongyang",
+      "source": "https://ich.unesco.org/en/RL/pyongyang-raengmyon-custom-01695",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal. La referencia a raengmyon se centra en Pyongyang.",
+    "editorialCandidates": [
+      "Montañas",
+      "Arquitectura tradicional"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "KR": {
+    "landmark": {
+      "name": "Templo Bulguksa",
+      "source": "https://whc.unesco.org/en/list/736/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Kimchi",
+      "source": "https://ich.unesco.org/es/RL/kimjang-modo-de-preparar-y-compartir-conservas-kimchi-en-la-republica-de-corea-00881",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La fuente trata del kimjang en la República de Corea; no afirma exclusividad de todas las preparaciones de kimchi.",
+    "editorialCandidates": [
+      "Hanji",
+      "Diseño pop"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "KW": {
+    "landmark": {
+      "name": "Torres de Kuwait",
+      "source": "https://e.gov.kw/sites/kgoenglish/Pages/Visitors/TourismInKuwait/ActivitiesInKuwaitAttractiveSpots.aspx",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "food": {
+      "name": "Machboos",
+      "source": "https://kuwaittimes.com/article/25692/lifestyle/art-fashion/kuwaiti-ramadan-tables-welcome-affordable-truffles/",
+      "verified": true,
+      "verificationLevel": "reported-local-testimony"
+    },
+    "verified": true,
+    "notes": "Selección culinaria documentada, no exclusiva ni universal. La referencia culinaria procede de una entrevista a una cocinera local publicada por Kuwait Times; es una tradición compartida por varios países del Golfo.",
+    "editorialCandidates": [
+      "Perlas",
+      "Velas dhow"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "KG": {
+    "landmark": {
+      "name": "Montaña sagrada de Sulaiman-Too",
+      "source": "https://whc.unesco.org/en/list/1230/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Boorsok",
+      "source": "https://old.cbtkyrgyzstan.kg/tour-products/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La asociación local de turismo comunitario CBT Kyrgyzstan incluye expresamente el boorsok entre las elaboraciones de masa de la cocina kirguisa. Es una selección específica documentada en el país, sin atribuirle exclusividad de origen. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Montañas Tian Shan",
+      "Fieltro"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "LA": {
+    "landmark": {
+      "name": "Luang Prabang",
+      "source": "https://whc.unesco.org/en/list/479/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Khao niew (arroz glutinoso)",
+      "source": "https://www.tourismlaos.org/welcome/food-flavours/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal.",
+    "editorialCandidates": [
+      "Mekong",
+      "Arrozales"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "LV": {
+    "landmark": {
+      "name": "Centro histórico de Riga",
+      "source": "https://whc.unesco.org/en/list/852",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Guisantes grises con tocino",
+      "source": "https://www.latvia.travel/en/flavours-latvia",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El conjunto histórico de Riga combina distintas épocas arquitectónicas. Los guisantes grises se sirven tradicionalmente con tocino o cerdo ahumado y cebolla; no representan todas las preferencias alimentarias de Letonia. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Ámbar",
+      "Bosques"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "LB": {
+    "landmark": {
+      "name": "Baalbek",
+      "source": "https://whc.unesco.org/en/list/294/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Man'ouché",
+      "source": "https://ich.unesco.org/es/RL/al-man-ouche-una-practica-culinaria-emblematica-en-libano-02000",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal.",
+    "editorialCandidates": [
+      "Cedros",
+      "Mosaicos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "LS": {
+    "landmark": {
+      "name": "Parque Maloti-Drakensberg",
+      "source": "https://whc.unesco.org/en/statesparties/ls",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Motoho",
+      "source": "https://www.gov.ls/about-lesotho/tourism/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El parque Maloti-Drakensberg es transfronterizo y compartido con Sudáfrica. El Gobierno de Lesoto identifica el motoho como una papilla tradicional ofrecida en las aldeas del país. Se selecciona este alimento concreto, sin atribuir exclusividad de origen. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Montañas",
+      "Tejidos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "LR": {
+    "landmark": {
+      "name": "Isla de Providence",
+      "source": "https://whc.unesco.org/en/statesparties/lr",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Dumboy",
+      "source": "https://en.wikipedia.org/wiki/Liberian_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Providence está documentada en la lista indicativa de UNESCO; no se afirma inscripción como Patrimonio Mundial. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Bosque tropical",
+      "Costa"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "LY": {
+    "landmark": {
+      "name": "Sitio arqueológico de Leptis Magna",
+      "source": "https://whc.unesco.org/en/statesparties/ly",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Bazin",
+      "source": "https://en.wikipedia.org/wiki/Libyan_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Desierto",
+      "Ruinas clásicas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "LI": {
+    "landmark": {
+      "name": "Castillo de Vaduz",
+      "source": "https://en.tourismus.li/map/poi/schloss-vaduz-8fb7e6cf-99b5-4ffb-b600-9e4c66398e1f.html",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Käsknöpfle",
+      "source": "https://en.tourismus.li/rezepte/detail/kasknopfle-dc0e5593-abe1-418e-943e-a897c7979b3e.html",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El castillo se representa desde el exterior. Los Käsknöpfle son pequeñas piezas de masa con queso, cebolla frita y acompañamiento de compota de manzana en la receta oficial; forman parte de una familia culinaria alpina compartida. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Alpes",
+      "Castillos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "LT": {
+    "landmark": {
+      "name": "Centro histórico de Vilna",
+      "source": "https://whc.unesco.org/en/list/541",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Cepelinai",
+      "source": "https://lithuania.travel/en/what-to-do/food-and-drink/lithuanian-products/cepelinai",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Se selecciona el centro histórico de Vilna y los cepelinai, piezas de masa de patata con distintos rellenos. Existen variantes con carne, queso fresco o setas; se evita presentar una sola receta como obligatoria. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Ámbar",
+      "Dunas bálticas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "LU": {
+    "landmark": {
+      "name": "Barrio antiguo y fortificaciones de Luxemburgo",
+      "source": "https://whc.unesco.org/en/list/699",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Bouneschlupp",
+      "source": "https://luxembourg.public.lu/en/society-and-culture/culinary-delights/cuisine-international.html",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Se elige el patrimonio defensivo de la ciudad de Luxemburgo. Bouneschlupp es una sopa de judías verdes con variantes; el propio portal nacional destaca la convivencia de tradiciones locales e internacionales. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Fortificaciones",
+      "Bosques"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "MG": {
+    "landmark": {
+      "name": "Colina Real de Ambohimanga",
+      "source": "https://whc.unesco.org/en/statesparties/mg",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Romazava",
+      "source": "https://madagascar-tourisme.com/en/restaurants-and-nightlife/restaurants/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades.",
+    "editorialCandidates": [
+      "Baobabs",
+      "Lémures"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "MW": {
+    "landmark": {
+      "name": "Parque Nacional del Lago Malawi",
+      "source": "https://whc.unesco.org/en/statesparties/mw",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Nsima",
+      "source": "https://ich.unesco.org/en/RL/nsima-culinary-tradition-of-malawi-01292",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades.",
+    "editorialCandidates": [
+      "Lago Malawi",
+      "Peces de colores"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "MY": {
+    "landmark": {
+      "name": "Parque de Kinabalu",
+      "source": "https://whc.unesco.org/en/list/1012/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Nasi lemak",
+      "source": "https://www.tourism.gov.my/media/view/tourism-malaysia-showcases-malaysian-breakfast-culture-in-singapore",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Elegido entre los desayunos documentados por Turismo de Malasia; no expresa una costumbre universal. El lugar y la comida son elecciones independientes; no se afirma que procedan de la misma localidad.",
+    "editorialCandidates": [
+      "Batik",
+      "Bosque tropical"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "MV": {
+    "landmark": {
+      "name": "Atolón Baa",
+      "source": "https://visitmaldives.com/index.php/en/places/baa-atoll-biosphere-reserve",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Mas huni",
+      "source": "https://old.visitmaldives.com/portfolio-item/maldivian-side-of-life/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal.",
+    "editorialCandidates": [
+      "Atolones",
+      "Coral"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "ML": {
+    "landmark": {
+      "name": "Ciudades antiguas de Djenné",
+      "source": "https://whc.unesco.org/en/statesparties/ml",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Tigadeguena",
+      "source": "https://en.wikipedia.org/wiki/Malian_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Arquitectura de tierra",
+      "Índigo"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "MT": {
+    "landmark": {
+      "name": "Ciudad de La Valeta",
+      "source": "https://whc.unesco.org/en/list/131",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pastizzi",
+      "source": "https://www.visitmalta.com/es/maltese-pastizzi-taste-of-malta/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La Valeta se representa como ciudad fortificada histórica. Los pastizzi son piezas de hojaldre con rellenos como guisantes o queso fresco; la fuente oficial ofrece una receta concreta, no una definición de toda la cocina maltesa. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Caliza",
+      "Puertas de colores"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "MH": {
+    "landmark": {
+      "name": "Atolón Bikini",
+      "source": "https://whc.unesco.org/en/list/1339/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Bwiro",
+      "source": "https://en.wikipedia.org/wiki/Marshallese_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Bwiro está documentado como preparación de fruta del pan. Bikini es patrimonio relacionado con ensayos nucleares y desplazamiento humano: tratarlo como lugar de memoria, nunca como celebración de pruebas nucleares ni imagen despreocupada. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Atolones",
+      "Cartas de navegación"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "MR": {
+    "landmark": {
+      "name": "Parque nacional del Banc d'Arguin",
+      "source": "https://whc.unesco.org/en/list/506/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Cuscús",
+      "source": "https://ich.unesco.org/en/RL/knowledge-know-how-and-practices-pertaining-to-the-production-and-consumption-of-couscous-01602?RL=01602&lang=en",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país.",
+    "editorialCandidates": [
+      "Desierto",
+      "Caravanas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "MU": {
+    "landmark": {
+      "name": "Paisaje cultural de Le Morne",
+      "source": "https://whc.unesco.org/en/statesparties/mu",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Dholl puri",
+      "source": "https://www.mymauritius.travel/sites/default/files/pdf/mtpa-mauritius_5.pdf",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades.",
+    "editorialCandidates": [
+      "Bosque insular",
+      "Océano Índico"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "MX": {
+    "landmark": {
+      "name": "Chichén Itzá",
+      "source": "https://whc.unesco.org/en/list/483/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Tamales",
+      "source": "https://www.gob.mx/agricultura/articulos/tamales-variedad-y-sabor-de-nuestra-tradicion",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Existen numerosas variantes regionales y tradiciones de tamales fuera de México.",
+    "editorialCandidates": [
+      "Papel picado",
+      "Cactus"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "FM": {
+    "landmark": {
+      "name": "Nan Madol",
+      "source": "https://whc.unesco.org/en/list/1503",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Banana Karat de Pohnpei",
+      "source": "https://islandfood.org/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Island Food Community of Pohnpei documenta la variedad Karat. La referencia alimentaria es de Pohnpei, no de todas las comunidades de los Estados Federados de Micronesia. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Islas",
+      "Navegación oceánica"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "MD": {
+    "landmark": {
+      "name": "Reserva cultural y natural de Orheiul Vechi",
+      "source": "https://moldova.travel/orheiul-vechi/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Mămăligă",
+      "source": "https://moldova.travel/en/gastronomy/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Orheiul Vechi es una reserva de paisaje y patrimonio en torno al río Răut. La mămăligă es una preparación de maíz con diversos acompañamientos, compartida con cocinas vecinas; no se afirma un origen exclusivo moldavo. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Viñedos",
+      "Bordados"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "MC": {
+    "landmark": {
+      "name": "Palacio del Príncipe de Mónaco",
+      "source": "https://palais.mc/en/index.html",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Barbajuan",
+      "source": "https://www.visitmonaco.com/en/routes-and-walks/27551/getaway-with-friends",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Se elige el palacio como lugar histórico y el barbajuan como especialidad local documentada por VisitMonaco. La gastronomía monegasca comparte influencias con sus vecinos; un plato no representa a toda la población. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Puerto",
+      "Arquitectura mediterránea"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "MN": {
+    "landmark": {
+      "name": "Paisaje cultural del valle del Orkhon",
+      "source": "https://whc.unesco.org/en/list/1081/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Buuz",
+      "source": "https://m.mongolia.travel/themes/taste",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal.",
+    "editorialCandidates": [
+      "Estepa",
+      "Cielo abierto"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "ME": {
+    "landmark": {
+      "name": "Región natural e histórica de Kotor",
+      "source": "https://whc.unesco.org/en/list/125/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Kačamak",
+      "source": "https://www.montenegro.travel/en/explore-montenegro/food-wine/food-routes",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "La referencia culinaria procede de las rutas de productos y cocina de montaña, con mención de Kolašin. No se afirma origen exclusivo ni se resume toda la cocina montenegrina. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Montañas",
+      "Bahía de Kotor"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "MA": {
+    "landmark": {
+      "name": "Ksar de Ait Ben Haddou",
+      "source": "https://whc.unesco.org/en/list/444/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Cuscús",
+      "source": "https://ich.unesco.org/en/RL/knowledge-know-how-and-practices-pertaining-to-the-production-and-consumption-of-couscous-01602?RL=01602&lang=en",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Tradición compartida en la candidatura de Argelia, Mauritania, Marruecos y Túnez; no exclusiva de un país.",
+    "editorialCandidates": [
+      "Zellige",
+      "Jardines"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "MZ": {
+    "landmark": {
+      "name": "Isla de Mozambique",
+      "source": "https://whc.unesco.org/en/statesparties/mz",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Matapa",
+      "source": "https://en.wikipedia.org/wiki/Mozambican_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Costa índica",
+      "Capulanas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "MM": {
+    "landmark": {
+      "name": "Bagan",
+      "source": "https://whc.unesco.org/en/list/1588/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Mohinga",
+      "source": "https://www.moi.gov.mm/nlm/sites/default/files/newspaper-pdf/2025-12/25_Dec_25_gnlm.pdf",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal.",
+    "editorialCandidates": [
+      "Lago Inle",
+      "Laca artesanal"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "NA": {
+    "landmark": {
+      "name": "Mar de Arena del Namib",
+      "source": "https://whc.unesco.org/en/statesparties/na",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Kapana",
+      "source": "https://en.wikipedia.org/wiki/Kapana_%28grilled_meat%29",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Dunas",
+      "Cielo estrellado"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "NR": {
+    "landmark": {
+      "name": "Laguna Buada",
+      "source": "https://nauru-data.sprep.org/dataset/nauru-island-hydrology",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pescado con coco",
+      "source": "https://en.wikipedia.org/wiki/Nauruan_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "El portal ambiental del Pacífico documenta la laguna. La comida se comprobó en una enciclopedia; no se declara plato nacional ni se incluyen instrucciones de preparación de pescado crudo. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Océano Pacífico",
+      "Paisaje insular"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "NP": {
+    "landmark": {
+      "name": "Valle de Katmandú",
+      "source": "https://whc.unesco.org/en/list/121/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Momos",
+      "source": "https://trade.ntb.gov.np/wp-content/uploads/2018/05/Experience_Nepal_Globalizing_Nepalese_Heritage_Cuisine_Recipe_Book.pdf",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal.",
+    "editorialCandidates": [
+      "Himalaya",
+      "Mandala geométrico"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "NL": {
+    "landmark": {
+      "name": "Molinos de Kinderdijk-Elshout",
+      "source": "https://whc.unesco.org/en/list/818/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Stroopwafel",
+      "source": "https://www.holland.com/global/tourism/getting-around/interests/regional-products-in-the-netherlands",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Galleta fina rellena de sirope de caramelo, vinculada a Gouda por la oficina neerlandesa de turismo. Es una especialidad regional difundida por el país. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Canales",
+      "Tulipanes"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "NZ": {
+    "landmark": {
+      "name": "Parque nacional de Tongariro",
+      "source": "https://whc.unesco.org/en/list/421/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Hāngī",
+      "source": "https://www.newzealand.com/ca/feature/maori-hangi/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Preparación maorí documentada por Tourism New Zealand; conservar su contexto cultural, sin presentarla como comida universal de todo habitante. Fuente consultada el 2 de octubre de 2026. Sólo ampliación gastronómica: conservar el lugar ya documentado.",
+    "editorialCandidates": [
+      "Helechos",
+      "Alpes del Sur"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "NI": {
+    "landmark": {
+      "name": "Ruinas de León Viejo",
+      "source": "https://whc.unesco.org/en/list/613/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Nacatamal",
+      "source": "https://www.visitanicaragua.com/en/atractivos/gastronomia/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El portal turístico nicaragüense incluye nacatamal en su gastronomía; hay variantes familiares y regionales. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Volcanes",
+      "Lagos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "NE": {
+    "landmark": {
+      "name": "Centro histórico de Agadez",
+      "source": "https://whc.unesco.org/en/statesparties/ne",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Dambou",
+      "source": "https://en.wikipedia.org/wiki/Nigerien_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Dunas",
+      "Río Níger"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "NG": {
+    "landmark": {
+      "name": "Bosque Sagrado de Osun-Osogbo",
+      "source": "https://whc.unesco.org/en/statesparties/ng",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Arroz jollof nigeriano",
+      "source": "https://tournigeria.gov.ng/nigerian-party-jollof-the-king-of-rice/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La autoridad nigeriana de turismo describe el arroz jollof de las celebraciones, preparado con tomate, pimiento y cebolla. La fuente reconoce variantes en África occidental; esta ficha selecciona la nigeriana sin atribuirle origen exclusivo. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Adire",
+      "Música"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "MK": {
+    "landmark": {
+      "name": "Región de Ohrid",
+      "source": "https://whc.unesco.org/en/list/99/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Tavče gravče",
+      "source": "https://tourismmacedonia.gov.mk/wp-content/uploads/2018/09/1.-Skopje-A-WALK-THROUGH-THE-ETERNAL-CITY.pdf",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "El paisaje y patrimonio de Ohrid es compartido con Albania; aquí se selecciona su relación con Macedonia del Norte. El folleto oficial de Skopje identifica tavče gravče como especialidad de alubias al horno; verificado mediante extracto indexado, con acceso directo al PDF incompleto. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Lago Ohrid",
+      "Mosaicos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "NO": {
+    "landmark": {
+      "name": "Fiordos Geirangerfjord y Nærøyfjord",
+      "source": "https://whc.unesco.org/en/list/1195/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Fårikål",
+      "source": "https://www.visitnorway.com/things-to-do/food-and-drink/the-norwegian-cookbook/farikal/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Estofado de cordero y col, documentado por VisitNorway. La receta y sus variantes se presentan como una tradición otoñal noruega. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Fiordos",
+      "Auroras"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "OM": {
+    "landmark": {
+      "name": "Fuerte de Bahla",
+      "source": "https://whc.unesco.org/en/list/433/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Harees",
+      "source": "https://ich.unesco.org/en/RL/harees-dish-know-how-skills-and-practices-01744",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal. La tradición del harees está documentada conjuntamente para Emiratos Árabes Unidos, Omán y Arabia Saudita.",
+    "editorialCandidates": [
+      "Montañas",
+      "Velas dhow"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "PK": {
+    "landmark": {
+      "name": "Ruinas de Mohenjo-Daro",
+      "source": "https://whc.unesco.org/en/list/138/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Biryani",
+      "source": "https://mofa.gov.pk/pakistani-food",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal.",
+    "editorialCandidates": [
+      "Arte de camiones",
+      "Karakórum"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "PW": {
+    "landmark": {
+      "name": "Laguna meridional de las Islas Rocosas",
+      "source": "https://whc.unesco.org/en/list/1386",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Taro de Palaos",
+      "source": "https://pristineparadisepalau.com/wp-content/uploads/2018/11/Alii-Palau-English.pdf",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La guía oficial de turismo dedica un apartado al taro. Se selecciona un alimento, sin inventar nombre de plato ni receta. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Islas Rocosas",
+      "Arrecifes"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "PS": {
+    "landmark": {
+      "name": "Paisaje cultural de Battir",
+      "source": "https://whc.unesco.org/en/list/1492/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Musakhan",
+      "source": "https://www.travelpalestine.ps/en/Category/2/Cuisine",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal.",
+    "editorialCandidates": [
+      "Olivos",
+      "Bordado tatreez"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "PA": {
+    "landmark": {
+      "name": "Conjunto Monumental Histórico de Panamá Viejo",
+      "source": "https://sicultura.micultura.gob.pa/espacios-culturales/monumentos-sitios-declarados-patrimonio/conjunto-monumental-historico-de-panama-viejo-sitio-arqueologico-de-panama-viejo",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Sancocho panameño",
+      "source": "https://pt.tourismpanama.com/planeje-sua-viagem/itinerarios/nove-dias-entre-polleras-e-corais-explore-as-provincias-centrais/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El Ministerio de Cultura documenta Panamá Viejo; el itinerario turístico de las provincias centrales incluye sancocho panameño. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Canal",
+      "Molas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "PG": {
+    "landmark": {
+      "name": "Sitio agrícola temprano de Kuk",
+      "source": "https://whc.unesco.org/en/list/887/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Mumu",
+      "source": "https://en.wikipedia.org/wiki/Papua_New_Guinean_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "La enciclopedia documenta mumu como preparación y método de horno de tierra con variaciones regionales. No se presenta como una única cocina para los numerosos pueblos del país. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Aves del paraíso",
+      "Arte de madera"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "PY": {
+    "landmark": {
+      "name": "Misiones de La Santísima Trinidad de Paraná y Jesús de Tavarangue",
+      "source": "https://whc.unesco.org/en/list/648/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Chipa",
+      "source": "https://cultura.gov.py/2025/09/chipa/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Chipa figura en información cultural oficial. Las misiones tienen una historia guaraní y colonial que no debe reducirse a decoración. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Ñandutí",
+      "Yerba mate"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "PE": {
+    "landmark": {
+      "name": "Machu Picchu",
+      "source": "https://whc.unesco.org/en/list/274/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Ceviche peruano",
+      "source": "https://ich.unesco.org/en/RL/practices-and-meanings-associated-with-the-preparation-and-consumption-of-ceviche-an-expression-of-peruvian-traditional-cuisine-01952",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Referencia a prácticas peruanas y variantes locales; no atribuye exclusividad de todo ceviche.",
+    "editorialCandidates": [
+      "Andes",
+      "Textiles"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "PH": {
+    "landmark": {
+      "name": "Terrazas de arroz de las cordilleras filipinas",
+      "source": "https://whc.unesco.org/en/list/722/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Adobo filipino",
+      "source": "https://nnc.gov.ph/mindanao-region/what-makes-an-adobo-dish-an-adobo/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal.",
+    "editorialCandidates": [
+      "Islas",
+      "Terrazas de arroz"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "PL": {
+    "landmark": {
+      "name": "Centro histórico de Cracovia",
+      "source": "https://whc.unesco.org/en/list/29/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pierogi",
+      "source": "https://www.poland.travel/en/flavours-of-polish-cuisine/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Piezas de masa rellena con numerosas variantes saladas y dulces, descritas por la oficina polaca de turismo. La selección no fija un relleno único. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Recortes de papel",
+      "Bosques"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "PT": {
+    "landmark": {
+      "name": "Torre de Belém",
+      "source": "https://www.visitportugal.com/es/content/torre-de-belem",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pastel de nata",
+      "source": "https://www.visitportugal.com/en/system/files_force/Sentir_PT_dez19_WEB_0.pdf",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Usar el nombre genérico pastel de nata; no reproducir marca o envase de una pastelería.",
+    "editorialCandidates": [
+      "Azulejos",
+      "Olas atlánticas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "QA": {
+    "landmark": {
+      "name": "Yacimiento arqueológico de Al Zubarah",
+      "source": "https://whc.unesco.org/en/list/1402/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Machboos",
+      "source": "https://visitqatar.com/intl-en/about-qatar/cuisine",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal.",
+    "editorialCandidates": [
+      "Perlas",
+      "Arquitectura del desierto"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "RO": {
+    "landmark": {
+      "name": "Delta del Danubio",
+      "source": "https://whc.unesco.org/en/list/588/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Sarmale",
+      "source": "https://romaniatourism.com/romanian-food-wine.html",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "RomaniaTourism documenta los rollos de hojas de col rellenas de carne y arroz, además de variantes sin carne. Esta selección no atribuye exclusividad de origen al país. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Cárpatos",
+      "Bordados"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "RU": {
+    "landmark": {
+      "name": "Kremlin y Plaza Roja de Moscú",
+      "source": "https://whc.unesco.org/en/list/545/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Echpochmak de Tartaristán",
+      "source": "https://visit-tatarstan.com/en/guides/gastronomicheskie-udovolstviya-v-tatarstane/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La oficina de turismo de Tartaristán describe esta empanada triangular con carne, patatas y cebolla. Es una especialidad tártara regional de la Federación de Rusia, no una representación de todas sus culturas. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Abedules",
+      "Arquitectura tradicional"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "RW": {
+    "landmark": {
+      "name": "Parque Nacional de Nyungwe",
+      "source": "https://whc.unesco.org/en/statesparties/rw",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Isombe",
+      "source": "https://en.wikipedia.org/wiki/Rwandan_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Colinas",
+      "Cestería"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "KN": {
+    "landmark": {
+      "name": "Fortaleza de Brimstone Hill",
+      "source": "https://whc.unesco.org/en/list/910",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Goat water",
+      "source": "https://www.mofa.gov.kn/2026/05/11/saint-kitts-and-nevis-goat-water-featured-at-first-ever-international-day-for-sids-reception-at-united-nations-headquarters-in-new-york/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El Ministerio de Relaciones Exteriores documenta goat water en una presentación gastronómica del país. El fuerte requiere contexto de historia colonial. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Picos volcánicos",
+      "Costa caribeña"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "LC": {
+    "landmark": {
+      "name": "Pitons",
+      "source": "https://whc.unesco.org/en/list/1161",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Plátano verde con pescado salado",
+      "source": "https://stlucia.org/en/blog/culinary/green-fig-and-saltfish-the-taste-that-helps-you-understand-saint-lucia/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Green fig es el nombre local del plátano verde en este plato; no se traduce como higo. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Pitones",
+      "Bosque tropical"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "VC": {
+    "landmark": {
+      "name": "Fort Charlotte",
+      "source": "https://tourism.gov.vc/tourism/index.php/national-sites-of-svg/fort-charlotte",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Fruta del pan con jackfish",
+      "source": "https://tourism.gov.vc/tourism/index.php/44-culture-department/culture-administration/179-svg-cultural-overview",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La página cultural del ministerio menciona breadfruit and jackfish. Se conserva el nombre jackfish para no afirmar una especie zoológica concreta. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Islas Granadinas",
+      "Velas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "WS": {
+    "landmark": {
+      "name": "Museo Robert Louis Stevenson, Vailima",
+      "source": "https://www.samoa.travel/plan-book/activities/robert-louis-stevenson-museum-rls-museum/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Palusami",
+      "source": "https://www.samoa.travel/discover/our-food-and-cuisine/samoan-food/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El museo es un lugar documentado en Samoa, no una representación de toda su historia. Palusami figura en la información culinaria del organismo turístico. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Tapa",
+      "Paisaje volcánico"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SM": {
+    "landmark": {
+      "name": "Centro histórico de San Marino y monte Titano",
+      "source": "https://whc.unesco.org/en/list/1245/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Piadina de San Marino",
+      "source": "https://www.visitsanmarino.com/pub1/VisitSM/contenuto/About-San-Marino/Gastronomia.html",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "La piadina se documenta en el portal turístico de San Marino dentro de una tradición compartida con regiones italianas vecinas. No se afirma exclusividad ni origen nacional propio. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Monte Titano",
+      "Torres"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "ST": {
+    "landmark": {
+      "name": "Roças de Santo Tomé y Príncipe",
+      "source": "https://whc.unesco.org/en/statesparties/st",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Calulu",
+      "source": "https://en.wikipedia.org/wiki/Cuisine_of_S%C3%A3o_Tom%C3%A9_and_Pr%C3%ADncipe",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Las roças requieren contexto sobre sistemas coloniales y migración forzada; no presentar como celebración de la colonización. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Cacao",
+      "Bosque insular"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SA": {
+    "landmark": {
+      "name": "Yacimiento arqueológico de Hegra",
+      "source": "https://whc.unesco.org/en/list/1293/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Harees",
+      "source": "https://ich.unesco.org/en/RL/harees-dish-know-how-skills-and-practices-01744",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal. La tradición del harees está documentada conjuntamente para Emiratos Árabes Unidos, Omán y Arabia Saudita.",
+    "editorialCandidates": [
+      "Arquitectura de Najd",
+      "Dátiles"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SN": {
+    "landmark": {
+      "name": "Isla de Gorée",
+      "source": "https://whc.unesco.org/en/list/26/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Ceebu jën",
+      "source": "https://ich.unesco.org/es/RL/ceebu-jen-arte-culinario-del-senegal-01748",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Referencia culinaria ligada a comunidades de Saint-Louis; no representa todas las culturas senegalesas.",
+    "editorialCandidates": [
+      "Baobabs",
+      "Textiles"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "RS": {
+    "landmark": {
+      "name": "Monasterio de Studenica",
+      "source": "https://whc.unesco.org/en/list/389/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Ajvar de Leskovac",
+      "source": "https://www.serbia.travel/en/green-markets/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Se selecciona la variante de ajvar de Leskovac documentada por turismo de Serbia; otras comunidades balcánicas también preparan ajvar. El monasterio es una referencia arquitectónica y religiosa concreta, no una descripción de toda la población. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Danubio",
+      "Bordados"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SC": {
+    "landmark": {
+      "name": "Reserva Natural de Vallée de Mai",
+      "source": "https://whc.unesco.org/en/statesparties/sc",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Ladob",
+      "source": "https://www.seychelles.com/experience/food-drinks",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades.",
+    "editorialCandidates": [
+      "Granito",
+      "Palmeras"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SL": {
+    "landmark": {
+      "name": "Complejo Gola-Tiwai",
+      "source": "https://whc.unesco.org/en/statesparties/sl",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Guiso de hojas de yuca",
+      "source": "https://en.wikipedia.org/wiki/Sierra_Leonean_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Playas",
+      "Tejidos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SG": {
+    "landmark": {
+      "name": "Jardín Botánico de Singapur",
+      "source": "https://whc.unesco.org/en/list/1483/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Kaya toast",
+      "source": "https://www.visitsingapore.com/travel-tips/travelling-to-singapore/itineraries/24-hours-in-singapore/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Referencia documentada en el resultado indexado de la página oficial de Visit Singapore; la lectura directa de la página no expuso su texto completo. No se atribuye exclusividad. El lugar y la comida son elecciones independientes; no se afirma que procedan de la misma localidad.",
+    "editorialCandidates": [
+      "Jardines",
+      "Arquitectura urbana"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SK": {
+    "landmark": {
+      "name": "Vlkolínec",
+      "source": "https://whc.unesco.org/en/list/622/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Bryndzové halušky",
+      "source": "https://slovakia.travel/en/slovak-gastronomy",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Se elige un asentamiento concreto y una preparación de masa de patata con bryndza. La selección culinaria no implica que todos los habitantes la consuman ni sustituye la diversidad de cocinas regionales. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Tatras",
+      "Arte en madera"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SI": {
+    "landmark": {
+      "name": "Cuevas de Škocjan",
+      "source": "https://whc.unesco.org/en/list/390/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Potica",
+      "source": "https://www.slovenia.info/en/stories/fragrant-slovenian-holiday-dishes",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Potica es una preparación de masa enrollada con numerosos rellenos; la fuente documenta la variante de nueces y otras. Se selecciona un ejemplo festivo sin asignar costumbres religiosas a toda la población. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Alpes Julianos",
+      "Lago Bled"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SB": {
+    "landmark": {
+      "name": "Rennell Oriental",
+      "source": "https://whc.unesco.org/en/list/854/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Yuca de las Islas Salomón",
+      "source": "https://www.fao.org/one-country-one-priority-product/asia-pacific/solomon-islands/en",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La FAO documenta la yuca como cultivo alimentario de las Islas Salomón. Es un alimento concreto; no se le asigna un plato preparado sin documentación. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Arrecifes",
+      "Arte en concha"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SO": {
+    "landmark": {
+      "name": "Faro Secondo-Lido de Mogadiscio",
+      "source": "https://whc.unesco.org/en/statesparties/so",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Canjeero",
+      "source": "https://link.springer.com/article/10.1186/s42779-022-00138-3",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El faro figura en la lista indicativa de UNESCO; no se afirma inscripción como Patrimonio Mundial. Un estudio de campo publicado en Journal of Ethnic Foods documenta este pan plano fermentado y esponjoso, llamado canjeero en el sur de Somalia y laxoox en zonas del norte. Se mantienen los distintos nombres regionales; no se atribuye origen exclusivo. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Costa índica",
+      "Incienso"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "ZA": {
+    "landmark": {
+      "name": "Áreas protegidas de la Región Floral del Cabo",
+      "source": "https://whc.unesco.org/en/list/1007/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Bobotie",
+      "source": "https://www.southafrica.net/gl/en/travel/article/iconic-south-african-foods-taste-all-the-flavours-of-the-rainbow-nation",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Ejemplo culinario asociado a la cocina del Cabo; no se afirma que represente toda la población.",
+    "editorialCandidates": [
+      "Proteas",
+      "Paisajes del Cabo"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SS": {
+    "landmark": {
+      "name": "Paisaje migratorio Boma-Badingilo",
+      "source": "https://whc.unesco.org/en/statesparties/ss",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Kisra",
+      "source": "https://en.wikipedia.org/wiki/South_Sudanese_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Nilo Blanco",
+      "Sabana"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "ES": {
+    "landmark": {
+      "name": "Alhambra de Granada",
+      "source": "https://www.spain.info/es/destino/granada/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Paella valenciana",
+      "source": "https://www.spain.info/es/receta/paella/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Selección de origen valenciano; no resume todas las cocinas de España.",
+    "editorialCandidates": [
+      "Azulejos",
+      "Olivos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "LK": {
+    "landmark": {
+      "name": "Antigua ciudad de Sigiriya",
+      "source": "https://whc.unesco.org/en/list/202/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Hoppers (appa)",
+      "source": "https://srilanka.travel/food",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal.",
+    "editorialCandidates": [
+      "Té",
+      "Elefantes"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SD": {
+    "landmark": {
+      "name": "Sitios arqueológicos de Meroe",
+      "source": "https://whc.unesco.org/en/statesparties/sd",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Kisra",
+      "source": "https://en.wikipedia.org/wiki/Sudanese_cuisine",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. La referencia culinaria se apoya en una entrada enciclopédica consultada; no equivale a una designación oficial ni a un origen exclusivo.",
+    "editorialCandidates": [
+      "Pirámides nubias",
+      "Nilo"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SR": {
+    "landmark": {
+      "name": "Reserva Natural de Surinam Central",
+      "source": "https://whc.unesco.org/en/list/1017/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pom",
+      "source": "https://en.wikipedia.org/wiki/Pom_%28dish%29",
+      "verified": true,
+      "verificationLevel": "encyclopedia-page"
+    },
+    "verified": true,
+    "notes": "Plato al horno documentado en una enciclopedia; representa una referencia culinaria concreta de Surinam, sin agotar su diversidad. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Selva",
+      "Arquitectura en madera"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SE": {
+    "landmark": {
+      "name": "Palacio y jardines de Drottningholm",
+      "source": "https://whc.unesco.org/en/list/559/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Albóndigas suecas (köttbullar)",
+      "source": "https://visitsweden.com/what-to-do/food-drink/swedish-kitchen/best-swedish-meatballs-and-where-get-them/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "VisitSweden describe las köttbullar y distintas variantes, incluidas opciones vegetales. Entre los acompañamientos citados figuran puré de patata, salsa y arándanos rojos. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Bosques",
+      "Diseño nórdico"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "CH": {
+    "landmark": {
+      "name": "Alpes suizos Jungfrau-Aletsch",
+      "source": "https://whc.unesco.org/en/list/1037/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Fondue de queso",
+      "source": "https://www.myswitzerland.com/en-gb/experiences/food-wine/fondue-experience-switzerland/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Una referencia culinaria dentro de la diversidad regional suiza; no implica exclusividad. El lugar y la comida son elecciones independientes; no se afirma que procedan de la misma localidad.",
+    "editorialCandidates": [
+      "Alpes",
+      "Relojería"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "SY": {
+    "landmark": {
+      "name": "Palmira",
+      "source": "https://whc.unesco.org/en/list/23/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Kibbeh",
+      "source": "https://ich.unesco.org/doc/src/38275-EN.pdf?t=1509979714",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal. El informe de UNESCO documenta variedades de kibbeh entre mujeres sirias desplazadas; no se reduce esta tradición a una sola receta.",
+    "editorialCandidates": [
+      "Mosaicos",
+      "Patios damascenos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "TJ": {
+    "landmark": {
+      "name": "Yacimiento protourbano de Sarazm",
+      "source": "https://whc.unesco.org/en/list/1141/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Oshi palav",
+      "source": "https://ich.unesco.org/en/RL/oshi-palav-a-traditional-meal-and-its-social-and-cultural-contexts-in-tajikistan-01191",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal.",
+    "editorialCandidates": [
+      "Pamir",
+      "Bordados"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "TZ": {
+    "landmark": {
+      "name": "Parque nacional del Kilimanjaro",
+      "source": "https://whc.unesco.org/en/list/403/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Ugali",
+      "source": "https://www.ug.tzembassy.go.tz/tanzania/category/people-and-culture",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades.",
+    "editorialCandidates": [
+      "Kilimanjaro",
+      "Costa suajili"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "TH": {
+    "landmark": {
+      "name": "Ciudad histórica de Ayutthaya",
+      "source": "https://whc.unesco.org/en/list/576/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Tomyum Kung",
+      "source": "https://www.tourismthailand.org/Articles/must-taste-tomyum-kung-in-thailand",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Una selección culinaria tailandesa con variantes regionales; la fuente turística oficial documenta su presencia. El lugar y la comida son elecciones independientes; no se afirma que procedan de la misma localidad.",
+    "editorialCandidates": [
+      "Orquídeas",
+      "Seda"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "TL": {
+    "landmark": {
+      "name": "Isla de Ataúro",
+      "source": "https://timorleste.tl/destinations",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Batar da'un",
+      "source": "https://timorleste.tl/eat-drink",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal.",
+    "editorialCandidates": [
+      "Tais",
+      "Montañas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "TG": {
+    "landmark": {
+      "name": "Koutammakou · tierra de los batammariba",
+      "source": "https://whc.unesco.org/en/statesparties/tg",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Fufu togolés",
+      "source": "https://togotourisme.tg/un-patrimoine-historique/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Koutammakou remite específicamente al patrimonio batammariba y es compartido con Benín. El portal del Ministerio de Cultura y Turismo de Togo documenta el fufu de ñame o yuca cocidos y machacados, servido con salsas. Se selecciona su preparación togolesa, sin atribuirle exclusividad de origen. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Tejidos",
+      "Palmerales"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "TO": {
+    "landmark": {
+      "name": "Trilito Ha‘amonga ‘a Maui, Tongatapu",
+      "source": "https://www.tongatourism.travel/our-islands/tongatapu",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Lu pulu",
+      "source": "https://www.tongatourism.travel/discover/people-and-culture/food-and-feasting",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Ambas referencias figuran en el portal turístico tongano. Conservar el contexto del monumento y la diversidad de las comidas familiares. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Tapa",
+      "Islas del Pacífico"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "TT": {
+    "landmark": {
+      "name": "Lago de asfalto de La Brea (Pitch Lake)",
+      "source": "https://nationaltrust.tt/location/pitch-lake/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Doubles",
+      "source": "https://visittrinidad.tt/things-to-do/cuisine/indo-trinidadian-food-in-trinidad-with-mark-wiens/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Doubles aparece en la información sobre cocina indotrinitense. Es una referencia particular dentro de las diversas tradiciones de Trinidad y Tobago. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Steelpan",
+      "Carnaval"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "TN": {
+    "landmark": {
+      "name": "Anfiteatro de El Jem",
+      "source": "https://whc.unesco.org/en/list/38/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Cuscús",
+      "source": "https://ich.unesco.org/en/RL/knowledge-know-how-and-practices-pertaining-to-the-production-and-consumption-of-couscous-01602?RL=01602&lang=en",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Tradición compartida en la candidatura de Argelia, Mauritania, Marruecos y Túnez; no exclusiva de un país.",
+    "editorialCandidates": [
+      "Mosaicos",
+      "Olivos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "TR": {
+    "landmark": {
+      "name": "Göreme y paisajes rocosos de Capadocia",
+      "source": "https://whc.unesco.org/en/list/357/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Simit",
+      "source": "https://goturkiye.com/gastronomy/turkish-cuisine",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "GoTürkiye describe el simit como pan redondo y crujiente cubierto de sésamo, habitual en el desayuno turco. Es una preparación concreta entre las numerosas tradiciones culinarias del país; no se afirma un origen exclusivo. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Azulejos",
+      "Capadocia"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "TM": {
+    "landmark": {
+      "name": "Antigua Merv",
+      "source": "https://whc.unesco.org/en/list/886/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Chorek",
+      "source": "https://turkmenistan.gov.tm/en/post/54809/tamdyr-national-bakery-traditions",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal.",
+    "editorialCandidates": [
+      "Alfombras",
+      "Desierto de Karakum"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "TV": {
+    "landmark": {
+      "name": "Área de conservación marina de Funafuti",
+      "source": "https://tourism.gov.tv/funafuti-marine-conservation-2/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Pulaka",
+      "source": "https://ichcourier.unesco-ichcap.org/board.es?act=view&b_list=12&bid=A102&list_no=566&mid=a10100000000",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "ICHCAP documenta pulaka como alimento tradicional. Se selecciona el tubérculo, sin inventar una receta ni sugerir extracción de especies en un área protegida. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Atolones",
+      "Cestería"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "UG": {
+    "landmark": {
+      "name": "Tumbas de los reyes de Buganda en Kasubi",
+      "source": "https://whc.unesco.org/en/statesparties/ug",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Rolex",
+      "source": "https://exploreuganda.com/culinary/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades.",
+    "editorialCandidates": [
+      "Lagos",
+      "Bosque tropical"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "UA": {
+    "landmark": {
+      "name": "Catedral de Santa Sofía de Kyiv",
+      "source": "https://whc.unesco.org/en/list/527/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Borscht ucraniano",
+      "source": "https://ich.unesco.org/en/USL/culture-of-ukrainian-borscht-cooking-01852",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Representa una tradición culinaria concreta; no niega variantes de otros países.",
+    "editorialCandidates": [
+      "Girasoles",
+      "Bordados"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "AE": {
+    "landmark": {
+      "name": "Sitios culturales de Al Ain",
+      "source": "https://whc.unesco.org/en/list/1343/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Harees",
+      "source": "https://ich.unesco.org/en/RL/harees-dish-know-how-skills-and-practices-01744",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal. La tradición del harees está documentada conjuntamente para Emiratos Árabes Unidos, Omán y Arabia Saudita.",
+    "editorialCandidates": [
+      "Dunas",
+      "Arquitectura urbana"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "GB": {
+    "landmark": {
+      "name": "Stonehenge",
+      "source": "https://whc.unesco.org/en/list/373/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Fish and chips",
+      "source": "https://www.visitbritain.com/es/cosas-que-hacer-en-gran-bretana/gastronomia-tipica-mapa-gastronomico-de-gran-bretana",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Pescado rebozado con patatas fritas, recogido por VisitBritain. Es una selección concreta entre las diversas cocinas del Reino Unido. Fuente consultada el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Bibliotecas",
+      "Jardines"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "US": {
+    "landmark": {
+      "name": "Gran Cañón",
+      "source": "https://whc.unesco.org/en/list/75/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Clam chowder de Massachusetts",
+      "source": "https://traveltrade.visittheusa.com/destinations/massachusetts/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Referencia regional de Massachusetts, no de toda la cocina estadounidense. Fuente consultada el 2 de octubre de 2026. Sólo ampliación gastronómica: conservar el lugar ya documentado.",
+    "editorialCandidates": [
+      "Jazz",
+      "Parques nacionales"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "UY": {
+    "landmark": {
+      "name": "Barrio histórico de Colonia del Sacramento",
+      "source": "https://whc.unesco.org/en/list/747",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Chivito",
+      "source": "https://www.gub.uy/ministerio-turismo/comunicacion/noticias/chivito-week-vuelve-renovado-llega-todo-pais",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Chivito se usa aquí como nombre del plato documentado por el Ministerio de Turismo, sin inferir ingredientes a partir de su nombre. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Mate",
+      "Costa atlántica"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "UZ": {
+    "landmark": {
+      "name": "Samarcanda",
+      "source": "https://whc.unesco.org/en/list/603/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Palov",
+      "source": "https://ich.unesco.org/en/RL/palov-culture-and-tradition-01166",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Referencia culinaria concreta de una fuente institucional; no implica exclusividad ni consumo universal.",
+    "editorialCandidates": [
+      "Samarcanda",
+      "Azulejos"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "VU": {
+    "landmark": {
+      "name": "Dominio del jefe Roi Mata",
+      "source": "https://whc.unesco.org/en/list/1280",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Laplap",
+      "source": "https://www.vanuatu.travel/en/about-vanuatu/local-eats",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El organismo turístico documenta laplap. El sitio de Roi Mata conserva significados culturales y comunitarios; evitar una representación ritual inventada. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Volcanes",
+      "Arte de arena"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "VA": {
+    "landmark": {
+      "name": "Basílica de San Pedro",
+      "source": "https://whc.unesco.org/en/list/286/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Pizza napolitana (Museos Vaticanos)",
+      "source": "https://www.museivaticani.va/content/museivaticani/en/organizza-visita/servizi-per-i-visitatori/ristorazione.html",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "La basílica se documenta dentro del bien Ciudad del Vaticano. La comida es una oferta contemporánea del servicio de restauración de los Museos Vaticanos, expresamente pizza napolitana; no se afirma una receta originaria del Vaticano ni una gastronomía nacional distinta de la italiana. El lugar mantiene su significado religioso. Fuentes consultadas el 2 de octubre de 2026.",
+    "editorialCandidates": [
+      "Arquitectura renacentista",
+      "Biblioteca"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "VE": {
+    "landmark": {
+      "name": "Parque nacional Canaima",
+      "source": "https://whc.unesco.org/en/list/701/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Arepa venezolana",
+      "source": "https://www.mincultura.gob.ve/noticias/la-arepa-y-sus-variantes-en-el-territorio-venezolano/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El Ministerio de Cultura documenta variantes de la arepa en Venezuela; la referencia no reclama exclusividad nacional sobre un alimento compartido. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población.",
+    "editorialCandidates": [
+      "Tepuyes",
+      "Orquídeas"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "VN": {
+    "landmark": {
+      "name": "Bahía de Ha Long y archipiélago de Cat Ba",
+      "source": "https://whc.unesco.org/en/list/672/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Phở",
+      "source": "https://vietnam.travel/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "La portada oficial enlaza su artículo sobre phở vietnamita. Solo se verifica la relación culinaria, no una receta ni una historia de origen. El lugar y la comida son elecciones independientes; no se afirma que procedan de la misma localidad.",
+    "editorialCandidates": [
+      "Faroles",
+      "Terrazas de arroz"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "YE": {
+    "landmark": {
+      "name": "Ciudad vieja de Saná",
+      "source": "https://whc.unesco.org/en/list/385/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Saltah",
+      "source": "https://embassy-of-yemen.pl/en/home/visit-yemen/tourism-in-yemen/must-try/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "verified": true,
+    "notes": "Lugar concreto documentado en la ficha del Centro del Patrimonio Mundial; la selección no resume la diversidad cultural del país. Selección culinaria documentada, no exclusiva ni universal. La fuente culinaria identifica especialmente las tierras altas del norte de Yemen.",
+    "editorialCandidates": [
+      "Arquitectura de Saná",
+      "Café"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "ZM": {
+    "landmark": {
+      "name": "Mosi-oa-Tunya · cataratas Victoria",
+      "source": "https://whc.unesco.org/en/statesparties/zm",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Nshima",
+      "source": "https://www.zambiatourism.com/what-to-see-during-your-holidays-in-zambia/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "Las cataratas son compartidas con Zimbabue.",
+    "editorialCandidates": [
+      "Cataratas Victoria",
+      "Cobre"
+    ],
+    "checkedAt": "2026-10-02"
+  },
+  "ZW": {
+    "landmark": {
+      "name": "Gran Zimbabue",
+      "source": "https://whc.unesco.org/en/statesparties/zw",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "food": {
+      "name": "Sadza",
+      "source": "https://zimbabwetourism.net/portfolios/chesvingo-cultural-village/",
+      "verified": true,
+      "verificationLevel": "documented-reference"
+    },
+    "verified": true,
+    "notes": "El ejemplo de sadza está documentado en Chesvingo, con variantes de rapoko y sorgo.",
+    "editorialCandidates": [
+      "Gran Zimbabue",
+      "Sabana"
+    ],
+    "checkedAt": "2026-10-02"
+  }
+}
