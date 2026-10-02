@@ -1,0 +1,55 @@
+{
+  "project": "PostisPop",
+  "recorded_on": "2026-10-02",
+  "purpose": "Agreed requirements for the next product implementation; this file does not enforce access or activate billing.",
+  "priority": [
+    "Refine the website and verify mobile and desktop loading performance",
+    "Implement and validate server-enforced subscription rules and paper rewards",
+    "Publish the verified website",
+    "Create Descargas with real tested installers for each supported operating system"
+  ],
+  "notes": {
+    "implementation_status": "pending",
+    "always_free_positions": [1, 2, 3, 4, 5, 6, 12],
+    "always_visible_positions": 12,
+    "position_12": {"editable": true, "permanently_unlocked": true, "daily_quote": true},
+    "maximum_positions": 100,
+    "additional_positions_created_on_demand": true,
+    "initial_trial_days": 30,
+    "subscription_positions": {"ranges": [[7, 11], [13, 100]]},
+    "recovery_days_after_trial_without_subscription": 30,
+    "after_recovery_without_renewal": "Delete only expired subscription notes; never the seven permanent free positions.",
+    "access_enforcement": "server",
+    "search_excludes_locked_notes": true
+  },
+  "papers": {
+    "implementation_status": "pending",
+    "examples": ["papiro", "pergamino", "cuaderno escolar", "papel japonés", "diario de viaje", "planos de arquitecto"],
+    "locked_designs_previewable": true,
+    "reward_every_consecutive_days": 5,
+    "duplicate_rewards": false,
+    "premium_includes_all_designs": true
+  },
+  "billing": {
+    "subscription_implementation_status": "pending",
+    "subscription_price_and_period": null,
+    "existing_one_time_products_are_not_subscription_terms": true,
+    "required_validation": ["successful test payment", "cancelled payment", "unpaid session", "repeated webhook", "wrong account", "entitlement recovery", "expiry and renewal", "refund behavior"]
+  },
+  "downloads": {
+    "implementation_phase": "after website refinement",
+    "section_name": "Descargas",
+    "targets": ["Android", "iOS/iPadOS", "Windows", "macOS", "Linux", "Meta glasses", "Apple Vision Pro"],
+    "meta_model_needs_confirmation": true,
+    "publish_only_built_tested_artifacts": true,
+    "native_platform_validation_pending": true
+  },
+  "release_checkpoint": {
+    "base_main": "cd11e16aff55e0fe2fb5eb90481f97d47b6dd84b",
+    "prepared_changes": ["Visible note search and color filter", "Installation guide included in Pages output", "Updated UI regression checks", "UI checks required before Pages publication"],
+    "completed_checks": ["20 Node tests passed", "JavaScript syntax lint passed", "Astro check: zero errors or warnings", "Astro build and Pagefind passed", "Static Pages staging passed"],
+    "ui_check_status": "Not completed locally: browser startup is blocked by the execution environment; must pass in GitHub Actions.",
+    "deployment_status": "Prepared on release/complete-web-20261002; publication requires successful GitHub Actions checks and merge into main.",
+    "new_lighthouse_score": null
+  }
+}
