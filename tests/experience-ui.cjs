@@ -5,7 +5,7 @@ let reviewPage;
 const results=path.resolve(__dirname,'../test-results');
 (async()=>{
   const root=path.resolve(__dirname,'../_site');
-  const browser=await chromium.launch({headless:true});
+  const browser=await chromium.launch({headless:true,executablePath:process.env.POSTISPOP_CHROME});
   const context=await browser.newContext({locale:'pt-BR',viewport:{width:390,height:844},acceptDownloads:true});
   const errors=[],missing=[];
   await context.route('**/*',async route=>{
@@ -35,12 +35,17 @@ const results=path.resolve(__dirname,'../test-results');
   assert.equal(await page.locator('.onboarding-card').count(),0);
   assert.equal(await page.locator('.pp-board-options').getAttribute('open'),null);
   assert.equal(await page.getByRole('button',{name:'Guardar una copia',exact:true}).isVisible(),false);
-  await page.getByText('Opciones avanzadas',{exact:true}).click();
+  assert.equal(await page.getByRole('searchbox',{name:'Buscar notas o etiquetas'}).isVisible(),true);
   await page.getByRole('searchbox',{name:'Buscar notas o etiquetas'}).fill('#estudio');
   await page.waitForFunction(()=>document.querySelector('.pp-tools [role=status]')?.textContent.startsWith('1 notas'));
   assert.equal(await page.locator('.note-cell.pp-filtered').count(),11);
   await page.getByRole('searchbox',{name:'Buscar notas o etiquetas'}).fill('');
   await page.waitForFunction(()=>document.querySelectorAll('.note-cell.pp-filtered').length===0);
+  await page.getByRole('combobox',{name:'Filtrar por color'}).selectOption('1');
+  await page.waitForFunction(()=>document.querySelectorAll('.note-cell.pp-filtered').length>0);
+  await page.getByRole('combobox',{name:'Filtrar por color'}).selectOption('');
+  await page.waitForFunction(()=>document.querySelectorAll('.note-cell.pp-filtered').length===0);
+  await page.getByText('Opciones avanzadas',{exact:true}).click();
   const downloadPromise=page.waitForEvent('download');await page.getByRole('button',{name:'Guardar una copia',exact:true}).click();
   const download=await downloadPromise;const backup=JSON.parse(await fs.readFile(await download.path(),'utf8'));assert.equal(backup.notes[0].text,'Nota guardada sin Internet #estudio');assert.ok(!JSON.stringify(backup).includes('access_token'));
   await page.getByRole('button',{name:'Plantillas',exact:true}).click();
@@ -52,7 +57,8 @@ const results=path.resolve(__dirname,'../test-results');
   const png=await fs.readFile(await(await pngPromise).path());assert.equal(png.subarray(1,4).toString(),'PNG');await fs.writeFile(path.join(results,'export.png'),png);
   await page.getByText('Opciones avanzadas',{exact:true}).click();
   assert.equal(await page.locator('.pp-board-options').getAttribute('open'),null);
-  assert.equal(await page.locator('.pp-tools').isVisible(),false);
+  assert.equal(await page.locator('.pp-board-options .pp-tools').isVisible(),false);
+  assert.equal(await page.getByRole('searchbox',{name:'Buscar notas o etiquetas'}).isVisible(),true);
   assert.equal(await page.locator('.board-frame').evaluate(board=>board.nextElementSibling?.classList.contains('pp-board-options')),true);
   for(const width of [360,390,768,1440]){
     await page.setViewportSize({width,height:900});
@@ -73,6 +79,11 @@ const results=path.resolve(__dirname,'../test-results');
     await page.setViewportSize({width,height:900});
     assert.equal(await page.locator('.sticky-note .note-text').first().evaluate(el=>{const text=el.getBoundingClientRect(),paper=el.closest('.sticky-note').getBoundingClientRect();return text.left>=paper.left-1&&text.right<=paper.right+1&&text.top>=paper.top-1&&text.bottom<=paper.bottom+1;}),true,`Note text stays on paper at ${width}`);
   }
+  await page.goto('https://postispop.com/instalar.html');assert.equal(await page.locator('h1').innerText(),'Tus ideas, también en tu dispositivo.');
+  assert.equal(await page.locator('#install').isVisible(),false);
+  await page.evaluate(()=>document.documentElement.dataset.colorScheme='dark');
+  assert.equal(await page.locator('article').first().evaluate(el=>getComputedStyle(el).backgroundColor!==getComputedStyle(el).color),true,'Installation cards remain readable in dark mode');
+  await page.evaluate(()=>document.documentElement.dataset.colorScheme='light');
   await page.goto('https://postispop.com/tienda/');assert.equal(await page.locator('[data-product-card]').count(),4);
   for(const name of ['bloc-de-notas-online','pizarra-virtual','notas-adhesivas-online','pizarra-colaborativa','organizador-visual-de-tareas','notas-para-estudiar','pizarra-para-reuniones','lluvia-de-ideas-online']){
     await page.goto(`https://postispop.com/${name}.html`);assert.equal(await page.locator('h1').count(),1);await page.setViewportSize({width:360,height:800});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,name);
