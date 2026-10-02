@@ -1,8 +1,14 @@
 import { readGuest, guestRequest } from './guest-board.js';
+import { createOfflineStore, sameMutation } from './offline-sync.js';
+import { getOfflineRights, saveOfflineReceipt } from './offline-license.js';
+import { installOfflineUI } from './offline-ui.js';
+import { normalizeBackup, importTicket, withImportSlots } from './backup-import.js';
 const SUPABASE_URL = "https://htfyjefmviwlgmfqrwue.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ox1LUYhmz57iSU7mPtGStg_-FZl-zQT";
 const originalFetch = window.fetch.bind(window);
 const sessionKey = "postispop-supabase-session";
+const offline = createOfflineStore(localStorage);
+const online = () => typeof navigator === "undefined" || navigator.onLine !== false;
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
   status,
@@ -29,7 +35,7 @@ const headers = () => {
   };
 };
 
-const rest = async (table, query = "", options = {}) => {
+const rawRest = async (table, query = "", options = {}) => {
   const response = await originalFetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
     ...options,
     headers: { ...headers(), ...(options.headers || {}) }
@@ -37,11 +43,11 @@ const rest = async (table, query = "", options = {}) => {
   const text = await response.text();
   let body = null;
   try { body = text ? JSON.parse(text) : null; } catch { body = text; }
-  if (!response.ok) throw Object.assign(new Error(body?.message || "SUPABASE_ERROR"), { status: response.status, body });
+  if (!response.ok) throw Object.assign(new Error(body?.message || "SUPABASE_ERROR"), { status: body?.code === "40001" || body?.message === "CONFLICT" ? 409 : response.status, body });
   return body;
 };
 
-const mapNote = (n) => ({
+const mapNote = (n) => n.protected_envelope ? ({id:n.id,paper:n.paper??0,text:"Nota protegida",marks:[],doodle:"",image:null,author:n.author_id||"",revision:n.revision||1,created:n.created_ms||Date.parse(n.created_at),updated:n.updated_ms||Date.parse(n.updated_at),lockedUntil:0,editing:"",protectedEnvelope:n.protected_envelope}) : ({
   id: n.id, doodle: n.doodle || "", paper: n.paper ?? 0, text: n.text || "",
   marks: n.marks || [], author: n.author_id || "", revision: n.revision || 1,
   created: n.created_ms || Date.parse(n.created_at), image: n.image_url ? { url: n.image_url } : null,
@@ -66,7 +72,7 @@ const guestBoard = () => {
   return { id, title: "Mi pizarra", revision: 1, order: notes.map(n => n.id), expires: null, role: "owner", owner: "guest", notes: notes.map(mapNote), members: [] };
 };
 
-async function createBoard(user) {
+async function createBoard(user, rest) {
   const boardRows = await rest("boards", "", {
     method: "POST", headers: { Prefer: "return=representation" },
     body: JSON.stringify({ owner_id: user.id, title: "Mi pizarra" })
@@ -100,14 +106,45 @@ async function currentUser() {
   if(!response.ok) { if(response.status===401) {localStorage.removeItem(sessionKey);return null;} throw new Error('AUTH_UNAVAILABLE'); }
   const user=await response.json();
   if(generation!==sessionGeneration || session()?.access_token!==saved.access_token) return null;
-  userCache={token:saved.access_token,user,until:Date.now()+30000};return user;
+  userCache={token:saved.access_token,user,until:Date.now()+30000};offline.rememberIdentity(user);return user;
 }
 
 async function api(endpoint, init) {
+  const requestStartedAt=Date.now();
+  const authGeneration=sessionGeneration;
+  const requestUserId=session()?.user?.id;
+  const rest=async(table,query='',options={})=>{
+    if(authGeneration!==sessionGeneration||session()?.user?.id!==requestUserId)throw Object.assign(new Error('SESSION_CHANGED'),{status:401});
+    const result=await rawRest(table,query,options);
+    if(authGeneration!==sessionGeneration||session()?.user?.id!==requestUserId)throw Object.assign(new Error('SESSION_CHANGED'),{status:401});
+    return result;
+  };
   const method = init?.method || "GET";
   const payload = init?.body ? JSON.parse(init.body) : undefined;
   const local=guestRequest(endpoint,method,payload);
   if(local) return json(local);
+
+  const publicShare=endpoint.match(/^protected-shares\/([a-f0-9]{64})$/);
+  if(publicShare&&method==='GET')return json(await rest('rpc/postispop_read_protected_share','',{method:'POST',body:JSON.stringify({p_token:publicShare[1]})}));
+
+  if(endpoint.startsWith('designs/') || endpoint==='owner/dashboard') {
+    const user=await currentUser();
+    if(!user) return json({error:'SESSION_REQUIRED'},401);
+    const rpc={ 'designs/status':'postispop_design_status','designs/checkin':'postispop_checkin',
+      'designs/claim':'postispop_claim_design','designs/select':'postispop_select_design',
+      'owner/dashboard':'postispop_owner_dashboard' }[endpoint];
+    if(rpc) {const status=await rest('rpc/'+rpc,'',{method:'POST',body:JSON.stringify(payload||{})});
+      if(endpoint==='designs/status'&&online()) {try {const response=await originalFetch(SUPABASE_URL+'/functions/v1/postispop-offline-license',{method:'POST',headers:headers(),body:'{}'});if(response.ok){const receipt=await response.json();await saveOfflineReceipt(user.id,receipt.token);}}catch{/* Offline Premium remains disabled until a valid signed receipt exists. */}}
+      return json(status);}
+    if(endpoint==='designs/styles') {
+      if(method==='GET') {const noteId=new URLSearchParams(init?.search||'').get('note_id');const styles=await rest('postispop_note_style','?select=*'+(noteId?'&note_id=eq.'+encodeURIComponent(noteId):''));return json({styles,...(noteId?{style:styles[0]||null}:{})});}
+      const allowed=['note_id','font','size','italic','underline','ink','paper','drawing','revision'];
+      const data=Object.fromEntries(allowed.filter(k=>payload?.[k]!==undefined).map(k=>[k,payload[k]]));
+      const row=await rest('rpc/postispop_save_note_style','',{method:'POST',body:JSON.stringify({p_style:data})});
+      return json({style:row});
+    }
+    return json({error:'NOT_FOUND'},404);
+  }
 
   if(endpoint.startsWith('commerce/')) {
     const user=await currentUser();
@@ -134,7 +171,8 @@ async function api(endpoint, init) {
     const response = await originalFetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, { method: "POST", headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ email: payload.email, password: payload.password }) });
     const data = await response.json();
     if (!response.ok) return json({ error: data.error_description || data.msg || "AUTH_FAILED" }, response.status);
-    localStorage.setItem(sessionKey, JSON.stringify(data));
+    if(authGeneration!==sessionGeneration)return json({error:'SESSION_CHANGED'},401);
+    sessionGeneration++;localStorage.setItem(sessionKey, JSON.stringify(data));offline.rememberIdentity(data.user);announce('postispop:session-change',{userId:data.user.id});
     return json({ actor: actorFor(data.user) });
   }
 
@@ -142,7 +180,8 @@ async function api(endpoint, init) {
     const response = await originalFetch(`${SUPABASE_URL}/auth/v1/signup`, { method: "POST", headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ email: payload.email, password: payload.password }) });
     const data = await response.json();
     if (!response.ok) return json({ error: data.msg || data.message || "AUTH_FAILED" }, response.status);
-    if (data.access_token) localStorage.setItem(sessionKey, JSON.stringify(data));
+    if (data.access_token) { if(authGeneration!==sessionGeneration)return json({error:'SESSION_CHANGED'},401);
+    sessionGeneration++;localStorage.setItem(sessionKey, JSON.stringify(data));offline.rememberIdentity(data.user);announce('postispop:session-change',{userId:data.user.id}); }
     return json({ confirmation: !data.access_token, actor: actorFor(data.user) });
   }
 
@@ -166,7 +205,8 @@ async function api(endpoint, init) {
     });
     const data = await response.json();
     if (!response.ok) return json({ error: data.error_description || data.msg || "AUTH_FAILED" }, response.status);
-    localStorage.setItem(sessionKey, JSON.stringify(data));
+    if(authGeneration!==sessionGeneration)return json({error:'SESSION_CHANGED'},401);
+    sessionGeneration++;localStorage.setItem(sessionKey, JSON.stringify(data));offline.rememberIdentity(data.user);announce('postispop:session-change',{userId:data.user.id});
     return json({ actor: actorFor(data.user) });
   }
 
@@ -174,7 +214,7 @@ async function api(endpoint, init) {
     const token = session()?.access_token;
     // Local logout must succeed even offline; invalidate pending auth responses first.
     sessionGeneration++; userCache = null;
-    localStorage.removeItem(sessionKey);
+    localStorage.removeItem(sessionKey);announce('postispop:session-change',{userId:null});
     if (!token) return json({ ok: true, serverRevoked: null });
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
@@ -209,14 +249,47 @@ async function api(endpoint, init) {
   if (endpoint === "me" && method === "GET") {
     if (!user) return json({ actor: actorFor(null), boards: [{ id: "guest-board", title: "Mi pizarra", owner: "guest", expires: null, role: "owner" }] });
     let boards = await rest("boards", "?select=*&order=created_at.asc");
-    if (!boards.length) boards = [await createBoard(user)];
+    if (!boards.length) boards = [await createBoard(user,rest)];
     return json({ actor: actorFor(user), boards: boards.map(b => ({ id: b.id, title: b.title || "", owner: b.owner_id, expires: b.expires_at, role: b.owner_id===user.id?"owner":"member" })) });
   }
   if (!user && endpoint === "boards" && method === "POST") return json(readGuest());
   if (!user) return json({ error: "SESSION_REQUIRED" }, 401);
 
+  if(init?.accountId && init.accountId!==user.id)return json({error:'SESSION_CHANGED'},401);
+  const importMatch=endpoint.match(/^board\/([^/]+)\/import$/);
+  if(importMatch&&method==='POST') {
+    if(!online())return json({error:'OFFLINE'},503);
+    const state=offline.status(user.id);
+    if(state.pending||state.conflicts)return json({error:'SYNC_PENDING_BEFORE_IMPORT'},409);
+    const boardId=importMatch[1],backup=normalizeBackup(payload);
+    const boards=await rest('boards','?id=eq.'+encodeURIComponent(boardId)+'&select=id,owner_id');
+    if(boards[0]?.owner_id!==user.id)return json({error:'OWNER_REQUIRED'},403);
+    const notes=await rest('notes','?board_id=eq.'+encodeURIComponent(boardId)+'&select=id');
+    const ticket=await importTicket(localStorage,user.id,boardId,backup.notes,requestStartedAt);
+    return withImportSlots(notes.map(n=>n.id),async excluded=>{
+      let result;
+      try{result=await rest('rpc/postispop_import_board','',{method:'POST',body:JSON.stringify({p_board_id:boardId,p_request_id:ticket.requestId,p_notes:backup.notes,p_excluded_note_ids:excluded})});}
+      catch(error){if(error.body?.code==='PGRST202'||error.body?.code==='42883')return json({error:'IMPORT_UNAVAILABLE'},503);throw error;}
+      for(let i=0;i<(result.noteIds||[]).length;i++)if(backup.notes[i]?.protectedEnvelope){try{localStorage.setItem('pp:protected-note:'+result.noteIds[i],'1');}catch{/* The server envelope is authoritative. */}}
+      ticket.finish();return json(result);
+    });
+  }
+  const protectedMatch=endpoint.match(/^note\/([^/]+)\/(protect|protected-save)$/);
+  if(protectedMatch&&method==='POST') {
+    if(protectedMatch[2]==='protect'&&offline.noteHistory(protectedMatch[1]).pending)return json({error:'SYNC_PENDING_BEFORE_PROTECT'},409);
+    if(protectedMatch[2]==='protect'&&offline.noteHistory(protectedMatch[1]).recovery&&!payload.purgeVersions)return json({error:'CONFIRM_RECOVERY_PURGE'},409);
+    const row=await rest('rpc/postispop_protect_note','',{method:'POST',body:JSON.stringify({p_note_id:protectedMatch[1],p_revision:payload.revision,p_envelope:payload.protectedEnvelope,p_style_revision:payload.styleRevision||0})});
+    const note=mapNote(Array.isArray(row)?row[0]:row);
+    if(protectedMatch[2]==='protect')offline.sanitizeProtected(note);else offline.updateNote(user.id,note);
+    return json({note});
+  }
+  if(endpoint==='protected-shares'&&method==='POST')return json(await rest('rpc/postispop_create_protected_share','',{method:'POST',body:JSON.stringify({p_note_id:payload.noteId,p_days:payload.expiresInDays||7})}));
+  if(endpoint==='protected-shares/revoke-note'&&method==='POST')return json(await rest('rpc/postispop_revoke_note_shares','',{method:'POST',body:JSON.stringify({p_note_id:payload.noteId})}));
+  const revoke=endpoint.match(/^protected-shares\/([^/]+)\/revoke$/);
+  if(revoke&&method==='POST')return json(await rest('rpc/postispop_revoke_protected_share','',{method:'POST',body:JSON.stringify({p_share_id:revoke[1]})}));
+
   if (endpoint === "boards" && method === "POST") {
-    const board = await createBoard(user);
+    const board = await createBoard(user,rest);
     return api(`board/${board.id}`, { method: "GET" });
   }
 
@@ -226,7 +299,7 @@ async function api(endpoint, init) {
     const response = await api('board/'+exportMatch[1], {method:'GET'});
     if(!response.ok) return response;
     const board=await response.json();
-    return json({format:'postispop',version:1,title:board.title,notes:board.order.map(id=>board.notes.find(n=>n.id===id)).filter(Boolean).map(({text,marks,paper,doodle,image})=>({text,marks,paper,doodle,image})),exportedAt:new Date().toISOString()});
+    return json({format:'postispop',version:1,title:board.title,notes:board.order.map(id=>board.notes.find(n=>n.id===id)).filter(Boolean).map(n=>n.protectedEnvelope?{paper:n.paper,protectedEnvelope:n.protectedEnvelope}:{text:n.text,marks:n.marks,paper:n.paper,doodle:n.doodle,image:n.image}),exportedAt:new Date().toISOString()});
   }
 
   const boardMatch = endpoint.match(/^board\/([^/]+)$/);
@@ -251,10 +324,11 @@ async function api(endpoint, init) {
   if (noteMatch && method === "POST") {
     const id = noteMatch[1];
     const kind = noteMatch[2];
+    if(!['lock','unlock'].includes(kind)){const current=await rest('notes','?id=eq.'+encodeURIComponent(id)+'&select=id,protected_envelope');if(current[0]?.protected_envelope)return json({error:'PROTECTED_NOTE'},403);}
     if(kind==='paper'&&(!Number.isInteger(payload?.paper)||payload.paper<0||payload.paper>5||!Number.isInteger(payload.revision))) return json({error:'INVALID_NOTE'},400);
     const update = kind === "paper" ? { paper: payload.paper } : kind === "doodle" ? { doodle: payload.doodle } : kind === "image" ? { image_url: payload.url || payload.image?.url || null } : kind === "lock" ? { locked_until: new Date(Date.now() + 45000).toISOString(), editing: user.id } : kind === "unlock" ? { locked_until: null, editing: null } : { text: payload.text, marks: payload.marks || [], revision: (payload.revision || 0) + 1 };
     update.updated_ms = Date.now();
-    const query=`?id=eq.${encodeURIComponent(id)}`+(kind==='lock'?`&or=(locked_until.is.null,locked_until.lt.${encodeURIComponent(new Date().toISOString())},editing.eq.${user.id})`:kind==='unlock'?`&editing=eq.${user.id}`:Number.isInteger(payload.revision)?`&revision=eq.${payload.revision}`:'');
+    const query=`?id=eq.${encodeURIComponent(id)}&protected_envelope=is.null`+(kind==='lock'?`&or=(locked_until.is.null,locked_until.lt.${encodeURIComponent(new Date().toISOString())},editing.eq.${user.id})`:kind==='unlock'?`&editing=eq.${user.id}`:Number.isInteger(payload.revision)?`&revision=eq.${payload.revision}`:'');
     if(!['lock','unlock'].includes(kind)&&Number.isInteger(payload.revision))update.revision=payload.revision+1;
     const rows = await rest("notes", query, { method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify(update) });
     if(!rows?.length) return json({error:kind==='lock'?'NOTE_LOCKED':'CONFLICT'},409);
@@ -264,32 +338,122 @@ async function api(endpoint, init) {
   return json({ error: "UNSUPPORTED_OPERATION" }, 400);
 }
 
+
+const announce=(kind,detail)=>{if(typeof window.dispatchEvent==='function'&&typeof CustomEvent==='function')window.dispatchEvent(new CustomEvent(kind,{detail}));};
+const offlineActor=()=>{const id=session()?.user?.id;return id?offline.identity(id):null;};
+const outboxStatus=()=>{const id=offlineActor()?.id;return{...(id?offline.status(id):{pending:0,conflicts:0}),online:online(),userId:id||null};};
+let flushPromise=null;
+async function flushOutbox(userId) {
+  if(flushPromise)return flushPromise;
+  const work=async()=>{
+    if(!online()||session()?.user?.id!==userId)return;
+    const blocked=new Set();
+    for(const op of offline.pending(userId)) {
+      if(session()?.user?.id!==userId||!online())break;
+      const target=op.noteId+(op.kind==='style'?':style':':note');
+      if(op.state==='conflict'||blocked.has(target)){blocked.add(target);continue;}
+      try {
+        const response=await api(op.endpoint,{method:'POST',body:JSON.stringify(op.body),accountId:userId});
+        if(session()?.user?.id!==userId)break;
+        const data=await response.json();
+        if(response.ok)offline.acknowledge(userId,op,data);
+        else if(response.status===401)break;
+        else if(response.status>=500)break;
+        else {
+          let server=null;
+          if(op.kind==='style'){const rows=await rawRest('postispop_note_style','?note_id=eq.'+encodeURIComponent(op.noteId)+'&select=*');server=rows[0]||null;}
+          else {const rows=await rawRest('notes','?id=eq.'+encodeURIComponent(op.noteId)+'&select=*');server=rows[0]?mapNote(rows[0]):null;}
+          if(session()?.user?.id!==userId)break;
+          if(sameMutation(op,server))offline.acknowledge(userId,op,op.kind==='style'?{style:server}:{note:server});
+          else {offline.conflict(userId,op,server,data.error||'CONFLICT');blocked.add(target);}
+        }
+      } catch(error) {
+        if(error.status===401||!error.status||error.status>=500)break;
+        if(session()?.user?.id!==userId)break;
+        let server=null;
+        try{const table=op.kind==='style'?'postispop_note_style':'notes',field=op.kind==='style'?'note_id':'id';const rows=await rawRest(table,'?'+field+'=eq.'+encodeURIComponent(op.noteId)+'&select=*');server=rows[0]?(op.kind==='style'?rows[0]:mapNote(rows[0])):null;}catch{}
+        if(sameMutation(op,server))offline.acknowledge(userId,op,op.kind==='style'?{style:server}:{note:server});
+        else{offline.conflict(userId,op,server,error.message);blocked.add(target);}
+      }
+    }
+    announce('postispop:offline',outboxStatus());
+  };
+  flushPromise=(typeof navigator!=='undefined'&&navigator.locks?.request?navigator.locks.request('postispop-outbox:'+userId,work):work()).finally(()=>{flushPromise=null;});
+  return flushPromise;
+}
+
 window.fetch = async (input, init = {}) => {
-  const url = new URL(typeof input === "string" ? input : input.url, location.href);
-  const parts = url.pathname.split("/").filter(Boolean);
-  const apiIndex = parts.indexOf("api");
-  if (url.origin !== location.origin || apiIndex === -1) return originalFetch(input, init);
-  const endpoint = parts.slice(apiIndex + 1).join("/");
-  const mutatesNote=(init.method||'GET')==='POST' && /^note\/[^/]+(?:\/(?:text|paper|doodle|image))?$/.test(endpoint);
-  const announce=(kind,detail)=>{if(typeof window.dispatchEvent==='function'&&typeof CustomEvent==='function')window.dispatchEvent(new CustomEvent(kind,{detail}));};
-  const mode=endpoint.includes('guest-')?'local':'cloud';
-  if(mutatesNote)announce('postispop:save',{state:'saving',mode});
+  const url = new URL(typeof input === 'string' ? input : input.url, location.href);
+  const parts = url.pathname.split('/').filter(Boolean), apiIndex=parts.indexOf('api');
+  if(url.origin!==location.origin||apiIndex===-1)return originalFetch(input,init);
+  const endpoint=parts.slice(apiIndex+1).join('/'), method=(init.method||'GET').toUpperCase();
+  const requestGeneration=sessionGeneration, requestAccountId=session()?.user?.id;
+  init={...init,method,search:url.search};
+  const mutation=method==='POST'&&/^note\/[^/]+(?:\/(?:text|paper|doodle|image|protect|protected-save))?$/.test(endpoint);
+  const mode=endpoint.includes('guest-')?'local':'cloud', account=offlineActor();
+  if(mutation)announce('postispop:save',{state:'saving',mode});
   try {
-    const response=await api(endpoint, init);
-    if(mutatesNote) {
-      announce('postispop:save',{state:response.ok?'saved':'error',mode,at:response.ok?Date.now():null});
-      if(response.ok && typeof JSON.parse(init.body||'{}').text==='string' && JSON.parse(init.body||'{}').text.trim()) { announce('postispop:activity',{name:'first_note_created'}); announce('postispop:activity',{name:'first_board_created'}); }
+    if(endpoint.startsWith('offline/')) {
+      if(!account)return json({error:'SESSION_REQUIRED'},401);
+      if(endpoint==='offline/status')return json(outboxStatus());
+      const noteId=endpoint.match(/^offline\/note\/([^/]+)$/)?.[1];
+      if(noteId){const ops=offline.pending(account.id).filter(o=>o.noteId===noteId);return json({...offline.noteHistory(noteId),conflicts:ops.filter(o=>o.state==='conflict').length});}
+      if(endpoint==='offline/conflicts')return json({conflicts:offline.pending(account.id).filter(o=>o.state==='conflict'),recovery:offline.recovery(account.id)});
+      if(endpoint==='offline/resolve'&&method==='POST'){const body=JSON.parse(init.body||'{}');offline.resolve(account.id,body.id,body.choice);await flushOutbox(account.id);return json(outboxStatus());}
+      if(endpoint==='offline/sync'&&method==='POST'){await flushOutbox(account.id);return json(outboxStatus());}
+      return json({error:'NOT_FOUND'},404);
     }
-    if(response.ok && mode==='cloud' && /^board\/[^/]+$/.test(endpoint))announce('postispop:activity',{name:'first_sync'});
-    if(response.ok && endpoint==='commerce/alarms' && init.method==='POST') {
-      const payload=init.body?JSON.parse(init.body):{};
-      if(!payload.action)announce('postispop:activity',{name:'reminder_created'});
+    // Write-ahead local save occurs before any network request. No queue is shared across accounts.
+    if(account&&mode==='cloud'&&method==='POST'&&offline.isMutation(endpoint)) {
+      const body=JSON.parse(init.body||'{}'), result=offline.enqueue(account.id,endpoint,body);
+      announce('postispop:offline',outboxStatus());
+      if(online())await flushOutbox(account.id);
+      if(requestGeneration!==sessionGeneration||session()?.user?.id!==account.id)return json({error:'SESSION_CHANGED'},401);
+      const id=body.note_id||endpoint.split('/')[1];
+      const updated=endpoint==='designs/styles'?offline.projectStyles(account.id).find(s=>s.note_id===id):offline.findNote(account.id,id)?.note;
+      const waiting=offline.pending(account.id).some(o=>o.noteId===id);
+      announce('postispop:save',{state:waiting?'pending':'saved',mode:waiting?'offline':'cloud',at:Date.now()});
+      return json({...result,...(endpoint==='designs/styles'?{style:updated}:{note:updated}),pending:waiting,offline:waiting},waiting?202:200);
     }
-    if(response.ok && endpoint==='auth/signup')announce('postispop:activity',{name:'signup_completed'});
-    return response;
-  }
-  catch (error) {
-    if(mutatesNote)announce('postispop:save',{state:'error',mode});
-    return json({ error: error.body?.message || error.message || "REQUEST_FAILED" }, error.status || 500);
+    // Editing locks are transient; offline revision checks protect the durable outbox.
+    if(account&&!online()&&/^note\/[^/]+\/(lock|unlock)$/.test(endpoint)){
+      const note=offline.findNote(account.id,endpoint.split('/')[1])?.note;if(!note)return json({error:'OFFLINE_NOTE_NOT_CACHED'},503);if(note.protectedEnvelope)return json({error:'PROTECTED_NOTE'},403);
+      return json({note,lock:account.id,offline:true});
+    }
+    if(!online()&&account&&mode==='cloud'&&endpoint!=='auth/logout')throw Object.assign(new Error('OFFLINE'),{offline:true});
+    const response=await api(endpoint,init);
+    if(!endpoint.startsWith('auth/')&&(requestGeneration!==sessionGeneration||requestAccountId!==session()?.user?.id)){if(endpoint==='session'&&!session()?.access_token)return json({actor:actorFor(null)});return json({error:'SESSION_CHANGED'},401);}
+    let result=response;
+    const active=offlineActor();
+    if(response.ok&&active&&method==='GET'&&['me','session'].includes(endpoint)){const data=await response.clone().json();offline.remember(active.id,endpoint,data);if(session()?.user?.id===active.id)void flushOutbox(active.id);}
+    if(response.ok&&active&&method==='GET'&&/^board\/[^/]+$/.test(endpoint)&&mode==='cloud') {
+      const board=await response.clone().json();offline.remember(active.id,endpoint,board);result=json(offline.project(active.id,board));announce('postispop:activity',{name:'first_sync'});
+    }
+    if(response.ok&&active&&endpoint==='designs/styles'&&method==='GET'){
+      const data=await response.clone().json(),noteId=new URLSearchParams(url.search).get('note_id');
+      if(noteId){const existing=offline.cached(active.id,'designs/styles')?.styles||[];offline.cacheStyles(active.id,[...existing.filter(s=>s.note_id!==noteId),...data.styles]);const style=offline.projectStyles(active.id).find(s=>s.note_id===noteId)||null;result=json({styles:style?[style]:[],style});}
+      else result=json({styles:offline.cacheStyles(active.id,data.styles)});
+    }
+    if(mutation)announce('postispop:save',{state:response.ok?'saved':'error',mode,at:response.ok?Date.now():null});
+    if(response.ok&&endpoint==='auth/signup')announce('postispop:activity',{name:'signup_completed'});
+    if(!endpoint.startsWith('auth/')&&(requestGeneration!==sessionGeneration||requestAccountId!==session()?.user?.id)){if(endpoint==='session'&&!session()?.access_token)return json({actor:actorFor(null)});return json({error:'SESSION_CHANGED'},401);}
+    if(endpoint.startsWith('auth/'))announce('postispop:offline',outboxStatus());
+    return result;
+  } catch(error) {
+    // Only transport/offline failures may fall back. A 401/403/404 is never masked by local data.
+    if(account&&requestGeneration===sessionGeneration&&session()?.user?.id===account.id&&(error.offline||(!error.status&&error instanceof TypeError)||(!online()&&!error.status))) {
+      if(endpoint==='designs/status') {const rights=await getOfflineRights(account.id);if(rights)return json({...rights,offline:true});return json({error:'OFFLINE_LICENSE_UNAVAILABLE'},503);}
+      if(endpoint==='session')return json({actor:actorFor(account),offline:true});
+      if(/^note\/[^/]+\/(lock|unlock)$/.test(endpoint)){const note=offline.findNote(account.id,endpoint.split('/')[1])?.note;if(note?.protectedEnvelope)return json({error:'PROTECTED_NOTE'},403);if(note)return json({note,lock:account.id,offline:true});}
+      if(method==='GET'&&endpoint==='designs/styles'){const styles=offline.projectStyles(account.id),noteId=new URLSearchParams(url.search).get('note_id');return json({styles:noteId?styles.filter(s=>s.note_id===noteId):styles,...(noteId?{style:styles.find(s=>s.note_id===noteId)||null}:{}),offline:true});}
+      if(method==='GET'&&(endpoint==='me'||/^board\/[^/]+$/.test(endpoint))){const value=offline.cached(account.id,endpoint);if(value)return json({...value,offline:true});}
+    }
+    if(mutation)announce('postispop:save',{state:'error',mode});
+    return json({error:error.body?.message||error.message||'REQUEST_FAILED'},error.status||(error.offline?503:500));
   }
 };
+if(typeof window.addEventListener==='function') {
+  window.addEventListener('online',()=>{const id=offlineActor()?.id;if(id)void flushOutbox(id);});
+  window.addEventListener('storage',event=>{if(event.key===sessionKey){sessionGeneration++;userCache=null;announce('postispop:session-change',{userId:session()?.user?.id||null});}announce('postispop:offline',outboxStatus());});
+}
+installOfflineUI({status:outboxStatus});

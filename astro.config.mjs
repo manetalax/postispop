@@ -6,10 +6,12 @@ export default defineConfig({
   // The existing note board stays at /. Astro adds the static shop at /tienda/.
   base: '/tienda/',
   outDir: './astro-dist',
+  cacheDir: './.cache/astro',
   prefetch: {
     defaultStrategy: 'hover',
   },
   vite: {
+    cacheDir: './.cache/vite',
     plugins: [tailwindcss()],
   },
 });
