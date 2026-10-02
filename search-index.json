@@ -1,0 +1,14 @@
+[
+  {"title":"Bloc de notas online","description":"Apuntes, listas, guardado local y copias JSON de notas.","url":"/bloc-de-notas-online.html"},
+  {"title":"Pizarra virtual","description":"Organiza ideas, compara opciones y mantén tus tareas a la vista.","url":"/pizarra-virtual.html"},
+  {"title":"Notas adhesivas online","description":"Una idea por nota, colores y etiquetas escritas.","url":"/notas-adhesivas-online.html"},
+  {"title":"Pizarra colaborativa","description":"Objetivos, permisos y estado de las invitaciones para compartir.","url":"/pizarra-colaborativa.html"},
+  {"title":"Organizador visual de tareas","description":"Pendientes, trabajo en marcha y tareas terminadas.","url":"/organizador-visual-de-tareas.html"},
+  {"title":"Notas para estudiar","description":"Preguntas, ejemplos y repasos para organizar tus estudios.","url":"/notas-para-estudiar.html"},
+  {"title":"Pizarra para reuniones","description":"Agenda, decisiones, acuerdos, responsables y fechas.","url":"/pizarra-para-reuniones.html"},
+  {"title":"Lluvia de ideas online","description":"Explora propuestas y conviértelas en un experimento.","url":"/lluvia-de-ideas-online.html"},
+  {"title":"Pack Rebel","description":"Diseños de notas en la tienda de PostisPop.","url":"/tienda/producto/pack-rebel/"},
+  {"title":"Pack Minimal","description":"Diseños minimalistas para tus notas.","url":"/tienda/producto/pack-minimal/"},
+  {"title":"Reloj y recordatorios","description":"Consulta las funciones y condiciones del reloj y los recordatorios.","url":"/tienda/producto/reloj-recordatorios/"},
+  {"title":"PostisPop Pro","description":"Consulta las funciones, precio y condiciones actuales de PostisPop Pro.","url":"/tienda/producto/postispop-pro/"}
+]
