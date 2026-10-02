@@ -1,17 +1,19 @@
-const {test}=require('node:test');
+const {test,before}=require('node:test');
 const assert=require('node:assert/strict');
 const vm=require('node:vm');
 const fs=require('node:fs');
-const source=fs.readFileSync('supabase-bridge.js','utf8').replace(/^import .*;\n/, '');
+const source=fs.readFileSync('supabase-bridge.js','utf8').replace(/^import .*;\n/gm, '');
+let dependencies;
+before(async()=>{dependencies=Object.assign({},...(await Promise.all([import('../offline-sync.js'),import('../offline-license.js'),import('../offline-ui.js'),import('../note-crypto.js')])));});
 const SESSION_KEY='postispop-supabase-session';
 const savedSession=()=>({access_token:'test-access',refresh_token:'test-refresh',expires_at:Math.floor(Date.now()/1000)+3600,user:{id:'test-user'}});
 const deferred=()=>{let resolve;const promise=new Promise(r=>resolve=r);return {promise,resolve};};
 function setup(upstream,initial=savedSession(),timers={setTimeout,clearTimeout}) {
   const values=new Map(initial?[[SESSION_KEY,JSON.stringify(initial)]]:[]);
-  const storage={getItem:k=>values.get(k)??null,setItem:(k,v)=>values.set(k,v),removeItem:k=>values.delete(k)};
+  const storage={get length(){return values.size;},key:i=>[...values.keys()][i]??null,getItem:k=>values.get(k)??null,setItem:(k,v)=>values.set(k,v),removeItem:k=>values.delete(k)};
   const calls=[];
   const window={fetch:async(url,options={})=>{calls.push({url,options});return upstream(url,options,storage);}};
-  const context=vm.createContext({window,localStorage:storage,location:{origin:'https://postispop.com',href:'https://postispop.com/'},Response,URL,AbortController,guestRequest:()=>null,readGuest:()=>({}),...timers});
+  const context=vm.createContext({window,localStorage:storage,location:{origin:'https://postispop.com',href:'https://postispop.com/'},Response,URL,AbortController,guestRequest:()=>null,readGuest:()=>({}),...dependencies,...timers});
   vm.runInContext(source,context);
   return {storage,calls,call:(endpoint,method='GET')=>window.fetch('/api/'+endpoint,{method,...(method==='POST'?{body:'{}'}:{})})};
 }
