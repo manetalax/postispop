@@ -9,6 +9,10 @@ const notice=(message)=>{
   node.textContent=message;
 };
 function update() {
+  // The mobile layout hides the text inside this icon button.
+  document.querySelectorAll('.header-share').forEach(button=>{
+    if(!button.getAttribute('aria-label'))button.setAttribute('aria-label',button.textContent.trim()||'Compartir');
+  });
   // Recovered React may replace its document title; preserve the real SEO title.
   if(document.title==='PostisPop')document.title=SEO_TITLE;
   const opt=document.querySelector('[data-experience-analytics]');
