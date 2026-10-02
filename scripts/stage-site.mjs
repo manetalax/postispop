@@ -1,10 +1,15 @@
 import {cp,mkdir,rm,readdir,writeFile,readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
+import {optimizeQuotes} from './optimize-quotes.mjs';
+import {repairLegalPage} from './repair-static-pages.mjs';
 const root=new URL('../',import.meta.url),out=new URL('_site/',root);
 await rm(out,{recursive:true,force:true});await mkdir(new URL('tienda/',out),{recursive:true});
 const files=['index.html','manifest.json','manifest.webmanifest','robots.txt','sitemap.xml','CNAME','favicon.svg','favicon.ico','privacy.html','terms.html','legal.html','cookies.html','postispop-shop.js','commerce-ui.js','commerce.css','supabase-bridge.js','supabase-config.js','guest-board.js','guest-status.js','note-attachments.js','note-attachments.css','experience-content.js','experience.css','experience.js','usage-metrics.js','board-tools.js','search.js','search-index.json'];
 for(const name of await readdir(root))if(/(?:-online|pizarra-virtual|pizarra-colaborativa|organizador-visual-de-tareas|notas-para-estudiar|pizarra-para-reuniones)\.html$/.test(name))files.push(name);
 for(const name of files)await cp(new URL(name,root),new URL(name,out));
+for(const name of ['privacy.html','terms.html','legal.html','cookies.html']){
+  const file=new URL(name,out);await writeFile(file,repairLegalPage(await readFile(file,'utf8')));
+}
 // Never publish captured API snapshots.
 for(const name of ['assets','_next','.well-known'])await cp(new URL(name,root),new URL(name,out),{recursive:true});
 await cp(new URL('astro-dist/',root),new URL('tienda/',out),{recursive:true});await writeFile(new URL('.nojekyll',out),'');
@@ -27,6 +32,7 @@ const wpoFiles={
   "manifest.webmanifest": "{\n  \"id\": \"/\",\n  \"name\": \"Postispop\",\n  \"short_name\": \"Postispop\",\n  \"description\": \"Notas adhesivas para tus tareas e ideas.\",\n  \"lang\": \"es-ES\",\n  \"start_url\": \"/\",\n  \"scope\": \"/\",\n  \"display\": \"standalone\",\n  \"theme_color\": \"#ff007a\",\n  \"background_color\": \"#0f172a\",\n  \"orientation\": \"any\",\n  \"icons\": [\n    {\n      \"src\": \"/assets/icon-192.png\",\n      \"sizes\": \"192x192\",\n      \"type\": \"image/png\",\n      \"purpose\": \"any\"\n    },\n    {\n      \"src\": \"/assets/icon-512.png\",\n      \"sizes\": \"512x512\",\n      \"type\": \"image/png\",\n      \"purpose\": \"any\"\n    },\n    {\n      \"src\": \"/assets/icon-maskable-512.png\",\n      \"sizes\": \"512x512\",\n      \"type\": \"image/png\",\n      \"purpose\": \"maskable\"\n    }\n  ]\n}"
 };
 
+wpoFiles['wpo-features.css']+='\n/* Keep public-search fields readable and usable on touch screens. */\n#pp-search{display:flex;flex-wrap:wrap;align-items:center;gap:12px}#pp-search label{flex-basis:100%;font-weight:600}#pp-search input,#pp-search button{box-sizing:border-box;min-height:44px;padding:10px 14px;border:1px solid #8792a5;border-radius:8px;font:inherit;background:var(--wpo-bg);color:var(--wpo-text)}#pp-search input{flex:1 1 180px;min-width:0;max-width:100%}#pp-search button{cursor:pointer}#pp-search :focus-visible{outline:3px solid #d60064;outline-offset:3px}\n';
 for(const [name,content] of Object.entries(wpoFiles))await writeFile(new URL(name,out),content);
 const base='https://postispop.com',theme=wpoFiles['wpo-theme-init.js'];
 const graph={'@context':'https://schema.org','@graph':[{'@type':'Organization','@id':base+'/#organization',name:'PostisPop',url:base+'/',logo:base+'/assets/icon-512.png'},{'@type':'WebSite','@id':base+'/#website',name:'PostisPop',url:base+'/',inLanguage:'es-ES',publisher:{'@id':base+'/#organization'},potentialAction:{'@type':'SearchAction',target:{'@type':'EntryPoint',urlTemplate:base+'/search/?q={search_term_string}'},'query-input':'required name=search_term_string'}}]};
@@ -47,3 +53,4 @@ if(!html.includes('/wpo-register.js'))html=html.replace('</body>','<script src="
 if(!html.includes('/wpo-features.js'))html=html.replace('</body>','<script type="module" src="/wpo-features.js?v=20261002b"></script></body>');
 html=html.replace(/<meta name="theme-color" content="[^"]*"\s*\/?\s*>/g,'<meta name="theme-color" content="#ff007a">');await writeFile(file,html);}
 console.log('Staged WPO/PWA, public search and accessible tools. Captured API data excluded.');
+console.log('Daily quote loading optimized:', await optimizeQuotes(out));
