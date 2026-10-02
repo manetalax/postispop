@@ -3,7 +3,7 @@ const fs=require('node:fs/promises');const path=require('node:path');
 (async()=>{
  const root=path.resolve(__dirname,'../android/app/src/main/assets/www');
  const b=await chromium.launch({headless:true,executablePath:process.env.POSTISPOP_CHROME,args:['--no-sandbox']});
- const c=await b.newContext({locale:'es-ES',viewport:{width:412,height:850}});const p=await c.newPage();
+ const c=await b.newContext({serviceWorkers:'block',locale:'es-ES',viewport:{width:412,height:850}});const p=await c.newPage();
  const errors=[];p.on('pageerror',e=>errors.push(e.message));
  await c.route('**/*',async route=>{
   const u=new URL(route.request().url());
@@ -38,7 +38,13 @@ const fs=require('node:fs/promises');const path=require('node:path');
  await p.locator('#site-search').fill('reloj');
  await p.locator('button[type=submit]').click();
  await p.waitForFunction(()=>document.querySelector('[data-search-status]')?.textContent.includes('resultado'),null,{timeout:10000});
- console.log('PASS: bundled UI startup, offline note and attachments reload, four local products and offline search');
+ await p.goto('https://postispop.com/descargas/');
+ if(await p.locator('h1').innerText()!=='Descargas')throw Error('Missing bundled downloads page');
+ if(await p.locator('[data-platform]').count()!==7)throw Error('Missing download platform information');
+ await p.getByRole('link',{name:'Ver cómo instalar',exact:true}).click();
+ if(await p.locator('h1').innerText()!=='Tus ideas, también en tu dispositivo.')throw Error('Missing bundled installation guide');
+ if(await p.locator('#install').isVisible())throw Error('Install button shown without install support');
+ console.log('PASS: bundled UI startup, offline note and attachments reload, four local products, offline search and installation pages');
  if(errors.length)throw Error(errors.join('\n'));
  await b.close();
 })().catch(e=>{console.error(e);process.exit(1)});

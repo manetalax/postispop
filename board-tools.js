@@ -10,7 +10,7 @@ const templates = {
   'Compras':['Alimentación\n#compras','Hogar\n#compras','Otros\n#compras'],
   'Hábitos':['Hábito que quiero practicar','Cuándo y dónde','Versión mínima para días difíciles','Revisión semanal']
 };
-let tools=null, options=null, lastFocus=null;
+let tools=null, options=null, searchTools=null, lastFocus=null;
 export function download(name,body,type='application/json') {
   const url=URL.createObjectURL(body instanceof Blob?body:new Blob([body],{type}));
   const link=document.createElement('a');link.href=url;link.download=name;link.click();
@@ -26,7 +26,7 @@ async function currentBoard() {
   const board=me.boards.find(b=>b.id===selected)||me.boards[0];
   if(!board)throw new Error('BOARD_NOT_FOUND');return api('board/'+board.id);
 }
-function message(value){const node=tools?.querySelector('[role=status]');if(node)node.textContent=value;}
+function message(value){const node=searchTools?.querySelector('[role=status]');if(node)node.textContent=value;}
 function dialog(title) {
   lastFocus=document.activeElement;
   const el=document.createElement('dialog');el.className='pp-feature-dialog';
@@ -83,7 +83,7 @@ async function showImport(){
 }
 async function filter(){
   try{
-    const board=await currentBoard(),query=tools.querySelector('[type=search]').value.trim().toLocaleLowerCase('es'),color=tools.querySelector('select').value;
+    const board=await currentBoard(),query=searchTools.querySelector('[type=search]').value.trim().toLocaleLowerCase('es'),color=searchTools.querySelector('select').value;
     let matches=0;const notes=ordered(board),cells=document.querySelectorAll('.board-grid .note-cell');
     cells.forEach(cell=>{const button=cell.querySelector('.sticky-note'),note=notes.find(n=>n.id===button?.dataset.noteId),match=note?(!query||note.text.toLocaleLowerCase('es').includes(query))&&(!color||String(note.paper)===color):!query&&!color;cell.classList.toggle('pp-filtered',!match);if(button)button.tabIndex=match?0:-1;if(match&&note)matches++;});
     message(query||color?`${matches} notas coinciden. Las demás siguen guardadas. Usa #etiqueta en el texto para agrupar notas.`:'Puedes buscar por texto o por #etiqueta.');
@@ -92,19 +92,22 @@ async function filter(){
 export function initBoardTools(){
   const board=document.querySelector('.board-frame:not(.is-loading)');if(!board)return;
   if(tools?.isConnected)return;
+  searchTools?.remove();
   options=document.createElement('details');options.className='pp-board-options';
   const summary=text('summary','Opciones avanzadas');options.append(summary);
   tools=document.createElement('div');tools.className='pp-tools';tools.setAttribute('aria-label','Herramientas de la pizarra');
-  const search=document.createElement('input');search.type='search';search.placeholder='Buscar notas o #etiqueta';search.setAttribute('aria-label','Buscar notas o etiquetas');tools.append(search);
-  const colors=document.createElement('select');colors.setAttribute('aria-label','Filtrar por color');['Todos los colores','Amarillo','Rosa','Azul','Crema','Verde','Violeta'].forEach((label,i)=>{const opt=text('option',label);opt.value=i===0?'':String(i-1);colors.append(opt);});tools.append(colors);
+  searchTools=document.createElement('section');searchTools.className='pp-tools pp-note-search';searchTools.setAttribute('aria-label','Buscar en tus notas');board.before(searchTools);
+  const search=document.createElement('input');search.type='search';search.placeholder='Buscar notas o #etiqueta';search.setAttribute('aria-label','Buscar notas o etiquetas');searchTools.append(search);
+  const colors=document.createElement('select');colors.setAttribute('aria-label','Filtrar por color');['Todos los colores','Amarillo','Rosa','Azul','Crema','Verde','Violeta'].forEach((label,i)=>{const opt=text('option',label);opt.value=i===0?'':String(i-1);colors.append(opt);});searchTools.append(colors);
   let timer;search.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(filter,180);});colors.addEventListener('change',filter);
   const operations=[['Guardar una copia',exportJson],['Restaurar una copia',showImport],['Descargar imagen',exportPng],['Imprimir',printPdf],['Plantillas',showTemplates]];
   operations.forEach(([name,fn])=>{const button=text('button',name);button.type='button';button.addEventListener('click',async()=>{button.disabled=true;try{await fn();}catch{message('No se pudo completar la operación. Tus notas se conservan.');}finally{button.disabled=false;}});tools.append(button);});
+  const installHelp=text('a','Descargas e instalación');installHelp.href='/descargas/';tools.append(installHelp);
   const install=text('button','Instalar aplicación');install.type='button';install.dataset.experience='install';install.hidden=true;tools.append(install);
-  const status=text('span','');status.setAttribute('role','status');tools.append(status);options.append(tools);board.after(options);
+  const status=text('span','');status.setAttribute('role','status');searchTools.append(status);options.append(tools);board.after(options);
 }
 document.addEventListener('keydown',event=>{
   if(event.target.closest('input,textarea,[contenteditable=true],dialog,[role=dialog]'))return;
-  if(event.key==='/'&&!event.ctrlKey&&!event.metaKey){if(!tools?.isConnected)return;event.preventDefault();options.open=true;tools.querySelector('[type=search]')?.focus();}
+  if(event.key==='/'&&!event.ctrlKey&&!event.metaKey){if(!tools?.isConnected)return;event.preventDefault();searchTools?.querySelector('[type=search]')?.focus();}
   if(event.ctrlKey&&event.shiftKey&&event.key.toLowerCase()==='e'){if(!tools?.isConnected)return;event.preventDefault();options.open=true;exportJson().catch(()=>message('No se pudo exportar la copia.'));}
 });
