@@ -8,11 +8,24 @@ android {
         applicationId 'com.postispop.android'
         minSdk 23
         targetSdk 36
-        versionCode 3
-        versionName '0.3.0'
+        versionCode 4
+        versionName '0.4.0'
         manifestPlaceholders = [appLabel: 'PostisPop']
     }
+    def releaseStore = System.getenv('POSTISPOP_KEYSTORE')
+    def releaseStorePassword = System.getenv('POSTISPOP_STORE_PASSWORD')
+    def releaseKeyPassword = System.getenv('POSTISPOP_KEY_PASSWORD')
+    def releaseKeyAlias = System.getenv('POSTISPOP_KEY_ALIAS') ?: 'postispop-release'
+    def releaseSigningAvailable = releaseStore && releaseStorePassword && releaseKeyPassword
     signingConfigs {
+        if (releaseSigningAvailable) {
+            release {
+                storeFile file(releaseStore)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
         debug {
             storeFile file('.signing/beta.keystore')
             storePassword 'android'
@@ -28,8 +41,13 @@ android {
             manifestPlaceholders = [appLabel: 'PostisPop Beta']
         }
         release {
-            minifyEnabled false
-            // Unsigned candidate. Production signing is configured by the owner in Play Console.
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (releaseSigningAvailable) signingConfig signingConfigs.release
+            // Without the existing owner's key this remains an internal unsigned
+            // build candidate. It must never be distributed as an installer.
         }
     }
 }
