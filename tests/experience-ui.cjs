@@ -88,11 +88,17 @@ const results=path.resolve(__dirname,'../test-results');
   await page.evaluate(()=>document.documentElement.dataset.colorScheme='dark');
   assert.equal(await page.locator('article').first().evaluate(el=>getComputedStyle(el).backgroundColor!==getComputedStyle(el).color),true,'Installation cards remain readable in dark mode');
   await page.evaluate(()=>document.documentElement.dataset.colorScheme='light');
+  const downloadsResponse=await page.goto('https://postispop.com/descargas/');
+  assert.equal(downloadsResponse.status(),200,'Downloads page is present in the staged build');
+  assert.equal(downloadsResponse.headers()['x-postispop-test-source'],'staged');
+  assert.equal(await page.locator('h1').innerText(),'Descargas');
+  assert.equal(await page.locator('[data-platform]').count(),5);
+  assert.equal(await page.getByRole('link',{name:'Ver cómo instalar',exact:true}).getAttribute('href'),'/instalar.html');
   await page.goto('https://postispop.com/tienda/');assert.equal(await page.locator('[data-product-card]').count(),4);
   for(const name of ['bloc-de-notas-online','pizarra-virtual','notas-adhesivas-online','pizarra-colaborativa','organizador-visual-de-tareas','notas-para-estudiar','pizarra-para-reuniones','lluvia-de-ideas-online']){
     await page.goto(`https://postispop.com/${name}.html`);assert.equal(await page.locator('h1').count(),1);await page.setViewportSize({width:360,height:800});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,name);
   }
   assert.deepEqual(missing,[]);assert.deepEqual(errors,[]);
-  console.log('PASS: Spanish default, truthful save status, guest offline save and reload, onboarding dismissal, search, JSON export, non-destructive templates, 4 viewports, shop and 8 guides.');
+  console.log('PASS: Spanish default, truthful save status, guest offline save and reload, onboarding dismissal, search, JSON export, non-destructive templates, 4 viewports, installation and downloads pages, shop and 8 guides.');
   await browser.close();
 })().catch(async e=>{if(reviewPage)await reviewPage.screenshot({path:path.join(results,'failure.png'),fullPage:true}).catch(()=>{});console.error(e);process.exit(1)});
