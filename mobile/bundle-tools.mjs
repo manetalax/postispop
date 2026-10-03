@@ -11,7 +11,7 @@ export const publicFiles = [
   'postispop-shop.js', 'commerce-ui.js', 'home-promo.js', 'commerce.css', 'supabase-bridge.js', 'supabase-config.js',
   'guest-board.js', 'guest-status.js', 'note-attachments.js', 'note-attachments.css',
   'experience-content.js', 'experience.css', 'experience.js', 'usage-metrics.js', 'board-tools.js', 'backup-import.js',
-  'search.js', 'search-index.json', 'atelier.html', 'atelier.js', 'atelier.css', 'design-catalog.js',
+  'search.js', 'search-index.json', 'premios.html', 'atelier.html', 'atelier.js', 'atelier.css', 'design-catalog.js',
   'design-tools.js', 'design-tools.css', 'style-model.js', 'fonts.css',
   'note-crypto.js', 'protected-notes.js', 'protected-notes.css', 'protected-share.js', 'compartir.html', 'attachment-lock.js',
   'offline-sync.js', 'offline-ui.js', 'offline-ui.css', 'offline-license.js', 'license-public-keys.json', 'propietario.html', 'owner-dashboard.js', 'owner-dashboard.css',
