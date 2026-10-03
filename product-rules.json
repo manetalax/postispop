@@ -162,7 +162,7 @@
     "win_probability": {
       "numerator": 1,
       "denominator": 6,
-      "scope": "main_prize_each_spin",
+      "scope": "each_spin",
       "independent": true
     },
     "regular_prize": "random_digital_object",
@@ -183,15 +183,17 @@
       "Define eligible objects and handling of already-owned objects",
       "Implement server-authoritative randomness and atomic spin consumption",
       "Verify prize fulfillment and end-to-end behavior",
-      "Define random consolation reward pool distinct from main prizes"
+      "Define consolation reward pool and verify once-only grant after five losing spins in the same purchased pack"
     ],
     "daily_streak_rewards": "Separate rules; this change applies to paid roulette only",
     "consolation": {
-      "when": "no_main_prize",
-      "reward": "random_reward",
-      "pool": "pending_definition"
+      "when": "all_five_spins_in_purchased_pack_completed_with_zero_prizes",
+      "reward": "one_random_consolation_reward",
+      "pool": "pending_definition",
+      "maximum_per_pack": 1,
+      "grant_once_atomically": true
     },
-    "every_spin_grants_reward": true,
-    "guarantee_description": "Every spin grants a main prize or a random consolation reward; no guarantee of main prize or gift card."
+    "every_spin_grants_reward": false,
+    "guarantee_description": "Each purchased five-spin pack guarantees at least one reward: if all five spins yield no prize, grant one random consolation reward after the fifth spin. Individual spins may yield nothing."
   }
 }
