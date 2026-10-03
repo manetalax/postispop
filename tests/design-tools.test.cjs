@@ -15,7 +15,7 @@ test('Sketch data rejects malformed coordinates, oversized payloads and active C
 test('All instruments produce distinct drawing records; brush width reacts to stylus pressure',async()=>{
   const {drawStrokes,PEN_IDS}=await model;
   function render(instrument,pressure=.5){const records=[],ctx={lineWidth:1,globalAlpha:1,lineCap:'round',save(){},restore(){},clearRect(){},beginPath(){},moveTo(){},lineTo(){},arc(){records.push(['grain',...arguments,this.globalAlpha])},fill(){},fillRect(){records.push([...arguments,this.fillStyle])},setLineDash(v){records.push(v)},stroke(){records.push([this.lineWidth,this.globalAlpha,this.lineCap,this.strokeStyle])}};
-    const widths={graphite:2,ballpoint:2,roller:3,gel:4,fountain:5,fineliner:1,brush:9,marker:14,crayon:8,chalk:6,charcoal:10,stamp:12,toothpaste:18,spray:16,airbrush:24,nailpolish:12,brow:5,mascara:9,eyeliner:3,lipstick:14,eyeshadow:18,correction_tape:14,correction_fluid:10,paintbrush:20,roller_paint:28,sponge:22,watercolor:18};
+    const widths={graphite:2,ballpoint:2,roller:3,gel:4,fountain:5,fineliner:1,brush:9,marker:14,crayon:8,chalk:6,charcoal:10,stamp:12,toothpaste:18,spray:16,airbrush:24,nailpolish:12,brow:5,mascara:9,eyeliner:3,lipstick:14,eyeshadow:18,correction_tape:14,correction_fluid:10,paintbrush:20,roller_paint:28,sponge:22,watercolor:18,blood:7};
     drawStrokes(ctx,{strokes:[{instrument,color:'#222222',width:widths[instrument],points:[{x:.1,y:.2,p:pressure},{x:.8,y:.9,p:pressure}]}]},640,400);return records;}
   assert.equal(new Set(PEN_IDS.map(id=>JSON.stringify(render(id)))).size,PEN_IDS.length);
   assert.notDeepEqual(render('brush',.1),render('brush',.9));

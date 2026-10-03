@@ -237,7 +237,7 @@ function trialNote(current, initialPaper='plain') {
   let strokes=[],active=null;
   const render=()=>{const bg=paperColor(paper.value);for(const surface of [text,canvas])surface.style.backgroundImage=`url("${svgUrl(paperSvg(paper.value))}")`;text.style.color=readableInk(ink.value,bg);text.style.fontFamily=fonts.find(f=>f.id===font.value).css;drawStrokes(canvas.getContext('2d'),{strokes},640,400,bg);};
   for(const input of [paper,font,ink])input.addEventListener('input',render);
-  pen.addEventListener('change',()=>{thickness.value=String(instruments.find(p=>p.id===pen.value).width);if(pen.value==='stamp')ink.value='#b52335';render();});
+  pen.addEventListener('change',()=>{thickness.value=String(instruments.find(p=>p.id===pen.value).width);if(pen.value==='blood')ink.value='#7d1020';if(pen.value==='stamp')ink.value='#b52335';render();});
   const point=e=>{const r=canvas.getBoundingClientRect();return{x:Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),y:Math.max(0,Math.min(1,(e.clientY-r.top)/r.height)),p:e.pointerType==='pen'?e.pressure:.5};};
   canvas.addEventListener('pointerdown',e=>{if(e.button!==0||strokes.length>=120)return;e.preventDefault();canvas.setPointerCapture(e.pointerId);active={instrument:pen.value,color:readableInk(ink.value,paperColor(paper.value)),width:Number(thickness.value),points:[point(e)]};strokes.push(active);render();});
   canvas.addEventListener('pointermove',e=>{if(!active||!canvas.hasPointerCapture(e.pointerId)||strokes.reduce((n,s)=>n+s.points.length,0)>=16000)return;active.points.push(point(e));render();});

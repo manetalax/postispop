@@ -1,7 +1,7 @@
 // Pure, shared validation for local persistence and the stationery editor.
 export const FONT_IDS = ['sans','serif','mono','hand','rounded','book'];
 export const PAPER_IDS = ['plain','ruled','grid','dots','journal','papyrus','washi','music','prescription','blueprint','shift','study'];
-export const PEN_IDS = ['graphite','ballpoint','roller','gel','fountain','fineliner','brush','marker','crayon','chalk','charcoal','stamp','toothpaste','spray','airbrush','nailpolish','brow','mascara','eyeliner','lipstick','eyeshadow','correction_tape','correction_fluid','paintbrush','roller_paint','sponge','watercolor'];
+export const PEN_IDS = ['graphite','ballpoint','roller','gel','fountain','fineliner','brush','marker','crayon','chalk','charcoal','stamp','toothpaste','spray','airbrush','nailpolish','brow','mascara','eyeliner','lipstick','eyeshadow','correction_tape','correction_fluid','paintbrush','roller_paint','sponge','watercolor','blood'];
 const fail = () => { throw new Error('INVALID_STYLE'); };
 const number = (n,min,max) => typeof n==='number' && Number.isFinite(n) && n>=min && n<=max;
 const color = value => typeof value==='string' && /^#[\da-f]{6}$/i.test(value);
@@ -35,7 +35,7 @@ export function drawStrokes(ctx,drawing,width,height,background) {
     const ink=background?readableInk(stroke.color,background):stroke.color;
     ctx.save();ctx.strokeStyle=ink;ctx.fillStyle=ink;
     ctx.lineCap=stroke.instrument==='marker'?'square':'round';ctx.lineJoin='round';ctx.globalAlpha=opacity[stroke.instrument]??1;
-    if(['stamp','spray','charcoal','toothpaste','airbrush','chalk','nailpolish','brow','mascara','eyeliner','lipstick','eyeshadow','correction_tape','correction_fluid','paintbrush','roller_paint','sponge','watercolor'].includes(stroke.instrument)){drawMaterial(ctx,stroke,width,height,ink);ctx.restore();continue;}
+    if(['stamp','spray','charcoal','toothpaste','airbrush','chalk','nailpolish','brow','mascara','eyeliner','lipstick','eyeshadow','correction_tape','correction_fluid','paintbrush','roller_paint','sponge','watercolor','blood'].includes(stroke.instrument)){drawMaterial(ctx,stroke,width,height,ink);ctx.restore();continue;}
     if(pts.length===1){ctx.beginPath();ctx.arc(pts[0].x*width,pts[0].y*height,base/2,0,Math.PI*2);ctx.fill();}
     for(let i=1;i<pts.length;i++) {
       const a=pts[i-1],b=pts[i],pressure=(a.p+b.p)/2;
@@ -86,6 +86,16 @@ function drawMaterial(ctx,stroke,width,height,ink) {
     for(let j=i?1:0;j<=count;j++){const t=j/count;samples.push({x:(a.x+(b.x-a.x)*t)*width,y:(a.y+(b.y-a.y)*t)*height,p:a.p+(b.p-a.p)*t});}
   }
   const dot=(x,y,r,alpha)=>{ctx.globalAlpha=alpha;ctx.beginPath();ctx.arc(x,y,Math.max(.2,r),0,Math.PI*2);ctx.fill();};
+  if(stroke.instrument==='blood'){
+    ctx.strokeStyle=ink;ctx.fillStyle=ink;ctx.lineCap='round';ctx.lineJoin='round';ctx.globalAlpha=.96;
+    for(let i=0;i<samples.length;i++){
+      const p=samples[i],a=samples[Math.max(0,i-1)];ctx.lineWidth=base*(.65+p.p*.55);
+      ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(p.x,p.y);ctx.stroke();
+      if(i%19===0)dot(p.x,p.y,base*(.32+random()*.22),.92);
+    }
+    const end=samples.at(-1);dot(end.x,end.y,base*.52,.95);
+    return;
+  }
   if(['correction_tape','correction_fluid','paintbrush','roller_paint','sponge','watercolor'].includes(stroke.instrument)){
     const tape=stroke.instrument==='correction_tape',fluid=stroke.instrument==='correction_fluid';
     const path=(size,colour,alpha,offset=0)=>{ctx.strokeStyle=colour;ctx.fillStyle=colour;ctx.globalAlpha=alpha;ctx.lineWidth=size;ctx.lineCap=tape?'butt':'round';ctx.lineJoin='round';ctx.beginPath();samples.forEach((p,i)=>i?ctx.lineTo(p.x+offset,p.y+offset):ctx.moveTo(p.x+offset,p.y+offset));ctx.stroke();if(stroke.points.length===1){if(tape)ctx.fillRect(samples[0].x-size/2,samples[0].y-size/2,size,size);else dot(samples[0].x+offset,samples[0].y+offset,size/2,alpha);}};
