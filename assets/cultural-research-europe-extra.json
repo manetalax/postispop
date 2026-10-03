@@ -1,0 +1,184 @@
+{
+  "AL": {
+    "landmark": {
+      "name": "Casco histórico de Berat",
+      "source": "https://whc.unesco.org/en/list/569",
+      "verified": true
+    },
+    "food": {
+      "name": "Byrek con queso o espinacas",
+      "source": "https://akt.gov.al/en/culinary/cottage-cheese-or-spinach-pie/",
+      "verified": true
+    },
+    "notes": "Berat es una de las dos ciudades del bien UNESCO compartido con Gjirokastra. Se elige una variante albanesa del byrek, dentro de una tradición culinaria extendida por los Balcanes. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "AD": {
+    "landmark": {
+      "name": "Valle de Madriu-Perafita-Claror",
+      "source": "https://whc.unesco.org/en/list/1160",
+      "verified": true
+    },
+    "food": {
+      "name": "Escudella",
+      "source": "https://www.culturapopular.ad/categories/escudella",
+      "verified": true
+    },
+    "notes": "Paisaje cultural pirenaico y escudella documentada en las celebraciones andorranas de Sant Antoni y Sant Sebastià. La escudella pertenece también a tradiciones vecinas; no se afirma exclusividad nacional. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "BY": {
+    "landmark": {
+      "name": "Castillo de Mir",
+      "source": "https://whc.unesco.org/en/list/625/",
+      "verified": true
+    },
+    "food": {
+      "name": "Draniki",
+      "source": "https://www.belarus.by/en/about-belarus/cuisine",
+      "verified": true
+    },
+    "notes": "El castillo de Mir es un lugar concreto. Los draniki son tortitas de patata recogidas por el portal oficial bielorruso; otras cocinas regionales tienen preparaciones semejantes. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "BA": {
+    "landmark": {
+      "name": "Puente Viejo de Mostar",
+      "source": "https://whc.unesco.org/en/list/946",
+      "verified": true
+    },
+    "food": {
+      "name": "Ćevapi de Sarajevo",
+      "source": "https://www.visitsarajevo.ba/wp-content/uploads/2018/06/visit_sarajevo-eng-web.pdf",
+      "verified": true
+    },
+    "notes": "Se representa el puente reconstruido de Mostar y la variante de ćevapi de Sarajevo, servida con pan somun y cebolla. Son ejemplos locales de un país diverso; los ćevapi se comparten con otras cocinas balcánicas. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "BG": {
+    "landmark": {
+      "name": "Monasterio de Rila",
+      "source": "https://whc.unesco.org/en/list/216/",
+      "verified": true
+    },
+    "food": {
+      "name": "Banitsa",
+      "source": "https://bulgariatravel.org/wp-content/uploads/2020/04/discover_bulgaria.pdf",
+      "verified": true
+    },
+    "notes": "Rila es un monasterio ortodoxo y se trata como patrimonio religioso, sin atribuir esa religión a toda la población. La banitsa es una preparación de masa horneada con distintas variantes dulces y saladas. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "CY": {
+    "landmark": {
+      "name": "Sitio arqueológico de Pafos",
+      "source": "https://whc.unesco.org/en/list/79",
+      "verified": true
+    },
+    "food": {
+      "name": "Queso halloumi",
+      "source": "https://www.visitcyprus.com/discover-cyprus/food-drink/local-produce/",
+      "verified": true
+    },
+    "notes": "Pafos reúne varios componentes arqueológicos; el dibujo debe corresponder a ellos y no a un templo inventado. El halloumi es un producto gastronómico chipriota; la selección no resume la diversidad cultural de la isla. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "EE": {
+    "landmark": {
+      "name": "Casco histórico de Tallin",
+      "source": "https://whc.unesco.org/en/list/822/",
+      "verified": true
+    },
+    "food": {
+      "name": "Kama con kéfir",
+      "source": "https://visitestonia.com/en/what-to-do/five-classic-foods-to-try-in-estonia",
+      "verified": true
+    },
+    "notes": "Se elige el conjunto histórico de Tallin. Kama es una mezcla de harinas de cereales y guisante que puede servirse con leche agria o kéfir; es un ejemplo concreto de la gastronomía estonia. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "LV": {
+    "landmark": {
+      "name": "Centro histórico de Riga",
+      "source": "https://whc.unesco.org/en/list/852",
+      "verified": true
+    },
+    "food": {
+      "name": "Guisantes grises con tocino",
+      "source": "https://www.latvia.travel/en/flavours-latvia",
+      "verified": true
+    },
+    "notes": "El conjunto histórico de Riga combina distintas épocas arquitectónicas. Los guisantes grises se sirven tradicionalmente con tocino o cerdo ahumado y cebolla; no representan todas las preferencias alimentarias de Letonia. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "LI": {
+    "landmark": {
+      "name": "Castillo de Vaduz",
+      "source": "https://en.tourismus.li/map/poi/schloss-vaduz-8fb7e6cf-99b5-4ffb-b600-9e4c66398e1f.html",
+      "verified": true
+    },
+    "food": {
+      "name": "Käsknöpfle",
+      "source": "https://en.tourismus.li/rezepte/detail/kasknopfle-dc0e5593-abe1-418e-943e-a897c7979b3e.html",
+      "verified": true
+    },
+    "notes": "El castillo se representa desde el exterior. Los Käsknöpfle son pequeñas piezas de masa con queso, cebolla frita y acompañamiento de compota de manzana en la receta oficial; forman parte de una familia culinaria alpina compartida. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "LT": {
+    "landmark": {
+      "name": "Centro histórico de Vilna",
+      "source": "https://whc.unesco.org/en/list/541",
+      "verified": true
+    },
+    "food": {
+      "name": "Cepelinai",
+      "source": "https://lithuania.travel/en/what-to-do/food-and-drink/lithuanian-products/cepelinai",
+      "verified": true
+    },
+    "notes": "Se selecciona el centro histórico de Vilna y los cepelinai, piezas de masa de patata con distintos rellenos. Existen variantes con carne, queso fresco o setas; se evita presentar una sola receta como obligatoria. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "LU": {
+    "landmark": {
+      "name": "Barrio antiguo y fortificaciones de Luxemburgo",
+      "source": "https://whc.unesco.org/en/list/699",
+      "verified": true
+    },
+    "food": {
+      "name": "Bouneschlupp",
+      "source": "https://luxembourg.public.lu/en/society-and-culture/culinary-delights/cuisine-international.html",
+      "verified": true
+    },
+    "notes": "Se elige el patrimonio defensivo de la ciudad de Luxemburgo. Bouneschlupp es una sopa de judías verdes con variantes; el propio portal nacional destaca la convivencia de tradiciones locales e internacionales. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "MT": {
+    "landmark": {
+      "name": "Ciudad de La Valeta",
+      "source": "https://whc.unesco.org/en/list/131",
+      "verified": true
+    },
+    "food": {
+      "name": "Pastizzi",
+      "source": "https://www.visitmalta.com/es/maltese-pastizzi-taste-of-malta/",
+      "verified": true
+    },
+    "notes": "La Valeta se representa como ciudad fortificada histórica. Los pastizzi son piezas de hojaldre con rellenos como guisantes o queso fresco; la fuente oficial ofrece una receta concreta, no una definición de toda la cocina maltesa. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "MD": {
+    "landmark": {
+      "name": "Reserva cultural y natural de Orheiul Vechi",
+      "source": "https://moldova.travel/orheiul-vechi/",
+      "verified": true
+    },
+    "food": {
+      "name": "Mămăligă",
+      "source": "https://moldova.travel/en/gastronomy/",
+      "verified": true
+    },
+    "notes": "Orheiul Vechi es una reserva de paisaje y patrimonio en torno al río Răut. La mămăligă es una preparación de maíz con diversos acompañamientos, compartida con cocinas vecinas; no se afirma un origen exclusivo moldavo. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "MC": {
+    "landmark": {
+      "name": "Palacio del Príncipe de Mónaco",
+      "source": "https://palais.mc/en/index.html",
+      "verified": true
+    },
+    "food": {
+      "name": "Barbajuan",
+      "source": "https://www.visitmonaco.com/en/routes-and-walks/27551/getaway-with-friends",
+      "verified": true
+    },
+    "notes": "Se elige el palacio como lugar histórico y el barbajuan como especialidad local documentada por VisitMonaco. La gastronomía monegasca comparte influencias con sus vecinos; un plato no representa a toda la población. Fuentes consultadas el 2 de octubre de 2026."
+  }
+}

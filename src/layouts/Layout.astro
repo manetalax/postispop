@@ -84,6 +84,7 @@ const jsonLd = (value: unknown) => JSON.stringify(value).replace(/</g, '\\u003c'
         </a>
         <nav aria-label="Navegación del sitio" class="hidden items-center gap-6 text-sm font-semibold sm:flex">
           <a href={baseUrl} data-astro-prefetch>Catálogo</a>
+          <a href="/atelier.html" data-astro-reload>Colecciones</a>
           <a href={`${baseUrl}buscar/`} data-astro-prefetch>Búsqueda</a>
           <a href={`${baseUrl}favoritos/`} data-astro-prefetch>Favoritos</a>
           <a href="/" data-astro-reload class="rounded-full bg-pop px-4 py-2 text-white hover:bg-pop-dark">Abrir mi pizarra</a>

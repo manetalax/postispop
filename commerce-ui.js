@@ -11,7 +11,7 @@ async function api(endpoint,payload) {
   const response=await fetch('/api/'+endpoint,{method:payload===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:payload===undefined?undefined:JSON.stringify(payload)});
   const body=await response.json();if(!response.ok) throw Object.assign(new Error(body.error||'REQUEST_FAILED'),{status:response.status});return body;
 }
-const owned=slug=>Boolean(access?.products?.includes(slug)||access?.products?.includes('postispop-pro'));
+const owned=slug=>Boolean(access?.owner||access?.premium||access?.products?.includes(slug)||access?.products?.includes('postispop-pro'));
 const active=()=>owned('reloj-recordatorios')||Boolean(access?.clock_active&&Date.parse(access.trial_expires_at)>Date.now()+offset);
 function message(text) {
   let el=document.querySelector('.pp-toast');if(!el){el=document.createElement('p');el.className='pp-toast';el.setAttribute('role','status');document.body.append(el);}
@@ -85,7 +85,7 @@ async function shop(focusSlug) {
       let action=has?(p.slug.startsWith('pack-')?`<button class="pp-primary" data-action="apply" data-slug="${escape(p.slug)}">Aplicar estilo</button>`:`<button class="pp-primary" data-action="${clock?'alarms':'pro'}">Usar mejora</button>`):!actor?.registered?'<button class="pp-primary" data-action="register">Crear cuenta / Iniciar sesión</button>':checkoutReady?`<button class="pp-primary" data-action="buy" data-slug="${escape(p.slug)}">Comprar · ${price(p)}</button>`:'<button class="pp-primary" disabled>Compra próximamente</button>';
       if(clock&&active()&&!has)action='<button class="pp-primary" data-action="alarms">Usar reloj gratis</button>'+action;
       return `<article class="pp-product"><span class="pp-product-icon" aria-hidden="true">${icons[p.slug]||'🛍️'}</span><h3>${escape(p.title)}</h3><p>${escape(descriptions[p.slug]||p.description)}</p><strong>${has?'Activado en tu cuenta':price(p)}</strong><small>${has?'Disponible al iniciar sesión': 'Pago único · Sin suscripción'}</small>${action}</article>`;
-    }).join('')}</section><a class="pp-secondary" href="/tienda/">Explorar el catálogo completo</a>${!checkoutReady?'<p class="pp-muted">Estamos preparando la compra con activación automática. Todavía no se realizan cobros desde esta tienda.</p>':''}<p class="pp-muted">Las alarmas necesitan PostisPop abierto. El navegador puede retrasarlas si el dispositivo está suspendido. No sustituyen avisos críticos.</p>`;
+    }).join('')}</section><a class="pp-primary" href="/atelier.html">Colecciones, papeles y herramientas</a><a class="pp-secondary" href="/tienda/">Ver mejoras clásicas</a>${!checkoutReady?'<p class="pp-muted">Estamos preparando la compra con activación automática. Todavía no se realizan cobros desde esta tienda.</p>':''}<p class="pp-muted">Las alarmas necesitan PostisPop abierto. El navegador puede retrasarlas si el dispositivo está suspendido. No sustituyen avisos críticos.</p>`;
   } catch(error) {if(dialog===current)current.querySelector('p').textContent=errorText(error);}
 }
 async function clock() {

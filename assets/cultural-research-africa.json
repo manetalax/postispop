@@ -1,0 +1,590 @@
+{
+  "AO": {
+    "landmark": {
+      "name": "Mbanza Kongo",
+      "source": "https://whc.unesco.org/en/statesparties/ao",
+      "verified": true
+    },
+    "food": {
+      "name": "Funge",
+      "source": "https://en.wikipedia.org/wiki/Angolan_cuisine",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "BJ": {
+    "landmark": {
+      "name": "Palacios Reales de Abomey",
+      "source": "https://whc.unesco.org/en/statesparties/bj",
+      "verified": true
+    },
+    "food": {
+      "name": "Amiwô",
+      "source": "https://en.wikipedia.org/wiki/Amiwo",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "BW": {
+    "landmark": {
+      "name": "Delta del Okavango",
+      "source": "https://whc.unesco.org/en/statesparties/bw",
+      "verified": true
+    },
+    "food": {
+      "name": "Seswaa",
+      "source": "https://en.wikipedia.org/wiki/Seswaa",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "BF": {
+    "landmark": {
+      "name": "Corte Real de Tiébélé",
+      "source": "https://whc.unesco.org/en/statesparties/bf",
+      "verified": true
+    },
+    "food": {
+      "name": "Tô",
+      "source": "https://en.wikipedia.org/wiki/Cuisine_of_Burkina_Faso",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "BI": {
+    "landmark": {
+      "name": "Cascadas de Karera",
+      "source": "https://whc.unesco.org/en/statesparties/bi",
+      "verified": true
+    },
+    "food": {
+      "name": "Ibiharage",
+      "source": "https://en.wikipedia.org/wiki/Burundian_cuisine",
+      "verified": true
+    },
+    "notes": "Karera está documentado en la lista indicativa de UNESCO; no se afirma inscripción como Patrimonio Mundial."
+  },
+  "CV": {
+    "landmark": {
+      "name": "Cidade Velha",
+      "source": "https://whc.unesco.org/en/statesparties/cv",
+      "verified": true
+    },
+    "food": {
+      "name": "Cachupa",
+      "source": "https://www.visit-caboverde.com/sobre-cabo-verde/gastronomia",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "CM": {
+    "landmark": {
+      "name": "Reserva de Fauna de Dja",
+      "source": "https://whc.unesco.org/en/statesparties/cm",
+      "verified": true
+    },
+    "food": {
+      "name": "Ndolé",
+      "source": "https://en.wikipedia.org/wiki/Cameroonian_cuisine",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "CF": {
+    "landmark": {
+      "name": "Parque Nacional de Manovo-Gounda Saint-Floris",
+      "source": "https://whc.unesco.org/en/statesparties/cf",
+      "verified": true
+    },
+    "food": {
+      "name": "Kanda ti nyma",
+      "source": "https://en.wikipedia.org/wiki/Central_African_Republic_cuisine",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "TD": {
+    "landmark": {
+      "name": "Lagos de Ounianga",
+      "source": "https://whc.unesco.org/en/statesparties/td",
+      "verified": true
+    },
+    "food": {
+      "name": "Boule",
+      "source": "https://en.wikipedia.org/wiki/Chadian_cuisine",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "KM": {
+    "landmark": {
+      "name": "Medinas de los sultanatos históricos de Comoras",
+      "source": "https://whc.unesco.org/en/statesparties/km",
+      "verified": true
+    },
+    "food": null,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. Comida pendiente de una fuente suficiente."
+  },
+  "CG": {
+    "landmark": {
+      "name": "Macizo Forestal de Odzala-Kokoua",
+      "source": "https://whc.unesco.org/en/statesparties/cg",
+      "verified": true
+    },
+    "food": {
+      "name": "Saka-saka",
+      "source": "https://en.wikipedia.org/wiki/Pondu",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "CD": {
+    "landmark": {
+      "name": "Parque Nacional de Virunga",
+      "source": "https://whc.unesco.org/en/statesparties/cd",
+      "verified": true
+    },
+    "food": {
+      "name": "Pondu",
+      "source": "https://en.wikipedia.org/wiki/Pondu",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "CI": {
+    "landmark": {
+      "name": "Ciudad histórica de Grand-Bassam",
+      "source": "https://whc.unesco.org/en/statesparties/ci",
+      "verified": true
+    },
+    "food": {
+      "name": "Attiéké",
+      "source": "https://ich.unesco.org/en/RL/skills-related-to-attieke-production-in-cote-d-ivoire-02086",
+      "verified": true
+    },
+    "notes": "El attiéké remite a una tradición culinaria concreta; no se presenta como práctica de toda la población."
+  },
+  "DJ": {
+    "landmark": {
+      "name": "Lago Assal",
+      "source": "https://whc.unesco.org/en/statesparties/dj",
+      "verified": true
+    },
+    "food": {
+      "name": "Lahoh",
+      "source": "https://en.wikipedia.org/wiki/Djiboutian_cuisine",
+      "verified": true
+    },
+    "notes": "Assal está documentado en la lista indicativa de UNESCO; no se afirma inscripción como Patrimonio Mundial."
+  },
+  "GQ": {
+    "landmark": {
+      "name": "Parque Nacional de Monte Alén",
+      "source": "https://whc.unesco.org/en/statesparties/gq",
+      "verified": true
+    },
+    "food": {
+      "name": "Pepesup",
+      "source": "https://en.wikipedia.org/wiki/Cuisine_of_Equatorial_Guinea",
+      "verified": true
+    },
+    "notes": "Monte Alén está documentado en la lista indicativa de UNESCO; no se afirma inscripción como Patrimonio Mundial."
+  },
+  "ER": {
+    "landmark": {
+      "name": "Arquitectura modernista de Asmara",
+      "source": "https://whc.unesco.org/en/statesparties/er",
+      "verified": true
+    },
+    "food": {
+      "name": "Injera",
+      "source": "https://1997-2001.state.gov/about_state/business/com_guides/1999/africa/eritrea99_09.html",
+      "verified": true
+    },
+    "notes": "La referencia culinaria consultada es una guía gubernamental archivada de 1999, usada sólo para el nombre del alimento."
+  },
+  "SZ": {
+    "landmark": {
+      "name": "Minas de Ngwenya",
+      "source": "https://whc.unesco.org/en/statesparties/sz",
+      "verified": true
+    },
+    "food": {
+      "name": "Pap",
+      "source": "https://www.thekingdomofeswatini.com/food-drink/",
+      "verified": true
+    },
+    "notes": "Ngwenya está documentado en la lista indicativa de UNESCO; no se afirma inscripción como Patrimonio Mundial."
+  },
+  "GA": {
+    "landmark": {
+      "name": "Parque Nacional de Ivindo",
+      "source": "https://whc.unesco.org/en/statesparties/ga",
+      "verified": true
+    },
+    "food": {
+      "name": "Nyembwe",
+      "source": "https://en.wikipedia.org/wiki/Gabonese_cuisine",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "GM": {
+    "landmark": {
+      "name": "Círculos de piedra de Senegambia",
+      "source": "https://whc.unesco.org/en/statesparties/gm",
+      "verified": true
+    },
+    "food": {
+      "name": "Domoda",
+      "source": "https://en.wikipedia.org/wiki/Gambian_cuisine",
+      "verified": true
+    },
+    "notes": "El sitio de círculos de piedra es compartido con Senegal."
+  },
+  "GH": {
+    "landmark": {
+      "name": "Edificaciones tradicionales asante",
+      "source": "https://whc.unesco.org/en/statesparties/gh",
+      "verified": true
+    },
+    "food": {
+      "name": "Banku con salsa de okra",
+      "source": "https://visitghana.com/oti-region/",
+      "verified": true
+    },
+    "notes": "El ejemplo de banku con okra está documentado por la oficina de turismo para la región de Oti."
+  },
+  "GN": {
+    "landmark": {
+      "name": "Reserva Natural del Monte Nimba",
+      "source": "https://whc.unesco.org/en/statesparties/gn",
+      "verified": true
+    },
+    "food": {
+      "name": "Konkoé",
+      "source": "https://en.wikipedia.org/wiki/Guinean_cuisine",
+      "verified": true
+    },
+    "notes": "La reserva del Monte Nimba es compartida con Côte d'Ivoire."
+  },
+  "GW": {
+    "landmark": {
+      "name": "Archipiélago de Bijagós · Omatí Minhô",
+      "source": "https://whc.unesco.org/en/statesparties/gw",
+      "verified": true
+    },
+    "food": {
+      "name": "Caldo de mancarra",
+      "source": "https://en.wikipedia.org/wiki/Guinea-Bissauan_cuisine",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "LS": {
+    "landmark": {
+      "name": "Parque Maloti-Drakensberg",
+      "source": "https://whc.unesco.org/en/statesparties/ls",
+      "verified": true
+    },
+    "food": null,
+    "notes": "Maloti-Drakensberg es un parque transfronterizo compartido con Sudáfrica. Comida pendiente de una fuente suficiente."
+  },
+  "LR": {
+    "landmark": {
+      "name": "Isla de Providence",
+      "source": "https://whc.unesco.org/en/statesparties/lr",
+      "verified": true
+    },
+    "food": {
+      "name": "Dumboy",
+      "source": "https://en.wikipedia.org/wiki/Liberian_cuisine",
+      "verified": true
+    },
+    "notes": "Providence está documentada en la lista indicativa de UNESCO; no se afirma inscripción como Patrimonio Mundial."
+  },
+  "LY": {
+    "landmark": {
+      "name": "Sitio arqueológico de Leptis Magna",
+      "source": "https://whc.unesco.org/en/statesparties/ly",
+      "verified": true
+    },
+    "food": {
+      "name": "Bazin",
+      "source": "https://en.wikipedia.org/wiki/Libyan_cuisine",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "MG": {
+    "landmark": {
+      "name": "Colina Real de Ambohimanga",
+      "source": "https://whc.unesco.org/en/statesparties/mg",
+      "verified": true
+    },
+    "food": {
+      "name": "Romazava",
+      "source": "https://madagascar-tourisme.com/en/restaurants-and-nightlife/restaurants/",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "MW": {
+    "landmark": {
+      "name": "Parque Nacional del Lago Malawi",
+      "source": "https://whc.unesco.org/en/statesparties/mw",
+      "verified": true
+    },
+    "food": {
+      "name": "Nsima",
+      "source": "https://ich.unesco.org/en/RL/nsima-culinary-tradition-of-malawi-01292",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "ML": {
+    "landmark": {
+      "name": "Ciudades antiguas de Djenné",
+      "source": "https://whc.unesco.org/en/statesparties/ml",
+      "verified": true
+    },
+    "food": {
+      "name": "Tigadeguena",
+      "source": "https://en.wikipedia.org/wiki/Malian_cuisine",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "MU": {
+    "landmark": {
+      "name": "Paisaje cultural de Le Morne",
+      "source": "https://whc.unesco.org/en/statesparties/mu",
+      "verified": true
+    },
+    "food": {
+      "name": "Dholl puri",
+      "source": "https://www.mymauritius.travel/sites/default/files/pdf/mtpa-mauritius_5.pdf",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "MZ": {
+    "landmark": {
+      "name": "Isla de Mozambique",
+      "source": "https://whc.unesco.org/en/statesparties/mz",
+      "verified": true
+    },
+    "food": {
+      "name": "Matapa",
+      "source": "https://en.wikipedia.org/wiki/Mozambican_cuisine",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "NA": {
+    "landmark": {
+      "name": "Mar de Arena del Namib",
+      "source": "https://whc.unesco.org/en/statesparties/na",
+      "verified": true
+    },
+    "food": {
+      "name": "Kapana",
+      "source": "https://en.wikipedia.org/wiki/Kapana_%28grilled_meat%29",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "NE": {
+    "landmark": {
+      "name": "Centro histórico de Agadez",
+      "source": "https://whc.unesco.org/en/statesparties/ne",
+      "verified": true
+    },
+    "food": {
+      "name": "Dambou",
+      "source": "https://en.wikipedia.org/wiki/Nigerien_cuisine",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "NG": {
+    "landmark": {
+      "name": "Bosque Sagrado de Osun-Osogbo",
+      "source": "https://whc.unesco.org/en/statesparties/ng",
+      "verified": true
+    },
+    "food": null,
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades. Comida pendiente de una fuente suficiente."
+  },
+  "RW": {
+    "landmark": {
+      "name": "Parque Nacional de Nyungwe",
+      "source": "https://whc.unesco.org/en/statesparties/rw",
+      "verified": true
+    },
+    "food": {
+      "name": "Isombe",
+      "source": "https://en.wikipedia.org/wiki/Rwandan_cuisine",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "ST": {
+    "landmark": {
+      "name": "Roças de Santo Tomé y Príncipe",
+      "source": "https://whc.unesco.org/en/statesparties/st",
+      "verified": true
+    },
+    "food": {
+      "name": "Calulu",
+      "source": "https://en.wikipedia.org/wiki/Cuisine_of_S%C3%A3o_Tom%C3%A9_and_Pr%C3%ADncipe",
+      "verified": true
+    },
+    "notes": "Las roças requieren contexto sobre sistemas coloniales y migración forzada; no presentar como celebración de la colonización."
+  },
+  "SC": {
+    "landmark": {
+      "name": "Reserva Natural de Vallée de Mai",
+      "source": "https://whc.unesco.org/en/statesparties/sc",
+      "verified": true
+    },
+    "food": {
+      "name": "Ladob",
+      "source": "https://www.seychelles.com/experience/food-drinks",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "SL": {
+    "landmark": {
+      "name": "Complejo Gola-Tiwai",
+      "source": "https://whc.unesco.org/en/statesparties/sl",
+      "verified": true
+    },
+    "food": {
+      "name": "Guiso de hojas de yuca",
+      "source": "https://en.wikipedia.org/wiki/Sierra_Leonean_cuisine",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "SO": {
+    "landmark": {
+      "name": "Faro Secondo-Lido de Mogadiscio",
+      "source": "https://whc.unesco.org/en/statesparties/so",
+      "verified": true
+    },
+    "food": null,
+    "notes": "El faro está documentado en la lista indicativa de UNESCO; no se afirma inscripción como Patrimonio Mundial. Comida pendiente de una fuente suficiente."
+  },
+  "SS": {
+    "landmark": {
+      "name": "Paisaje migratorio Boma-Badingilo",
+      "source": "https://whc.unesco.org/en/statesparties/ss",
+      "verified": true
+    },
+    "food": {
+      "name": "Kisra",
+      "source": "https://en.wikipedia.org/wiki/South_Sudanese_cuisine",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "SD": {
+    "landmark": {
+      "name": "Sitios arqueológicos de Meroe",
+      "source": "https://whc.unesco.org/en/statesparties/sd",
+      "verified": true
+    },
+    "food": {
+      "name": "Kisra",
+      "source": "https://en.wikipedia.org/wiki/Sudanese_cuisine",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "TG": {
+    "landmark": {
+      "name": "Koutammakou · tierra de los batammariba",
+      "source": "https://whc.unesco.org/en/statesparties/tg",
+      "verified": true
+    },
+    "food": null,
+    "notes": "Koutammakou remite específicamente al patrimonio batammariba y es compartido con Benín. Comida pendiente de una fuente suficiente."
+  },
+  "UG": {
+    "landmark": {
+      "name": "Tumbas de los reyes de Buganda en Kasubi",
+      "source": "https://whc.unesco.org/en/statesparties/ug",
+      "verified": true
+    },
+    "food": {
+      "name": "Rolex",
+      "source": "https://exploreuganda.com/culinary/",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "ZM": {
+    "landmark": {
+      "name": "Mosi-oa-Tunya · cataratas Victoria",
+      "source": "https://whc.unesco.org/en/statesparties/zm",
+      "verified": true
+    },
+    "food": {
+      "name": "Nshima",
+      "source": "https://www.zambiatourism.com/what-to-see-during-your-holidays-in-zambia/",
+      "verified": true
+    },
+    "notes": "Las cataratas son compartidas con Zimbabue."
+  },
+  "ZW": {
+    "landmark": {
+      "name": "Gran Zimbabue",
+      "source": "https://whc.unesco.org/en/statesparties/zw",
+      "verified": true
+    },
+    "food": {
+      "name": "Sadza",
+      "source": "https://zimbabwetourism.net/portfolios/chesvingo-cultural-village/",
+      "verified": true
+    },
+    "notes": "El ejemplo de sadza está documentado en Chesvingo, con variantes de rapoko y sorgo."
+  },
+  "ZA": {
+    "landmark": null,
+    "food": {
+      "name": "Bobotie",
+      "source": "https://www.southafrica.net/gl/en/travel/article/iconic-south-african-foods-taste-all-the-flavours-of-the-rainbow-nation",
+      "verified": true
+    },
+    "notes": "Ejemplo culinario asociado a la cocina del Cabo; no se afirma que represente toda la población."
+  },
+  "KE": {
+    "landmark": null,
+    "food": {
+      "name": "Ugali con sukuma wiki",
+      "source": "https://bucketlist.magicalkenya.com/experiences/kenyan-western-culture-culinary-experience/",
+      "verified": true
+    },
+    "notes": "Ejemplo documentado en una experiencia de cocina del oeste de Kenia."
+  },
+  "TZ": {
+    "landmark": null,
+    "food": {
+      "name": "Ugali",
+      "source": "https://www.ug.tzembassy.go.tz/tanzania/category/people-and-culture",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  },
+  "ET": {
+    "landmark": null,
+    "food": {
+      "name": "Injera",
+      "source": "https://ethiopianembassy.org/culture/",
+      "verified": true
+    },
+    "notes": "Selección de un lugar y un ejemplo culinario; no representa todas las regiones ni comunidades."
+  }
+}

@@ -1,20 +1,35 @@
-import { cp, mkdir, rm, readFile, writeFile, stat, readdir } from 'node:fs/promises';
+import { mkdir, rm, readFile, writeFile, stat } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { copyPublicTree, copyMobileTree, listFiles, auditBundle, writeBundleManifest } from '../mobile/bundle-tools.mjs';
 const root = resolve(import.meta.dirname, '..');
 const out = resolve(root, 'android/app/src/main/assets/www');
-await stat(resolve(root, 'astro-dist/index.html')); // Build the shop first.
+await stat(resolve(root, 'astro-dist/index.html'));
+await import('./stage-site.mjs');
 await rm(out, {recursive:true, force:true});
 await mkdir(out, {recursive:true});
-for (const name of ['index.html','manifest.webmanifest','favicon.ico','experience-content.js','experience.css','experience.js','usage-metrics.js','board-tools.js','manifest.json','favicon.svg','privacy.html','terms.html','legal.html','cookies.html','commerce-ui.js','commerce.css','supabase-bridge.js','supabase-config.js','guest-board.js','guest-status.js','postispop-shop.js','note-attachments.js','note-attachments.css']) {
-  await cp(resolve(root,name),resolve(out,name));
+await copyMobileTree(resolve(root, '_site'), out, {linkImmutableAssets:process.env.POSTISPOP_MOBILE_ASSET_LINKS==='1'});
+for (const file of await listFiles(out)) {
+  if (!file.endsWith('.html')) continue;
+  let html = await readFile(resolve(out, file), 'utf8');
+  html = html.replace(/<script\b[^>]*src=["'][^"']*wpo-register\.js[^"']*["'][^>]*>\s*<\/script>/g, '');
+  if (file === 'index.html') {
+    const bridge = /src=["'](?:\.\/|\/)?supabase-bridge\.js(?:\?[^"']*)?["']/;
+    if (!bridge.test(html)) throw new Error('Main bridge entry point missing; refusing incomplete mobile build');
+    html = html.replace(bridge, 'src="/mobile-entry.js"');
+  }
+  await writeFile(resolve(out, file), html);
 }
-for (const name of (await readdir(root)).filter(name => /(?:-online|pizarra-virtual|pizarra-colaborativa|organizador-visual-de-tareas|notas-para-estudiar|pizarra-para-reuniones)\.html$/.test(name))) await cp(resolve(root,name),resolve(out,name));
-for (const name of ['assets','_next']) await cp(resolve(root,name),resolve(out,name),{recursive:true});
-await cp(resolve(root,'astro-dist'),resolve(out,'tienda'),{recursive:true});
-// Stored API snapshots from the recovered website must never ship as personal data.
-await cp(resolve(root,'mobile/mobile-entry.js'),resolve(out,'mobile-entry.js'));
-let html = await readFile(resolve(out,'index.html'),'utf8');
-html = html.replace('src="./supabase-bridge.js?v=6"','src="./mobile-entry.js"').replaceAll(' async=""','');
-await writeFile(resolve(out,'index.html'),html);
-await writeFile(resolve(out,'mobile-build.json'),JSON.stringify({version:'0.3.0-beta',runtime:'bundled-local',database:'https://htfyjefmviwlgmfqrwue.supabase.co',payments:'existing-stripe',attachments:'local-indexeddb'},null,2));
-console.log('Mobile UI bundled locally, including the shop. No remote website fallback.');
+await copyPublicTree(resolve(root, 'mobile/mobile-entry.js'), resolve(out, 'mobile-entry.js'));
+await rm(resolve(out, 'sw.js'), {force:true});
+await rm(resolve(out, 'wpo-register.js'), {force:true});
+await writeFile(resolve(out, 'mobile-build.json'), JSON.stringify({
+  version:'0.4.0', runtime:'bundled-local', applicationId:'com.postispop.android',
+  database:'https://htfyjefmviwlgmfqrwue.supabase.co', payments:'existing-stripe-only',
+  attachments:'local-indexeddb', protectedNotes:'aes-gcm-local',
+  accountOffline:'persistent-queue-requires-server-migration',
+  installationTested:false, newPurchasesEnabled:false,
+}, null, 2) + '\n');
+await auditBundle(out);
+const manifest = await writeBundleManifest(out, {target:'android-assets', version:'0.4.0'});
+console.log('Verified complete mobile bundle:', manifest.files, 'files;', manifest.contentHash);
+console.log('Assets prepared only. This command does not build, sign, install or publish an APK.');

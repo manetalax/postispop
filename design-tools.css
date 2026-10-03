@@ -1,0 +1,24 @@
+@import url('./fonts.css');
+.pp-design-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;max-width:1100px;margin:10px auto;padding:10px 16px;border:1px solid #d4c6af;border-radius:12px;background:#fffcf5;color:#27394d;font:14px/1.4 system-ui,sans-serif}
+.pp-design-summary{font-weight:650}.pp-design-bar a,.pp-design-tools a{color:#28569a;text-underline-offset:3px}
+.board-frame.pp-designed-board{background-image:var(--pp-board-art)!important;background-size:100% 100%!important;background-position:center!important}
+.pp-styled-note{background-image:var(--pp-paper-image)!important;background-size:100% 100%!important}
+.pp-styled-note[data-pp-paper=plain]{background-image:linear-gradient(135deg,#ffffff25,transparent 75%)!important}
+.pp-styled-note .note-text{font-family:var(--pp-font)!important;font-size:clamp(10px,1.9vw,calc(var(--pp-font-size)*.8))!important;font-style:var(--pp-slant)!important;text-decoration:var(--pp-decoration);color:var(--pp-ink)!important;overflow-wrap:anywhere;line-height:1.4}
+.pp-note-sketch{position:absolute;left:8%;bottom:9%;width:84%;height:40%;object-fit:contain;pointer-events:none}.pp-styled-note:has(.pp-note-sketch) .note-text{max-height:44%;overflow:hidden}
+.pp-styled-editor{background-image:var(--pp-paper-image)!important;background-size:100% 100%!important}
+.pp-styled-editor[data-pp-paper=plain]{background-image:linear-gradient(135deg,#ffffff30,transparent)!important;background-color:var(--editor-paper,#ffec86)!important}
+.pp-styled-editor .rich-paper-mirror,.pp-styled-editor textarea{font-family:var(--pp-font)!important;font-size:var(--pp-font-size)!important;font-style:var(--pp-slant)!important;line-height:1.5!important;text-decoration:var(--pp-decoration);overflow-wrap:anywhere!important}
+.pp-styled-editor .rich-paper-mirror{color:var(--pp-ink)!important}.pp-styled-editor textarea{caret-color:var(--pp-ink)!important}
+.pp-styled-editor[data-pp-paper=music],.pp-styled-editor[data-pp-paper=prescription]{padding-top:44px!important}
+.pp-design-tools{margin:14px 0;border:1px solid #cabda6;background:#fffcf8;border-radius:14px;color:#233649;font:14px/1.5 system-ui,sans-serif}
+.pp-design-tools summary{padding:13px 16px;font-weight:700;cursor:pointer;min-height:48px;list-style-position:inside}
+.pp-design-content{padding:0 14px 16px}.pp-style-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pp-design-tools label{display:flex;flex-direction:column;gap:5px;font-weight:600;min-width:0}
+.pp-design-tools select{width:100%;min-height:44px;border:1px solid #bcb9b0;border-radius:8px;background:white;color:#263648;padding:7px;font:inherit}.pp-design-tools input[type=range]{min-height:40px;width:100%;accent-color:#26548a}.pp-design-tools output{font-size:12px;font-weight:400}
+.pp-format-toggles{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.pp-design-tools button{min-height:42px;padding:8px 12px;border-radius:8px;border:1px solid #b9b6af;background:#fff;color:#25354a;font:600 13px/1.35 system-ui,sans-serif;cursor:pointer}
+.pp-design-tools button[aria-pressed=true]{outline:3px solid #285b98;outline-offset:2px}.pp-design-tools button:disabled{opacity:.42;cursor:not-allowed}.pp-design-tools button:focus-visible,.pp-design-tools select:focus-visible,.pp-design-tools summary:focus-visible{outline:3px solid #285b98;outline-offset:3px}
+.pp-ink-colors{margin:16px 0;padding:8px 10px 12px;border:1px solid #ded5c8;border-radius:9px}.pp-ink-colors legend{font-weight:600}.pp-palette-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}.pp-palette-row span{flex:0 0 100%;font-size:12px;color:#59636e}.pp-design-tools .pp-palette-row button{width:36px;min-height:36px;border:2px solid white;border-radius:50%;box-shadow:0 0 0 1px #aeb5bd;padding:0}
+.pp-drawing-controls{display:flex;align-items:flex-end;gap:12px;margin-bottom:12px}.pp-drawing-controls label{flex:1}.pp-drawing-canvas{display:block;width:100%;height:auto;aspect-ratio:8/5;border:1px solid #bdb5a7;border-radius:8px;background-size:100% 100%;touch-action:none;cursor:crosshair;max-height:none}
+.pp-design-content h3{font:700 17px/1.35 system-ui,sans-serif;margin:16px 0 10px}.pp-sketch-help,.pp-style-status{font-size:12px;line-height:1.55}.pp-style-status{min-height:36px;color:#334d64}.pp-design-tools .pp-style-save{background:#254d77;color:white;min-height:46px;width:100%;border:0;margin-top:8px}
+@media(max-width:480px){.pp-style-fields{grid-template-columns:1fr}.pp-design-content{padding:0 10px 12px}.pp-design-bar{font-size:12px;margin:8px 2px;padding:9px 11px}.pp-drawing-controls{flex-wrap:wrap}.pp-drawing-controls label{min-width:160px}.pp-styled-note .note-text{font-size:clamp(10px,2.6vw,14px)!important}}
+@media(prefers-reduced-motion:reduce){.pp-design-tools *{animation:none!important;transition:none!important}}

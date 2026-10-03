@@ -1,3 +1,4 @@
+import {withNoteStorageLock,assertAttachmentWritable,protectedMarker} from './attachment-lock.js';
 const DB_NAME = 'postispop-note-attachments';
 const STORE = 'attachments';
 const MAX_FILE_BYTES = 25 * 1024 * 1024;
@@ -104,36 +105,37 @@ function notify(message) {
   notify.timer = setTimeout(() => toast.classList.remove('is-visible'), 3200);
 }
 
-async function saveFiles(files) {
-  if (!activeNoteId) return;
-  for (const file of files) {
-    if (!supported(file)) { notify(labels.invalid); continue; }
-    if (file.size > MAX_FILE_BYTES) { notify(`${file.name}: ${labels.tooLarge}`); continue; }
-    const id = crypto.randomUUID();
-    const item = { key: `${activeNoteId}::${id}`, id, noteId: activeNoteId, kind: 'file',
-      name: file.name || `audio-${new Date().toISOString().slice(0, 19)}.webm`, type: file.type,
-      size: file.size, created: Date.now(), blob: file };
-    try { await transaction('readwrite', store => store.put(item)); }
-    catch { notify(labels.failed); }
-  }
-  await renderList();
+async function saveFiles(files, noteId=activeNoteId) {
+  if (!noteId) return;
+  try { await withNoteStorageLock(noteId, async()=>{
+    await assertAttachmentWritable(noteId);
+    for (const file of files) {
+      if (!supported(file)) { notify(labels.invalid); continue; }
+      if (file.size > MAX_FILE_BYTES) { notify(`${file.name}: ${labels.tooLarge}`); continue; }
+      const id=crypto.randomUUID(),item={key:`${noteId}::${id}`,id,noteId,kind:'file',name:file.name||`audio-${Date.now()}.webm`,type:file.type,size:file.size,created:Date.now(),blob:file};
+      await transaction('readwrite',store=>store.put(item));
+    }
+  }); } catch(error) { notify(error.message==='NOTE_PROTECTED'?'La nota se ha protegido. Este adjunto no se ha guardado sin cifrar.':labels.failed); }
+  if(activeNoteId===noteId)await renderList();
 }
 
-async function saveLink(raw) {
-  if (!activeNoteId) return;
-  let url;
-  try { url = new URL(raw.trim()); } catch { notify('Escribe un enlace válido.'); return; }
-  if (!['http:', 'https:'].includes(url.protocol)) { notify('El enlace debe comenzar por http:// o https://'); return; }
-  const id = crypto.randomUUID();
-  const item = { key: `${activeNoteId}::${id}`, id, noteId: activeNoteId, kind: 'link',
-    name: url.hostname, url: url.href, created: Date.now(), size: 0, type: 'text/uri-list' };
-  await transaction('readwrite', store => store.put(item));
-  await renderList();
+async function saveLink(raw, noteId=activeNoteId) {
+  if (!noteId) return;
+  let url;try{url=new URL(raw.trim());}catch{notify('Escribe un enlace válido.');return;}
+  if(!['http:','https:'].includes(url.protocol)){notify('El enlace debe comenzar por http:// o https://');return;}
+  try{await withNoteStorageLock(noteId,async()=>{
+    await assertAttachmentWritable(noteId);
+    const id=crypto.randomUUID();const item={key:`${noteId}::${id}`,id,noteId,kind:'link',name:url.hostname,url:url.href,created:Date.now(),size:0,type:'text/uri-list'};
+    await transaction('readwrite',store=>store.put(item));
+  });}catch(error){notify(error.message==='NOTE_PROTECTED'?'La nota se ha protegido. El enlace no se ha guardado sin cifrar.':labels.failed);}
+  if(activeNoteId===noteId)await renderList();
 }
 
 async function removeItem(key) {
-  await transaction('readwrite', store => store.delete(key));
-  await renderList();
+  const noteId=key.split('::')[0];
+  try{await withNoteStorageLock(noteId,async()=>{await assertAttachmentWritable(noteId);await transaction('readwrite',store=>store.delete(key));});}
+  catch{notify('No se pudo modificar el adjunto. La nota puede estar protegida.');}
+  if(activeNoteId===noteId)await renderList();
 }
 
 function makeMedia(item, url, kind) {
@@ -149,9 +151,13 @@ function makeMedia(item, url, kind) {
 async function renderList() {
   const list = document.querySelector('.pp-attachments-list');
   if (!list || !activeNoteId) return;
+  const renderingNoteId=activeNoteId;
+  try{await assertAttachmentWritable(renderingNoteId);}catch{objectUrls.forEach(URL.revokeObjectURL);objectUrls=[];list.replaceChildren();const message=document.createElement('p');message.textContent='Adjuntos cerrados: la nota está protegida o ya no está disponible.';list.append(message);return;}
   objectUrls.forEach(URL.revokeObjectURL); objectUrls = [];
   let items = [];
-  try { items = await listForNote(activeNoteId); } catch { notify(labels.failed); }
+  try { items = await listForNote(renderingNoteId); } catch { notify(labels.failed); }
+  if(activeNoteId!==renderingNoteId||!list.isConnected)return;
+  if(localStorage.getItem(protectedMarker(renderingNoteId))==='1'){list.replaceChildren();return;}
   list.replaceChildren();
   list.classList.toggle('is-empty', items.length === 0);
   if (!items.length) {
@@ -193,6 +199,7 @@ async function toggleRecording(button) {
   if (recorder?.state === 'recording') { recorder.stop(); return; }
   if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) { notify('La grabación de voz no está disponible.'); return; }
   try {
+    const recordedNoteId=activeNoteId;await assertAttachmentWritable(recordedNoteId);
     recordingStream = await navigator.mediaDevices.getUserMedia({ audio: true });
     recordedChunks = [];
     const preferred = ['audio/webm;codecs=opus', 'audio/mp4'].find(type => MediaRecorder.isTypeSupported(type));
@@ -202,7 +209,8 @@ async function toggleRecording(button) {
       const type = recorder.mimeType || 'audio/webm';
       const ext = type.includes('mp4') ? 'm4a' : 'webm';
       const blob = new Blob(recordedChunks, { type });
-      await saveFiles([new File([blob], `Nota-de-voz-${new Date().toISOString().replace(/[:.]/g, '-')}.${ext}`, { type })]);
+      await saveFiles([new File([blob], `Nota-de-voz-${new Date().toISOString().replace(/[:.]/g, '-')}.${ext}`, { type })],recordedNoteId);
+      recordedChunks=[];
       recordingStream?.getTracks().forEach(track => track.stop()); recordingStream = null;
       button.classList.remove('is-recording'); button.querySelector('span').textContent = labels.voice;
     };
@@ -222,7 +230,7 @@ function createPanel() {
     <form class="pp-link-form" hidden><input type="url" inputmode="url" placeholder="${labels.url}" aria-label="${labels.url}"><button type="submit">${labels.save}</button><button type="button" class="pp-link-cancel">${labels.cancel}</button></form>
     <div class="pp-attachments-list" aria-live="polite"></div>`;
   panel.querySelector('input[type=file]').addEventListener('change', async event => {
-    await saveFiles([...event.target.files]); event.target.value = '';
+    const input=event.currentTarget,noteId=activeNoteId;await saveFiles([...input.files],noteId); input.value='';
   });
   panel.querySelector('.pp-voice-action').addEventListener('click', event => toggleRecording(event.currentTarget));
   panel.querySelector('.pp-link-action').addEventListener('click', () => toggleLinkForm(panel, true));
@@ -264,3 +272,12 @@ document.addEventListener('click', event => {
 const observer = new MutationObserver(() => enhanceEditor());
 observer.observe(document.documentElement, { childList: true, subtree: true });
 enhanceEditor();
+
+function closeProtectedAttachments(id){
+  if(!id||id!==activeNoteId)return;
+  objectUrls.forEach(URL.revokeObjectURL);objectUrls=[];
+  const panel=document.querySelector('.pp-attachments');if(panel){panel.replaceChildren();const text=document.createElement('p');text.textContent='Esta nota se está protegiendo. Cierra el editor y ábrela con su contraseña.';panel.append(text);}
+  const editor=document.querySelector('.editor-dialog');editor?.querySelectorAll('textarea,input,button').forEach(input=>{if(!input.classList.contains('icon-button')&&!input.disabled){input.dataset.ppStorageDisabled='1';input.disabled=true;}});
+}
+window.addEventListener('storage',event=>{if(event.key!==protectedMarker(activeNoteId))return;if(event.newValue==='1')closeProtectedAttachments(activeNoteId);else if(event.newValue===null){document.querySelectorAll('[data-pp-storage-disabled]').forEach(input=>{input.disabled=false;delete input.dataset.ppStorageDisabled;});document.querySelector('.pp-attachments')?.remove();enhanceEditor();}});
+window.addEventListener('postispop:protected',event=>closeProtectedAttachments(event.detail?.noteId));

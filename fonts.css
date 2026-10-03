@@ -1,0 +1,7 @@
+/* Bundled font programs and licences: assets/fonts. No CDN is used. */
+@font-face{font-family:'PP Editorial';src:url('./assets/fonts/DejaVuSans.ttf') format('truetype');font-display:swap;font-weight:400}
+@font-face{font-family:'PP Clasica';src:url('./assets/fonts/DejaVuSerif.ttf') format('truetype');font-display:swap;font-weight:400}
+@font-face{font-family:'PP Maquina';src:url('./assets/fonts/DejaVuSansMono.ttf') format('truetype');font-display:swap;font-weight:400}
+@font-face{font-family:'PP Manuscrita';src:url('./assets/fonts/caveat.ttf') format('truetype');font-display:swap;font-weight:400 700}
+@font-face{font-family:'PP Redondeada';src:url('./assets/fonts/nunito.ttf') format('truetype');font-display:swap;font-weight:200 1000}
+@font-face{font-family:'PP Libro';src:url('./assets/fonts/lora.ttf') format('truetype');font-display:swap;font-weight:400 700}

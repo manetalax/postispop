@@ -1,0 +1,526 @@
+{
+  "AG": {
+    "landmark": {
+      "name": "Astillero naval de Antigua (Nelson’s Dockyard)",
+      "source": "https://whc.unesco.org/en/list/1499",
+      "verified": true
+    },
+    "food": {
+      "name": "Ducana",
+      "source": "https://uae.antiguabarbudaembassy.com/culture-tourism",
+      "verified": true
+    },
+    "notes": "La referencia culinaria figura en la información cultural de la embajada. El astillero conserva una historia naval y colonial. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "BS": {
+    "landmark": {
+      "name": "Escalinata de la Reina, Nassau",
+      "source": "https://www.bahamas.com/plan-your-trip/things-to-do/the-queens-staircase",
+      "verified": true
+    },
+    "food": {
+      "name": "Ensalada de caracola (conch salad)",
+      "source": "https://www.nassauparadiseisland.com/blog/where-to-eat-conch-in-nassau-paradise-island",
+      "verified": true
+    },
+    "notes": "La ensalada está documentada por el organismo de promoción de Nassau y Paradise Island. Selección regional, sin indicar consumo universal ni sugerir recolección de fauna. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "BB": {
+    "landmark": {
+      "name": "Bridgetown y su guarnición histórica",
+      "source": "https://whc.unesco.org/en/list/1376/",
+      "verified": true
+    },
+    "food": {
+      "name": "Cou-cou con pez volador",
+      "source": "https://www.visitbarbados.org/local-cuisine",
+      "verified": true
+    },
+    "notes": "La oficina de turismo describe esta combinación culinaria; el patrimonio de Bridgetown requiere contexto histórico. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "BZ": {
+    "landmark": {
+      "name": "Altun Ha",
+      "source": "https://www.travelbelize.org/es/attraction/altun-ha/",
+      "verified": true
+    },
+    "food": {
+      "name": "Arroz y frijoles beliceños",
+      "source": "https://www.travelbelize.org/cuisine/",
+      "verified": true
+    },
+    "notes": "Selección culinaria entre distintas tradiciones de Belice. Altun Ha es patrimonio maya; no se presenta como adorno cultural universal. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "CU": {
+    "landmark": {
+      "name": "Habana Vieja y sus fortificaciones",
+      "source": "https://whc.unesco.org/en/list/204/",
+      "verified": true
+    },
+    "food": {
+      "name": "Ajiaco cubano",
+      "source": "https://www.cuba.travel/destinos/la-habana/restaurantes-de-la-habana",
+      "verified": true
+    },
+    "notes": "Ajiaco aparece en el repertorio de gastronomía habanera del portal turístico cubano; existen variantes locales. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "DM": {
+    "landmark": {
+      "name": "Parque nacional Morne Trois Pitons",
+      "source": "https://whc.unesco.org/en/list/814",
+      "verified": true
+    },
+    "food": {
+      "name": "Sopa callaloo",
+      "source": "https://legacy.discoverdominica.com/en/posts/42/a-taste-of-the-island-dominicas-delicious-culinary-experiences",
+      "verified": true
+    },
+    "notes": "La oficina de turismo documenta esta sopa dentro de la cocina de Dominica; no confundir el país con República Dominicana. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "DO": {
+    "landmark": {
+      "name": "Ciudad Colonial de Santo Domingo",
+      "source": "https://whc.unesco.org/en/list/526",
+      "verified": true
+    },
+    "food": {
+      "name": "La bandera dominicana",
+      "source": "https://es.godominicanrepublic.com/blog/post/5-platos-imperdibles-de-la-gastronomia-dominicana",
+      "verified": true
+    },
+    "notes": "Nombre culinario para una combinación de arroz, habichuelas y carne; no implica que todos sigan una misma dieta. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "SV": {
+    "landmark": {
+      "name": "Joya de Cerén",
+      "source": "https://whc.unesco.org/en/activities/751/",
+      "verified": true
+    },
+    "food": {
+      "name": "Pupusas",
+      "source": "https://elsalvador.travel/preforocimap/gastronomia-salvadorena/",
+      "verified": true
+    },
+    "notes": "Plato documentado por el portal turístico salvadoreño; los rellenos varían. El lugar remite al patrimonio arqueológico maya. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "GD": {
+    "landmark": {
+      "name": "Fort George",
+      "source": "https://www.puregrenada.com/fort-george-2/?v=0b3b97fa6688",
+      "verified": true
+    },
+    "food": {
+      "name": "Oil down",
+      "source": "https://www.puregrenada.com/grenada-the-spice-of-the-caribbean-officially-becomes-the-first-culinary-capital/",
+      "verified": true
+    },
+    "notes": "La oficina de turismo incluye oil down en su patrimonio culinario. El fuerte es una referencia histórica concreta. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "GT": {
+    "landmark": {
+      "name": "Parque Nacional Tikal",
+      "source": "https://whc.unesco.org/en/list/00064/",
+      "verified": true
+    },
+    "food": {
+      "name": "Pepián",
+      "source": "https://biblioteca.inguat.gob.gt/library/index.php?lang=es&mode=advanced&query=%40title%3DSpecial%3AGSMSearchPage%40process%3D%40field1%3Dencabezamiento%40value1%3DGASTRONOMIA.+%40mode%3Dadvanced&recnum=60&title=9392",
+      "verified": true
+    },
+    "notes": "La ficha Ruta Gastronómica de la biblioteca INGUAT menciona pepián en el sur. Tikal es patrimonio maya; ambas referencias son selecciones parciales. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "GY": {
+    "landmark": {
+      "name": "Cataratas Kaieteur",
+      "source": "https://guyanatourism.com/kaieteur-falls/",
+      "verified": true
+    },
+    "food": {
+      "name": "Pepperpot guyanés",
+      "source": "https://en.wikipedia.org/wiki/Guyanese_pepperpot",
+      "verified": true
+    },
+    "notes": "La referencia culinaria se comprobó en una enciclopedia, que identifica un guiso y su uso festivo; no se atribuye a toda comida cotidiana. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "HT": {
+    "landmark": {
+      "name": "Parque Histórico Nacional: Ciudadela, Sans Souci y Ramiers",
+      "source": "https://whc.unesco.org/en/list/180",
+      "verified": true
+    },
+    "food": {
+      "name": "Sopa joumou",
+      "source": "https://ich.unesco.org/es/RL/la-sopa-joumou-01853",
+      "verified": true
+    },
+    "notes": "La UNESCO documenta la sopa como patrimonio cultural inmaterial vinculado a la historia haitiana. Conservar su contexto de libertad y celebración. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "HN": {
+    "landmark": {
+      "name": "Sitio maya de Copán",
+      "source": "https://whc.unesco.org/en/list/129/",
+      "verified": true
+    },
+    "food": {
+      "name": "Baleadas",
+      "source": "https://www.consuladohondurasmadrid.es/conoce-honduras/",
+      "verified": true
+    },
+    "notes": "La referencia culinaria aparece en la información del consulado hondureño. Copán es patrimonio maya; la cocina del país contiene muchas otras tradiciones. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "JM": {
+    "landmark": {
+      "name": "Montañas Blue y John Crow",
+      "source": "https://whc.unesco.org/en/list/1356/",
+      "verified": true
+    },
+    "food": {
+      "name": "Ackee con pescado salado",
+      "source": "https://www.visitjamaica.com/blog/post/ackee-and-saltfish-in-jamaica/",
+      "verified": true
+    },
+    "notes": "Referencia culinaria de la oficina jamaicana de turismo. No se ofrecen instrucciones de preparación de ackee ni recolección de plantas. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "NI": {
+    "landmark": {
+      "name": "Ruinas de León Viejo",
+      "source": "https://whc.unesco.org/en/list/613/",
+      "verified": true
+    },
+    "food": {
+      "name": "Nacatamal",
+      "source": "https://www.visitanicaragua.com/en/atractivos/gastronomia/",
+      "verified": true
+    },
+    "notes": "El portal turístico nicaragüense incluye nacatamal en su gastronomía; hay variantes familiares y regionales. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "PA": {
+    "landmark": {
+      "name": "Conjunto Monumental Histórico de Panamá Viejo",
+      "source": "https://sicultura.micultura.gob.pa/espacios-culturales/monumentos-sitios-declarados-patrimonio/conjunto-monumental-historico-de-panama-viejo-sitio-arqueologico-de-panama-viejo",
+      "verified": true
+    },
+    "food": {
+      "name": "Sancocho panameño",
+      "source": "https://pt.tourismpanama.com/planeje-sua-viagem/itinerarios/nove-dias-entre-polleras-e-corais-explore-as-provincias-centrais/",
+      "verified": true
+    },
+    "notes": "El Ministerio de Cultura documenta Panamá Viejo; el itinerario turístico de las provincias centrales incluye sancocho panameño. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "PY": {
+    "landmark": {
+      "name": "Misiones de La Santísima Trinidad de Paraná y Jesús de Tavarangue",
+      "source": "https://whc.unesco.org/en/list/648/",
+      "verified": true
+    },
+    "food": {
+      "name": "Chipa",
+      "source": "https://cultura.gov.py/2025/09/chipa/",
+      "verified": true
+    },
+    "notes": "Chipa figura en información cultural oficial. Las misiones tienen una historia guaraní y colonial que no debe reducirse a decoración. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "KN": {
+    "landmark": {
+      "name": "Fortaleza de Brimstone Hill",
+      "source": "https://whc.unesco.org/en/list/910",
+      "verified": true
+    },
+    "food": {
+      "name": "Goat water",
+      "source": "https://www.mofa.gov.kn/2026/05/11/saint-kitts-and-nevis-goat-water-featured-at-first-ever-international-day-for-sids-reception-at-united-nations-headquarters-in-new-york/",
+      "verified": true
+    },
+    "notes": "El Ministerio de Relaciones Exteriores documenta goat water en una presentación gastronómica del país. El fuerte requiere contexto de historia colonial. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "LC": {
+    "landmark": {
+      "name": "Pitons",
+      "source": "https://whc.unesco.org/en/list/1161",
+      "verified": true
+    },
+    "food": {
+      "name": "Plátano verde con pescado salado",
+      "source": "https://stlucia.org/en/blog/culinary/green-fig-and-saltfish-the-taste-that-helps-you-understand-saint-lucia/",
+      "verified": true
+    },
+    "notes": "Green fig es el nombre local del plátano verde en este plato; no se traduce como higo. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "VC": {
+    "landmark": {
+      "name": "Fort Charlotte",
+      "source": "https://tourism.gov.vc/tourism/index.php/national-sites-of-svg/fort-charlotte",
+      "verified": true
+    },
+    "food": {
+      "name": "Fruta del pan con jackfish",
+      "source": "https://tourism.gov.vc/tourism/index.php/44-culture-department/culture-administration/179-svg-cultural-overview",
+      "verified": true
+    },
+    "notes": "La página cultural del ministerio menciona breadfruit and jackfish. Se conserva el nombre jackfish para no afirmar una especie zoológica concreta. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "TT": {
+    "landmark": {
+      "name": "Lago de asfalto de La Brea (Pitch Lake)",
+      "source": "https://nationaltrust.tt/location/pitch-lake/",
+      "verified": true
+    },
+    "food": {
+      "name": "Doubles",
+      "source": "https://visittrinidad.tt/things-to-do/cuisine/indo-trinidadian-food-in-trinidad-with-mark-wiens/",
+      "verified": true
+    },
+    "notes": "Doubles aparece en la información sobre cocina indotrinitense. Es una referencia particular dentro de las diversas tradiciones de Trinidad y Tobago. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "UY": {
+    "landmark": {
+      "name": "Barrio histórico de Colonia del Sacramento",
+      "source": "https://whc.unesco.org/en/list/747",
+      "verified": true
+    },
+    "food": {
+      "name": "Chivito",
+      "source": "https://www.gub.uy/ministerio-turismo/comunicacion/noticias/chivito-week-vuelve-renovado-llega-todo-pais",
+      "verified": true
+    },
+    "notes": "Chivito se usa aquí como nombre del plato documentado por el Ministerio de Turismo, sin inferir ingredientes a partir de su nombre. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "VE": {
+    "landmark": {
+      "name": "Parque nacional Canaima",
+      "source": "https://whc.unesco.org/en/list/701/",
+      "verified": true
+    },
+    "food": {
+      "name": "Arepa venezolana",
+      "source": "https://www.mincultura.gob.ve/noticias/la-arepa-y-sus-variantes-en-el-territorio-venezolano/",
+      "verified": true
+    },
+    "notes": "El Ministerio de Cultura documenta variantes de la arepa en Venezuela; la referencia no reclama exclusividad nacional sobre un alimento compartido. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "SR": {
+    "landmark": {
+      "name": "Reserva Natural de Surinam Central",
+      "source": "https://whc.unesco.org/en/list/1017/",
+      "verified": true
+    },
+    "food": {
+      "name": "Pom",
+      "source": "https://en.wikipedia.org/wiki/Pom_%28dish%29",
+      "verified": true
+    },
+    "notes": "Plato al horno documentado en una enciclopedia; representa una referencia culinaria concreta de Surinam, sin agotar su diversidad. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "FJ": {
+    "landmark": {
+      "name": "Ciudad portuaria histórica de Levuka",
+      "source": "https://whc.unesco.org/en/list/1399",
+      "verified": true
+    },
+    "food": {
+      "name": "Kokoda",
+      "source": "https://www.fiji.travel/fiji-guide/things-to-know/destination-guide/culture-language-region-of-fiji",
+      "verified": true
+    },
+    "notes": "Tourism Fiji identifica kokoda entre las comidas iTaukei y distingue otras cocinas presentes en Fiyi. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "KI": {
+    "landmark": {
+      "name": "Área protegida de las Islas Fénix",
+      "source": "https://whc.unesco.org/en/list/1325",
+      "verified": true
+    },
+    "food": {
+      "name": "Babai (taro gigante de pantano)",
+      "source": "https://crga48.spc.int/sites/default/files/documents_uploads/Pacific%20Community%20Results%20Report%202017.pdf",
+      "verified": true
+    },
+    "notes": "La Comunidad del Pacífico documenta el cultivo alimentario babai en Kiribati. Se elige un alimento concreto; no se inventa un plato preparado ni una receta. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "MH": {
+    "landmark": {
+      "name": "Atolón Bikini",
+      "source": "https://whc.unesco.org/en/list/1339/",
+      "verified": true
+    },
+    "food": {
+      "name": "Bwiro",
+      "source": "https://en.wikipedia.org/wiki/Marshallese_cuisine",
+      "verified": true
+    },
+    "notes": "Bwiro está documentado como preparación de fruta del pan. Bikini es patrimonio relacionado con ensayos nucleares y desplazamiento humano: tratarlo como lugar de memoria, nunca como celebración de pruebas nucleares ni imagen despreocupada. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "FM": {
+    "landmark": {
+      "name": "Nan Madol",
+      "source": "https://whc.unesco.org/en/list/1503",
+      "verified": true
+    },
+    "food": {
+      "name": "Banana Karat de Pohnpei",
+      "source": "https://islandfood.org/",
+      "verified": true
+    },
+    "notes": "Island Food Community of Pohnpei documenta la variedad Karat. La referencia alimentaria es de Pohnpei, no de todas las comunidades de los Estados Federados de Micronesia. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "NR": {
+    "landmark": {
+      "name": "Laguna Buada",
+      "source": "https://nauru-data.sprep.org/dataset/nauru-island-hydrology",
+      "verified": true
+    },
+    "food": {
+      "name": "Pescado con coco",
+      "source": "https://en.wikipedia.org/wiki/Nauruan_cuisine",
+      "verified": true
+    },
+    "notes": "El portal ambiental del Pacífico documenta la laguna. La comida se comprobó en una enciclopedia; no se declara plato nacional ni se incluyen instrucciones de preparación de pescado crudo. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "PW": {
+    "landmark": {
+      "name": "Laguna meridional de las Islas Rocosas",
+      "source": "https://whc.unesco.org/en/list/1386",
+      "verified": true
+    },
+    "food": {
+      "name": "Taro de Palaos",
+      "source": "https://pristineparadisepalau.com/wp-content/uploads/2018/11/Alii-Palau-English.pdf",
+      "verified": true
+    },
+    "notes": "La guía oficial de turismo dedica un apartado al taro. Se selecciona un alimento, sin inventar nombre de plato ni receta. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "PG": {
+    "landmark": {
+      "name": "Sitio agrícola temprano de Kuk",
+      "source": "https://whc.unesco.org/en/list/887/",
+      "verified": true
+    },
+    "food": {
+      "name": "Mumu",
+      "source": "https://en.wikipedia.org/wiki/Papua_New_Guinean_cuisine",
+      "verified": true
+    },
+    "notes": "La enciclopedia documenta mumu como preparación y método de horno de tierra con variaciones regionales. No se presenta como una única cocina para los numerosos pueblos del país. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "WS": {
+    "landmark": {
+      "name": "Museo Robert Louis Stevenson, Vailima",
+      "source": "https://www.samoa.travel/plan-book/activities/robert-louis-stevenson-museum-rls-museum/",
+      "verified": true
+    },
+    "food": {
+      "name": "Palusami",
+      "source": "https://www.samoa.travel/discover/our-food-and-cuisine/samoan-food/",
+      "verified": true
+    },
+    "notes": "El museo es un lugar documentado en Samoa, no una representación de toda su historia. Palusami figura en la información culinaria del organismo turístico. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "SB": {
+    "landmark": {
+      "name": "Rennell Oriental",
+      "source": "https://whc.unesco.org/en/list/854/",
+      "verified": true
+    },
+    "food": {
+      "name": "Yuca de las Islas Salomón",
+      "source": "https://www.fao.org/one-country-one-priority-product/asia-pacific/solomon-islands/en",
+      "verified": true
+    },
+    "notes": "La FAO documenta la yuca como cultivo alimentario de las Islas Salomón. Es un alimento concreto; no se le asigna un plato preparado sin documentación. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "TO": {
+    "landmark": {
+      "name": "Trilito Ha‘amonga ‘a Maui, Tongatapu",
+      "source": "https://www.tongatourism.travel/our-islands/tongatapu",
+      "verified": true
+    },
+    "food": {
+      "name": "Lu pulu",
+      "source": "https://www.tongatourism.travel/discover/people-and-culture/food-and-feasting",
+      "verified": true
+    },
+    "notes": "Ambas referencias figuran en el portal turístico tongano. Conservar el contexto del monumento y la diversidad de las comidas familiares. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "TV": {
+    "landmark": {
+      "name": "Área de conservación marina de Funafuti",
+      "source": "https://tourism.gov.tv/funafuti-marine-conservation-2/",
+      "verified": true
+    },
+    "food": {
+      "name": "Pulaka",
+      "source": "https://ichcourier.unesco-ichcap.org/board.es?act=view&b_list=12&bid=A102&list_no=566&mid=a10100000000",
+      "verified": true
+    },
+    "notes": "ICHCAP documenta pulaka como alimento tradicional. Se selecciona el tubérculo, sin inventar una receta ni sugerir extracción de especies en un área protegida. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "VU": {
+    "landmark": {
+      "name": "Dominio del jefe Roi Mata",
+      "source": "https://whc.unesco.org/en/list/1280",
+      "verified": true
+    },
+    "food": {
+      "name": "Laplap",
+      "source": "https://www.vanuatu.travel/en/about-vanuatu/local-eats",
+      "verified": true
+    },
+    "notes": "El organismo turístico documenta laplap. El sitio de Roi Mata conserva significados culturales y comunitarios; evitar una representación ritual inventada. Referencias consultadas el 2 de octubre de 2026; selección cultural parcial, no descripción universal de la población."
+  },
+  "US": {
+    "food": {
+      "name": "Clam chowder de Massachusetts",
+      "source": "https://traveltrade.visittheusa.com/destinations/massachusetts/",
+      "verified": true
+    },
+    "notes": "Referencia regional de Massachusetts, no de toda la cocina estadounidense. Fuente consultada el 2 de octubre de 2026. Sólo ampliación gastronómica: conservar el lugar ya documentado."
+  },
+  "AU": {
+    "food": {
+      "name": "Lamington",
+      "source": "https://www.australia.com/en/things-to-do/food-and-drinks/typical-aussie-foods-to-try.html",
+      "verified": true
+    },
+    "notes": "Dulce incluido por Tourism Australia; una selección entre muchas tradiciones culinarias. Fuente consultada el 2 de octubre de 2026. Sólo ampliación gastronómica: conservar el lugar ya documentado."
+  },
+  "NZ": {
+    "food": {
+      "name": "Hāngī",
+      "source": "https://www.newzealand.com/ca/feature/maori-hangi/",
+      "verified": true
+    },
+    "notes": "Preparación maorí documentada por Tourism New Zealand; conservar su contexto cultural, sin presentarla como comida universal de todo habitante. Fuente consultada el 2 de octubre de 2026. Sólo ampliación gastronómica: conservar el lugar ya documentado."
+  },
+  "CL": {
+    "food": {
+      "name": "Pastel de choclo",
+      "source": "https://chile.travel/blog/cocina-tipica-un-viaje-por-los-sabores-de-chile/",
+      "verified": true
+    },
+    "notes": "Plato documentado por Chile Travel dentro de un recorrido por diferentes regiones. Fuente consultada el 2 de octubre de 2026. Sólo ampliación gastronómica: conservar el lugar ya documentado."
+  },
+  "BO": {
+    "food": {
+      "name": "Salteña",
+      "source": "https://es.wikipedia.org/wiki/Salte%C3%B1a",
+      "verified": true
+    },
+    "notes": "Referencia culinaria comprobada en una enciclopedia; no se afirma origen exclusivo ni uniformidad entre variantes. Fuente consultada el 2 de octubre de 2026. Sólo ampliación gastronómica: conservar el lugar ya documentado."
+  },
+  "CR": {
+    "food": {
+      "name": "Gallo pinto costarricense",
+      "source": "https://www.visitcostarica.com/things-to-do/culinary-adventures",
+      "verified": true
+    },
+    "notes": "El Instituto Costarricense de Turismo documenta esta preparación; no se reclama exclusividad frente a tradiciones culinarias compartidas de la región. Fuente consultada el 2 de octubre de 2026. Sólo ampliación gastronómica: conservar el lugar ya documentado."
+  },
+  "EC": {
+    "food": {
+      "name": "Encebollado",
+      "source": "https://ecuador.travel/en/elementor-5966-2-2/",
+      "verified": true
+    },
+    "notes": "El portal turístico ecuatoriano lo incluye entre los platos guayaquileños; selección regional. Fuente consultada el 2 de octubre de 2026. Sólo ampliación gastronómica: conservar el lugar ya documentado."
+  }
+}
