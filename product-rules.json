@@ -162,7 +162,7 @@
     "win_probability": {
       "numerator": 1,
       "denominator": 6,
-      "scope": "each_spin",
+      "scope": "main_prize_each_spin",
       "independent": true
     },
     "regular_prize": "random_digital_object",
@@ -177,13 +177,21 @@
       },
       "included_in_total_win_probability": true
     },
-    "five_spins_guarantee_prize": false,
+    "five_spins_guarantee_prize": true,
     "payments": "deferred_to_other_account",
     "pending": [
       "Define eligible objects and handling of already-owned objects",
       "Implement server-authoritative randomness and atomic spin consumption",
-      "Verify prize fulfillment and end-to-end behavior"
+      "Verify prize fulfillment and end-to-end behavior",
+      "Define random consolation reward pool distinct from main prizes"
     ],
-    "daily_streak_rewards": "Separate rules; this change applies to paid roulette only"
+    "daily_streak_rewards": "Separate rules; this change applies to paid roulette only",
+    "consolation": {
+      "when": "no_main_prize",
+      "reward": "random_reward",
+      "pool": "pending_definition"
+    },
+    "every_spin_grants_reward": true,
+    "guarantee_description": "Every spin grants a main prize or a random consolation reward; no guarantee of main prize or gift card."
   }
 }
