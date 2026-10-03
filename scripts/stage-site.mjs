@@ -63,6 +63,7 @@ if(file.href===new URL('index.html',out).href&&!html.includes('rel="preconnect"'
 if(!html.includes('/wpo-register.js'))html=html.replace('</body>','<script src="/wpo-register.js" defer></script></body>');
 if(!html.includes('/wpo-features.js'))html=html.replace('</body>','<script type="module" src="/wpo-features.js?v=20261002b"></script></body>');
 html=html.replace(/<body\b([^>]*)>/i,(_,attrs)=>'<body'+( /\bclass=/.test(attrs)?attrs.replace(/class=(["'])(.*?)\1/,(_m,q,c)=>'class='+q+c+' pp-arcade'+q):attrs+' class="pp-arcade"')+'>');html=html.replace('</head>','<link rel="stylesheet" href="/arcade-theme.css?v=20261003"></head>');
+  html=html.replace(/src=(["'])\/experience\.js(?:\?[^"']*)?\1/g,'src="/experience.js?v=arcade-20261003"').replace(/src=(["'])\/protected-notes\.js(?:\?[^"']*)?\1/g,'src="/protected-notes.js?v=arcade-20261003"');
 html=html.replace(/<meta name="theme-color" content="[^"]*"\s*\/?\s*>/g,'<meta name="theme-color" content="#ff007a">');await writeFile(file,html);}
 console.log('Staged WPO/PWA, public search and accessible tools. Captured API data excluded.');
 
