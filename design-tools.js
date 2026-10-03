@@ -1,5 +1,5 @@
 import {designs,fonts,instruments,papers,palettes,boardSvg,paperSvg,svgUrl} from './design-catalog.js';
-import {normalizeStyle,drawStrokes} from './style-model.js';
+import {normalizeStyle,drawStrokes,readableInk,paperColor} from './style-model.js';
 import {readGuest} from './guest-board.js';
 
 let activeId='',board=null,rights=null,styles=new Map(),mountedBoard=null,scheduled=false,loading=false;
@@ -15,7 +15,7 @@ const safeStyle=value=>{try{return normalizeStyle(value||{});}catch{return norma
 const noteById=id=>board?.notes?.find(n=>n.id===id);
 function styleFor(note) {return safeStyle(styles.get(note.id)||note.style);}
 function setVariables(node,style) {
-  const values={'--pp-font':fonts.find(f=>f.id===style.font)?.css||'sans-serif','--pp-font-size':style.size+'px','--pp-ink':style.ink,'--pp-slant':style.italic?'italic':'normal','--pp-decoration':style.underline?'underline':'none','--pp-paper-image':`url("${paperImage(style.paper)}")`};
+  const values={'--pp-font':fonts.find(f=>f.id===style.font)?.css||'sans-serif','--pp-font-size':style.size+'px','--pp-ink':readableInk(style.ink,paperColor(style.paper)),'--pp-slant':style.italic?'italic':'normal','--pp-decoration':style.underline?'underline':'none','--pp-paper-image':`url("${paperImage(style.paper)}")`};
   for(const [name,value] of Object.entries(values))if(node.style.getPropertyValue(name)!==value)node.style.setProperty(name,value);
   node.dataset.ppPaper=style.paper;
 }
@@ -36,7 +36,7 @@ function renderBoard() {
     if(!style){button.classList.remove('pp-styled-note');button.querySelector('.pp-note-sketch')?.remove();continue;}
     button.classList.add('pp-styled-note');setVariables(button,style);
     let sketch=button.querySelector('.pp-note-sketch');
-    if(style.drawing.strokes.length){if(!sketch){sketch=el('canvas','','pp-note-sketch');sketch.width=640;sketch.height=400;sketch.setAttribute('aria-hidden','true');button.append(sketch);}const signature=JSON.stringify(style.drawing);if(sketch.dataset.signature!==signature){drawStrokes(sketch.getContext('2d'),style.drawing,640,400);sketch.dataset.signature=signature;}}
+    if(style.drawing.strokes.length){if(!sketch){sketch=el('canvas','','pp-note-sketch');sketch.width=640;sketch.height=400;sketch.setAttribute('aria-hidden','true');button.append(sketch);}const signature=JSON.stringify([style.drawing,style.paper]);if(sketch.dataset.signature!==signature){drawStrokes(sketch.getContext('2d'),style.drawing,640,400,paperColor(style.paper));sketch.dataset.signature=signature;}}
     else sketch?.remove();
   }
   const summary=document.querySelector('.pp-design-summary');if(summary){const text=design?design.title:'Tu pizarra, a tu manera';if(summary.textContent!==text)summary.textContent=text;}
@@ -87,7 +87,7 @@ function enhanceEditor() {
   const content=el('div','','pp-design-content'),fields=el('div','','pp-style-fields');panel.append(content);
   const status=el('p',board.id==='guest-board'?'Herramientas básicas · guardado en este dispositivo.':'Los estilos se guardan en tu cuenta.','pp-style-status');status.setAttribute('role','status');
   const save=el('button','Guardar estilo y dibujo','pp-style-save');save.type='button';save.disabled=true;
-  const preview=()=>{paper.classList.add('pp-styled-editor');setVariables(paper,value);canvas.style.backgroundImage=`url("${paperImage(value.paper)}")`;drawStrokes(canvas.getContext('2d'),value.drawing,canvas.width,canvas.height);};
+  const preview=()=>{paper.classList.add('pp-styled-editor');setVariables(paper,value);canvas.style.backgroundImage=`url("${paperImage(value.paper)}")`;drawStrokes(canvas.getContext('2d'),value.drawing,canvas.width,canvas.height,paperColor(value.paper));};
   const changed=()=>{dirty=true;save.disabled=false;status.textContent='Cambios pendientes. Guarda el estilo y el dibujo antes de cerrar la nota.';preview();};
   fields.append(select('Tipo de letra',fonts,value.font,id=>id==='sans'||owns('fonts'),v=>{value.font=v;changed();}));
   const size=el('input');size.type='range';size.min='14';size.max='36';size.step='1';size.value=String(value.size);size.setAttribute('aria-label','Tamaño del texto');
@@ -97,12 +97,12 @@ function enhanceEditor() {
   const inkArea=el('fieldset','','pp-ink-colors');inkArea.append(el('legend','Color de tinta'));
   for(const palette of palettes){const group=el('div','','pp-palette-row');group.append(el('span',palette.name));for(const color of palette.colors){const button=el('button');button.type='button';button.style.background=color;button.setAttribute('aria-label',palette.name+' '+color);button.title=palette.name+' '+color;button.setAttribute('aria-pressed',String(color===value.ink));button.disabled=color!=='#163b62'&&!owns('palettes');button.addEventListener('click',()=>{value.ink=color;inkArea.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));changed();});group.append(button);}inkArea.append(group);}content.append(inkArea);
   const canvas=el('canvas','','pp-drawing-canvas');canvas.width=640;canvas.height=400;canvas.setAttribute('aria-label','Área de dibujo de esta nota. Dibuja con ratón, lápiz o dedo.');
-  const drawingTools=el('div','','pp-drawing-controls');drawingTools.append(select('Instrumento',instruments,value.drawing.selectedInstrument,id=>id==='ballpoint'||owns('pens'),v=>{value.drawing.selectedInstrument=v;changed();}));
+  const drawingTools=el('div','','pp-drawing-controls');drawingTools.append(select('Instrumento',instruments,value.drawing.selectedInstrument,id=>id==='ballpoint'||owns('pens'),v=>{value.drawing.selectedInstrument=v;if(v==='stamp')value.ink=readableInk('#b52335',paperColor(value.paper));changed();}));
   const undo=el('button','Deshacer trazo');undo.type='button';undo.addEventListener('click',()=>{if(value.drawing.strokes.length){value.drawing.strokes.pop();changed();}});drawingTools.append(undo);
   const sketchHelp=el('p','Dibuja dentro del papel. Los trazos se adaptan al tamaño de la nota. Deshacer retira el último trazo.','pp-sketch-help');content.append(el('h3','Un dibujo en tu nota'),drawingTools,canvas,sketchHelp);
   let stroke=null;
   const point=event=>{const box=canvas.getBoundingClientRect();return{x:Math.max(0,Math.min(1,(event.clientX-box.left)/box.width)),y:Math.max(0,Math.min(1,(event.clientY-box.top)/box.height)),p:Math.max(0,Math.min(1,event.pointerType==='pen'?event.pressure:.5))};};
-  canvas.addEventListener('pointerdown',event=>{if(event.button!==0||saving)return;if(value.drawing.strokes.length>=120){status.textContent='Límite de 120 trazos. Deshaz uno para seguir.';return;}event.preventDefault();canvas.setPointerCapture(event.pointerId);const pen=instruments.find(p=>p.id===value.drawing.selectedInstrument)||instruments[1];stroke={instrument:pen.id,color:value.ink,width:pen.width,points:[point(event)]};value.drawing.strokes.push(stroke);changed();});
+  canvas.addEventListener('pointerdown',event=>{if(event.button!==0||saving)return;if(value.drawing.strokes.length>=120){status.textContent='Límite de 120 trazos. Deshaz uno para seguir.';return;}event.preventDefault();canvas.setPointerCapture(event.pointerId);const pen=instruments.find(p=>p.id===value.drawing.selectedInstrument)||instruments[1];stroke={instrument:pen.id,color:readableInk(value.ink,paperColor(value.paper)),width:pen.width,points:[point(event)]};value.drawing.strokes.push(stroke);changed();});
   canvas.addEventListener('pointermove',event=>{if(!stroke||!canvas.hasPointerCapture(event.pointerId))return;const p=point(event),last=stroke.points.at(-1);if(Math.hypot(p.x-last.x,p.y-last.y)<.0025)return;if(value.drawing.strokes.reduce((count,s)=>count+s.points.length,0)>=16000)return;stroke.points.push(p);preview();});
   const end=event=>{if(canvas.hasPointerCapture(event.pointerId))canvas.releasePointerCapture(event.pointerId);stroke=null;};canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',end);
   if(!owns('fonts')||!owns('pens')||!owns('papers')||!owns('palettes')){const link=el('a','Ver papeles, fuentes e instrumentos en el Atelier');link.href='/atelier.html#herramientas';content.append(link);}

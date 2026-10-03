@@ -4,7 +4,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs/promises'),path=r
 const root=path.resolve(process.env.POSTISPOP_TEST_ROOT||'.');
 const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.ttf':'font/ttf','.woff':'font/woff','.woff2':'font/woff2','.ico':'image/x-icon'};
 (async()=>{
- const {designs}=await import('../design-catalog.js'); const developed=designs.filter(d=>d.edition==='crafted').length;
+ const {designs,instruments}=await import('../design-catalog.js'); const developed=designs.filter(d=>d.edition==='crafted').length;
  const browser=await chromium.launch(browserOptions());
  const context=await browser.newContext({viewport:{width:1440,height:1000},locale:'es-ES',serviceWorkers:'block'});
  const errors=[],missing=[];
@@ -35,7 +35,7 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
   await page.locator('#at-search').fill(checkedCountry.title);await page.getByRole('button',{name:'Ver '+checkedCountry.title,exact:true}).click();
   assert.match(await page.locator('.at-preview').innerText(),checkedCountry.edition==='foundation'?/Edición en desarrollo/:/Edición cultural/);
   await page.keyboard.press('Escape');
-  await page.getByRole('button',{name:'Explorar Tu trazo, tu estilo',exact:true}).click();assert.equal(await page.locator('.at-preview canvas').count(),10);await page.keyboard.press('Escape');
+  await page.getByRole('button',{name:'Explorar Tu trazo, tu estilo',exact:true}).click();assert.equal(await page.locator('.at-preview canvas').count(),instruments.length);await page.keyboard.press('Escape');
   await page.getByRole('button',{name:'Explorar Letras con personalidad',exact:true}).click();
   await page.evaluate(()=>document.fonts.ready);assert.equal(await page.locator('.at-preview .at-font-sample').count(),6);
   assert.equal(await page.evaluate(()=>document.fonts.check('16px "PP Manuscrita"')),true);await page.keyboard.press('Escape');
@@ -46,6 +46,6 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
   await page.locator('#at-search').fill('Consulta médica');await page.getByRole('button',{name:'Ver Consulta médica',exact:true}).click();
   await page.setViewportSize({width:360,height:800});assert.equal(await page.locator('.at-preview').evaluate(el=>el.scrollWidth<=el.clientWidth+1),true);await page.screenshot({path:'test-results/atelier-verified-mobile.png'});
   assert.deepEqual(errors,[]);assert.deepEqual([...new Set(missing)],[]);
-  console.log('PASS: 298 catalogue, 50 rewards, developed editions, pack/search filters, exact papers, dialog focus, 10 drawing samples, 6 local fonts, 4 responsive widths and truthful country/purchase status.');
+  console.log('PASS: 298 catalogue, 50 rewards, developed editions, pack/search filters, exact papers, dialog focus, all drawing samples, 6 local fonts, 4 responsive widths and truthful country/purchase status.');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});

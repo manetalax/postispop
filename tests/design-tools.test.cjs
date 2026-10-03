@@ -12,12 +12,12 @@ test('Sketch data rejects malformed coordinates, oversized payloads and active C
   for(const p of [{x:-.1,y:.2,p:.4},{x:.1,y:1.01,p:.4},{x:.1,y:.2,p:2},{x:.1,y:.2,p:null}])assert.throws(()=>normalizeStyle({drawing:{version:1,selectedInstrument:'brush',strokes:[{...result.drawing.strokes[0],points:[p]}]}}),/INVALID_STYLE/);
 });
 
-test('Ten instruments produce distinct drawing records; brush width reacts to stylus pressure',async()=>{
+test('All instruments produce distinct drawing records; brush width reacts to stylus pressure',async()=>{
   const {drawStrokes,PEN_IDS}=await model;
-  function render(instrument,pressure=.5){const records=[],ctx={lineWidth:1,globalAlpha:1,lineCap:'round',save(){},restore(){},clearRect(){},beginPath(){},moveTo(){},lineTo(){},arc(){records.push('grain')},fill(){},setLineDash(v){records.push(v)},stroke(){records.push([this.lineWidth,this.globalAlpha,this.lineCap])}};
-    const widths={graphite:2,ballpoint:2,roller:3,gel:4,fountain:5,fineliner:1,brush:9,marker:14,crayon:8,chalk:6};
+  function render(instrument,pressure=.5){const records=[],ctx={lineWidth:1,globalAlpha:1,lineCap:'round',save(){},restore(){},clearRect(){},beginPath(){},moveTo(){},lineTo(){},arc(){records.push(['grain',...arguments,this.globalAlpha])},fill(){},setLineDash(v){records.push(v)},stroke(){records.push([this.lineWidth,this.globalAlpha,this.lineCap])}};
+    const widths={graphite:2,ballpoint:2,roller:3,gel:4,fountain:5,fineliner:1,brush:9,marker:14,crayon:8,chalk:6,charcoal:10,stamp:12,toothpaste:18,spray:16,airbrush:24};
     drawStrokes(ctx,{strokes:[{instrument,color:'#222222',width:widths[instrument],points:[{x:.1,y:.2,p:pressure},{x:.8,y:.9,p:pressure}]}]},640,400);return records;}
-  assert.equal(new Set(PEN_IDS.map(id=>JSON.stringify(render(id)))).size,10);
+  assert.equal(new Set(PEN_IDS.map(id=>JSON.stringify(render(id)))).size,PEN_IDS.length);
   assert.notDeepEqual(render('brush',.1),render('brush',.9));
 });
 
