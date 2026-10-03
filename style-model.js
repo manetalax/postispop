@@ -1,7 +1,7 @@
 // Pure, shared validation for local persistence and the stationery editor.
 export const FONT_IDS = ['sans','serif','mono','hand','rounded','book'];
 export const PAPER_IDS = ['plain','ruled','grid','dots','journal','papyrus','washi','music','prescription','blueprint','shift','study'];
-export const PEN_IDS = ['graphite','ballpoint','roller','gel','fountain','fineliner','brush','marker','crayon','chalk','charcoal','stamp','toothpaste','spray','airbrush','nailpolish'];
+export const PEN_IDS = ['graphite','ballpoint','roller','gel','fountain','fineliner','brush','marker','crayon','chalk','charcoal','stamp','toothpaste','spray','airbrush','nailpolish','brow','mascara','eyeliner','lipstick','eyeshadow','correction_tape','correction_fluid','paintbrush','roller_paint','sponge','watercolor'];
 const fail = () => { throw new Error('INVALID_STYLE'); };
 const number = (n,min,max) => typeof n==='number' && Number.isFinite(n) && n>=min && n<=max;
 const color = value => typeof value==='string' && /^#[\da-f]{6}$/i.test(value);
@@ -35,7 +35,7 @@ export function drawStrokes(ctx,drawing,width,height,background) {
     const ink=background?readableInk(stroke.color,background):stroke.color;
     ctx.save();ctx.strokeStyle=ink;ctx.fillStyle=ink;
     ctx.lineCap=stroke.instrument==='marker'?'square':'round';ctx.lineJoin='round';ctx.globalAlpha=opacity[stroke.instrument]??1;
-    if(['stamp','spray','charcoal','toothpaste'].includes(stroke.instrument)){drawMaterial(ctx,stroke,width,height,ink);ctx.restore();continue;}
+    if(['stamp','spray','charcoal','toothpaste','airbrush','chalk','nailpolish','brow','mascara','eyeliner','lipstick','eyeshadow','correction_tape','correction_fluid','paintbrush','roller_paint','sponge','watercolor'].includes(stroke.instrument)){drawMaterial(ctx,stroke,width,height,ink);ctx.restore();continue;}
     if(pts.length===1){ctx.beginPath();ctx.arc(pts[0].x*width,pts[0].y*height,base/2,0,Math.PI*2);ctx.fill();}
     for(let i=1;i<pts.length;i++) {
       const a=pts[i-1],b=pts[i],pressure=(a.p+b.p)/2;
@@ -86,6 +86,53 @@ function drawMaterial(ctx,stroke,width,height,ink) {
     for(let j=i?1:0;j<=count;j++){const t=j/count;samples.push({x:(a.x+(b.x-a.x)*t)*width,y:(a.y+(b.y-a.y)*t)*height,p:a.p+(b.p-a.p)*t});}
   }
   const dot=(x,y,r,alpha)=>{ctx.globalAlpha=alpha;ctx.beginPath();ctx.arc(x,y,Math.max(.2,r),0,Math.PI*2);ctx.fill();};
+  if(['correction_tape','correction_fluid','paintbrush','roller_paint','sponge','watercolor'].includes(stroke.instrument)){
+    const tape=stroke.instrument==='correction_tape',fluid=stroke.instrument==='correction_fluid';
+    const path=(size,colour,alpha,offset=0)=>{ctx.strokeStyle=colour;ctx.fillStyle=colour;ctx.globalAlpha=alpha;ctx.lineWidth=size;ctx.lineCap=tape?'butt':'round';ctx.lineJoin='round';ctx.beginPath();samples.forEach((p,i)=>i?ctx.lineTo(p.x+offset,p.y+offset):ctx.moveTo(p.x+offset,p.y+offset));ctx.stroke();if(stroke.points.length===1){if(tape)ctx.fillRect(samples[0].x-size/2,samples[0].y-size/2,size,size);else dot(samples[0].x+offset,samples[0].y+offset,size/2,alpha);}};
+    if(tape||fluid){path(base+Math.max(1,base*.08),'#a4a4a4',.65);path(base,'#ffffff',1);return;}
+    if(stroke.instrument==='watercolor'){
+      path(base*1.25,ink,.1);path(base,ink,.14);
+      ctx.fillStyle=ink;for(const p of samples)if(random()<.25)dot(p.x+(random()-.5)*base,p.y+(random()-.5)*base,base*.045,.18);
+      return;
+    }
+    if(stroke.instrument==='sponge'){
+      ctx.fillStyle=ink;for(let i=0;i<samples.length;i+=2){const p=samples[i];for(let j=0;j<14;j++){const a=random()*Math.PI*2,r=Math.sqrt(random())*base*.65;dot(p.x+Math.cos(a)*r,p.y+Math.sin(a)*r,base*(.03+random()*.08),.18+random()*.35);}}
+      return;
+    }
+    path(base,ink,.92);
+    if(stroke.instrument==='paintbrush')for(let j=-3;j<=3;j++)path(base*.03,'#ffffff',.16,j*base*.12);
+    else {ctx.fillStyle='#ffffff';for(let i=0;i<samples.length;i+=3){const p=samples[i];for(let j=0;j<5;j++)dot(p.x+(random()-.5)*base,p.y+(random()-.5)*base,base*.025,.18);}}
+    return;
+  }
+  if(['brow','mascara','eyeliner','lipstick','eyeshadow','correction_tape','correction_fluid','paintbrush','roller_paint','sponge','watercolor'].includes(stroke.instrument)){
+    ctx.fillStyle=ink;ctx.strokeStyle=ink;
+    if(stroke.instrument==='eyeshadow'){
+      for(const p of samples)for(let j=0;j<22;j++){
+        const angle=random()*Math.PI*2,r=Math.sqrt(random())*base;
+        dot(p.x+Math.cos(angle)*r,p.y+Math.sin(angle)*r,base*.035,.07+random()*.13);
+      }
+      return;
+    }
+    if(stroke.instrument==='brow'||stroke.instrument==='mascara'){
+      const mascara=stroke.instrument==='mascara';
+      for(let i=0;i<samples.length;i+=mascara?3:2){const p=samples[i];
+        for(let j=0;j<(mascara?6:3);j++){
+          const offset=(j-(mascara?2.5:1))*base*.18;
+          ctx.globalAlpha=mascara?.85:.55;ctx.lineWidth=base*(mascara?.1:.055);ctx.lineCap='round';
+          ctx.beginPath();ctx.moveTo(p.x+offset,p.y-base*.28);ctx.lineTo(p.x+offset+base*.25,p.y+base*.28);ctx.stroke();
+        }
+      }
+      return;
+    }
+    const lipstick=stroke.instrument==='lipstick';
+    ctx.globalAlpha=lipstick?.88:1;ctx.lineCap='round';ctx.lineJoin='round';
+    for(let i=0;i<samples.length;i++){const p=samples[i],a=samples[Math.max(0,i-1)];
+      ctx.lineWidth=base*(lipstick?1:.3+p.p*.8);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(p.x,p.y);ctx.stroke();
+      if(stroke.points.length===1)dot(p.x,p.y,ctx.lineWidth/2,lipstick?.88:1);
+      if(lipstick&&i%3===0){ctx.fillStyle='#ffffff';dot(p.x-base*.2,p.y-base*.2,base*.06,.16);ctx.fillStyle=ink;}
+    }
+    return;
+  }
   if(stroke.instrument==='nailpolish'){
     const layer=(offset,size,colour,alpha)=>{
       ctx.strokeStyle=colour;ctx.fillStyle=colour;ctx.globalAlpha=alpha;ctx.lineWidth=size;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
