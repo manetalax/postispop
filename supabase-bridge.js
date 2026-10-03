@@ -130,7 +130,7 @@ async function api(endpoint, init) {
   if(endpoint.startsWith('designs/') || endpoint==='owner/dashboard') {
     const user=await currentUser();
     if(!user) return json({error:'SESSION_REQUIRED'},401);
-    const rpc={ 'designs/status':'postispop_design_status','designs/checkin':'postispop_checkin',
+    const rpc={ 'designs/status':'postispop_catalog_status','designs/checkin':'postispop_checkin',
       'designs/claim':'postispop_claim_design','designs/select':'postispop_select_design',
       'owner/dashboard':'postispop_owner_dashboard' }[endpoint];
     if(rpc) {const status=await rest('rpc/'+rpc,'',{method:'POST',body:JSON.stringify(payload||{})});
