@@ -1,0 +1,72 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Premios y sorteos · PostisPop</title><meta name="description" content="Participa en la ruleta gratuita del sábado y descubre los premios de PostisPop."><link rel="canonical" href="https://postispop.com/premios.html"><link rel="stylesheet" href="/fonts.css"><link rel="stylesheet" href="/atelier.css"><link rel="icon" href="/favicon.svg"></head><body class="atelier-page"><header class="at-header"><a class="at-brand" href="/">Postis<span>Pop</span></a><nav aria-label="Principal"><a href="/">Mi pizarra</a><a href="/atelier.html">Tienda</a><a href="/propietario.html" id="at-owner-link" hidden>Mi panel</a><button type="button" data-at-account>Mi cuenta</button></nav></header><main id="atelier"><section class="at-shop-intro"><p class="at-eyebrow">UN MOTIVO MÁS PARA VOLVER</p><h1>Premios y sorteos</h1><p>Reúne nuevas ideas. Descubre tus recompensas.</p></section><section id="premios" class="at-rewards" aria-labelledby="rewards-title"><div><p class="at-eyebrow">VOLVER TIENE PREMIO</p><h2 id="rewards-title">Cinco días. Una nueva elección.</h2><p>Cada cinco días consecutivos de acceso, elige una de las 50 plantillas de recompensa que aún no tengas. Se cuenta una visita por día, con horario de Madrid. Tu progreso se confirma en tu cuenta.</p></div><div><div class="at-days" aria-label="Progreso de acceso" id="at-days"></div><p id="at-account-status" role="status">Inicia sesión para consultar tu progreso.</p></div></section>
+<section id="at-roulette" class="at-shop-panel"><h2>La ruleta del sábado</h2><p>Vuelve cada sábado y participa gratis para ganar premios para tus ideas y tus juegos.<sup><a href="/terms.html" aria-label="Consultar condiciones de la ruleta">*</a></sup></p><div class="at-wheel" aria-hidden="true">✦</div><p id="at-roulette-status" role="status">Consultando disponibilidad…</p><button id="at-roulette-spin" class="at-primary" type="button" disabled>Girar gratis*</button><p><a href="/terms.html">* Consulta las condiciones de participación</a></p></section>
+<section id="at-prize-cards" class="at-shop-panel" aria-labelledby="at-prize-title"><p class="at-eyebrow">PREMIOS DE LA RULETA GRATUITA</p><h2 id="at-prize-title">Tarjetas y saldo digital de 100 €</h2><p>La ruleta puede premiarte con una tarjeta o saldo de 100 € de una de estas plataformas:</p><div class="at-gift-brands"><article><img class="prize-logo prize-logo-amazon" src="/assets/prize-brands/amazon.ico" alt="Amazon" width="120" height="60"><h3>Amazon</h3></article><article><img class="prize-logo prize-logo-google-play" src="/assets/prize-brands/google-play.svg" alt="Google Play" width="120" height="60"><h3>Google Play</h3></article><article><img class="prize-logo prize-logo-apple" src="/assets/prize-brands/apple.svg" alt="Apple" width="120" height="60"><h3>Apple</h3></article><article><img class="prize-logo prize-logo-xbox" src="/assets/prize-brands/xbox.svg" alt="Xbox" width="120" height="60"><h3>Xbox</h3></article><article><img class="prize-logo prize-logo-playstation" src="/assets/prize-brands/playstation.png" alt="PlayStation" width="120" height="60"><h3>PlayStation</h3></article><article><img class="prize-logo prize-logo-fortnite" src="/assets/prize-brands/fortnite.png" alt="Fortnite" width="120" height="60"><h3>Fortnite</h3></article></div><p id="probabilidades" tabindex="-1"><a href="/terms.html">* Condiciones de la ruleta</a></p><p>Próximamente: iPhone 18 Pro y MacBook Air de 2026. Estos dispositivos todavía no participan en la ruleta.</p></section>
+</main><footer class="at-footer"><a href="/privacy.html">Privacidad</a><a href="/terms.html">Condiciones generales*</a><a href="/atelier.html">Volver a la tienda</a></footer><script type="module">import './supabase-bridge.js?v=6';
+
+const $ = selector => document.querySelector(selector);
+const fold = value => String(value).normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase('es');
+const pageSize = 18;
+let visibleCount = pageSize;
+let rights = null;
+let signedIn = false;
+let dialog = null;
+let activeDesign = null;
+let selectedTool = 'fonts';
+
+function node(tag, className, text) {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text !== undefined) element.textContent = text;
+  return element;
+}
+
+async function api(endpoint, payload) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 12000);
+  try {
+    const response = await fetch('/api/' + endpoint, {
+      method: payload === undefined ? 'GET' : 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: payload === undefined ? undefined : JSON.stringify(payload),
+      signal: controller.signal
+    });
+    const data = await response.json();
+    if (!response.ok) throw Object.assign(new Error(data.error || 'UNAVAILABLE'), {status: response.status});
+    return data;
+  } finally { clearTimeout(timer); }
+}
+
+
+async function loadAccount(){try{const session=await api('session'); if(!session.actor?.registered)return; const data=await api('designs/checkin',{}); $('#at-owner-link').hidden=!data.owner; $('#at-account-status').textContent=(data.credits||0)+' elecciones disponibles · '+(data.streak||0)+' de 5 días.'; for(let i=1;i<=5;i++)$('#at-days').append(node('span',i<=data.streak?'done':'',i<=data.streak?'✓':String(i)));}catch{$('#at-account-status').textContent='No se pudo consultar el progreso.';}}
+async function refreshRoulette(spin=false) {
+ const button=$('#at-roulette-spin'),status=$('#at-roulette-status');button.disabled=true;
+ try {
+  const response=await fetch('/api/roulette/'+(spin?'spin':'status'),spin?{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}:{});
+  const data=await response.json();
+  if(response.status===401){status.textContent='Inicia sesión para consultar tu tirada del sábado.';return;}
+  if(!response.ok)throw new Error('UNAVAILABLE');
+  const messages={not_saturday:data.period_started?'Vuelve el sábado para tu próxima tirada gratuita.':'Vuelve el sábado para tu primera tirada. Tu periodo inicial todavía no ha empezado.',available:'Tienes una tirada gratuita disponible.',played:data.result?.kind==='none'?'Esta tirada no ha dado premio. Ya has usado tu participación de este sábado.':data.result?.kind==='gift_card'?'Has ganado '+(data.result.title||'una tarjeta de 100 €')+'. La entrega está pendiente de tramitar.':'Premio recibido: '+(data.result?.title||'Consulta tu cuenta')+'.'};
+  status.textContent=messages[data.state]||'No se pudo confirmar la disponibilidad.';
+  button.disabled=data.state!=='available';
+  if(data.result?.kind==='gift_card')showGiftClaim(data.server_day,data.result.brand);
+  if(spin){await loadAccount();}
+ }catch{status.textContent='No se pudo consultar la ruleta. Puedes volver a comprobarlo; no se inventará ningún resultado.';}
+}
+$('#at-roulette-spin').addEventListener('click',()=>refreshRoulette(true));
+refreshRoulette();
+
+function showGiftClaim(day,awardedBrand) {
+ if($('#at-gift-claim'))return;
+ const form=node('form');form.id='at-gift-claim';
+ const name=node('input');name.required=true;name.minLength=2;name.maxLength=120;name.autocomplete='name';
+ const email=node('input');email.type='email';email.required=true;email.maxLength=254;email.autocomplete='email';
+ const brand=node('select');for(const title of awardedBrand?[awardedBrand]:['Amazon','Google Play','Apple','Xbox','PlayStation','Fortnite']){const option=node('option','',title);option.value=title;brand.append(option);}
+ for(const [title,input] of [['Nombre para la entrega',name],['Correo de contacto',email],[awardedBrand?'Tarjeta ganada':'Tarjeta preferida',brand]]){const label=node('label','',title);label.append(input);form.append(label);}
+ const submit=node('button','at-primary','Solicitar entrega');submit.type='submit';
+ const message=node('p');message.setAttribute('role','status');
+ form.append(node('p','','Estos datos se usarán para tramitar tu premio. La disponibilidad de la tarjeta se confirmará para tu región.'),submit,message);
+ form.addEventListener('submit',async event=>{event.preventDefault();submit.disabled=true;try{const result=await api('roulette/claim',{day,name:name.value,email:email.value,brand:brand.value});message.textContent=result.status==='delivered'?'Este premio ya figura como entregado.':'Solicitud guardada. La entrega está pendiente de tramitar.';}catch{message.textContent='No se pudo confirmar la solicitud. Puedes reintentar sin duplicar el premio.';submit.disabled=false;}});
+ $('#at-roulette').append(form);
+}
+$('[data-at-account]').addEventListener('click',()=>{location.href='/?account=1';});loadAccount();
+</script></body></html>
