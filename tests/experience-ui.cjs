@@ -30,6 +30,19 @@ let observedErrors=[];
   assert.equal(await page.locator('.pp-learn').isVisible(),false);
   assert.equal(await page.locator('[aria-label="Promoción de estreno"]').isVisible(),false);
   assert.equal(await page.getByRole('link',{name:'? Ayuda',exact:true}).getAttribute('href'),'/ayuda.html');
+
+  // Visit streak is automatic, idempotent today, and resets after a skipped day.
+  await page.waitForSelector('.pp-streak-days .done');
+  assert.equal(await page.locator('.pp-streak-days .done').count(),1);
+  await page.reload();await page.waitForSelector('.pp-streak-days .done');
+  assert.equal(await page.locator('.pp-streak-days .done').count(),1,'Reload must not count a second visit');
+  for(const [offset,previous,expected] of [[1,2,3],[2,3,1],[1,5,1]]){
+    await page.evaluate(({offset,previous})=>{const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Madrid',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());const date=new Date(Date.parse(today+'T12:00:00Z')-offset*86400000).toISOString().slice(0,10);localStorage.setItem('pp:guest-visit-streak-v1',JSON.stringify({date,days:previous}));},{offset,previous});
+    await page.reload();await page.waitForSelector('.pp-streak-days .done');
+    assert.equal(await page.locator('.pp-streak-days .done').count(),expected,'Consecutive-day progression');
+  }
+  assert.match(await page.locator('.pp-streak-status').innerText(),/local/);
+  const streakBox=await page.locator('.pp-visit-streak').boundingBox();assert.ok(streakBox.height<=64,'Streak stays compact on mobile');
   await page.locator('.sticky-note').first().click();
   await page.locator('textarea').fill('Mi nota persistente #estudio');
   await page.waitForFunction(()=>JSON.parse(localStorage.getItem('postispop-guest-board-v1'))?.notes[0]?.text==='Mi nota persistente #estudio');
