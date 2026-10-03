@@ -12,6 +12,7 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
  const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
  try{
   await page.goto('https://postispop.com/atelier.html');await page.waitForSelector('#at-grid article');
+  if(await page.getByRole('button',{name:'Rechazar',exact:true}).isVisible())await page.getByRole('button',{name:'Rechazar',exact:true}).click();
   assert.equal(await page.locator('#at-grid article').count(),18);
   assert.match(await page.locator('#at-count').innerText(),/298 colecciones/);
   assert.equal(await page.locator('#at-owner-link').isHidden(),true);
@@ -65,11 +66,13 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
   await page.locator('#at-search').fill('Consulta médica');await page.getByRole('button',{name:'Ver Consulta médica',exact:true}).click();
   await page.setViewportSize({width:360,height:800});assert.equal(await page.locator('.at-preview').evaluate(el=>el.scrollWidth<=el.clientWidth+1),true);await page.screenshot({path:'test-results/atelier-verified-mobile.png'});
   await page.keyboard.press('Escape');
-  await page.locator('.at-shop-nav a[href="#premios"]').click();
+  await page.locator('.at-shop-nav a[href="/premios.html"]').click();
   await page.locator('#at-prize-cards').waitFor({state:'visible'});
   assert.equal(await page.locator('#at-roulette-spin').isDisabled(),true);
   await page.waitForFunction(()=>document.querySelector('#at-roulette-status').textContent.includes('Inicia sesión'));
-  assert.match(await page.locator('#at-roulette').innerText(),/primeros seis sábados/);
+  assert.match(page.url(),/premios\.html/);
+  assert.equal(await page.getByRole('link',{name:'Consultar condiciones de la ruleta'}).getAttribute('href'),'/terms.html');
+  assert.doesNotMatch(await page.locator('#at-roulette').innerText(),/1 entre/);
   await page.waitForFunction(()=>[...document.querySelectorAll('.prize-logo')].every(i=>i.complete&&i.naturalWidth>0));
   assert.equal(await page.locator('.prize-logo').count(),6);
   await page.locator('#at-prize-cards').screenshot({path:'test-results/prize-brands.png'});
