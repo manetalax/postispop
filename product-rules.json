@@ -204,5 +204,24 @@
     },
     "every_spin_grants_reward": false,
     "guarantee_description": "Each purchased five-spin pack guarantees at least one reward: if all five spins yield no prize, grant one random consolation reward after the fifth spin. Individual spins may yield nothing."
+  },
+  "saturday_roulette": {
+    "status": "recovered_rules_pending_implementation",
+    "day": "Saturday",
+    "free_spins_per_account_per_saturday": 1,
+    "independent_of_streak_rewards": true,
+    "win_probability": {
+      "numerator": 1,
+      "denominator": 6
+    },
+    "objects": "unowned_store_items",
+    "exclude_countries": true,
+    "lifetime_premium": {
+      "numerator": 1,
+      "denominator": 10000,
+      "scope": "conditional_on_winning"
+    },
+    "result_persisted_on_server": true,
+    "paid_spins": "Separate five-spin packs; consolation applies only to a paid pack with five losses"
   }
 }
