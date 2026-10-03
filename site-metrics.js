@@ -1,3 +1,4 @@
+import './supabase-bridge.js?v=6';
 // Optional aggregate measurement. Never reads note text, input values, emails, IPs or tokens.
 const KEY='pp:analytics-consent-v2',IDENTITY='pp:analytics-visitor-v2',SESSION='pp:analytics-session-v2';
 const protectedChoice=()=>navigator.doNotTrack==='1'||navigator.globalPrivacyControl===true;
