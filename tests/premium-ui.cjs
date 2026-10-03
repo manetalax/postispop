@@ -21,7 +21,9 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
   await page.waitForFunction(()=>{const s=JSON.parse(localStorage.getItem('postispop-guest-board-v1'))?.notes[0]?.style;return s?.italic&&s.drawing.strokes.length===1;});
   await context.setOffline(true);await page.reload();await page.waitForSelector('.sticky-note:not([disabled])');
   assert.match(await page.locator('.sticky-note').first().innerText(),/Secreto de prueba/);await page.waitForSelector('.pp-note-sketch');
-  await page.getByRole('button',{name:'Proteger o abrir',exact:true}).click();
+  assert.equal(await page.locator('.pp-vault-toolbar').isVisible(),false);
+  await page.locator('.sticky-note').first().click();
+  await page.getByRole('button',{name:'🔒 Contraseña',exact:true}).click();
   await page.getByLabel('Contraseña de esta nota',{exact:true}).fill('Una frase privada 6429');await page.getByLabel('Repite la contraseña',{exact:true}).fill('Una frase privada 6429');await page.locator('.pp-vault-consent input').check();
   await page.getByRole('button',{name:'Cifrar y proteger',exact:true}).click();
   await page.waitForFunction(()=>Boolean(JSON.parse(localStorage.getItem('postispop-guest-board-v1'))?.notes[0]?.protectedEnvelope),{timeout:15000});
