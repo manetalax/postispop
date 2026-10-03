@@ -45,7 +45,7 @@ La evidencia de empaquetado y del origen local de Android se obtiene en Chromium
 ## Lo que requiere acceso o decisión del propietario
 
 1. **Supabase administrativo:** exportar y verificar base de datos, Auth, objetos de Storage y configuración; ensayar restauración aislada. Inspeccionar esquema, RLS e historiales reales antes de aplicar migraciones. No basta la clave pública.
-2. **Cuenta propietaria:** obtener y comprobar el UUID real de `manetal@gmail.com` y vincularlo desde administración. No se concede ese acceso a partir de un correo o una casilla del navegador.
+2. **Cuenta propietaria:** obtener y comprobar el UUID real de `manetala@gmail.com` y vincularlo desde administración. No se concede ese acceso a partir de un correo o una casilla del navegador.
 3. **Licencias offline:** configurar la firma ES256 en servidor, distribuir la clave pública y comprobar el flujo en staging. El fichero público empieza vacío; actualmente no simula derechos offline de pago.
 4. **Compras nuevas:** definir precios y periodicidad y validar el proceso antes de activarlas. Se mantienen los cuatro productos anteriores y el Pro antiguo de pago único.
 5. **Android:** aportar el almacén original de firma, sus credenciales mediante un canal privado y la huella verificada; compilar con SDK/Gradle, verificar la firma y probar instalación, modo avión y actualización en teléfono. No se ha generado una clave sustitutiva.
