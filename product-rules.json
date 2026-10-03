@@ -155,12 +155,35 @@
     "clock_price_status": "Awaiting clarification of spoken amount 95; do not infer 0.95, 9.95 or 95 EUR"
   },
   "roulette_purchase": {
-    "status": "pending_outcome_clarification",
+    "status": "rules_recorded_not_implemented",
     "spins_per_pack": 5,
     "price_cents": 100,
     "currency": "EUR",
-    "user_outcome_description": "solo toca uno de seis",
-    "clarification": "Does one in six spins win, or does each spin award one of six prizes? Prize list not confirmed.",
-    "payments": "deferred_to_other_account"
+    "win_probability": {
+      "numerator": 1,
+      "denominator": 6,
+      "scope": "each_spin",
+      "independent": true
+    },
+    "regular_prize": "random_digital_object",
+    "valuable_prize": {
+      "type": "gift_card",
+      "value_cents": 10000,
+      "currency": "EUR",
+      "probability": {
+        "numerator": 1,
+        "denominator": 8000000000,
+        "scope": "each_spin_unconditional"
+      },
+      "included_in_total_win_probability": true
+    },
+    "five_spins_guarantee_prize": false,
+    "payments": "deferred_to_other_account",
+    "pending": [
+      "Define eligible objects and handling of already-owned objects",
+      "Implement server-authoritative randomness and atomic spin consumption",
+      "Verify prize fulfillment and end-to-end behavior"
+    ],
+    "daily_streak_rewards": "Separate rules; this change applies to paid roulette only"
   }
 }
