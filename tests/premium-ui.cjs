@@ -10,6 +10,7 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
  const errors=[],missing=[];let page;
  try{
   await context.route('**/*',async route=>{const u=new URL(route.request().url());if(u.hostname!=='postispop.com')return route.abort('internetdisconnected');let name=decodeURIComponent(u.pathname);if(name.endsWith('/'))name+='index.html';const file=path.resolve(root,'.'+name);if(!file.startsWith(root+path.sep))return route.abort();try{await route.fulfill({status:200,contentType:types[path.extname(file)]||'application/octet-stream',body:await fs.readFile(file)});}catch{missing.push(name);await route.fulfill({status:404,body:'Missing test asset'});}});
+  await context.addInitScript(()=>localStorage.setItem('pp:analytics-consent-v2','no'));
   page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));await fs.mkdir('test-results',{recursive:true});
   await page.goto('https://postispop.com/');await page.waitForSelector('.sticky-note:not([disabled])');
   await page.locator('.sticky-note').first().click();await page.locator('.editor-dialog textarea').fill('Secreto de prueba 6429');
