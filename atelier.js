@@ -57,9 +57,11 @@ function cartButton(id,title) {
   return button;
 }
 function shopSection() {
-  const section=location.hash.slice(1)||'colecciones';
+  const anchor=location.hash.slice(1);
+  const section=anchor==='probabilidades'?'premios':anchor||'colecciones';
   const groups={colecciones:['#colecciones','.at-pack-section'],herramientas:['#herramientas'],premios:['#premios','#at-roulette','#at-prize-cards'],planes:['#planes'],carrito:['#carrito']};
   const selected=groups[section]?section:'colecciones';
+  if(anchor==='probabilidades')requestAnimationFrame(()=>{const target=document.getElementById('probabilidades');target?.scrollIntoView({block:'start'});target?.focus({preventScroll:true});});
   for(const [id,selectors] of Object.entries(groups))for(const selector of selectors)$(selector).hidden=id!==selected;
   for(const link of document.querySelectorAll('.at-shop-nav a')) {
     if(link.hash==='#'+selected)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');

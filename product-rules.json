@@ -296,11 +296,6 @@
   },
   "special_prize_pool": {
     "status": "expanded_requirements_pending_server_selection_and_fulfillment",
-    "combined_probability": {
-      "numerator": 1,
-      "denominator": 8000000000,
-      "scope": "each_spin_all_special_prizes_combined"
-    },
     "prizes": [
       {
         "type": "gift_card",
@@ -327,6 +322,26 @@
       }
     ],
     "selection_weights": "pending",
-    "physical_delivery": "pending"
+    "physical_delivery": "pending",
+    "gift_card_probability": {
+      "numerator": 1,
+      "denominator": 8000000000,
+      "scope": "each_spin_all_gift_cards_combined"
+    },
+    "device_probability": {
+      "numerator": 1,
+      "denominator": 16000000000,
+      "scope": "each_spin_iphone_and_mac_combined",
+      "interpretation": "combined_pool_as_stated_in_conversation",
+      "selection_weights": "pending"
+    },
+    "device_catalog_policy": {
+      "real_physical_prizes": true,
+      "refresh_on_new_generation": true,
+      "official_product_images": true,
+      "image_must_match_awarded_model": true,
+      "preserve_model_at_win_for_existing_claims": true,
+      "automatic_refresh_implementation": "pending"
+    }
   }
 }
