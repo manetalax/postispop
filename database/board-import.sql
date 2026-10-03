@@ -3,7 +3,8 @@
 -- Reuses existing slots only; it never grows, replaces or deletes a board.
 begin;
 create schema if not exists postispop_private;
-revoke all on schema postispop_private from public,anon,authenticated;
+revoke all on schema postispop_private from public,anon;
+-- Preserve existing authenticated schema USAGE required by legacy note policies.
 
 create table if not exists postispop_private.board_import_requests (
  user_id uuid not null references auth.users(id) on delete cascade,
@@ -108,10 +109,10 @@ begin
  -- postispop_save_note_style/protect_note use these same row locks.
  perform 1 from public.notes where board_id=p_board_id order by id for update;
  select count(*) into occupied from public.notes n where n.board_id=p_board_id and (
-  coalesce(n.text,'')<>'' or coalesce(n.marks,'[]')<>'[]' or coalesce(n.doodle,'')<>'' or n.image_url is not null or n.protected_envelope is not null
+  coalesce(n.text,'')<>'' or coalesce(n.marks,'[]')<>'[]' or coalesce(n.doodle,'null'::jsonb) not in ('null'::jsonb,'""'::jsonb) or n.image_url is not null or n.protected_envelope is not null
   or exists(select 1 from public.postispop_note_style s where s.note_id=n.id and s.drawing<>'[]' and s.drawing->'strokes' is distinct from '[]'::jsonb));
  select coalesce(array_agg(n.id order by n.position,n.id),'{}') into slots from public.notes n where n.board_id=p_board_id
-  and coalesce(n.text,'')='' and coalesce(n.marks,'[]')='[]' and coalesce(n.doodle,'')='' and n.image_url is null and n.protected_envelope is null
+  and coalesce(n.text,'')='' and coalesce(n.marks,'[]')='[]' and coalesce(n.doodle,'null'::jsonb) in ('null'::jsonb,'""'::jsonb) and n.image_url is null and n.protected_envelope is null
   and (n.locked_until is null or n.locked_until<=now()) and not(n.id=any(p_excluded_note_ids))
   and not exists(select 1 from public.postispop_note_style s where s.note_id=n.id and s.drawing<>'[]' and s.drawing->'strokes' is distinct from '[]'::jsonb);
  if wanted>0 and (occupied+wanted>limit_notes or wanted>cardinality(slots)) then raise exception 'BOARD_FULL' using errcode='54000'; end if;
@@ -120,7 +121,7 @@ begin
   select coalesce(max(revision),0) into prior_style_revision from public.postispop_note_style where note_id=target;
   -- Remove only formatting of a confirmed empty slot; never a drawing.
   delete from public.postispop_note_style where note_id=target;
-  update public.notes set text=item->>'text',marks=item->'marks',paper=(item->>'paper')::integer,doodle=item->>'doodle',image_url=item->>'image',
+  update public.notes set text=item->>'text',marks=item->'marks',paper=(item->>'paper')::integer,doodle=nullif(item->'doodle','""'::jsonb),image_url=item->>'image',
    protected_envelope=nullif(item->'protectedEnvelope','null'),author_id=actor,revision=coalesce(revision,0)+1,
    updated_ms=(extract(epoch from clock_timestamp())*1000)::bigint,locked_until=null,editing=null where id=target;
   if style is not null then

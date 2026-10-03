@@ -2,7 +2,8 @@
 -- New purchases remain disabled. This does not bind an owner UUID automatically.
 begin;
 create schema if not exists postispop_private;
-revoke all on schema postispop_private from public, anon, authenticated;
+revoke all on schema postispop_private from public, anon;
+-- Preserve existing authenticated schema USAGE required by legacy note policies.
 
 create table if not exists postispop_private.owner_account (
   singleton boolean primary key default true check(singleton),
@@ -105,7 +106,7 @@ select auth.uid() is not null and exists(select 1 from public.postispop_designs 
 revoke all on function public.postispop_has_license(text),public.postispop_can_design(text) from public,anon;
 grant execute on function public.postispop_has_license(text),public.postispop_can_design(text) to authenticated;
 
-create or replace function public.postispop_design_status() returns jsonb
+create or replace function public.postispop_catalog_status() returns jsonb
 language plpgsql security definer set search_path='' as $$
 declare result jsonb;
 begin
@@ -133,7 +134,7 @@ begin
   next_streak:=case when r.last_visit=today-1 then r.streak+1 else 1 end;
   update public.postispop_rewards set last_visit=today,visits=visits+1,streak=next_streak%5,credits=credits+case when next_streak=5 then 1 else 0 end where user_id=auth.uid();
  end if;
- return public.postispop_design_status();
+ return public.postispop_catalog_status();
 end $$;
 
 create or replace function public.postispop_claim_design(design_id text) returns jsonb
@@ -142,12 +143,12 @@ declare available integer;
 begin
  if auth.uid() is null then raise exception 'SESSION_REQUIRED' using errcode='28000'; end if;
  select credits into available from public.postispop_rewards where user_id=auth.uid() for update;
- if public.postispop_can_design(design_id) then return public.postispop_design_status(); end if;
+ if public.postispop_can_design(design_id) then return public.postispop_catalog_status(); end if;
  if not exists(select 1 from public.postispop_designs d where d.id=design_id and d.tier='reward') then raise exception 'NOT_A_REWARD' using errcode='42501'; end if;
  if coalesce(available,0)<1 then raise exception 'NO_REWARD_CREDIT' using errcode='42501'; end if;
  insert into public.postispop_unlocks(user_id,design_id) values(auth.uid(),design_id);
  update public.postispop_rewards set credits=credits-1 where user_id=auth.uid();
- return public.postispop_design_status();
+ return public.postispop_catalog_status();
 end $$;
 
 create or replace function public.postispop_select_design(design_id text) returns jsonb
@@ -156,10 +157,10 @@ begin
  if auth.uid() is null then raise exception 'SESSION_REQUIRED' using errcode='28000'; end if;
  if design_id is not null and not public.postispop_can_design(design_id) then raise exception 'DESIGN_LOCKED' using errcode='42501'; end if;
  insert into public.postispop_appearance(user_id,design_id) values(auth.uid(),design_id) on conflict(user_id) do update set design_id=excluded.design_id,updated_at=now();
- return public.postispop_design_status();
+ return public.postispop_catalog_status();
 end $$;
-revoke all on function public.postispop_design_status(),public.postispop_checkin(),public.postispop_claim_design(text),public.postispop_select_design(text) from public,anon;
-grant execute on function public.postispop_design_status(),public.postispop_checkin(),public.postispop_claim_design(text),public.postispop_select_design(text) to authenticated;
+revoke all on function public.postispop_catalog_status(),public.postispop_checkin(),public.postispop_claim_design(text),public.postispop_select_design(text) from public,anon;
+grant execute on function public.postispop_catalog_status(),public.postispop_checkin(),public.postispop_claim_design(text),public.postispop_select_design(text) to authenticated;
 
 create table if not exists public.postispop_note_style (
  user_id uuid not null references auth.users(id) on delete cascade,

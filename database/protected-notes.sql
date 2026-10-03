@@ -29,7 +29,7 @@ begin
  end if;
  if new.protected_envelope is not null then
   if not public.postispop_envelope_valid(new.protected_envelope) then raise exception 'INVALID_ENVELOPE' using errcode='22023'; end if;
-  if coalesce(new.text,'')<>'Nota protegida' or coalesce(new.marks,'[]'::jsonb)<>'[]'::jsonb or coalesce(new.doodle,'')<>'' or new.image_url is not null then
+  if coalesce(new.text,'')<>'Nota protegida' or coalesce(new.marks,'[]'::jsonb)<>'[]'::jsonb or coalesce(new.doodle,'null'::jsonb) not in ('null'::jsonb,'""'::jsonb) or new.image_url is not null then
    raise exception 'PROTECTED_NOTE_REQUIRES_ENCRYPTION' using errcode='42501';
   end if;
  end if;
@@ -60,7 +60,7 @@ begin
  if to_regclass('public.note_alarms') is not null then
   execute 'update public.note_alarms set label=''Nota protegida'' where note_id=$1' using p_note_id;
  end if;
- update public.notes set protected_envelope=p_envelope,text='Nota protegida',marks='[]'::jsonb,doodle='',image_url=null,
+ update public.notes set protected_envelope=p_envelope,text='Nota protegida',marks='[]'::jsonb,doodle=null,image_url=null,
   revision=revision+1,updated_ms=(extract(epoch from clock_timestamp())*1000)::bigint where id=p_note_id returning * into n;
  return n;
 end $$;
