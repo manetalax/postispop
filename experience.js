@@ -9,6 +9,13 @@ const notice=(message)=>{
   node.textContent=message;
 };
 function update() {
+  const header=document.querySelector('.app-header');
+  if(header&&!header.querySelector('.pp-arcade-nav')){
+    const nav=document.createElement('nav');nav.className='pp-arcade-nav';nav.setAttribute('aria-label','Explorar');
+    for(const [label,href] of [['✦ Premios','/premios.html'],['Tienda','/atelier.html'],['? Ayuda','/ayuda.html']]){const link=document.createElement('a');link.textContent=label;link.href=href;nav.append(link);}header.append(nav);
+  }
+  document.querySelector('.onboarding-card .onboarding-heading button')?.click();
+
   // The mobile layout hides the text inside this icon button.
   document.querySelectorAll('.header-share').forEach(button=>{
     if(!button.getAttribute('aria-label'))button.setAttribute('aria-label',button.textContent.trim()||'Compartir');
@@ -63,3 +70,5 @@ document.addEventListener('click',event=>{
 let scheduled=false;
 new MutationObserver(()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;update();});}).observe(document.body,{childList:true,subtree:true});
 recordVisit();update();
+
+document.addEventListener('click',event=>{const button=event.target.closest('button');if(button?.textContent.trim()==='Cómo funciona'){event.preventDefault();event.stopImmediatePropagation();location.href='/ayuda.html';}},true);
