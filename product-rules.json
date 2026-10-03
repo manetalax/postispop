@@ -314,12 +314,15 @@
       {
         "type": "iphone",
         "generation": "latest",
-        "model_and_storage": "pending"
+        "model_and_storage": "pending",
+        "model": "iPhone 18 Pro"
       },
       {
         "type": "mac",
-        "generation": "latest",
-        "form_factor_model_and_configuration": "pending"
+        "generation": "2026",
+        "form_factor_model_and_configuration": "pending",
+        "model": "MacBook Air",
+        "reference_budget_eur": 1200
       }
     ],
     "selection_weights": "equal_probability_per_special_prize",
@@ -344,5 +347,29 @@
       "preserve_model_at_win_for_existing_claims": true,
       "automatic_refresh_implementation": "pending"
     }
+  },
+  "analytics": {
+    "status": "internal_consent_based_deployed_ga4_pending",
+    "owner_account": "manetala@gmail.com",
+    "content_collection": false,
+    "full_ip_collection": false,
+    "metrics": [
+      "page_views",
+      "visitors",
+      "sessions",
+      "active_time",
+      "clicks",
+      "scroll",
+      "observed_exits",
+      "note_edits",
+      "board_creation",
+      "exports",
+      "traffic_source_groups",
+      "viewport_device_groups",
+      "retention_day_1_7_14"
+    ],
+    "countries": "pending_real_geography_provider",
+    "ga4": "pending_property_connection",
+    "window_days": 30
   }
 }
