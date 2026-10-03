@@ -117,6 +117,11 @@ let observedErrors=[];
   for(const name of ['bloc-de-notas-online','pizarra-virtual','notas-adhesivas-online','pizarra-colaborativa','organizador-visual-de-tareas','notas-para-estudiar','pizarra-para-reuniones','lluvia-de-ideas-online']){
     await page.goto(`https://postispop.com/${name}.html`);assert.equal(await page.locator('h1').count(),1);await page.setViewportSize({width:360,height:800});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,name);
   }
+  await page.goto('https://postispop.com/premios.html');
+  await page.getByRole('button',{name:'Iniciar sesión para girar gratis',exact:true}).waitFor();
+  assert.equal(await page.locator('#at-roulette-spin').isEnabled(),true,'Guest must have an actionable sign-in button');
+  assert.match(await page.locator('#at-roulette-status').innerText(),/horario de Madrid/);
+  assert.equal(await page.locator('#at-roulette-spin').getAttribute('data-action'),'login','Sign-in must never consume a spin');
   assert.deepEqual(missing,[]);assert.deepEqual(errors,[]);
   console.log('PASS: Spanish default, truthful save status, guest offline save and reload, onboarding dismissal, search, JSON export, non-destructive templates, 4 viewports, installation and downloads pages, shop and 8 guides.');
   await browser.close();
