@@ -256,6 +256,8 @@ async function api(endpoint, init) {
   if (!user) return json({ error: "SESSION_REQUIRED" }, 401);
 
   if(init?.accountId && init.accountId!==user.id)return json({error:'SESSION_CHANGED'},401);
+  if(endpoint==='roulette/status'&&method==='GET')return json(await rest('rpc/postispop_saturday_status','',{method:'POST',body:'{}'}));
+  if(endpoint==='roulette/spin'&&method==='POST')return json(await rest('rpc/postispop_saturday_spin','',{method:'POST',body:'{}'}));
   const importMatch=endpoint.match(/^board\/([^/]+)\/import$/);
   if(importMatch&&method==='POST') {
     if(!online())return json({error:'OFFLINE'},503);

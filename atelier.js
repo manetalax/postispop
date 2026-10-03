@@ -58,7 +58,7 @@ function cartButton(id,title) {
 }
 function shopSection() {
   const section=location.hash.slice(1)||'colecciones';
-  const groups={colecciones:['#colecciones','.at-pack-section'],herramientas:['#herramientas'],premios:['#premios','#at-prize-cards'],planes:['#planes'],carrito:['#carrito']};
+  const groups={colecciones:['#colecciones','.at-pack-section'],herramientas:['#herramientas'],premios:['#premios','#at-roulette','#at-prize-cards'],planes:['#planes'],carrito:['#carrito']};
   const selected=groups[section]?section:'colecciones';
   for(const [id,selectors] of Object.entries(groups))for(const selector of selectors)$(selector).hidden=id!==selected;
   for(const link of document.querySelectorAll('.at-shop-nav a')) {
@@ -375,3 +375,19 @@ renderProgress(); renderGrid(); renderTools(); loadAccount();
 
 renderCart();
 shopSection();
+
+async function refreshRoulette(spin=false) {
+ const button=$('#at-roulette-spin'),status=$('#at-roulette-status');button.disabled=true;
+ try {
+  const response=await fetch('/api/roulette/'+(spin?'spin':'status'),spin?{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}:{});
+  const data=await response.json();
+  if(response.status===401){status.textContent='Inicia sesión para consultar tu tirada del sábado.';return;}
+  if(!response.ok)throw new Error('UNAVAILABLE');
+  const messages={unconfigured:'La campaña aún no tiene fecha de inicio confirmada.',not_started:'La campaña comienza el '+data.starts_on+'.',ended:'La campaña de 60 días ha terminado.',not_saturday:'La tirada gratuita estará disponible el sábado.',available:'Tienes una tirada gratuita disponible.',played:data.result?.kind==='none'?'Esta tirada no ha dado premio. Ya has usado tu participación de este sábado.':'Premio recibido: '+(data.result?.title||'Consulta tu cuenta')+'.'};
+  status.textContent=messages[data.state]||'No se pudo confirmar la disponibilidad.';
+  button.disabled=data.state!=='available';
+  if(spin){await loadAccount();}
+ }catch{status.textContent='No se pudo consultar la ruleta. Puedes volver a comprobarlo; no se inventará ningún resultado.';}
+}
+$('#at-roulette-spin').addEventListener('click',()=>refreshRoulette(true));
+refreshRoulette();
