@@ -52,7 +52,6 @@ begin
  if status->>'state'<>'available' then raise exception 'ROULETTE_NOT_AVAILABLE' using errcode='42501'; end if;
  select array_agg(d.id order by d.id) into candidates from public.postispop_designs d
  where ((status->>'win_denominator')::integer=10 or (d.category<>'Países' and d.id not like 'country-%')) and not public.postispop_can_design(d.id);
- if coalesce(cardinality(candidates),0)=0 then raise exception 'NO_UNOWNED_PRIZES' using errcode='42501'; end if;
  outcome:=jsonb_build_object('kind','none');
  denominator:=(status->>'win_denominator')::integer;
  -- 120 billion is divisible by 6, 10 and 8 billion. Card is inside total win probability.
@@ -65,6 +64,10 @@ begin
    insert into public.postispop_licenses(user_id,subject,payment_reference) values(auth.uid(),'premium',prize_ref)
     on conflict(user_id,subject) do update set expires_at=null,revoked_at=null,payment_reference=excluded.payment_reference;
    outcome:=jsonb_build_object('kind','premium','title','Premium de por vida');
+  elsif coalesce(cardinality(candidates),0)=0 then
+   insert into public.postispop_rewards(user_id,credits) values(auth.uid(),1)
+    on conflict(user_id) do update set credits=public.postispop_rewards.credits+1;
+   outcome:=jsonb_build_object('kind','reward_credit','title','Un crédito para desbloquear un diseño de recompensa','credits',1);
   else
    select * into chosen from public.postispop_designs where id=candidates[1+postispop_private.roulette_random(cardinality(candidates))::integer];
    insert into public.postispop_unlocks(user_id,design_id) values(auth.uid(),chosen.id) on conflict do nothing;

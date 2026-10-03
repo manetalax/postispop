@@ -13,7 +13,16 @@ for(const name of files)await cp(new URL(name,root),new URL(name,out));
 for(const name of ['privacy.html','terms.html','legal.html','cookies.html']){const file=new URL(name,out);await writeFile(file,repairLegalPage(await readFile(file,'utf8')));}
 // Never publish captured API snapshots, signing keys or private source maps.
 for(const name of ['assets','_next','.well-known','descargas'])await copyPublicTree(fileURLToPath(new URL(name,root)),fileURLToPath(new URL(name,out)));
-await copyPublicTree(fileURLToPath(new URL('astro-dist/',root)),fileURLToPath(new URL('tienda/',out)));await writeFile(new URL('.nojekyll',out),'');
+// Astro's static build can leave server rendering intermediates; only ship browser output.
+const astroOutput=new URL('astro-dist/',root);
+for(const name of await readdir(astroOutput)) {
+  if(name==='chunks'||/^manifest_.*\.mjs$/.test(name))continue;
+  const source=new URL(name,astroOutput),target=new URL('tienda/'+name,out);
+  const {stat}=await import('node:fs/promises');
+  if((await stat(source)).isDirectory())await copyPublicTree(fileURLToPath(source),fileURLToPath(target));
+  else await cp(source,target);
+}
+await writeFile(new URL('.nojekyll',out),'');
 
 // Resize decorative images to their actual display budget. Sharp is provided by Astro.
 const {default:sharp}=await import('sharp');

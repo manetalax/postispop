@@ -49,11 +49,18 @@ function renderCart() {
   if(!cart.size)list.append(node('p','','Tu carrito está vacío. Explora las pizarras y los instrumentos para elegir.'));
   $('#at-cart-total').textContent='Total: '+euros([...cart.values()].reduce((sum,item)=>sum+item.cents,0));
   $('#at-cart-link').textContent='Carrito · '+cart.size;
+  document.querySelectorAll('[data-cart-id]').forEach(button=>{
+    const selected=cart.has(button.dataset.cartId);
+    button.textContent=selected?'En el carrito':'Añadir · 0,95 €';
+    button.setAttribute('aria-pressed',String(selected));
+  });
 }
 function cartButton(id,title) {
   const button=node('button','at-cart-add',cart.has(id)?'En el carrito':'Añadir · 0,95 €');
   button.type='button';
-  button.onclick=()=>{cart.set(id,{title,cents:95});renderCart();button.textContent='En el carrito';};
+  button.dataset.cartId=id;
+  button.setAttribute('aria-pressed',String(cart.has(id)));
+  button.onclick=()=>{cart.set(id,{title,cents:95});renderCart();};
   return button;
 }
 function shopSection() {
