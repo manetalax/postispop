@@ -265,13 +265,13 @@ revoke all on function public.postispop_save_note_style(jsonb) from public,anon;
 grant execute on function public.postispop_save_note_style(jsonb) to authenticated;
 
 create or replace function public.postispop_owner_dashboard(page_number integer default 0) returns jsonb
-language plpgsql security definer set search_path='' as $$
+language plpgsql security definer set search_path='' as $
 begin
  if not public.postispop_is_owner() then raise exception 'FORBIDDEN' using errcode='42501'; end if;
  return jsonb_build_object('server_now',now(),'users_total',(select count(*) from auth.users),'boards_total',(select count(*) from public.boards),'notes_total',(select count(*) from public.notes),
- 'users',coalesce((select jsonb_agg(t) from(select id,email,created_at,last_sign_in_at,email_confirmed_at,raw_app_meta_data->'providers' as providers from auth.users order by created_at desc limit 50 offset greatest(0,least(page_number,100000))*50)t),'[]'::jsonb),
- 'analytics_connected',false,'analytics_note','Google Analytics y las métricas de comportamiento no están conectados. No se muestran datos inventados.');
-end $$;
+ 'users',coalesce((select jsonb_agg(t) from(select id,email,coalesce(raw_user_meta_data->>'full_name',raw_user_meta_data->>'name','') as name,created_at,last_sign_in_at,email_confirmed_at,raw_app_meta_data->'providers' as providers from auth.users order by created_at desc limit 50 offset greatest(0,least(page_number,100000))*50)t),'[]'::jsonb),
+ 'analytics_connected',false,'analytics_note','Analítica propia disponible con consentimiento. Google Analytics y países pendientes de conexión.');
+end $;
 revoke all on function public.postispop_owner_dashboard(integer) from public,anon;
 grant execute on function public.postispop_owner_dashboard(integer) to authenticated;
 -- Preserve historical products while granting owner/current Premium access, without fake orders.
