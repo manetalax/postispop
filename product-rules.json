@@ -173,8 +173,9 @@
       "currency": "EUR",
       "probability": {
         "numerator": 1,
-        "denominator": 8000000000,
-        "scope": "each_spin_unconditional"
+        "denominator": 100000,
+        "scope": "each_brand_per_spin",
+        "status": "planned_paid_spins_disabled"
       },
       "included_in_total_win_probability": true,
       "brands": [
@@ -207,7 +208,7 @@
     "guarantee_description": "Each purchased five-spin pack guarantees at least one reward: if all five spins yield no prize, grant one random consolation reward after the fifth spin. Individual spins may yield nothing."
   },
   "saturday_roulette": {
-    "status": "updated_local_sql_and_ui_not_migrated",
+    "status": "deployed_supabase",
     "day": "Saturday",
     "free_spins_per_account_per_saturday": 1,
     "independent_of_streak_rewards": true,
@@ -227,9 +228,9 @@
     "period_start": "first_successfully_recorded_free_saturday_spin_per_account",
     "verification": {
       "anonymous_ui": "passed",
-      "database_execution": "not_run_no_local_postgres",
+      "database_execution": "migration_applied_permissions_and_status_verified_2026_10_03",
       "concurrency_and_awards": "pending_database_integration",
-      "deployment": "not_deployed"
+      "deployment": "supabase_functions_updated"
     },
     "timezone": "Europe/Madrid",
     "unused_saturdays_accumulate": false,
@@ -248,8 +249,8 @@
     "later_prizes_include_countries": true,
     "valuable_prize_probability": {
       "numerator": 1,
-      "denominator": 8000000000,
-      "scope": "each_spin_both_phases_included_in_total_win_probability"
+      "denominator": 100000,
+      "scope": "each_gift_card_brand_per_free_spin_both_phases_included_in_total_win_probability"
     }
   },
   "audit_20261003": {
@@ -295,7 +296,7 @@
     "duration": "indefinite_until_unsubscribed"
   },
   "special_prize_pool": {
-    "status": "expanded_requirements_pending_server_selection_and_fulfillment",
+    "status": "gift_cards_deployed_devices_pending_models_and_fulfillment",
     "prizes": [
       {
         "type": "gift_card",
@@ -321,19 +322,19 @@
         "form_factor_model_and_configuration": "pending"
       }
     ],
-    "selection_weights": "pending",
+    "selection_weights": "equal_probability_per_special_prize",
     "physical_delivery": "pending",
     "gift_card_probability": {
       "numerator": 1,
-      "denominator": 8000000000,
-      "scope": "each_spin_all_gift_cards_combined"
+      "denominator": 100000,
+      "scope": "each_brand_per_free_spin",
+      "combined_numerator": 6
     },
     "device_probability": {
       "numerator": 1,
-      "denominator": 16000000000,
-      "scope": "each_spin_iphone_and_mac_combined",
-      "interpretation": "combined_pool_as_stated_in_conversation",
-      "selection_weights": "pending"
+      "denominator": 100000,
+      "scope": "each_device_per_spin",
+      "status": "planned_not_active"
     },
     "device_catalog_policy": {
       "real_physical_prizes": true,
