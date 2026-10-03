@@ -200,14 +200,14 @@ begin
  if octet_length(value::text)>150000 then return false; end if;
  if jsonb_typeof(value)='array' then strokes:=value;
  elsif jsonb_typeof(value)='object' and value->>'version'='1' then
-  if coalesce(value->>'selectedInstrument','') not in('graphite','ballpoint','roller','gel','fountain','fineliner','brush','marker','crayon','chalk','charcoal','stamp','toothpaste','spray','airbrush') then return false; end if;
+  if coalesce(value->>'selectedInstrument','') not in('graphite','ballpoint','roller','gel','fountain','fineliner','brush','marker','crayon','chalk','charcoal','stamp','toothpaste','spray','airbrush','nailpolish') then return false; end if;
   if value->>'selectedInstrument'<>'ballpoint' and not public.postispop_has_license('tools:pens') then return false; end if;
   strokes:=value->'strokes';
  else return false; end if;
  if strokes is null or jsonb_typeof(strokes)<>'array' or jsonb_array_length(strokes)>120 then return false; end if;
  for stroke in select * from jsonb_array_elements(strokes) loop
   instrument:=stroke->>'instrument';
-  if instrument is null or instrument not in('graphite','ballpoint','roller','gel','fountain','fineliner','brush','marker','crayon','chalk','charcoal','stamp','toothpaste','spray','airbrush') then return false; end if;
+  if instrument is null or instrument not in('graphite','ballpoint','roller','gel','fountain','fineliner','brush','marker','crayon','chalk','charcoal','stamp','toothpaste','spray','airbrush','nailpolish') then return false; end if;
   if instrument<>'ballpoint' and not public.postispop_has_license('tools:pens') then return false; end if;
   if coalesce(stroke->>'color','') !~ '^#[0-9a-fA-F]{6}$' then return false; end if;
   if lower(stroke->>'color')<>'#163b62' and not (public.postispop_has_license('tools:palettes') or public.postispop_has_license('tools:pens')) then return false; end if;

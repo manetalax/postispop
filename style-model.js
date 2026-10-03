@@ -1,7 +1,7 @@
 // Pure, shared validation for local persistence and the stationery editor.
 export const FONT_IDS = ['sans','serif','mono','hand','rounded','book'];
 export const PAPER_IDS = ['plain','ruled','grid','dots','journal','papyrus','washi','music','prescription','blueprint','shift','study'];
-export const PEN_IDS = ['graphite','ballpoint','roller','gel','fountain','fineliner','brush','marker','crayon','chalk','charcoal','stamp','toothpaste','spray','airbrush'];
+export const PEN_IDS = ['graphite','ballpoint','roller','gel','fountain','fineliner','brush','marker','crayon','chalk','charcoal','stamp','toothpaste','spray','airbrush','nailpolish'];
 const fail = () => { throw new Error('INVALID_STYLE'); };
 const number = (n,min,max) => typeof n==='number' && Number.isFinite(n) && n>=min && n<=max;
 const color = value => typeof value==='string' && /^#[\da-f]{6}$/i.test(value);
@@ -86,6 +86,18 @@ function drawMaterial(ctx,stroke,width,height,ink) {
     for(let j=i?1:0;j<=count;j++){const t=j/count;samples.push({x:(a.x+(b.x-a.x)*t)*width,y:(a.y+(b.y-a.y)*t)*height,p:a.p+(b.p-a.p)*t});}
   }
   const dot=(x,y,r,alpha)=>{ctx.globalAlpha=alpha;ctx.beginPath();ctx.arc(x,y,Math.max(.2,r),0,Math.PI*2);ctx.fill();};
+  if(stroke.instrument==='nailpolish'){
+    const layer=(offset,size,colour,alpha)=>{
+      ctx.strokeStyle=colour;ctx.fillStyle=colour;ctx.globalAlpha=alpha;ctx.lineWidth=size;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
+      samples.forEach((p,i)=>i?ctx.lineTo(p.x+offset,p.y+offset):ctx.moveTo(p.x+offset,p.y+offset));ctx.stroke();
+      if(stroke.points.length===1)dot(samples[0].x+offset,samples[0].y+offset,size/2,alpha);
+    };
+    layer(base*.08,base*1.08,'#18202a',.2);
+    layer(0,base,ink,1);
+    for(const offset of [-.28,-.12,.09,.26])layer(base*offset,base*.025,'#ffffff',.15);
+    layer(-base*.2,base*.11,'#ffffff',.5);
+    return;
+  }
   if(stroke.instrument==='airbrush'){
     ctx.fillStyle=ink;
     for(const p of samples){
