@@ -1,3 +1,4 @@
+import './site-metrics.js';
 import {designs, fonts, instruments, papers, palettes, packs, catalogCoverage, designTemplates, boardSvg, paperSvg, svgUrl} from './design-catalog.js';
 import './supabase-bridge.js?v=6';
 import {drawStrokes,readableInk,paperColor} from './style-model.js';
