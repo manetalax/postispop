@@ -127,12 +127,12 @@ async function api(endpoint, init) {
   const publicShare=endpoint.match(/^protected-shares\/([a-f0-9]{64})$/);
   if(publicShare&&method==='GET')return json(await rest('rpc/postispop_read_protected_share','',{method:'POST',body:JSON.stringify({p_token:publicShare[1]})}));
 
-  if(endpoint.startsWith('designs/') || endpoint==='owner/dashboard') {
+  if(endpoint.startsWith('designs/') || endpoint==='owner/dashboard' || endpoint==='owner/metrics') {
     const user=await currentUser();
     if(!user) return json({error:'SESSION_REQUIRED'},401);
     const rpc={ 'designs/status':'postispop_catalog_status','designs/checkin':'postispop_checkin',
       'designs/claim':'postispop_claim_design','designs/select':'postispop_select_design',
-      'owner/dashboard':'postispop_owner_dashboard' }[endpoint];
+      'owner/dashboard':'postispop_owner_dashboard','owner/metrics':'postispop_owner_metrics' }[endpoint];
     if(rpc) {const status=await rest('rpc/'+rpc,'',{method:'POST',body:JSON.stringify(payload||{})});
       if(endpoint==='designs/status'&&online()) {try {const response=await originalFetch(SUPABASE_URL+'/functions/v1/postispop-offline-license',{method:'POST',headers:headers(),body:'{}'});if(response.ok){const receipt=await response.json();await saveOfflineReceipt(user.id,receipt.token);}}catch{/* Offline Premium remains disabled until a valid signed receipt exists. */}}
       return json(status);}
