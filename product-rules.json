@@ -23,7 +23,8 @@
     "position_12": {
       "editable": true,
       "permanently_unlocked": true,
-      "daily_quote": true
+      "daily_quote": true,
+      "warn_before_editing_quote": true
     },
     "maximum_positions": 100,
     "additional_positions_created_on_demand": true,
@@ -222,6 +223,28 @@
       "scope": "conditional_on_winning"
     },
     "result_persisted_on_server": true,
-    "paid_spins": "Separate five-spin packs; consolation applies only to a paid pack with five losses"
+    "paid_spins": "Separate five-spin packs; consolation applies only to a paid pack with five losses",
+    "availability_duration_days": 60,
+    "duration_unit": "calendar_days_not_saturdays",
+    "period_start": "not_confirmed_in_recovered_context"
+  },
+  "audit_20261003": {
+    "scope": "Partial reconciliation of recovered agreements against current local code; not a complete audit",
+    "confirmed_gaps": [
+      "Saturday roulette is rules only, not executable server functionality",
+      "60 calendar day limit was missing from recorded roulette rules",
+      "Clock pricing rule remains unresolved while product catalog displays 4.99 EUR; Stripe configuration unverified",
+      "Cart is temporary UI; per-product entitlements and checkout are not integrated",
+      "Remove launch placeholder only alongside real activation; roulette remains nonfunctional",
+      "Current local changes have not been pushed, deployed or migrated to Supabase"
+    ],
+    "unverified": [
+      "Note expiry, recovery and deletion end to end",
+      "Note 12 edit warning and dismissal",
+      "Protected-note leakage and isolation across accounts",
+      "Persistence, import and recovery against live backend",
+      "Installers and Meta/Apple device compatibility"
+    ],
+    "reporting_rule": "Separate recorded requirement, local implementation, checked behavior and deployed behavior"
   }
 }
