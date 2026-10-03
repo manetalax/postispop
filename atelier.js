@@ -356,7 +356,7 @@ async function loadAccount() {
     renderProgress(); renderGrid();
     if (dialog && activeDesign) renderActions(activeDesign, dialog.querySelector('.at-preview-actions'));
   } catch {
-    $('#at-account-status').textContent = navigator.onLine
+    if($('#at-account-status')) $('#at-account-status').textContent = navigator.onLine
       ? 'El progreso todavía no está disponible. Puedes explorar todas las vistas previas.'
       : 'Sin conexión. El catálogo está disponible; el progreso se confirma al reconectar.';
   }
