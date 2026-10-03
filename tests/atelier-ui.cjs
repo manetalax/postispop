@@ -35,8 +35,16 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
   await page.locator('#at-search').fill(checkedCountry.title);await page.getByRole('button',{name:'Ver '+checkedCountry.title,exact:true}).click();
   assert.match(await page.locator('.at-preview').innerText(),checkedCountry.edition==='foundation'?/Edición en desarrollo/:/Edición cultural/);
   await page.keyboard.press('Escape');
-  await page.getByRole('button',{name:'Explorar Tu trazo, tu estilo',exact:true}).click();assert.equal(await page.locator('.at-preview canvas').count(),instruments.length);await page.keyboard.press('Escape');
+  await page.getByRole('button',{name:'Explorar Tu trazo, tu estilo',exact:true}).click();assert.equal(await page.locator('.at-preview .at-stroke-sample').count(),instruments.length);await page.keyboard.press('Escape');
   await page.getByRole('button',{name:'Explorar Letras con personalidad',exact:true}).click();
+  const beforeTrial=await page.evaluate(()=>JSON.stringify({...localStorage}));
+  await page.getByLabel('Texto de prueba',{exact:true}).fill('PRUEBA QUE NO DEBE GUARDARSE');
+  await page.getByLabel('Instrumento de prueba',{exact:true}).selectOption('chalk');
+  await page.getByLabel('Papel de prueba',{exact:true}).selectOption('papyrus');
+  assert.equal(await page.evaluate(()=>JSON.stringify({...localStorage})),beforeTrial);
+  await page.getByRole('button',{name:'Cerrar y descartar prueba',exact:true}).click();
+  await page.getByRole('button',{name:'Explorar Letras con personalidad',exact:true}).click();
+  assert.equal(await page.getByLabel('Texto de prueba',{exact:true}).inputValue(),'');
   await page.evaluate(()=>document.fonts.ready);assert.equal(await page.locator('.at-preview .at-font-sample').count(),6);
   assert.equal(await page.evaluate(()=>document.fonts.check('16px "PP Manuscrita"')),true);await page.keyboard.press('Escape');
   await page.getByRole('button',{name:'Limpiar filtros',exact:true}).click();
