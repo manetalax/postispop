@@ -76,4 +76,36 @@ begin
 end $$;
 revoke all on function public.postispop_saturday_status(),public.postispop_saturday_spin() from public,anon;
 grant execute on function public.postispop_saturday_status(),public.postispop_saturday_spin() to authenticated;
+-- A claim does not mark the card delivered. Fulfillment remains an owner action.
+create table if not exists public.postispop_gift_claims (
+ user_id uuid not null, played_on date not null, full_name text not null,
+ contact_email text not null, brand text not null,
+ status text not null default 'pending' check(status in('pending','delivered')),
+ created_at timestamptz not null default now(),
+ primary key(user_id,played_on),
+ foreign key(user_id,played_on) references public.postispop_saturday_spins(user_id,played_on)
+);
+alter table public.postispop_gift_claims enable row level security;
+revoke all on public.postispop_gift_claims from public,anon,authenticated;
+grant select on public.postispop_gift_claims to authenticated;
+drop policy if exists gift_claim_own on public.postispop_gift_claims;
+create policy gift_claim_own on public.postispop_gift_claims for select to authenticated using(user_id=(select auth.uid()));
+create or replace function public.postispop_claim_gift(p_day date,p_name text,p_email text,p_brand text) returns jsonb
+language plpgsql security definer set search_path='' as $$
+declare claim public.postispop_gift_claims;
+begin
+ if auth.uid() is null then raise exception 'SESSION_REQUIRED' using errcode='28000'; end if;
+ if length(trim(p_name)) not between 2 and 120 or length(p_email)>254
+ or p_email !~ '^[^[:space:]@]+@[^[:space:]@]+[.][^[:space:]@]+$'
+ or p_brand not in('Amazon','Google Play','Apple','Xbox','PlayStation','Fortnite')
+ or p_name is null or p_email is null or p_brand is null then raise exception 'INVALID_CLAIM'; end if;
+ perform 1 from public.postispop_saturday_spins where user_id=auth.uid() and played_on=p_day and result->>'kind'='gift_card' for update;
+ if not found then raise exception 'PRIZE_REQUIRED' using errcode='42501'; end if;
+ insert into public.postispop_gift_claims(user_id,played_on,full_name,contact_email,brand)
+ values(auth.uid(),p_day,trim(p_name),trim(p_email),p_brand) on conflict do nothing;
+ select * into claim from public.postispop_gift_claims where user_id=auth.uid() and played_on=p_day;
+ return jsonb_build_object('status',claim.status,'brand',claim.brand,'played_on',claim.played_on);
+end $$;
+revoke all on function public.postispop_claim_gift(date,text,text,text) from public,anon;
+grant execute on function public.postispop_claim_gift(date,text,text,text) to authenticated;
 commit;

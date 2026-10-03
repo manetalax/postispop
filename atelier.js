@@ -386,8 +386,23 @@ async function refreshRoulette(spin=false) {
   const messages={not_saturday:data.period_started?'Vuelve el sábado. Tu probabilidad actual es 1 entre '+data.win_denominator+'.':'Vuelve el sábado para tu primera tirada. Tu periodo inicial todavía no ha empezado.',available:'Tienes una tirada gratuita. Probabilidad de premio: 1 entre '+data.win_denominator+'.',played:data.result?.kind==='none'?'Esta tirada no ha dado premio. Ya has usado tu participación de este sábado.':data.result?.kind==='gift_card'?'Has ganado una tarjeta de 100 €. La entrega está pendiente de tramitar.':'Premio recibido: '+(data.result?.title||'Consulta tu cuenta')+'.'};
   status.textContent=messages[data.state]||'No se pudo confirmar la disponibilidad.';
   button.disabled=data.state!=='available';
+  if(data.result?.kind==='gift_card')showGiftClaim(data.server_day);
   if(spin){await loadAccount();}
  }catch{status.textContent='No se pudo consultar la ruleta. Puedes volver a comprobarlo; no se inventará ningún resultado.';}
 }
 $('#at-roulette-spin').addEventListener('click',()=>refreshRoulette(true));
 refreshRoulette();
+
+function showGiftClaim(day) {
+ if($('#at-gift-claim'))return;
+ const form=node('form');form.id='at-gift-claim';
+ const name=node('input');name.required=true;name.minLength=2;name.maxLength=120;name.autocomplete='name';
+ const email=node('input');email.type='email';email.required=true;email.maxLength=254;email.autocomplete='email';
+ const brand=node('select');for(const title of ['Amazon','Google Play','Apple','Xbox','PlayStation','Fortnite']){const option=node('option','',title);option.value=title;brand.append(option);}
+ for(const [title,input] of [['Nombre para la entrega',name],['Correo de contacto',email],['Tarjeta preferida',brand]]){const label=node('label','',title);label.append(input);form.append(label);}
+ const submit=node('button','at-primary','Solicitar entrega');submit.type='submit';
+ const message=node('p');message.setAttribute('role','status');
+ form.append(node('p','','Estos datos se usarán para tramitar tu premio. La disponibilidad de la tarjeta se confirmará para tu región.'),submit,message);
+ form.addEventListener('submit',async event=>{event.preventDefault();submit.disabled=true;try{const result=await api('roulette/claim',{day,name:name.value,email:email.value,brand:brand.value});message.textContent=result.status==='delivered'?'Este premio ya figura como entregado.':'Solicitud guardada. La entrega está pendiente de tramitar.';}catch{message.textContent='No se pudo confirmar la solicitud. Puedes reintentar sin duplicar el premio.';submit.disabled=false;}});
+ $('#at-roulette').append(form);
+}

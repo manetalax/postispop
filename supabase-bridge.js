@@ -258,6 +258,7 @@ async function api(endpoint, init) {
   if(init?.accountId && init.accountId!==user.id)return json({error:'SESSION_CHANGED'},401);
   if(endpoint==='roulette/status'&&method==='GET')return json(await rest('rpc/postispop_saturday_status','',{method:'POST',body:'{}'}));
   if(endpoint==='roulette/spin'&&method==='POST')return json(await rest('rpc/postispop_saturday_spin','',{method:'POST',body:'{}'}));
+  if(endpoint==='roulette/claim'&&method==='POST')return json(await rest('rpc/postispop_claim_gift','',{method:'POST',body:JSON.stringify({p_day:payload.day,p_name:payload.name,p_email:payload.email,p_brand:payload.brand})}));
   const importMatch=endpoint.match(/^board\/([^/]+)\/import$/);
   if(importMatch&&method==='POST') {
     if(!online())return json({error:'OFFLINE'},503);
