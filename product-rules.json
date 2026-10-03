@@ -137,8 +137,8 @@
   "cart_proposal": {
     "status": "pending_implementation",
     "currency": "EUR",
-    "individual_upgrade_price_cents": 100,
-    "pricing_status": "Previously proposed 1 EUR per upgrade; not active in payment provider",
+    "individual_upgrade_price_cents": 95,
+    "pricing_status": "Confirmed: each board design and drawing instrument costs 0.95 EUR; payment activation deferred",
     "selection": "User chooses individual upgrades",
     "unlock_scope": "Only successfully paid selected products",
     "full_bundle_threshold_cents": null,
@@ -146,6 +146,12 @@
     "charge_trigger": "Explicit checkout confirmation; adding to cart never charges",
     "existing_owned_items": "Exclude from payable cart to prevent duplicate purchases",
     "premium_note_capacity": "Separate existing requirement; not changed by this cart correction",
-    "payment_activation": "deferred_by_user_to_other_account"
+    "payment_activation": "deferred_by_user_to_other_account",
+    "priced_categories": [
+      "board_designs",
+      "drawing_instruments"
+    ],
+    "clock_price_cents": null,
+    "clock_price_status": "Awaiting clarification of spoken amount 95; do not infer 0.95, 9.95 or 95 EUR"
   }
 }
