@@ -8,7 +8,7 @@ export const publicFiles = [
   'index.html', 'instalar.html', 'install-page.js', 'manifest.json', 'manifest.webmanifest',
   'robots.txt', 'sitemap.xml', 'CNAME', 'favicon.svg', 'favicon.ico',
   'privacy.html', 'terms.html', 'legal.html', 'cookies.html',
-  'postispop-shop.js', 'commerce-ui.js', 'commerce.css', 'supabase-bridge.js', 'supabase-config.js',
+  'postispop-shop.js', 'commerce-ui.js', 'home-promo.js', 'commerce.css', 'supabase-bridge.js', 'supabase-config.js',
   'guest-board.js', 'guest-status.js', 'note-attachments.js', 'note-attachments.css',
   'experience-content.js', 'experience.css', 'experience.js', 'usage-metrics.js', 'board-tools.js', 'backup-import.js',
   'search.js', 'search-index.json', 'atelier.html', 'atelier.js', 'atelier.css', 'design-catalog.js',
