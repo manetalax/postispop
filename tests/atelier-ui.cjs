@@ -64,6 +64,18 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
   await page.screenshot({path:'test-results/atelier-verified-desktop.png',fullPage:false});
   await page.locator('#at-search').fill('Consulta médica');await page.getByRole('button',{name:'Ver Consulta médica',exact:true}).click();
   await page.setViewportSize({width:360,height:800});assert.equal(await page.locator('.at-preview').evaluate(el=>el.scrollWidth<=el.clientWidth+1),true);await page.screenshot({path:'test-results/atelier-verified-mobile.png'});
+  await page.keyboard.press('Escape');
+  await page.locator('.at-shop-nav a[href="#premios"]').click();
+  await page.locator('#at-prize-cards').waitFor({state:'visible'});
+  await page.waitForFunction(()=>[...document.querySelectorAll('.prize-logo')].every(i=>i.complete&&i.naturalWidth>0));
+  assert.equal(await page.locator('.prize-logo').count(),6);
+  await page.locator('#at-prize-cards').screenshot({path:'test-results/prize-brands.png'});
+  await page.setContent('<link rel="stylesheet" href="/commerce.css"><main>Mi pizarra</main>');
+  await page.addScriptTag({type:'module',url:'https://postispop.com/home-promo.js'});
+  await page.locator('.pp-launch-promo').waitFor();
+  await page.waitForFunction(()=>[...document.querySelectorAll('.pp-promo-brands img')].every(i=>i.complete&&i.naturalWidth>0));
+  for(const width of [360,768,1440]){await page.setViewportSize({width,height:900});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);}
+  await page.locator('.pp-launch-promo').screenshot({path:'test-results/home-promo.png'});
   assert.deepEqual(errors,[]);assert.deepEqual([...new Set(missing)],[]);
   console.log('PASS: 298 catalogue, 50 rewards, developed editions, pack/search filters, exact papers, dialog focus, all drawing samples, 6 local fonts, 4 responsive widths and truthful country/purchase status.');
  }finally{await browser.close();}

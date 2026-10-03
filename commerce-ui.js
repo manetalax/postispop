@@ -1,3 +1,4 @@
+import './home-promo.js';
 import {track} from './usage-metrics.js';
 import './supabase-bridge.js?v=6';
 
