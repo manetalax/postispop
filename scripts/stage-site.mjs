@@ -16,7 +16,7 @@ for(const name of ['assets','_next','.well-known','descargas'])await copyPublicT
 // Astro's static build can leave server rendering intermediates; only ship browser output.
 const astroOutput=new URL('astro-dist/',root);
 for(const name of await readdir(astroOutput)) {
-  if(name==='chunks'||/^manifest_.*\.mjs$/.test(name))continue;
+  if(name==='chunks'||name==='pages'||name.endsWith('.mjs'))continue;
   const source=new URL(name,astroOutput),target=new URL('tienda/'+name,out);
   const {stat}=await import('node:fs/promises');
   if((await stat(source)).isDirectory())await copyPublicTree(fileURLToPath(source),fileURLToPath(target));

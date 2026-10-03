@@ -82,13 +82,12 @@ function enhanceEditor() {
   const paper=dialog.querySelector('.edit-paper');if(!paper)return;
   const selected=designs.find(d=>d.id===rights?.selected);
   let value=styleFor(note);if(!note.style&&!styles.has(id)&&selected)value.paper=selected.paper;
-  let revision=note.styleRevision||0,remoteRevision=styles.get(id)?.revision,dirty=false,saving=false;
+  let revision=note.styleRevision||0,remoteRevision=styles.get(id)?.revision,dirty=false,saving=false,saveTimer,inflight=null;
   const panel=el('details','','pp-design-tools');panel.append(el('summary','Papeles, letras y trazos'));
   const content=el('div','','pp-design-content'),fields=el('div','','pp-style-fields');panel.append(content);
   const status=el('p',board.id==='guest-board'?'Herramientas básicas · guardado en este dispositivo.':'Los estilos se guardan en tu cuenta.','pp-style-status');status.setAttribute('role','status');
-  const save=el('button','Guardar estilo y dibujo','pp-style-save');save.type='button';save.disabled=true;
   const preview=()=>{paper.classList.add('pp-styled-editor');setVariables(paper,value);canvas.style.backgroundImage=`url("${paperImage(value.paper)}")`;drawStrokes(canvas.getContext('2d'),value.drawing,canvas.width,canvas.height,paperColor(value.paper));};
-  const changed=()=>{dirty=true;save.disabled=false;status.textContent='Cambios pendientes. Guarda el estilo y el dibujo antes de cerrar la nota.';preview();};
+  const changed=()=>{dirty=true;status.textContent='Guardando automáticamente…';preview();clearTimeout(saveTimer);saveTimer=setTimeout(()=>flush(),250);};
   fields.append(select('Tipo de letra',fonts,value.font,id=>id==='sans'||owns('fonts'),v=>{value.font=v;changed();}));
   const size=el('input');size.type='range';size.min='14';size.max='36';size.step='1';size.value=String(value.size);size.setAttribute('aria-label','Tamaño del texto');
   const sizeLabel=control('Tamaño del texto',size),sizeOutput=el('output',value.size+' px');sizeLabel.append(sizeOutput);size.addEventListener('input',()=>{value.size=Number(size.value);sizeOutput.value=value.size+' px';changed();});fields.append(sizeLabel);
@@ -104,29 +103,35 @@ function enhanceEditor() {
   const point=event=>{const box=canvas.getBoundingClientRect();return{x:Math.max(0,Math.min(1,(event.clientX-box.left)/box.width)),y:Math.max(0,Math.min(1,(event.clientY-box.top)/box.height)),p:Math.max(0,Math.min(1,event.pointerType==='pen'?event.pressure:.5))};};
   canvas.addEventListener('pointerdown',event=>{if(event.button!==0||saving)return;if(value.drawing.strokes.length>=120){status.textContent='Límite de 120 trazos. Deshaz uno para seguir.';return;}event.preventDefault();canvas.setPointerCapture(event.pointerId);const pen=instruments.find(p=>p.id===value.drawing.selectedInstrument)||instruments[1];stroke={instrument:pen.id,color:readableInk(value.ink,paperColor(value.paper)),width:pen.width,points:[point(event)]};value.drawing.strokes.push(stroke);changed();});
   canvas.addEventListener('pointermove',event=>{if(!stroke||!canvas.hasPointerCapture(event.pointerId))return;const p=point(event),last=stroke.points.at(-1);if(Math.hypot(p.x-last.x,p.y-last.y)<.0025)return;if(value.drawing.strokes.reduce((count,s)=>count+s.points.length,0)>=16000)return;stroke.points.push(p);preview();});
-  const end=event=>{if(canvas.hasPointerCapture(event.pointerId))canvas.releasePointerCapture(event.pointerId);stroke=null;};canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',end);
+  const end=event=>{if(canvas.hasPointerCapture(event.pointerId))canvas.releasePointerCapture(event.pointerId);stroke=null;changed();};canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',end);
   if(!owns('fonts')||!owns('pens')||!owns('papers')||!owns('palettes')){const link=el('a','Ver papeles, fuentes e instrumentos en el Atelier');link.href='/atelier.html#herramientas';content.append(link);}
-  content.append(status,save);
-  save.addEventListener('click',async()=>{
-    if(saving)return;saving=true;save.disabled=true;const snapshot=JSON.stringify(value);status.textContent='Guardando estilo y dibujo…';
+  content.append(status);
+  async function persist(){
+    saving=true;const snapshot=JSON.stringify(value);status.textContent='Guardando estilo y dibujo…';
     try {
       const normalized=normalizeStyle(value);
       let queued=false;
       if(id.startsWith('guest-note-')){const data=await api('note/'+id+'/style',{style:normalized,styleRevision:revision});revision=data.styleRevision;Object.assign(noteById(id)||note,data.note);}
       else {const data=await api('designs/styles',{...normalized,note_id:id,revision:remoteRevision??0});styles.set(id,data.style);remoteRevision=data.style?.revision;queued=data.pending===true;}
-      dirty=JSON.stringify(value)!==snapshot;status.textContent=dirty?'Hay nuevos cambios pendientes. Guarda de nuevo.':id.startsWith('guest-note-')?'Estilo y dibujo guardados en este dispositivo.':queued?'Estilo y dibujo guardados en este dispositivo, pendientes de sincronizar con tu cuenta.':'Estilo y dibujo guardados en tu cuenta.';
+      dirty=JSON.stringify(value)!==snapshot;status.textContent=dirty?'Guardando los últimos cambios…':id.startsWith('guest-note-')?'Estilo y dibujo guardados en este dispositivo.':queued?'Estilo y dibujo guardados en este dispositivo, pendientes de sincronizar con tu cuenta.':'Estilo y dibujo guardados en tu cuenta.';
       window.dispatchEvent(new CustomEvent('postispop:style-saved',{detail:{noteId:id}}));renderBoard();
-    }catch(error){dirty=true;status.textContent=errorMessage(error);}finally{saving=false;save.disabled=!dirty;}
-  });
-  // This UI is an enhancement around the recovered editor; text keeps its own
-  // autosave. Warn before closing an unsaved drawing, including browser exit.
-  const warn=event=>{if(dirty&&panel.isConnected){event.preventDefault();event.returnValue='';}};window.addEventListener('beforeunload',warn);
-  const closeGuard=event=>{if(!dirty||!panel.isConnected||!event.target.closest?.('.dialog-heading button'))return;if(!window.confirm('El estilo o dibujo aún no se ha guardado. ¿Cerrar y descartar estos cambios?')){event.preventDefault();event.stopImmediatePropagation();}};
-  dialog.addEventListener('click',closeGuard,true);
-  const keyGuard=event=>{if(event.key==='Escape'&&dirty&&panel.isConnected&&!window.confirm('El estilo o dibujo aún no se ha guardado. ¿Cerrar y descartar estos cambios?')){event.preventDefault();event.stopImmediatePropagation();}};dialog.addEventListener('keydown',keyGuard,true);
-  const outsideGuard=event=>{if(dirty&&panel.isConnected&&!dialog.contains(event.target)&&!window.confirm('El estilo o dibujo aún no se ha guardado. ¿Cerrar y descartar estos cambios?')){event.preventDefault();event.stopImmediatePropagation();}};document.addEventListener('pointerdown',outsideGuard,true);
-  const cleanup=new MutationObserver(()=>{if(!panel.isConnected){window.removeEventListener('beforeunload',warn);document.removeEventListener('pointerdown',outsideGuard,true);cleanup.disconnect();}});cleanup.observe(document.body,{childList:true,subtree:true});
-  paper.after(panel);preview();
+    return true;
+    }catch(error){dirty=true;status.textContent=errorMessage(error);return false;}finally{saving=false;}
+  }
+  async function flush(){
+    clearTimeout(saveTimer);
+    if(inflight){if(!await inflight)return false;}
+    while(dirty){inflight=persist();const ok=await inflight;inflight=null;if(!ok)return false;}
+    return true;
+  }
+  // Closing is coordinated with the editor; a failed save keeps the editable note visible.
+  const beforeClose=event=>{if(panel.isConnected)event.detail.waits.push(flush());};
+  const backgroundSave=()=>{if(dirty)void flush();};
+  window.addEventListener('postispop:editor-flush',beforeClose);
+  window.addEventListener('pagehide',backgroundSave);
+  window.addEventListener('online',backgroundSave);
+  const cleanup=new MutationObserver(()=>{if(!panel.isConnected){clearTimeout(saveTimer);window.removeEventListener('postispop:editor-flush',beforeClose);window.removeEventListener('pagehide',backgroundSave);window.removeEventListener('online',backgroundSave);cleanup.disconnect();}});cleanup.observe(document.body,{childList:true,subtree:true});
+  paper.append(panel);preview();
 }
 function mount() {
   const frame=document.querySelector('.board-frame:not(.is-loading)');if(!frame)return;

@@ -256,7 +256,7 @@ async function enhanceEditor() {
   if (!activeNoteId) return;
   const anchor = dialog.querySelector('.edit-paper');
   if (!anchor) return;
-  anchor.insertAdjacentElement('afterend', createPanel());
+  anchor.append(createPanel());
   await renderList();
 }
 

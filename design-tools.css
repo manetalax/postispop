@@ -22,3 +22,11 @@
 .pp-design-content h3{font:700 17px/1.35 system-ui,sans-serif;margin:16px 0 10px}.pp-sketch-help,.pp-style-status{font-size:12px;line-height:1.55}.pp-style-status{min-height:36px;color:#334d64}.pp-design-tools .pp-style-save{background:#254d77;color:white;min-height:46px;width:100%;border:0;margin-top:8px}
 @media(max-width:480px){.pp-style-fields{grid-template-columns:1fr}.pp-design-content{padding:0 10px 12px}.pp-design-bar{font-size:12px;margin:8px 2px;padding:9px 11px}.pp-drawing-controls{flex-wrap:wrap}.pp-drawing-controls label{min-width:160px}.pp-styled-note .note-text{font-size:clamp(10px,2.6vw,14px)!important}}
 @media(prefers-reduced-motion:reduce){.pp-design-tools *{animation:none!important;transition:none!important}}
+/* A single opened sheet contains writing, tools and actions. Closing is automatic save. */
+.editor-dialog .edit-paper{overflow:visible}
+.editor-dialog .edit-paper .pen-tray{margin:16px 0 0;padding:12px 0;border-top:1px solid #23364925;background:transparent}
+.editor-dialog .edit-paper .editor-actions{margin:0;padding:12px 0 0;border-top:1px solid #23364925;justify-content:flex-start;flex-wrap:wrap}
+.editor-dialog .edit-paper .note-customization{background:transparent;margin-top:12px}
+.editor-dialog .edit-paper .pp-design-tools,.editor-dialog .edit-paper .pp-attachments{background:#ffffffb8;color:#233649}
+.editor-dialog .edit-paper .editor-actions button,.editor-dialog .edit-paper .note-customization button,.editor-dialog .edit-paper .pen-tray button{background:#ffffffb8;color:#233649;border-color:#23364940}
+.editor-dialog .edit-paper .pen-tray button.selected{background:#dceaff;outline:2px solid #35699f}

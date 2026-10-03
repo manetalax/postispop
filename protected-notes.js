@@ -27,7 +27,7 @@ async function cleanupProtected(note){localStorage.setItem(protectedMarker(note.
 function makeDialog(title){
   activeDialog?.close();const el=node('dialog',undefined,'pp-vault-dialog');activeDialog=el;
   const header=node('div',undefined,'pp-vault-heading'),h=node('h2',title);h.id='pp-vault-title';el.setAttribute('aria-labelledby',h.id);
-  const close=node('button','Cerrar','pp-vault-close');close.type='button';close.addEventListener('click',()=>el.close());header.append(h,close);el.append(header);
+  const close=node('button','Cerrar','pp-vault-close');close.type='button';close.addEventListener('click',()=>el.requestSaveClose?el.requestSaveClose():el.close());header.append(h,close);el.append(header);
   const restore=document.activeElement;el.addEventListener('close',()=>{el.querySelectorAll('input,textarea').forEach(i=>i.value='');el.replaceChildren();el.remove();activeDialog=null;restore?.focus();},{once:true});document.body.append(el);el.showModal();return el;
 }
 function passwordInput(labelText,autocomplete='new-password'){
@@ -81,11 +81,40 @@ async function unlock(note){
   form.addEventListener('submit',event=>{event.preventDefault();busy(button,async()=>{
     const entered=pass.input.value,result=await decryptNote(note.protectedEnvelope,entered);if(!el.isConnected)return;
     secret=entered;payload=result;pass.input.value='';form.remove();el.classList.add('is-unlocked');el.querySelector('.pp-vault-art')?.remove();
-    el.append(node('p','Al cerrar o cambiar de aplicación, la nota se bloquea. Guarda antes de salir.','pp-vault-help'));
+    el.append(node('p','Se guarda automáticamente cifrada. Al salir, la nota vuelve a bloquearse.','pp-vault-help'));
     const rendered=node('section');renderProtectedPayload(rendered,payload,urls);el.append(rendered);
     const editor=node('textarea');editor.value=payload.text;editor.maxLength=10000;editor.setAttribute('aria-label','Texto de la nota protegida');const original=rendered.querySelector('.pp-vault-content');editor.style.cssText=original.style.cssText;original.replaceWith(editor);
-    const save=node('button','Guardar cifrada y cerrar','pp-vault-primary');save.type='button';el.append(save,status);
-    save.addEventListener('click',()=>busy(save,async()=>{const updated={...payload,text:editor.value,marks:editor.value===payload.text?payload.marks:[]};const envelope=await encryptNote(updated,secret);if(!el.isConnected)return;await protectedApi('note/'+note.id+'/protected-save',{revision:note.revision,styleRevision:note.styleRevision||0,protectedEnvelope:envelope});el.close();await refresh();},status));
+    el.append(status);
+    let saveTimer,inflight=null,closing=false;
+    async function persist(){
+      if(!payload||!el.isConnected)return false;
+      const updated={...payload,text:editor.value,marks:editor.value===payload.text?payload.marks:[]};
+      status.textContent='Guardando automáticamente cifrada…';
+      try{
+        const envelope=await encryptNote(updated,secret);
+        if(!el.isConnected)return false;
+        const result=await protectedApi('note/'+note.id+'/protected-save',{revision:note.revision,styleRevision:note.styleRevision||0,protectedEnvelope:envelope});
+        if(!el.isConnected)return false;
+        if(result.note)note={...note,...result.note};
+        payload=updated;status.textContent=result.pending?'Guardada cifrada en este dispositivo. Pendiente de sincronizar.':'Guardada cifrada.';
+        return true;
+      }catch(error){status.textContent=protectedError(error)+' Tu texto sigue aquí.';return false;}
+    }
+    async function flush(){
+      clearTimeout(saveTimer);
+      if(inflight&&!await inflight)return false;
+      while(payload&&editor.value!==payload.text){inflight=persist();const ok=await inflight;inflight=null;if(!ok)return false;}
+      return true;
+    }
+    editor.addEventListener('input',()=>{clearTimeout(saveTimer);status.textContent='Guardando automáticamente cifrada…';saveTimer=setTimeout(()=>flush(),400);});
+    el.requestSaveClose=async()=>{if(closing)return;closing=true;editor.readOnly=true;try{if(await flush()){el.close();await refresh();}}finally{closing=false;editor.readOnly=false;}};
+    el.addEventListener('cancel',event=>{event.preventDefault();void el.requestSaveClose();});
+    el.addEventListener('click',event=>{if(event.target!==el)return;const b=el.getBoundingClientRect();if(event.clientX<b.left||event.clientX>b.right||event.clientY<b.top||event.clientY>b.bottom)void el.requestSaveClose();});
+    const historyKey=crypto.randomUUID(),previousHistory=history.state;
+    history.pushState({...previousHistory,ppProtectedEditor:historyKey},'',location.href);
+    const back=async()=>{if(history.state?.ppProtectedEditor===historyKey)return;await el.requestSaveClose();if(el.isConnected)history.pushState({...previousHistory,ppProtectedEditor:historyKey},'',location.href);};
+    window.addEventListener('popstate',back);
+    el.addEventListener('close',()=>{clearTimeout(saveTimer);window.removeEventListener('popstate',back);if(history.state?.ppProtectedEditor===historyKey)history.back();},{once:true});
     await shareControls(el,note,status);status.textContent='El texto descifrado solo permanece en esta ventana.';
   },status);});pass.input.focus();
 }
@@ -95,12 +124,12 @@ function installEditorLock(){
  const editor=document.querySelector('.editor-dialog');if(!editor||editor.querySelector('.pp-vault-note-action')||!editorNoteId)return;
  const id=editorNoteId,button=node('button','🔒 Contraseña','pp-vault-note-action'),status=node('p','','pp-vault-note-status');button.type='button';status.setAttribute('role','status');
  editor.querySelector('.dialog-heading')?.append(button);editor.append(status);
- button.addEventListener('click',()=>busy(button,async()=>{await refresh();const note=cachedBoard?.notes.find(n=>n.id===id);if(!note)throw Error('NOT_FOUND');const text=editor.querySelector('textarea')?.value;if(text!==undefined&&text!==(note.text||'')){status.textContent='Espera a que termine el guardado de esta nota y vuelve a pulsar.';return;}const close=editor.querySelector('button[aria-label="Listo"]');if(!close){status.textContent='Cierra y vuelve a abrir la nota para continuar.';return;}close.click();await new Promise(resolve=>setTimeout(resolve,100));await protect(note);},status));
+ button.addEventListener('click',()=>busy(button,async()=>{await refresh();const note=cachedBoard?.notes.find(n=>n.id===id);if(!note)throw Error('NOT_FOUND');const text=editor.querySelector('textarea')?.value;if(text!==undefined&&text!==(note.text||'')){status.textContent='Espera a que termine el guardado de esta nota y vuelve a pulsar.';return;}const close=editor.querySelector('button[aria-label="Volver a la pizarra"]');if(!close){status.textContent='Cierra y vuelve a abrir la nota para continuar.';return;}close.click();await new Promise(resolve=>setTimeout(resolve,100));await protect(note);},status));
 }
 function install(){installEditorLock();const frame=document.querySelector('.board-frame:not(.is-loading)');if(!frame)return;decorate();if(toolbar?.isConnected)return;toolbar=node('section',undefined,'pp-vault-toolbar');toolbar.setAttribute('aria-label','Notas con contraseña');const label=node('label','Tu caja fuerte'),select=node('select');select.setAttribute('aria-label','Nota que quieres proteger o abrir');label.append(select);const button=node('button','Proteger o abrir'),status=node('span');button.type='button';status.setAttribute('role','status');toolbar.append(label,button,status);frame.after(toolbar);button.addEventListener('click',()=>busy(button,async()=>{const chosen=select.value;await refresh();const note=cachedBoard.notes.find(n=>n.id===chosen);if(!note)return;if(note.protectedEnvelope)await unlock(note);else await protect(note);},status));refresh().then(async result=>{for(const n of result.notes.filter(n=>n.protectedEnvelope)){try{await withNoteStorageLock(n.id,()=>cleanupProtected(n),{requireLock:true});}catch{status.textContent=messages.CLEANUP_FAILED;}}}).catch(()=>{status.textContent='Abre una pizarra para usar las notas protegidas.';});}
 if(typeof document!=='undefined'&&!document.body?.hasAttribute('data-protected-share')){
   document.addEventListener('click',event=>{const target=event.target.closest?.('.sticky-note[data-note-id]');if(target)editorNoteId=target.dataset.noteId;const note=cachedBoard?.notes.find(n=>n.id===target?.dataset.noteId);if(note?.protectedEnvelope){event.preventDefault();event.stopImmediatePropagation();unlock(note).catch(()=>{});}},true);
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)activeDialog?.close();});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){if(activeDialog?.requestSaveClose)void activeDialog.requestSaveClose();else activeDialog?.close();}});
   let scheduled=false;new MutationObserver(()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;install();});}).observe(document.documentElement,{childList:true,subtree:true});
   window.addEventListener('storage',event=>{if(event.key==='postispop-supabase-session'||event.key==='pp:last-board'){activeDialog?.close();cachedBoard=null;refresh().catch(()=>{});}});
   window.addEventListener('postispop:session-change',()=>{activeDialog?.close();cachedBoard=null;refresh().catch(()=>{});});

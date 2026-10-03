@@ -33,7 +33,7 @@ jobs:
       - name: Install browser for UI verification
         run: npx playwright install --with-deps chromium
       - name: Verify editing, catalogue, encryption, offline use and responsive layout
-        run: npm run test:experience && npm run test:premium && npm run test:atelier && npm run test:protected && npm run test:offline-shell
+        run: npm run test:autosave && npm run test:experience && npm run test:premium && npm run test:atelier && npm run test:protected && npm run test:offline-shell
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload Pages artifact

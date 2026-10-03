@@ -18,7 +18,7 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
   await page.getByText('Papeles, letras y trazos',{exact:true}).click();await page.getByRole('button',{name:'Cursiva',exact:true}).click();
   const canvas=page.locator('.pp-drawing-canvas');await canvas.scrollIntoViewIfNeeded();const box=await canvas.boundingBox();
   await page.mouse.move(box.x+30,box.y+30);await page.mouse.down();await page.mouse.move(box.x+80,box.y+65,{steps:8});await page.mouse.up();
-  await page.getByRole('button',{name:'Guardar estilo y dibujo',exact:true}).click();
+  await page.waitForFunction(()=>document.querySelector('.pp-style-status')?.textContent.includes('guardados en este dispositivo'));
   await page.waitForFunction(()=>{const s=JSON.parse(localStorage.getItem('postispop-guest-board-v1'))?.notes[0]?.style;return s?.italic&&s.drawing.strokes.length===1;});
   await context.setOffline(true);await page.reload();await page.waitForSelector('.sticky-note:not([disabled])');
   assert.match(await page.locator('.sticky-note').first().innerText(),/Secreto de prueba/);await page.waitForSelector('.pp-note-sketch');
@@ -36,7 +36,7 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
   assert.equal(await page.getByLabel('Texto de la nota protegida').count(),0);
   await page.getByLabel('Contraseña',{exact:true}).fill('Una frase privada 6429');await page.getByRole('button',{name:'Abrir nota',exact:true}).click();
   await page.waitForSelector('.pp-vault-dialog.is-unlocked');assert.equal(await page.getByLabel('Texto de la nota protegida').inputValue(),'Secreto de prueba 6429');assert.equal(await page.locator('.pp-vault-drawing').count(),1);
-  await page.getByLabel('Texto de la nota protegida').fill('Secreto actualizado');await page.getByRole('button',{name:'Guardar cifrada y cerrar'}).click();await page.waitForSelector('.pp-vault-dialog',{state:'detached'});
+  await page.getByLabel('Texto de la nota protegida').fill('Secreto actualizado');await page.keyboard.press('Escape');await page.waitForSelector('.pp-vault-dialog',{state:'detached'});
   await page.reload();await page.waitForSelector('.pp-vault-locked');assert.equal(await page.evaluate(()=>JSON.stringify({...localStorage}).includes('Secreto actualizado')),false);
   await page.screenshot({path:'test-results/nota-protegida-mobile.png',fullPage:true});
   await context.setOffline(false);await page.goto('https://postispop.com/atelier.html');await page.waitForSelector('#at-grid article');
