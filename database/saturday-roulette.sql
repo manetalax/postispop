@@ -1,10 +1,5 @@
--- Apply after designs.sql and design-catalog-seed.sql. Does not activate a campaign.
+-- Apply after designs.sql and design-catalog-seed.sql. Personal period starts on first completed spin.
 begin;
-create table if not exists postispop_private.roulette_campaign (
- id boolean primary key default true check(id), starts_on date not null,
- duration_days integer not null default 60 check(duration_days=60)
-);
-revoke all on postispop_private.roulette_campaign from public,anon,authenticated;
 create table if not exists public.postispop_saturday_spins (
  user_id uuid not null references auth.users(id) on delete cascade,
  played_on date not null, result jsonb not null, created_at timestamptz not null default now(),
@@ -30,18 +25,21 @@ revoke all on function postispop_private.roulette_random(bigint) from public,ano
 create or replace function public.postispop_saturday_status() returns jsonb
 language plpgsql security definer set search_path='' as $$
 declare today date:=(now() at time zone 'Europe/Madrid')::date;
- campaign postispop_private.roulette_campaign; outcome jsonb; state text;
+ first_spin date; last_saturday date; outcome jsonb; state text;
 begin
  if auth.uid() is null then raise exception 'SESSION_REQUIRED' using errcode='28000'; end if;
- select * into campaign from postispop_private.roulette_campaign where id;
+ -- Reading status never starts the clock. A persisted first spin does.
+ select min(played_on) into first_spin from public.postispop_saturday_spins where user_id=auth.uid();
+ -- First spin is a Saturday. Day 60 is Tuesday; day 63 is the next Saturday.
+ last_saturday:=first_spin+63;
  select result into outcome from public.postispop_saturday_spins where user_id=auth.uid() and played_on=today;
- state:=case when campaign.starts_on is null then 'unconfigured'
-  when today<campaign.starts_on then 'not_started'
-  when today>=campaign.starts_on+campaign.duration_days then 'ended'
+ state:=case when first_spin is not null and today>last_saturday then 'ended'
   when extract(isodow from today)<>6 then 'not_saturday'
   when outcome is not null then 'played' else 'available' end;
- return jsonb_build_object('state',state,'result',outcome,'starts_on',campaign.starts_on,
- 'ends_before',campaign.starts_on+campaign.duration_days,'server_day',today);
+ return jsonb_build_object('state',state,'result',outcome,'starts_on',first_spin,
+ 'last_saturday',last_saturday,'ends_before',last_saturday+1,'server_day',today,
+ 'opportunity_saturdays',10,'period_started',first_spin is not null);
+
 end $$;
 create or replace function public.postispop_saturday_spin() returns jsonb
 language plpgsql security definer set search_path='' as $$

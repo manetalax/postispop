@@ -383,7 +383,7 @@ async function refreshRoulette(spin=false) {
   const data=await response.json();
   if(response.status===401){status.textContent='Inicia sesión para consultar tu tirada del sábado.';return;}
   if(!response.ok)throw new Error('UNAVAILABLE');
-  const messages={unconfigured:'La campaña aún no tiene fecha de inicio confirmada.',not_started:'La campaña comienza el '+data.starts_on+'.',ended:'La campaña de 60 días ha terminado.',not_saturday:'La tirada gratuita estará disponible el sábado.',available:'Tienes una tirada gratuita disponible.',played:data.result?.kind==='none'?'Esta tirada no ha dado premio. Ya has usado tu participación de este sábado.':'Premio recibido: '+(data.result?.title||'Consulta tu cuenta')+'.'};
+  const messages={ended:'Tu periodo de tiradas gratuitas ha terminado.',not_saturday:data.period_started?'Vuelve el sábado. Tu último sábado disponible es '+data.last_saturday+'.':'Vuelve el sábado para tu primera tirada. Tu plazo todavía no ha empezado.',available:data.period_started?'Tienes una tirada gratuita. Tu último sábado disponible es '+data.last_saturday+'.':'Tu primera tirada iniciará el plazo: tendrás diez sábados contando hoy.',played:data.result?.kind==='none'?'Esta tirada no ha dado premio. Ya has usado tu participación de este sábado.':'Premio recibido: '+(data.result?.title||'Consulta tu cuenta')+'.'};
   status.textContent=messages[data.state]||'No se pudo confirmar la disponibilidad.';
   button.disabled=data.state!=='available';
   if(spin){await loadAccount();}
