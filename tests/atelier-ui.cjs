@@ -69,7 +69,7 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
   await page.locator('#at-prize-cards').waitFor({state:'visible'});
   assert.equal(await page.locator('#at-roulette-spin').isDisabled(),true);
   await page.waitForFunction(()=>document.querySelector('#at-roulette-status').textContent.includes('Inicia sesión'));
-  assert.match(await page.locator('#at-roulette').innerText(),/60 días/);
+  assert.match(await page.locator('#at-roulette').innerText(),/primeros seis sábados/);
   await page.waitForFunction(()=>[...document.querySelectorAll('.prize-logo')].every(i=>i.complete&&i.naturalWidth>0));
   assert.equal(await page.locator('.prize-logo').count(),6);
   await page.locator('#at-prize-cards').screenshot({path:'test-results/prize-brands.png'});

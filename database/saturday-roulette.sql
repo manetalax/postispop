@@ -25,26 +25,24 @@ revoke all on function postispop_private.roulette_random(bigint) from public,ano
 create or replace function public.postispop_saturday_status() returns jsonb
 language plpgsql security definer set search_path='' as $$
 declare today date:=(now() at time zone 'Europe/Madrid')::date;
- first_spin date; last_saturday date; outcome jsonb; state text;
+ first_spin date; denominator integer; outcome jsonb; state text;
 begin
  if auth.uid() is null then raise exception 'SESSION_REQUIRED' using errcode='28000'; end if;
  -- Reading status never starts the clock. A persisted first spin does.
  select min(played_on) into first_spin from public.postispop_saturday_spins where user_id=auth.uid();
- -- First spin is a Saturday. Day 60 is Tuesday; day 63 is the next Saturday.
- last_saturday:=first_spin+63;
+ denominator:=case when first_spin is null or today<first_spin+42 then 6 else 10 end;
  select result into outcome from public.postispop_saturday_spins where user_id=auth.uid() and played_on=today;
- state:=case when first_spin is not null and today>last_saturday then 'ended'
-  when extract(isodow from today)<>6 then 'not_saturday'
+ state:=case when extract(isodow from today)<>6 then 'not_saturday'
   when outcome is not null then 'played' else 'available' end;
  return jsonb_build_object('state',state,'result',outcome,'starts_on',first_spin,
- 'last_saturday',last_saturday,'ends_before',last_saturday+1,'server_day',today,
- 'opportunity_saturdays',10,'period_started',first_spin is not null);
+ 'win_denominator',denominator,'server_day',today,
+ 'intro_saturdays',6,'period_started',first_spin is not null);
 
 end $$;
 create or replace function public.postispop_saturday_spin() returns jsonb
 language plpgsql security definer set search_path='' as $$
 declare today date:=(now() at time zone 'Europe/Madrid')::date;
- status jsonb; outcome jsonb; chosen public.postispop_designs; candidates text[]; prize_ref text;
+ status jsonb; outcome jsonb; chosen public.postispop_designs; candidates text[]; prize_ref text; draw bigint; denominator integer;
 begin
  if auth.uid() is null then raise exception 'SESSION_REQUIRED' using errcode='28000'; end if;
  -- Serialize simultaneous attempts for this account; reload returns the stored result.
@@ -53,10 +51,15 @@ begin
  if status->>'state'='played' then return status; end if;
  if status->>'state'<>'available' then raise exception 'ROULETTE_NOT_AVAILABLE' using errcode='42501'; end if;
  select array_agg(d.id order by d.id) into candidates from public.postispop_designs d
- where d.category<>'Países' and d.id not like 'country-%' and not public.postispop_can_design(d.id);
+ where ((status->>'win_denominator')::integer=10 or (d.category<>'Países' and d.id not like 'country-%')) and not public.postispop_can_design(d.id);
  if coalesce(cardinality(candidates),0)=0 then raise exception 'NO_UNOWNED_PRIZES' using errcode='42501'; end if;
  outcome:=jsonb_build_object('kind','none');
- if postispop_private.roulette_random(6)=0 then
+ denominator:=(status->>'win_denominator')::integer;
+ -- 120 billion is divisible by 6, 10 and 8 billion. Card is inside total win probability.
+ draw:=postispop_private.roulette_random(120000000000);
+ if draw<15 then
+  outcome:=jsonb_build_object('kind','gift_card','title','Tarjeta o saldo digital de 100 €','value_cents',10000,'delivery_status','pending_claim');
+ elsif draw<120000000000/denominator then
   if postispop_private.roulette_random(10000)=0 and not public.postispop_has_license('premium') then
    prize_ref:='saturday:'||auth.uid()::text||':'||today::text;
    insert into public.postispop_licenses(user_id,subject,payment_reference) values(auth.uid(),'premium',prize_ref)

@@ -383,7 +383,7 @@ async function refreshRoulette(spin=false) {
   const data=await response.json();
   if(response.status===401){status.textContent='Inicia sesión para consultar tu tirada del sábado.';return;}
   if(!response.ok)throw new Error('UNAVAILABLE');
-  const messages={ended:'Tu periodo de tiradas gratuitas ha terminado.',not_saturday:data.period_started?'Vuelve el sábado. Tu último sábado disponible es '+data.last_saturday+'.':'Vuelve el sábado para tu primera tirada. Tu plazo todavía no ha empezado.',available:data.period_started?'Tienes una tirada gratuita. Tu último sábado disponible es '+data.last_saturday+'.':'Tu primera tirada iniciará el plazo: tendrás diez sábados contando hoy.',played:data.result?.kind==='none'?'Esta tirada no ha dado premio. Ya has usado tu participación de este sábado.':'Premio recibido: '+(data.result?.title||'Consulta tu cuenta')+'.'};
+  const messages={not_saturday:data.period_started?'Vuelve el sábado. Tu probabilidad actual es 1 entre '+data.win_denominator+'.':'Vuelve el sábado para tu primera tirada. Tu periodo inicial todavía no ha empezado.',available:'Tienes una tirada gratuita. Probabilidad de premio: 1 entre '+data.win_denominator+'.',played:data.result?.kind==='none'?'Esta tirada no ha dado premio. Ya has usado tu participación de este sábado.':data.result?.kind==='gift_card'?'Has ganado una tarjeta de 100 €. La entrega está pendiente de tramitar.':'Premio recibido: '+(data.result?.title||'Consulta tu cuenta')+'.'};
   status.textContent=messages[data.state]||'No se pudo confirmar la disponibilidad.';
   button.disabled=data.state!=='available';
   if(spin){await loadAccount();}

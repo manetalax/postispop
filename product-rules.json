@@ -207,7 +207,7 @@
     "guarantee_description": "Each purchased five-spin pack guarantees at least one reward: if all five spins yield no prize, grant one random consolation reward after the fifth spin. Individual spins may yield nothing."
   },
   "saturday_roulette": {
-    "status": "revised_rules_pending_code_alignment",
+    "status": "updated_local_sql_and_ui_not_migrated",
     "day": "Saturday",
     "free_spins_per_account_per_saturday": 1,
     "independent_of_streak_rewards": true,
@@ -241,10 +241,16 @@
     },
     "later_win_probability": {
       "numerator": 1,
-      "denominator": 12
+      "denominator": 10
     },
-    "probability_change_after_days": null,
-    "probability_change_status": "User said treinta y tantos; exact day needs clarification"
+    "initial_saturdays": 6,
+    "initial_period_calendar_days": 42,
+    "later_prizes_include_countries": true,
+    "valuable_prize_probability": {
+      "numerator": 1,
+      "denominator": 8000000000,
+      "scope": "each_spin_both_phases_included_in_total_win_probability"
+    }
   },
   "audit_20261003": {
     "scope": "Partial reconciliation of recovered agreements against current local code; not a complete audit",
@@ -266,7 +272,7 @@
     "reporting_rule": "Separate recorded requirement, local implementation, checked behavior and deployed behavior"
   },
   "saturday_reminder_email": {
-    "status": "template_requires_update_to_lifetime_rules_sender_not_implemented",
+    "status": "template_updated_sender_not_implemented",
     "schedule": "Saturday",
     "timezone": "Europe/Madrid",
     "audience": "registered_accounts_with_email_reminders_enabled_and_free_spin_available",
