@@ -9,12 +9,13 @@ const notice=(message)=>{
   node.textContent=message;
 };
 function update() {
-  const header=document.querySelector('.app-header');
+  const hydrated=Boolean(document.querySelector('.board-frame:not(.is-loading) .sticky-note:not([disabled])[data-note-id]'));
+  const header=hydrated?document.querySelector('.app-header'):null;
   if(header&&!header.querySelector('.pp-arcade-nav')){
     const nav=document.createElement('nav');nav.className='pp-arcade-nav';nav.setAttribute('aria-label','Explorar');
     for(const [label,href] of [['✦ Premios','/premios.html'],['Tienda','/atelier.html'],['? Ayuda','/ayuda.html']]){const link=document.createElement('a');link.textContent=label;link.href=href;nav.append(link);}header.append(nav);
   }
-  document.querySelector('.onboarding-card .onboarding-heading button')?.click();
+  if(hydrated)document.querySelector('.onboarding-card .onboarding-heading button')?.click();
 
   // The mobile layout hides the text inside this icon button.
   document.querySelectorAll('.header-share').forEach(button=>{
@@ -37,7 +38,7 @@ function update() {
     }
   });
   initBoardTools();
-  const frame=document.querySelector('.board-frame');if(frame){const top=frame.getBoundingClientRect().top+window.scrollY;const height=Math.max(240,Math.floor(window.innerHeight-top-14))+'px';if(frame.style.getPropertyValue('--pp-board-height')!==height)frame.style.setProperty('--pp-board-height',height);}
+  const frame=document.querySelector('.board-frame');if(frame&&hydrated){const top=frame.getBoundingClientRect().top+window.scrollY;const height=Math.max(240,Math.floor(window.innerHeight-top-14))+'px';if(frame.style.getPropertyValue('--pp-board-height')!==height)frame.style.setProperty('--pp-board-height',height);}
 
   const installButton=document.querySelector('[data-experience="install"]');
   if(installButton)installButton.hidden=!installPrompt;
