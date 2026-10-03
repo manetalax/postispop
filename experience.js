@@ -37,6 +37,8 @@ function update() {
     }
   });
   initBoardTools();
+  const frame=document.querySelector('.board-frame');if(frame){const top=frame.getBoundingClientRect().top+window.scrollY;const height=Math.max(240,Math.floor(window.innerHeight-top-14))+'px';if(frame.style.getPropertyValue('--pp-board-height')!==height)frame.style.setProperty('--pp-board-height',height);}
+
   const installButton=document.querySelector('[data-experience="install"]');
   if(installButton)installButton.hidden=!installPrompt;
 }
@@ -72,3 +74,5 @@ new MutationObserver(()=>{if(scheduled)return;scheduled=true;requestAnimationFra
 recordVisit();update();
 
 document.addEventListener('click',event=>{const button=event.target.closest('button');if(button?.textContent.trim()==='Cómo funciona'){event.preventDefault();event.stopImmediatePropagation();location.href='/ayuda.html';}},true);
+
+window.addEventListener('resize',update);
