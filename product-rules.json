@@ -293,5 +293,40 @@
     ],
     "send_time": "not_yet_selected",
     "duration": "indefinite_until_unsubscribed"
+  },
+  "special_prize_pool": {
+    "status": "expanded_requirements_pending_server_selection_and_fulfillment",
+    "combined_probability": {
+      "numerator": 1,
+      "denominator": 8000000000,
+      "scope": "each_spin_all_special_prizes_combined"
+    },
+    "prizes": [
+      {
+        "type": "gift_card",
+        "value_cents": 10000,
+        "currency": "EUR",
+        "brands": [
+          "Amazon",
+          "Google Play",
+          "Apple",
+          "Xbox",
+          "PlayStation",
+          "Fortnite"
+        ]
+      },
+      {
+        "type": "iphone",
+        "generation": "latest",
+        "model_and_storage": "pending"
+      },
+      {
+        "type": "mac",
+        "generation": "latest",
+        "form_factor_model_and_configuration": "pending"
+      }
+    ],
+    "selection_weights": "pending",
+    "physical_delivery": "pending"
   }
 }
