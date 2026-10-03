@@ -62,7 +62,12 @@
   },
   "billing": {
     "subscription_implementation_status": "pending",
-    "subscription_price_and_period": null,
+    "subscription_price_and_period": {
+      "currency": "EUR",
+      "monthly_cents": 295,
+      "annual_cents": 995,
+      "scope": "Full access while subscription is active"
+    },
     "existing_one_time_products_are_not_subscription_terms": true,
     "required_validation": [
       "successful test payment",
@@ -73,7 +78,11 @@
       "entitlement recovery",
       "expiry and renewal",
       "refund behavior"
-    ]
+    ],
+    "payment_provider": "Stripe",
+    "payment_setup_status": "deferred_by_user",
+    "payment_setup_destination": "A different, more secure account chosen by the user",
+    "current_session_scope": "Prepare website and display agreed offers; do not configure Stripe products, credentials, webhooks or activate charges in this session"
   },
   "downloads": {
     "implementation_phase": "after website refinement",
@@ -137,6 +146,6 @@
     "charge_trigger": "Explicit checkout confirmation; adding to cart never charges",
     "existing_owned_items": "Exclude from payable cart to prevent duplicate purchases",
     "premium_note_capacity": "Separate existing requirement; not changed by this cart correction",
-    "payment_activation": "not_active"
+    "payment_activation": "deferred_by_user_to_other_account"
   }
 }
