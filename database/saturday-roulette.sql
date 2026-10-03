@@ -38,11 +38,12 @@ begin
  'win_denominator',denominator,'server_day',today,
  'intro_saturdays',6,'period_started',first_spin is not null);
 
+
 end $$;
 create or replace function public.postispop_saturday_spin() returns jsonb
 language plpgsql security definer set search_path='' as $$
 declare today date:=(now() at time zone 'Europe/Madrid')::date;
- status jsonb; outcome jsonb; chosen public.postispop_designs; candidates text[]; prize_ref text; draw bigint; denominator integer;
+ status jsonb; outcome jsonb; chosen public.postispop_designs; candidates text[]; prize_ref text; draw bigint; denominator integer; gift_brand text;
 begin
  if auth.uid() is null then raise exception 'SESSION_REQUIRED' using errcode='28000'; end if;
  -- Serialize simultaneous attempts for this account; reload returns the stored result.
@@ -54,10 +55,11 @@ begin
  where ((status->>'win_denominator')::integer=10 or (d.category<>'Países' and d.id not like 'country-%')) and not public.postispop_can_design(d.id);
  outcome:=jsonb_build_object('kind','none');
  denominator:=(status->>'win_denominator')::integer;
- -- 120 billion is divisible by 6, 10 and 8 billion. Card is inside total win probability.
+ -- Each of six brands occupies 1/100000 of the draw; cards are inside total win probability.
  draw:=postispop_private.roulette_random(120000000000);
- if draw<15 then
-  outcome:=jsonb_build_object('kind','gift_card','title','Tarjeta o saldo digital de 100 €','value_cents',10000,'delivery_status','pending_claim');
+ if draw<7200000 then
+  gift_brand:=(array['Amazon','Google Play','Apple','Xbox','PlayStation','Fortnite'])[1+(draw/1200000)::integer];
+  outcome:=jsonb_build_object('kind','gift_card','title',gift_brand||' · 100 €','brand',gift_brand,'value_cents',10000,'delivery_status','pending_claim');
  elsif draw<120000000000/denominator then
   if postispop_private.roulette_random(10000)=0 and not public.postispop_has_license('premium') then
    prize_ref:='saturday:'||auth.uid()::text||':'||today::text;
@@ -95,15 +97,16 @@ drop policy if exists gift_claim_own on public.postispop_gift_claims;
 create policy gift_claim_own on public.postispop_gift_claims for select to authenticated using(user_id=(select auth.uid()));
 create or replace function public.postispop_claim_gift(p_day date,p_name text,p_email text,p_brand text) returns jsonb
 language plpgsql security definer set search_path='' as $$
-declare claim public.postispop_gift_claims;
+declare claim public.postispop_gift_claims; awarded_brand text;
 begin
  if auth.uid() is null then raise exception 'SESSION_REQUIRED' using errcode='28000'; end if;
  if length(trim(p_name)) not between 2 and 120 or length(p_email)>254
  or p_email !~ '^[^[:space:]@]+@[^[:space:]@]+[.][^[:space:]@]+$'
  or p_brand not in('Amazon','Google Play','Apple','Xbox','PlayStation','Fortnite')
  or p_name is null or p_email is null or p_brand is null then raise exception 'INVALID_CLAIM'; end if;
- perform 1 from public.postispop_saturday_spins where user_id=auth.uid() and played_on=p_day and result->>'kind'='gift_card' for update;
+ select result->>'brand' into awarded_brand from public.postispop_saturday_spins where user_id=auth.uid() and played_on=p_day and result->>'kind'='gift_card' for update;
  if not found then raise exception 'PRIZE_REQUIRED' using errcode='42501'; end if;
+ if awarded_brand is not null and awarded_brand<>p_brand then raise exception 'PRIZE_BRAND_MISMATCH' using errcode='42501'; end if;
  insert into public.postispop_gift_claims(user_id,played_on,full_name,contact_email,brand)
  values(auth.uid(),p_day,trim(p_name),trim(p_email),p_brand) on conflict do nothing;
  select * into claim from public.postispop_gift_claims where user_id=auth.uid() and played_on=p_day;
