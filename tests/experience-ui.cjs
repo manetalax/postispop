@@ -26,7 +26,10 @@ let observedErrors=[];
   assert.equal(await page.locator('h1').count(),1);
   assert.match(await page.title(),/Bloc de notas online gratis/);
   assert.match(await page.locator('.connection').innerText(),/dispositivo/);
-  await page.getByRole('button',{name:'Probar sin registro',exact:true}).click();
+  assert.equal(await page.locator('.pp-learn').isVisible(),false);
+  assert.equal(await page.locator('[aria-label="Promoción de estreno"]').isVisible(),false);
+  assert.equal(await page.getByRole('link',{name:'? Ayuda',exact:true}).getAttribute('href'),'/ayuda.html');
+  await page.locator('.sticky-note').first().click();
   await page.locator('textarea').fill('Mi nota persistente #estudio');
   await page.waitForFunction(()=>JSON.parse(localStorage.getItem('postispop-guest-board-v1'))?.notes[0]?.text==='Mi nota persistente #estudio');
   // A real offline flag used to prevent guest saves in the recovered component.
