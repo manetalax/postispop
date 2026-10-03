@@ -36,7 +36,6 @@ export function drawStrokes(ctx,drawing,width,height,background) {
     ctx.save();ctx.strokeStyle=ink;ctx.fillStyle=ink;
     ctx.lineCap=stroke.instrument==='marker'?'square':'round';ctx.lineJoin='round';ctx.globalAlpha=opacity[stroke.instrument]??1;
     if(['stamp','spray','charcoal','toothpaste'].includes(stroke.instrument)){drawMaterial(ctx,stroke,width,height,ink);ctx.restore();continue;}
-    if(stroke.instrument==='chalk')ctx.setLineDash([base*.6,base*.35]);
     if(pts.length===1){ctx.beginPath();ctx.arc(pts[0].x*width,pts[0].y*height,base/2,0,Math.PI*2);ctx.fill();}
     for(let i=1;i<pts.length;i++) {
       const a=pts[i-1],b=pts[i],pressure=(a.p+b.p)/2;
@@ -62,7 +61,14 @@ export function contrastRatio(a,b) {
 export function readableInk(ink,background) {
   if(!color(background))return ink;
   if(contrastRatio(ink,background)>=4.5)return ink;
-  return contrastRatio('#151515',background)>=contrastRatio('#ffffff',background)?'#151515':'#ffffff';
+  const target=contrastRatio('#151515',background)>=contrastRatio('#ffffff',background)?'#151515':'#ffffff';
+  const rgb=hex=>hex.slice(1).match(/../g).map(v=>parseInt(v,16));
+  const from=rgb(ink),to=rgb(target);
+  for(let step=1;step<=20;step++){
+    const adjusted='#'+from.map((v,i)=>Math.round(v+(to[i]-v)*step/20).toString(16).padStart(2,'0')).join('');
+    if(contrastRatio(adjusted,background)>=4.5)return adjusted;
+  }
+  return target;
 }
 export function paperColor(id) {
   return {papyrus:'#eacb92',washi:'#f5f0df',blueprint:'#e4f0f5',prescription:'#f4fbf8',shift:'#fcf8e9',study:'#fbf7ef'}[id]||'#fffaf0';
@@ -100,12 +106,12 @@ function drawMaterial(ctx,stroke,width,height,ink) {
   }
   ctx.fillStyle=ink;
   for(const p of samples){
-    const spray=stroke.instrument==='spray',stamp=stroke.instrument==='stamp';
-    const radius=base*(spray?1.35:.5)*(.7+p.p*.6),count=spray?14:stamp?8:12;
+    const spray=stroke.instrument==='spray',stamp=stroke.instrument==='stamp',chalk=stroke.instrument==='chalk';
+    const radius=base*(spray?1.35:.5)*(.7+p.p*.6),count=spray?14:stamp?8:chalk?18:12;
     for(let j=0;j<count;j++){
       const angle=random()*Math.PI*2,r=Math.sqrt(random())*radius;
       if(stamp&&random()<.32)continue;
-      dot(p.x+Math.cos(angle)*r,p.y+Math.sin(angle)*r,base*(spray?.025:stamp?.075:.055),spray?.12+random()*.25:stamp?.65+random()*.35:.18+random()*.4);
+      dot(p.x+Math.cos(angle)*r,p.y+Math.sin(angle)*r,base*(spray?.025:stamp?.075:chalk?.045:.055),spray?.12+random()*.25:stamp?.65+random()*.35:.18+random()*.4);
     }
   }
 }
