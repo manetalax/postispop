@@ -74,20 +74,9 @@ function applyPack() {
 }
 async function shop(focusSlug) {
   track('pricing_viewed');
-  showDialog('Papelería · Tienda PostisPop','<p role="status">Cargando productos…</p>');
-  const current=dialog;
-  try {
-    const results=await Promise.all([api('commerce/catalog'),sync()]);
-    ({products,checkoutReady}=results[0]);if(dialog!==current)return;
-    const items=focusSlug?[...products].sort((a,b)=>(b.slug===focusSlug)-(a.slug===focusSlug)):products;
-    current.querySelector('p').outerHTML=`<p class="pp-trial">${escape(trialText())}</p><section class="pp-products" aria-label="Productos">${items.map(p=>{
-      const has=owned(p.slug),clock=p.slug==='reloj-recordatorios';
-      let action=has?(p.slug.startsWith('pack-')?`<button class="pp-primary" data-action="apply" data-slug="${escape(p.slug)}">Aplicar estilo</button>`:`<button class="pp-primary" data-action="${clock?'alarms':'pro'}">Usar mejora</button>`):!actor?.registered?'<button class="pp-primary" data-action="register">Crear cuenta / Iniciar sesión</button>':checkoutReady?`<button class="pp-primary" data-action="buy" data-slug="${escape(p.slug)}">Comprar · ${price(p)}</button>`:'<button class="pp-primary" disabled>Compra próximamente</button>';
-      if(clock&&active()&&!has)action='<button class="pp-primary" data-action="alarms">Usar reloj gratis</button>'+action;
-      return `<article class="pp-product"><span class="pp-product-icon" aria-hidden="true">${icons[p.slug]||'🛍️'}</span><h3>${escape(p.title)}</h3><p>${escape(descriptions[p.slug]||p.description)}</p><strong>${has?'Activado en tu cuenta':price(p)}</strong><small>${has?'Disponible al iniciar sesión': 'Pago único · Sin suscripción'}</small>${action}</article>`;
-    }).join('')}</section><a class="pp-primary" href="/atelier.html">Colecciones, papeles y herramientas</a><a class="pp-secondary" href="/tienda/">Ver mejoras clásicas</a>${!checkoutReady?'<p class="pp-muted">Estamos preparando la compra con activación automática. Todavía no se realizan cobros desde esta tienda.</p>':''}<p class="pp-muted">Las alarmas necesitan PostisPop abierto. El navegador puede retrasarlas si el dispositivo está suspendido. No sustituyen avisos críticos.</p>`;
-  } catch(error) {if(dialog===current)current.querySelector('p').textContent=errorText(error);}
+  location.assign('/atelier.html' + (focusSlug === 'reloj-recordatorios' ? '#planes' : ''));
 }
+
 async function clock() {
   try {await sync();if(active())await alarmDialog();else await shop('reloj-recordatorios');} catch(e){message(errorText(e));}
 }

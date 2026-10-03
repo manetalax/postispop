@@ -35,6 +35,7 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
   await page.locator('#at-search').fill(checkedCountry.title);await page.getByRole('button',{name:'Ver '+checkedCountry.title,exact:true}).click();
   assert.match(await page.locator('.at-preview').innerText(),checkedCountry.edition==='foundation'?/Edición en desarrollo/:/Edición cultural/);
   await page.keyboard.press('Escape');
+  await page.locator('.at-shop-nav a[href="#herramientas"]').click();
   await page.getByRole('button',{name:'Explorar Tu trazo, tu estilo',exact:true}).click();assert.equal(await page.locator('.at-preview .at-stroke-sample').count(),instruments.length);await page.keyboard.press('Escape');
   await page.getByRole('button',{name:'Explorar Letras con personalidad',exact:true}).click();
   const beforeTrial=await page.evaluate(()=>JSON.stringify({...localStorage}));
@@ -47,7 +48,17 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
   assert.equal(await page.getByLabel('Texto de prueba',{exact:true}).inputValue(),'');
   await page.evaluate(()=>document.fonts.ready);assert.equal(await page.locator('.at-preview .at-font-sample').count(),6);
   assert.equal(await page.evaluate(()=>document.fonts.check('16px "PP Manuscrita"')),true);await page.keyboard.press('Escape');
+  await page.locator('.at-shop-nav a[href="#colecciones"]').click();
   await page.getByRole('button',{name:'Limpiar filtros',exact:true}).click();
+  await page.locator('.at-cart-add').first().click();
+  await page.locator('#at-cart-link').click();
+  assert.match(await page.locator('#at-cart-total').innerText(),/0,95/);
+  await page.locator('#colecciones').waitFor({state:'hidden'});
+  await page.locator('#at-cart-items button').click();
+  assert.match(await page.locator('#at-cart-total').innerText(),/0,00/);
+  await page.locator('.at-shop-nav a[href="#planes"]').click();
+  assert.match(await page.locator('#planes').innerText(),/2,95 € \/ mes/);
+  await page.locator('.at-shop-nav a[href="#colecciones"]').click();
   await fs.mkdir('test-results',{recursive:true});
   for(const width of [360,390,768,1440]){await page.setViewportSize({width,height:1000});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,'Root overflow at '+width);}
   await page.screenshot({path:'test-results/atelier-verified-desktop.png',fullPage:false});

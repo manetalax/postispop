@@ -35,6 +35,38 @@ async function api(endpoint, payload) {
   } finally { clearTimeout(timer); }
 }
 
+const cart = new Map();
+const euros = cents => new Intl.NumberFormat('es-ES', {style:'currency',currency:'EUR'}).format(cents/100);
+function renderCart() {
+  const list = $('#at-cart-items');
+  list.replaceChildren();
+  for (const [id, item] of cart) {
+    const row=node('article','at-cart-row');
+    const remove=node('button','','Quitar '+item.title);
+    remove.type='button'; remove.onclick=()=>{cart.delete(id);renderCart();};
+    row.append(node('span','',item.title+' · '+euros(item.cents)),remove);list.append(row);
+  }
+  if(!cart.size)list.append(node('p','','Tu carrito está vacío. Explora las pizarras y los instrumentos para elegir.'));
+  $('#at-cart-total').textContent='Total: '+euros([...cart.values()].reduce((sum,item)=>sum+item.cents,0));
+  $('#at-cart-link').textContent='Carrito · '+cart.size;
+}
+function cartButton(id,title) {
+  const button=node('button','at-cart-add',cart.has(id)?'En el carrito':'Añadir · 0,95 €');
+  button.type='button';
+  button.onclick=()=>{cart.set(id,{title,cents:95});renderCart();button.textContent='En el carrito';};
+  return button;
+}
+function shopSection() {
+  const section=location.hash.slice(1)||'colecciones';
+  const groups={colecciones:['#colecciones','.at-pack-section'],herramientas:['#herramientas'],premios:['#premios'],planes:['#planes'],carrito:['#carrito']};
+  const selected=groups[section]?section:'colecciones';
+  for(const [id,selectors] of Object.entries(groups))for(const selector of selectors)$(selector).hidden=id!==selected;
+  for(const link of document.querySelectorAll('.at-shop-nav a')) {
+    if(link.hash==='#'+selected)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');
+  }
+}
+window.addEventListener('hashchange',shopSection);
+
 const owns = design => Boolean(rights?.owner || rights?.premium || rights?.unlocked?.includes(design.id));
 
 function boardImage(design, className = '') {
@@ -82,6 +114,7 @@ function renderGrid() {
     link.setAttribute('aria-label', 'Ampliar ' + design.title);
     link.addEventListener('click', () => showPreview(design));
     card.append(preview, heading, node('p', '', design.details.join(' · ')), node('span','at-edition',design.edition==='crafted'?'Composición y papelería propias':'Edición inicial'), link);
+    if(!owns(design)&&design.tier!=='reward')card.append(cartButton('design:'+design.id,design.title));
     fragment.append(card);
   }
   if (!matches.length) fragment.append(node('p', 'at-empty', access === 'owned' && !signedIn
@@ -265,7 +298,9 @@ function toolPreview(kind) {
     canvas.setAttribute('role','img'); canvas.setAttribute('aria-label',`Muestra de trazo: ${pen.name}`);
     const points=Array.from({length:95},(_,n)=>({x:.05+n/105,y:.5+Math.sin(n/12)*.29,p:.15+.75*(1+Math.sin(n/15))/2}));
     drawStrokes(canvas.getContext('2d'),{strokes:[{instrument:pen.id,color:'#304b3e',width:pen.width,points}]},640,160);
-    item.append(node('h3', '', pen.name), canvas); grid.append(item);
+    item.append(node('h3', '', pen.name), canvas);
+    if(!rights?.owner&&!rights?.premium&&!rights?.unlocked?.includes('pens'))item.append(cartButton('pen:'+pen.id,pen.name));
+    grid.append(item);
   }
   if (kind === 'papers') for (const paper of papers) {
     const item = node('article', 'at-sample');
@@ -337,3 +372,6 @@ $('#at-more').addEventListener('click', () => { const firstNew=visibleCount; vis
 $('#at-reset').addEventListener('click',()=>{for(const id of ['#at-search','#at-category','#at-access','#at-pack','#at-edition'])$(id).value='';visibleCount=pageSize;renderGrid();$('#at-search').focus();});
 $('[data-at-account]').addEventListener('click', () => { location.href = '/?account=1'; });
 renderProgress(); renderGrid(); renderTools(); loadAccount();
+
+renderCart();
+shopSection();
