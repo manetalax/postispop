@@ -26,3 +26,5 @@
 .at-pack-section{order:2}.at-rewards{margin-block:30px}
 #atelier{display:flex;flex-direction:column}#colecciones{order:1;padding-top:32px;width:100%}.at-footer{margin-top:32px}
 @media(max-width:600px){.at-shop-intro,.at-shop-panel{padding:24px 18px}.at-shop-nav{padding:10px 12px;gap:4px}.at-shop-nav a{padding:9px 11px;font-size:13px}.at-plan-grid{grid-template-columns:1fr}.at-cart-row{align-items:flex-start;flex-direction:column}}
+
+.at-gift-brands{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:24px 0}.at-gift-brands article{background:white;border:1px solid var(--at-line);padding:20px;border-radius:12px;text-align:center}.at-gift-brands span{font-size:32px}.at-gift-brands h3{font:600 17px system-ui;margin:10px 0}.at-gift-brands+p{font-size:15px}@media(max-width:600px){.at-gift-brands{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}

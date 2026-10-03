@@ -175,7 +175,16 @@
         "denominator": 8000000000,
         "scope": "each_spin_unconditional"
       },
-      "included_in_total_win_probability": true
+      "included_in_total_win_probability": true,
+      "brands": [
+        "Amazon",
+        "Google Play",
+        "Apple",
+        "Xbox",
+        "PlayStation",
+        "Fortnite"
+      ],
+      "fulfillment_status": "Planned; verify regional denominations and formats before enabling"
     },
     "five_spins_guarantee_prize": true,
     "payments": "deferred_to_other_account",

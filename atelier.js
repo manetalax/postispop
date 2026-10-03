@@ -58,7 +58,7 @@ function cartButton(id,title) {
 }
 function shopSection() {
   const section=location.hash.slice(1)||'colecciones';
-  const groups={colecciones:['#colecciones','.at-pack-section'],herramientas:['#herramientas'],premios:['#premios'],planes:['#planes'],carrito:['#carrito']};
+  const groups={colecciones:['#colecciones','.at-pack-section'],herramientas:['#herramientas'],premios:['#premios','#at-prize-cards'],planes:['#planes'],carrito:['#carrito']};
   const selected=groups[section]?section:'colecciones';
   for(const [id,selectors] of Object.entries(groups))for(const selector of selectors)$(selector).hidden=id!==selected;
   for(const link of document.querySelectorAll('.at-shop-nav a')) {
