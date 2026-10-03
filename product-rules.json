@@ -129,10 +129,14 @@
     "status": "pending_implementation",
     "currency": "EUR",
     "individual_upgrade_price_cents": 100,
-    "full_bundle_threshold_cents": 1000,
-    "below_threshold": "Purchase only selected upgrades",
-    "bundle_scope": "Needs distinction from Premium note capacity and subscription",
-    "cumulative_previous_purchases": "not_specified",
+    "pricing_status": "Previously proposed 1 EUR per upgrade; not active in payment provider",
+    "selection": "User chooses individual upgrades",
+    "unlock_scope": "Only successfully paid selected products",
+    "full_bundle_threshold_cents": null,
+    "automatic_full_unlock": false,
+    "charge_trigger": "Explicit checkout confirmation; adding to cart never charges",
+    "existing_owned_items": "Exclude from payable cart to prevent duplicate purchases",
+    "premium_note_capacity": "Separate existing requirement; not changed by this cart correction",
     "payment_activation": "not_active"
   }
 }
