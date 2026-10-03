@@ -13,7 +13,7 @@ revoke all on postispop_private.owner_account from public,anon,authenticated;
 -- Never grant ownership using a browser parameter, metadata or an unverified email.
 create or replace function public.postispop_is_owner() returns boolean
 language sql stable security definer set search_path='' as $$
-  select exists(select 1 from postispop_private.owner_account a join auth.users u on u.id=a.user_id where a.user_id=auth.uid() and u.email_confirmed_at is not null and lower(u.email)='manetal@gmail.com');
+  select exists(select 1 from postispop_private.owner_account a join auth.users u on u.id=a.user_id where a.user_id=auth.uid() and u.email_confirmed_at is not null and lower(u.email)='manetala@gmail.com');
 $$;
 revoke all on function public.postispop_is_owner() from public,anon;
 grant execute on function public.postispop_is_owner() to authenticated;
@@ -21,7 +21,7 @@ grant execute on function public.postispop_is_owner() to authenticated;
 create or replace function postispop_private.bind_owner(verified_user_id uuid) returns void
 language plpgsql security definer set search_path='' as $$
 begin
- if not exists(select 1 from auth.users where id=verified_user_id and lower(email)='manetal@gmail.com' and email_confirmed_at is not null) then raise exception 'VERIFIED_OWNER_REQUIRED'; end if;
+ if not exists(select 1 from auth.users where id=verified_user_id and lower(email)='manetala@gmail.com' and email_confirmed_at is not null) then raise exception 'VERIFIED_OWNER_REQUIRED'; end if;
  if exists(select 1 from postispop_private.owner_account where user_id<>verified_user_id) then raise exception 'OWNER_ALREADY_BOUND'; end if;
  insert into postispop_private.owner_account(singleton,user_id) values(true,verified_user_id) on conflict(singleton) do nothing;
 end $$;
