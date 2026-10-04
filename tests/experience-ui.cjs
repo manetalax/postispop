@@ -10,16 +10,17 @@ let observedErrors=[];
   const browser=await chromium.launch(browserOptions());
   // This suite serves only staged files through route(); workers can bypass routing and hit production.
   const context=await browser.newContext({locale:'pt-BR',viewport:{width:390,height:844},acceptDownloads:true,serviceWorkers:'block'});
-  const errors=observedErrors,missing=[];
+  const errors=observedErrors,missing=[],metricsRequests=[];
   await context.route('**/*',async route=>{
     const url=new URL(route.request().url());
+    if(url.pathname==='/rest/v1/rpc/postispop_record_usage'){metricsRequests.push(route.request().postDataJSON());return route.fulfill({status:200,contentType:'application/json',body:'{"accepted":true}'});}
     if(url.hostname!=='postispop.com')return route.abort('internetdisconnected');
     let name=decodeURIComponent(url.pathname);if(name.endsWith('/'))name+='index.html';
     const file=path.resolve(root,'.'+name);if(!file.startsWith(root+path.sep))return route.abort();
     const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.webmanifest':'application/manifest+json','.wasm':'application/wasm','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.avif':'image/avif','.ico':'image/x-icon','.woff':'font/woff'};
     try{await route.fulfill({status:200,headers:{'x-postispop-test-source':'staged'},contentType:types[path.extname(file)]||'application/octet-stream',body:await fs.readFile(file)});}catch{missing.push(name);await route.fulfill({status:404,body:'Missing staged asset'});}
   });
-  await context.addInitScript(()=>localStorage.setItem('pp:analytics-consent-v2','no'));
+  await context.addInitScript(()=>{if(localStorage.getItem('pp:analytics-consent-v2')===null)localStorage.setItem('pp:analytics-consent-v2','no');});
   const page=reviewPage=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
   await fs.mkdir(results,{recursive:true});
   await page.goto('https://postispop.com/');await page.waitForSelector('.sticky-note:not([disabled])');await page.waitForSelector('.pp-board-options');
@@ -27,6 +28,19 @@ let observedErrors=[];
   assert.equal(await page.locator('h1').count(),1);
   assert.match(await page.title(),/Bloc de notas online gratis/);
   assert.match(await page.locator('.connection').innerText(),/dispositivo/);
+  assert.equal(await page.locator('h1').isVisible(),true,'The main heading is visible');
+  assert.equal(await page.locator('.value-proposition').isVisible(),true);
+  await page.locator('.onboarding-card').waitFor({state:'visible'});
+  await page.screenshot({path:path.join(results,'welcome-mobile.png'),fullPage:true});
+  assert.equal(metricsRequests.length,0,'Rejected analytics sends no events');
+  await page.getByRole('button',{name:'Preferencias de medición',exact:true}).click();
+  await page.getByRole('button',{name:'Aceptar medición',exact:true}).click();
+  await page.waitForTimeout(100);
+  assert.ok(metricsRequests.some(r=>r.p_event.event==='page_view'),'Consent starts measurement');
+  await page.locator('.onboarding-card .primary').click();
+  await page.locator('textarea').waitFor({state:'visible'});
+  await page.reload();await page.waitForSelector('.pp-board-options');
+  assert.equal(await page.locator('.onboarding-card').count(),0,'Starting the guide persists dismissal');
   assert.equal(await page.locator('.pp-learn').isVisible(),false);
   assert.equal(await page.locator('[aria-label="Promoción de estreno"]').isVisible(),false);
   assert.equal(await page.getByRole('link',{name:'? Ayuda',exact:true}).getAttribute('href'),'/ayuda.html');
@@ -46,6 +60,15 @@ let observedErrors=[];
   await page.locator('.sticky-note').first().click();
   await page.locator('textarea').fill('Mi nota persistente #estudio');
   await page.waitForFunction(()=>JSON.parse(localStorage.getItem('postispop-guest-board-v1'))?.notes[0]?.text==='Mi nota persistente #estudio');
+  await page.waitForTimeout(100);
+  assert.ok(metricsRequests.some(r=>r.p_event.event==='note_edit'),'Successful note save records the real endpoint');
+  assert.ok(!JSON.stringify(metricsRequests).includes('Mi nota persistente'),'Measurement excludes note content');
+  await page.keyboard.press('Escape');
+  await page.getByRole('button',{name:'Preferencias de medición',exact:true}).click();
+  await page.getByRole('button',{name:'Rechazar',exact:true}).click();
+  const countAfterRejection=metricsRequests.length;
+  await page.locator('.sticky-note').first().click();
+  assert.equal(metricsRequests.length,countAfterRejection,'Revoking consent stops measurement');
   // A real offline flag used to prevent guest saves in the recovered component.
   await context.setOffline(true);
   await page.locator('textarea').fill('Nota guardada sin Internet #estudio');
