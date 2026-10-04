@@ -30,9 +30,17 @@ let observedErrors=[];
   assert.match(await page.locator('.connection').innerText(),/dispositivo/);
   assert.equal(await page.locator('h1').isVisible(),true,'The main heading is visible');
   assert.equal(await page.locator('.value-proposition').isVisible(),true);
-  await page.locator('.board-grid .note-cell:first-child .blank-note').waitFor({state:'attached'});
+  const firstPrompt=page.locator('.board-grid .note-cell:first-child .blank-note');
+  await firstPrompt.waitFor({state:'visible'});
+  await page.waitForFunction(()=>document.querySelector('.board-grid .note-cell:first-child .blank-note')?.textContent==='CREAR NOTA 👈');
   assert.equal(await page.locator('.onboarding-card').isVisible(),false,'Guide card is replaced by the first-note CTA');
-  assert.match(await page.evaluate(()=>getComputedStyle(document.querySelector('.board-grid .note-cell:first-child .blank-note'),'::after').content),/CREAR NOTA/,'First note shows the CREAR NOTA call to action');
+  assert.equal(await firstPrompt.innerText(),'CREAR NOTA 👈','First-note prompt is visible real text');
+  for(const width of [360,390,412,768,1440]){
+    await page.setViewportSize({width,height:844});
+    await page.waitForFunction(()=>{const node=document.querySelector('.board-grid .note-cell:first-child .blank-note');return node&&node.clientHeight>0&&node.scrollHeight<=node.clientHeight+1&&node.scrollWidth<=node.clientWidth+1;});
+    await page.locator('.sticky-note').first().click({trial:true});
+  }
+  await page.setViewportSize({width:390,height:844});
   await page.screenshot({path:path.join(results,'welcome-mobile.png'),fullPage:true});
   assert.equal(metricsRequests.length,0,'Rejected analytics sends no events');
   await page.getByRole('button',{name:'Preferencias de medición',exact:true}).click();

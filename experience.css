@@ -9,11 +9,11 @@
 body.pp-arcade .postispop>.onboarding-card{display:none!important}
 
 /* First empty note becomes the "create note" call to action (finger after text, pointing left). */
-.board-grid .note-cell:first-child .sticky-note .blank-note{visibility:hidden;position:relative}
-.board-grid .note-cell:first-child .sticky-note .blank-note::after{content:"CREAR NOTA \1F448";visibility:visible;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:16px;line-height:1.3;font-weight:700;color:#6e542a}
+.board-grid .note-cell:first-child .sticky-note:has(>.blank-note){padding:24px 8px 10px!important}
+.board-grid .note-cell:first-child .sticky-note .blank-note{visibility:visible;position:relative;font-size:16px;line-height:1.3;font-weight:700;text-align:center;color:#6e542a;white-space:normal}
 /* Fixed note text sizes: no responsive scaling. */
 body.pp-arcade .board-grid .sticky-note .note-text{font-size:16px!important}
 @media(max-width:650px){
-.board-grid .note-cell:first-child .sticky-note .blank-note::after{font-size:14px}
+.board-grid .note-cell:first-child .sticky-note .blank-note{font-size:14px}
 body.pp-arcade .board-grid .sticky-note .note-text{font-size:14px!important}
 }

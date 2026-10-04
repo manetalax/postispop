@@ -75,7 +75,10 @@ function update() {
     const nav=document.createElement('nav');nav.className='pp-arcade-nav';nav.setAttribute('aria-label','Explorar');
     for(const [label,href] of [['✦ Premios','/premios.html'],['Tienda','/atelier.html'],['? Ayuda','/ayuda.html']]){const link=document.createElement('a');link.textContent=label;link.href=href;nav.append(link);}header.append(nav);
   }
-  // Keep the first-visit guide open until the visitor starts or dismisses it.
+  // Real text participates in layout, so the first-note prompt cannot be clipped
+  // inside the height of the recovered one-line placeholder.
+  const firstBlank=hydrated?document.querySelector('.board-grid .note-cell:first-child .sticky-note .blank-note'):null;
+  if(firstBlank&&firstBlank.textContent!=='CREAR NOTA 👈')firstBlank.textContent='CREAR NOTA 👈';
 
   // The mobile layout hides the text inside this icon button.
   document.querySelectorAll('.header-share').forEach(button=>{
