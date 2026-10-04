@@ -145,6 +145,17 @@ export const countrySceneProfiles=Object.fromEntries(Object.entries(countryOutli
 
 // All note rectangles (x63..649, y114..438) remain unobstructed. The country
 // silhouette, landmark and dish are placed in the margins and lower rail.
+// Cultural drawings, isolated from the retired notebook layout. The new arcade
+// frame positions these miniature objects in its upper/lower ornament rails.
+export function countryMiniatures(design) {
+  const code=String(design?.code||'').toUpperCase(),profile=countrySceneProfiles[code],outline=countryOutlines[code];
+  if(!profile||!outline)return {landmark:'',food:'',outline:''};
+  return {
+    landmark:profile.illustratedLandmark?(extraLandmarks[code]?.name===profile.landmark.name?extraLandmarks[code].draw():landmarks[landmarkMap[code]]()):'',
+    food:profile.illustratedFood?(extraFoods[code]?.name===profile.food.name?extraFoods[code].draw():foods[foodMap[code]]()):'',
+    outline:outline.path
+  };
+}
 export function countryScene(design,width=720,height=500) {
   const code=String(design?.code||'').toUpperCase(),outline=countryOutlines[code],profile=countrySceneProfiles[code];if(!outline||!profile)return '';
   const ink=/^#[0-9a-f]{6}$/i.test(design.accent||'')?design.accent:'#e8c98c',paper='#d9d1b5';

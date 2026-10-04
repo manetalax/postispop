@@ -1,8 +1,9 @@
-import {countryScene,countrySceneProfiles,countryArtCoverage} from './assets/designs/country-scenes.js';
-import {themeProfilesA,renderThemeA} from './assets/designs/theme-profiles-a.js';
-import {themeProfilesD,renderThemeD} from './assets/designs/theme-profiles-d.js';
-import {themeProfilesB,renderThemeB} from './assets/designs/theme-profiles-b.js';
-import {themeProfilesC,renderThemeC} from './assets/designs/theme-profiles-c.js';
+import {arcadeBoardSvg,ornamentSvg,selectorTitle,badgeSvg,definitions} from './assets/designs/arcade-pattern.js';
+import {countrySceneProfiles,countryArtCoverage} from './assets/designs/country-scenes.js';
+import {themeProfilesA} from './assets/designs/theme-profiles-a.js';
+import {themeProfilesD} from './assets/designs/theme-profiles-d.js';
+import {themeProfilesB} from './assets/designs/theme-profiles-b.js';
+import {themeProfilesC} from './assets/designs/theme-profiles-c.js';
 import {countryFlags} from './assets/designs/country-flags.js';
 // Original, code-rendered stationery. Shared by the storefront and the real board.
 const groups = [
@@ -269,6 +270,7 @@ export const professionDesigns = [
 ].map((design,index)=>({...design,category:'Profesiones',tier:'premium',kind:'expansion',edition:'crafted',motif:'work',pattern:index}));
 export const catalogCoverage = Object.freeze({initialThemes:100,rewardThemes:50,initialPremiumThemes:50,countries:195,countryCriterion:'193 Estados miembros de la ONU y 2 Estados observadores',territories:'Los territorios y otras entidades no incluidos en este criterio todavía no forman parte de esta colección.',countryStatus:`Las 195 vistas incluyen bandera, silueta geográfica ornamental y papelería. Hay ${countryArtCoverage.verifiedIllustratedLandmarks} lugares y ${countryArtCoverage.verifiedIllustratedDishes} propuestas gastronómicas ilustradas con fuentes verificadas; ${countryArtCoverage.finishedEditions} países reúnen ambos. ${countryArtCoverage.finishedEditions===195?'Cada edición propone una selección cultural concreta, sin resumir toda la diversidad del país.':'Las ediciones restantes siguen en desarrollo.'}`});
 export const designs = [...thematicDesigns,...professionDesigns,...countryDesigns];
+for(const design of designs)Object.assign(design,{background:'#101023',accent:'#c3a6ff',paper:'plain',visualPattern:'arcade-cultural-v1'});
 export const packs = [
   {id:'music',title:'Música a tu manera',description:'Del vinilo al estudio de composición.',designIds:designs.filter(d=>d.category==='Música').map(d=>d.id)},
   {id:'professions',title:'Profesiones y estudio',description:'Aula, consulta, turnos y proyectos cotidianos.',designIds:designs.filter(d=>d.category==='Profesiones').map(d=>d.id)},
@@ -339,108 +341,10 @@ function paperContent(type){
   return art;
 }
 export function paperSvg(type='plain'){return `<svg xmlns="http://www.w3.org/2000/svg" width="220" height="250" viewBox="0 0 220 250">${paperContent(type)}</svg>`;}
-function borderArt(d){
-  const a=d.accent;let out='';
-  if(themeProfilesA[d.id]) return renderThemeA(d,{glyph,line});
-  if(themeProfilesB[d.id]) return renderThemeB(d,{glyph,line});
-  if(themeProfilesD[d.id]) return renderThemeD(d,{glyph,line});
-  if(themeProfilesC[d.id]) return renderThemeC(d,{glyph,line});
-  if(d.art==='egypt'){
-    out+='<rect x="18" y="16" width="684" height="468" rx="8" fill="none" stroke="#d6ac61" stroke-width="3"/>';
-    for(let i=0;i<26;i++)out+=`<path d="m${24+i*26} 24 10 9 10-9m-20 452 10-9 10 9" stroke="${a}" fill="none" stroke-width="1.3"/>`;
-    out+=`<circle cx="635" cy="62" r="21" fill="${a}" opacity=".8"/>`+line('M595 91 624 48l29 43m-20 0 25-33 24 33','#1c393a',2);
-    for(const x of [23,670])for(const y of [140,290])out+=`<g transform="translate(${x} ${y}) scale(.57)" stroke="${a}" stroke-width="1.6" fill="none">${lotus}</g>`;
-    out+=line('M8 435 68 348l61 87M575 435l67-98 68 98',a,1,.25);
-  }else if(d.art==='japan'){
-    out+='<circle cx="624" cy="66" r="27" fill="#c67972" opacity=".75"/>'+line('M684 25c-60 26-67 87-4 126M701 117l-41-19m15-29-39-4','#49473f',4);
-    for(const [x,y]of [[665,42],[678,71],[655,95],[688,122],[641,66]])out+=`<g transform="translate(${x} ${y})" fill="#d8a0a1" stroke="#b5787d" stroke-width=".8"><circle cx="0" cy="-5" r="5"/><circle cx="5" cy="0" r="5"/><circle cx="3" cy="6" r="5"/><circle cx="-4" cy="5" r="5"/><circle cx="-6" cy="-1" r="5"/><circle r="2" fill="#eec999"/></g>`;
-    for(let x=-40;x<750;x+=42)for(let y=459;y<500;y+=17)out+=line(`M${x} ${y}a21 21 0 0 1 42 0m-34 0a13 13 0 0 1 26 0`,'#6c8183',.75,.4);
-    out+=glyph('origami',21,193,.55,'#867763',.7);
-  }else if(d.art==='medical'){
-    out+='<rect x="18" y="18" width="684" height="465" rx="14" fill="none" stroke="#6d9b94" stroke-width="1.4"/>';
-    out+=glyph('medical',628,30,.75,a,.8);
-    out+=line('M18 449h684m-669-314v172c0 43 39 43 39 6v-66',a,3,.5);
-    out+='<circle cx="72" cy="244" r="8" fill="#d7e4e1" stroke="#38766c" stroke-width="3"/>';
-    out+='<rect x="652" y="207" width="36" height="107" rx="7" fill="#eff7f2" stroke="#98b5ac"/><path d="M660 220h20m-20 9h20m-20 9h13" stroke="#8baaa1"/>';
-  }else if(d.art==='firefighters'){
-    for(let x=-15;x<720;x+=46)out+=`<path d="m${x} 483 18-22h24l-18 22Z" fill="${a}" opacity=".8"/>`;
-    out+=`<g transform="translate(623 29) scale(.95)" stroke="${a}" stroke-width="2" fill="#464740">${helmet}</g>`;
-    out+=line('M29 129v235c0 43 27 43 27 10V208',a,5,.8)+line('M29 129v235c0 43 27 43 27 10V208','#6d6b53',1,.8);
-    out+='<rect x="663" y="166" width="23" height="77" rx="6" fill="#aa4139" stroke="#ea9e86"/><path d="M669 164v-9h17m-16 3h13m3-3v20" stroke="#d6bda1" fill="none"/>';
-  }else if(d.art==='police'){
-    out+=`<g transform="translate(631 25) scale(.94)" stroke="${a}" stroke-width="1.6" fill="#314a62">${shield}</g>`;
-    for(let x=19;x<700;x+=20)out+=`<rect x="${x}" y="465" width="10" height="9" fill="${a}" opacity=".4"/><rect x="${x+10}" y="474" width="10" height="9" fill="${a}" opacity=".4"/>`;
-    out+='<rect x="24" y="171" width="25" height="67" rx="4" fill="#172a3f" stroke="#a4bbd1"/><path d="M30 165v-21m-1 42h15m-15 8h15m-15 8h15M30 222h14" fill="none" stroke="#a4bbd1"/>';
-  }else if(d.art==='classroom'||d.art==='students'){
-    out+=line('M17 465h686',a,12,.4)+glyph('book',630,31,.92,a,.8);
-    for(let i=0;i<3;i++)out+=`<g transform="translate(${27+i*9} ${178+i*11}) rotate(-8)"><path d="M0 0h6v105H0Z" fill="${['#dda26c','#d7cd7b','#a7c6ba'][i]}"/><path d="m0 105 3 9 3-9" fill="#eee4cf"/></g>`;
-    out+='<rect x="651" y="361" width="36" height="21" rx="3" fill="#dbb9a1" transform="rotate(12 651 361)"/>';
-  }else if(['composition','radio','vinyl','acoustic','jazz','festival','heavy','rap','pop','kpop'].includes(d.art)){
-    out+=musicArt(d);
-  }else if(d.kind==='country'){
-    out+=countryScene(d,720,500);
-  }else{
-    out+=glyph(d.motif,626,32,.93,a,.85)+glyph(d.motif,23,189,.48,a,.65)+glyph(d.motif,665,359,.48,a,.65);
-    const n=Number(d.id.slice(-3))||0;
-    for(let i=0;i<14;i++)out+=n%3===0?`<circle cx="${28+i*51}" cy="471" r="${3+n%4}" stroke="${a}" fill="none" opacity=".4"/>`:n%3===1?line(`M${25+i*51} 468l9 6 9-6`,a,1,.5):`<rect x="${29+i*51}" y="467" width="9" height="9" rx="${n%4}" transform="rotate(45 ${33+i*51} 471)" fill="${a}" opacity=".35"/>`;
-  }
-  return out;
-}
-function musicArt(d){
-  const a=d.accent;let out='';
-  if(d.art==='composition'){
-    for(let n=0;n<5;n++)out+=line(`M30 ${455+n*6}h660`,a,.8,.65);
-    out+=`<g transform="translate(625 23) scale(.92)" color="${a}">${treble}</g>`;
-    for(let n=0;n<12;n++)out+=`<rect x="${23+n*12}" y="477" width="11" height="15" fill="#eadfcb"/>`;
-    out+=glyph('nib',671,204,.55,a,.7);
-  }else if(d.art==='vinyl'||d.art==='jazz'){
-    out+='<circle cx="646" cy="59" r="33" fill="#151c25" stroke="#998474"/>';
-    for(const r of [13,19,25,29])out+=`<circle cx="646" cy="59" r="${r}" fill="none" stroke="#706357" stroke-width=".65"/>`;
-    out+=`<circle cx="646" cy="59" r="8" fill="${a}"/>`;
-    if(d.art==='jazz')for(let n=0;n<24;n++)out+=`<rect x="${25+n*28}" y="464" width="26" height="21" fill="#d9cbb3"/><rect x="${42+n*28}" y="464" width="9" height="12" fill="#202127"/>`;
-  }else if(d.art==='heavy'){
-    for(const x of [22,659]){out+=`<rect x="${x}" y="177" width="39" height="91" rx="4" fill="#202022" stroke="#84796c"/>`;for(const y of [203,240])out+=`<circle cx="${x+19}" cy="${y}" r="12" fill="none" stroke="#77746d"/>`;}
-    out+='<path d="m646 22-20 23 16 2-13 27 34-35-17-1 13-16" fill="#caa28f"/>';
-    out+=line('M27 468h666',a,4,.7);
-  }else if(d.art==='rap'){
-    for(let y=455;y<500;y+=15){out+=line(`M18 ${y}h684`,'#b07e66',1,.6);for(let x=y%2?30:50;x<705;x+=52)out+=line(`M${x} ${y}v15`,'#b07e66',1,.6);}
-    out+=glyph('mic',634,27,.96,a,.9)+line('M27 361q-14-130 18-137',a,2,.6);
-    out+='<path d="m38 94 10-32 8 13 22-37-5 50 14-5" fill="none" stroke="#b8b25e" stroke-width="3" opacity=".45"/>';
-  }else if(d.art==='acoustic'){
-    out+='<g transform="translate(625 17) rotate(20 30 38)"><path d="M27 6h9v40c29 2 27 38 2 42-30 4-34-33-11-41Z" fill="#bd8e52" stroke="#e3c69d"/><circle cx="32" cy="61" r="8" fill="#4f372d"/><path d="M29 9v64m4-64v64m-12 3h24" stroke="#f5dfb1" stroke-width=".7"/></g>';
-  }else if(d.art==='radio'){
-    out+='<rect x="609" y="28" width="77" height="53" rx="8" fill="#805844" stroke="#d4ab82"/><circle cx="631" cy="56" r="14" fill="#303b3d" stroke="#d4ab82"/><path d="M653 42h23m-23 7h23m-19 13h3m10 0h3M618 27l46-16" stroke="#d9c3a0" fill="none"/>';
-  }else{
-    for(let n=0;n<9;n++)out+=`<circle cx="${45+n*80}" cy="470" r="4" fill="${a}" opacity=".8"/>`;
-    out+=line('M26 476q320-28 668 0',a,1,.5);
-    out+=d.art==='kpop'?'<path d="m643 22 8 18 20 2-15 13 4 21-17-11-18 11 5-21-16-13 21-2Z" fill="#c6a0d6" stroke="#f2d0e9"/>':glyph('mic',637,29,.92,a,.85);
-    if(d.art==='pop')out+='<path d="m38 110 40 64H16Zm645 0 25 65h-53Z" fill="#db8bb4" opacity=".15"/>';
-  }
-  return out;
-}
 const defaultNotes=d=>templates([d.category==='Viajes'?'Equipaje':'Mi próxima idea',...(d.category==='Viajes'?['Botella de agua','Toalla / documentación']:['Una idea por desarrollar','Un paso para empezar'])],['Para preparar','Revisar mis materiales','Confirmar la fecha'],['Mi agenda','Lo importante de hoy','Reservar un momento'],['Referencias','Lecturas y lugares','Guardar la inspiración'],['En marcha','Tarea / avance','Mi siguiente paso'],['Pequeños logros','Lo que aprendí','Lo que quiero repetir']);
 export function designTemplates(design){return design?.noteTemplates||defaultNotes(design||{category:''});}
-export function boardSvg(d,{preview=false}={}){
-  const bg=d.background,a=d.accent,p=d.pattern||0;
-  const isLight=['japan','medical','students'].includes(d.art);
-  const text=isLight?'#334b47':a;
-  const titleSize=d.title.length>35?19:24;
-  let art=`<svg xmlns="http://www.w3.org/2000/svg" width="720" height="500" viewBox="0 0 720 500"><title>${xml(d.title)}</title><defs><pattern id="grain" width="${24+p*3}" height="${24+p*3}" patternUnits="userSpaceOnUse"><path d="M0 0h100M0 0v100" stroke="${a}" stroke-opacity=".04" fill="none"/></pattern><filter id="paper-shadow" x="-15%" y="-15%" width="140%" height="140%"><feDropShadow dx="1" dy="3" stdDeviation="2" flood-opacity=".17"/></filter></defs><rect width="720" height="500" rx="20" fill="${bg}"/><rect x="15" y="15" width="690" height="470" rx="12" fill="url(#grain)" stroke="${a}" stroke-opacity=".25"/>${borderArt(d)}<text x="42" y="51" fill="${text}" font-family="Georgia,serif" font-size="${titleSize}">${xml(d.title)}</text><text x="43" y="75" fill="${text}" opacity=".85" font-family="sans-serif" font-size="10">${xml(d.kind==='country'?'CUADERNO DE VIAJE · '+(d.edition==='crafted'?'EDICIÓN CULTURAL':'EDICIÓN EN DESARROLLO'):d.details.join(' · '))}</text>`;
-  if(d.code&&countryFlags[d.code])art+=`<image href="${xml(svgUrl(countryFlags[d.code]))}" x="623" y="26" width="61" height="45.75"/>`;
-  if(preview){
-    const notes=designTemplates(d);
-    for(let i=0;i<6;i++){
-      const x=63+(i%3)*202,y=114+Math.floor(i/3)*175,note=notes[i];
-      const angle=d.art==='medical'||d.art==='police'||d.art==='composition'?0:((p+i)%3-1)*1.6;
-      const ink='#354b4d';
-      // The material is the same SVG body used by the real notes, not a nested external image.
-      art+=`<g transform="translate(${x} ${y}) rotate(${angle} 89 75)"><rect width="182" height="149" fill="#fff" filter="url(#paper-shadow)"/><svg width="182" height="149" viewBox="0 0 220 250" preserveAspectRatio="none">${paperContent(d.paper)}</svg><rect x="62" y="-5" width="57" height="13" rx="1" fill="${a}" opacity=".85"/>`;
-      const top=d.paper==='prescription'||d.paper==='shift'||d.paper==='study'?38:31;
-      art+=`<text x="13" y="${top}" fill="${ink}" font-family="Georgia,serif" font-size="11.5">${xml(note.title.length>27?note.title.slice(0,25)+'…':note.title)}</text>`;
-      const lines=note.body.split('\n').slice(0,3);
-      lines.forEach((body,j)=>{art+=`<text x="14" y="${top+24+j*18}" fill="${ink}" font-family="sans-serif" font-size="8.3" opacity=".82">${xml(body.length>33?body.slice(0,31)+'…':body)}</text>`;});
-      art+='</g>';
-    }
-  }
-  return art+'</svg>';
-}
+// The approved arcade geometry is the only catalogue/board renderer.
+export function boardSvg(design,options={}){return arcadeBoardSvg(design,options,glyph);}
+export function frameOrnament(design,rail='top'){return ornamentSvg(design,glyph,rail);}
+export function designBadge(design){return design.code?svgUrl(countryFlags[design.code]):svgUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">${definitions}${badgeSvg(design,glyph)}</svg>`);}
+export {selectorTitle};

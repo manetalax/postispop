@@ -1,9 +1,9 @@
-import {designs,fonts,instruments,papers,palettes,boardSvg,paperSvg,svgUrl} from './design-catalog.js';
+import {designs,fonts,instruments,papers,palettes,boardSvg,paperSvg,svgUrl,frameOrnament,designBadge,selectorTitle} from './design-catalog.js';
 import {normalizeStyle,drawStrokes,readableInk,paperColor} from './style-model.js';
 import {readGuest} from './guest-board.js';
 
 let activeId='',board=null,rights=null,styles=new Map(),mountedBoard=null,scheduled=false,loading=false;
-const previews=new Map(),paperImages=new Map();
+const previews=new Map(),paperImages=new Map(),ornaments=new Map();
 const el=(tag,text='',className='')=>{const n=document.createElement(tag);n.textContent=text;if(className)n.className=className;return n;};
 const paperImage=id=>{if(!paperImages.has(id))paperImages.set(id,svgUrl(paperSvg(id)));return paperImages.get(id);};
 async function api(path,payload) {
@@ -21,13 +21,20 @@ function setVariables(node,style) {
 }
 function renderBoard() {
   const frame=document.querySelector('.board-frame:not(.is-loading)');if(!frame)return;
-  const design=designs.find(d=>d.id===rights?.selected);
+  const selected=designs.find(d=>d.id===rights?.selected);
+  const design=selected||{id:'default-arcade',title:'Mi pizarra',category:'',motif:'book',paper:'plain',details:[]};
   if(design) {
     if(!previews.has(design.id))previews.set(design.id,svgUrl(boardSvg(design)));
     const image=`url("${previews.get(design.id)}")`;
     if(frame.style.getPropertyValue('--pp-board-art')!==image)frame.style.setProperty('--pp-board-art',image);
     frame.classList.add('pp-designed-board');frame.dataset.ppDesign=design.id;
-  } else {frame.classList.remove('pp-designed-board');frame.style.removeProperty('--pp-board-art');delete frame.dataset.ppDesign;}
+    if(!ornaments.has(design.id))ornaments.set(design.id,['top','bottom'].map(rail=>svgUrl(frameOrnament(design,rail))));
+    for(const [index,rail] of ['top','bottom'].entries()){
+      let art=frame.querySelector('.pp-frame-'+rail);
+      if(!art){art=el('img','','pp-frame-ornament pp-frame-'+rail);art.alt='';art.setAttribute('aria-hidden','true');frame.append(art);}
+      const src=ornaments.get(design.id)[index];if(art.getAttribute('src')!==src)art.src=src;
+    }
+  } else {frame.classList.remove('pp-designed-board');frame.style.removeProperty('--pp-board-art');delete frame.dataset.ppDesign;frame.querySelectorAll('.pp-frame-ornament').forEach(n=>n.remove());}
   for(const button of frame.querySelectorAll('.sticky-note[data-note-id]')) {
     const note=noteById(button.dataset.noteId);if(!note)continue;
     if(note.protectedEnvelope){button.classList.remove('pp-styled-note');button.querySelector('.pp-note-sketch')?.remove();continue;}
@@ -38,6 +45,16 @@ function renderBoard() {
     let sketch=button.querySelector('.pp-note-sketch');
     if(style.drawing.strokes.length){if(!sketch){sketch=el('canvas','','pp-note-sketch');sketch.width=640;sketch.height=400;sketch.setAttribute('aria-hidden','true');button.append(sketch);}const signature=JSON.stringify([style.drawing,style.paper]);if(sketch.dataset.signature!==signature){drawStrokes(sketch.getContext('2d'),style.drawing,640,400,paperColor(style.paper));sketch.dataset.signature=signature;}}
     else sketch?.remove();
+  }
+  const header=document.querySelector('.app-header');
+  if(header){
+    let selector=header.querySelector('.pp-template-selector');
+    if(!selector){selector=el('a','','pp-template-selector');selector.href='/atelier.html';const badge=el('img','','pp-template-badge');badge.alt='';const name=el('span','','pp-template-name');const chevron=el('span','⌄','pp-template-chevron');chevron.setAttribute('aria-hidden','true');selector.append(badge,name,chevron);header.querySelector('.brand')?.after(selector);}
+    const name=selectorTitle(design);const label=selector.querySelector('.pp-template-name');if(label.textContent!==name)label.textContent=name;label.style.fontSize=(name.length>26?9:name.length>17?11:14)+'px';
+    selector.setAttribute('aria-label','Elegir plantilla: '+name);selector.title=name;
+    const badge=selector.querySelector('img');badge.hidden=!selected;
+    if(selected){const src=designBadge(selected);if(badge.getAttribute('src')!==src)badge.src=src;}
+    header.classList.add('pp-pattern-header');
   }
   const summary=document.querySelector('.pp-design-summary');if(summary){const text=design?design.title:'Tu pizarra, a tu manera';if(summary.textContent!==text)summary.textContent=text;}
 }

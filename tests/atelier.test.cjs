@@ -20,9 +20,9 @@ test('crafted previews and application backgrounds share paper art without sampl
     assert.ok(d.edition==='crafted'&&d.art);
     assert.equal(designTemplates(d).length,6);
     assert.ok(!background.includes('filter="url(#paper-shadow)"'),'Background must not contain dummy notes');
-    assert.equal(preview.match(/filter="url\(#paper-shadow\)"/g).length,6);
-    const inner=paperSvg(d.paper).replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'');
-    assert.ok(preview.includes(inner),'The same paper geometry must appear in preview and editor');
+    assert.equal(preview.match(/data-preview-note=/g).length,12);
+    assert.equal(d.paper,'plain','Templates default to plain editable sticky notes');
+    assert.match(preview,/url\(#paper\)/);
     assert.ok(!/https?:\/\/(?!www.w3.org)/.test(background),'Artwork must be local');
   }
 });
@@ -38,7 +38,7 @@ test('every country embeds its real flag and declares its current cultural editi
   const {countryFlags}=await import('../assets/designs/country-flags.js');
   assert.equal(Object.keys(countryFlags).length,195);
   for(const d of catalog.countryDesigns){
-    assert.ok(catalog.boardSvg(d).includes(catalog.svgUrl(countryFlags[d.code]).replaceAll("'",'&apos;')));
+    assert.ok(catalog.boardSvg(d,{preview:true}).includes(catalog.svgUrl(countryFlags[d.code]).replaceAll("'",'&apos;')));
     assert.match(catalog.boardSvg(d),d.edition==='crafted'?/EDICIÓN CULTURAL/:/EDICIÓN EN DESARROLLO/);
     if(d.edition==='crafted'){assert.ok(d.illustratedLandmark&&d.illustratedFood);assert.ok(d.landmark.verified&&d.food.verified);}
   }

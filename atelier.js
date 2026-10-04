@@ -84,9 +84,9 @@ function boardImage(design, className = '') {
   const frame = node('div', 'at-board-image ' + className);
   const img = node('img');
   img.src = svgUrl(boardSvg(design, {preview: true}));
-  img.alt = `${design.title}: ${design.details.join(', ')}. Vista previa con seis notas.`;
-  img.width = 720;
-  img.height = 500;
+  img.alt = `${design.title}: ${design.details.join(', ')}. Vista previa con doce notas.`;
+  img.width = 420;
+  img.height = 760;
   img.loading = 'lazy';
   img.decoding = 'async';
   frame.append(img);
