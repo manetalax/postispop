@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "checkedAt": "2026-10-02T21:45:30.773Z",
+  "outputs": {
+    "web": {
+      "files": 554,
+      "bytes": 47438110,
+      "contentHash": "d6c8412e06c54eee4287a49f22c63bafeb9fb4cf998c7f3840d349710a5990d5",
+      "verifiedCountryEditions": 195
+    },
+    "android": {
+      "files": 554,
+      "bytes": 47418257,
+      "contentHash": "19d8989264d316ed6161904f6e1eb23308254b00939a694841ece77edf2bd7f6",
+      "verifiedCountryEditions": 195
+    }
+  },
+  "allManifestBytesAndHashesVerified": true,
+  "generatedResourceLinks": true,
+  "sourceFilesIndependent": true,
+  "nativeHtmlAndManifestIndependent": true,
+  "packagingTests": 6,
+  "mobileBrowserTest": "passed",
+  "serviceWorkerBrowserTest": {
+    "install": "passed",
+    "offlineReload": "passed",
+    "localEdit": "passed",
+    "privateCacheExclusion": "passed",
+    "closeReopen": "browser-crash",
+    "overall": "incomplete",
+    "failureDetail": "Chromium reported Page crashed when reopening the last closed page. The browser process then closed normally (exit 0, signal null). Diagnostic stderr contains no explicit ENOSPC or SIGTRAP; the root cause is unconfirmed.",
+    "attempts": 3
+  },
+  "signedApkBuilt": false,
+  "physicalAndroidInstallTested": false,
+  "unitTests": {
+    "passed": 85,
+    "failed": 0
+  },
+  "syntaxCheckedModules": 83,
+  "sqlReferenceAssertions": {
+    "passed": 28,
+    "productionTested": false
+  },
+  "finalStagedBrowserSuites": {
+    "mobile": "passed",
+    "premium": "passed",
+    "atelier": "passed",
+    "protected-share": "passed",
+    "protected-concurrency": "passed",
+    "experience": "incomplete: full-page screenshot failed; an earlier run passed",
+    "offline-shell": "incomplete: Chromium crashed on closed-tab reopen; cause unconfirmed"
+  },
+  "applicationValidationBaselineCommit": "45fb89f7f32f82f44c1038cd8506baf3787e8399",
+  "followUp": {
+    "dateMadrid": "2026-10-03",
+    "applicationChanged": false,
+    "githubPush": "blocked: authenticated GitHub credentials unavailable; user permission accepted",
+    "supabaseAdminConnected": false,
+    "originalAndroidSigningKeyAvailable": false,
+    "offlineHarness": "HTTP origin shut down before offline assertions; optional CDP crash diagnostics",
+    "offlineHarnessSyntax": "passed",
+    "offlineHarnessBrowserRun": "not run: Chromium absent and insufficient environment storage",
+    "cloudTransactionalImport": "pending; no untested SQL added"
+  }
+}

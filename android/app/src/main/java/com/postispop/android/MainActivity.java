@@ -40,6 +40,8 @@ public final class MainActivity extends ComponentActivity {
             return insets.consumeSystemWindowInsets();
         });
         web = new WebView(this);
+        // Release WebViews cannot be inspected through remote debugging.
+        WebView.setWebContentsDebuggingEnabled(false);
         root.addView(web, new FrameLayout.LayoutParams(-1, -1));
         setContentView(root);
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -138,6 +140,7 @@ public final class MainActivity extends ComponentActivity {
     private WebResourceResponse localAsset(String path) {
         if (path.contains("..") || path.contains("\\")) return missing();
         if (path.isEmpty() || path.endsWith("/")) path += "index.html";
+        if (Arrays.asList("privacy", "terms", "legal", "cookies").contains(path)) path += ".html";
         try {
             InputStream stream = getAssets().open("www/" + path);
             String ext = path.substring(path.lastIndexOf('.') + 1).toLowerCase(Locale.ROOT);
@@ -145,11 +148,14 @@ public final class MainActivity extends ComponentActivity {
             if (ext.equals("js") || ext.equals("mjs")) mime = "text/javascript";
             if (ext.equals("wasm")) mime = "application/wasm";
             if (ext.equals("svg")) mime = "image/svg+xml";
+            if (ext.equals("woff")) mime = "font/woff";
+            if (ext.equals("woff2")) mime = "font/woff2";
+            if (ext.equals("ttf")) mime = "font/ttf";
             if (mime == null) mime = "application/octet-stream";
             Map<String,String> headers = new HashMap<>();
             headers.put("Cache-Control", "no-cache");
             headers.put("X-Content-Type-Options", "nosniff");
-            headers.put("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self'; connect-src 'self' https://htfyjefmviwlgmfqrwue.supabase.co wss://htfyjefmviwlgmfqrwue.supabase.co; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'");
+            headers.put("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: data:; font-src 'self'; connect-src 'self' https://htfyjefmviwlgmfqrwue.supabase.co wss://htfyjefmviwlgmfqrwue.supabase.co; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'");
             return new WebResourceResponse(mime, "UTF-8", 200, "OK", headers, stream);
         } catch (IOException e) { return missing(); }
     }

@@ -4,6 +4,8 @@ const origin='https://postispop.com';
 const cors={'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Headers':'authorization, apikey, content-type','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Vary':'Origin'};
 const reply=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,'Content-Type':'application/json','Cache-Control':'no-store'}});
 const ready=()=>Boolean(env('STRIPE_PAYMENTS_ENABLED')==='true'&&env('STRIPE_SECRET_KEY')&&env('STRIPE_WEBHOOK_SECRET'));
+// Only the four historical one-time products are eligible. New design/Premium pricing is undefined.
+const legacyProducts=new Set(['pack-rebel','pack-minimal','reloj-recordatorios','postispop-pro']);
 const liveKey=()=>/^(?:sk|rk)_live_/.test(env('STRIPE_SECRET_KEY'));
 async function db(path:string,method='GET',body?:unknown,prefer='') {
   const response=await fetch(env('SUPABASE_URL')+'/rest/v1/'+path,{method,headers:{apikey:env('SUPABASE_SERVICE_ROLE_KEY'),Authorization:'Bearer '+env('SUPABASE_SERVICE_ROLE_KEY'),'Content-Type':'application/json',...(prefer?{Prefer:prefer}:{})},body:body?JSON.stringify(body):undefined});
@@ -17,7 +19,7 @@ async function stripe(path:string,body?:URLSearchParams,key?:string) {
 async function grant(session:any,expectedUser?:string) {
   if(session.payment_status!=='paid'||session.status!=='complete') return false;
   const user=session.metadata?.postispop_user,slug=session.metadata?.postispop_product;
-  if(!user||!slug||(expectedUser&&user!==expectedUser)) throw new Error('PURCHASE_ACCOUNT_MISMATCH');
+  if(!user||!slug||!legacyProducts.has(slug)||(expectedUser&&user!==expectedUser)) throw new Error('PURCHASE_ACCOUNT_MISMATCH');
   if(session.livemode!==liveKey()) throw new Error('PAYMENT_MODE_MISMATCH');
   const products=await db('store_products?slug=eq.'+encodeURIComponent(slug)+'&select=slug,price_cents,currency');
   const product=products?.[0];
@@ -56,6 +58,11 @@ Deno.serve(async(req:Request)=>{
     if(!auth.ok) return reply({error:'SESSION_REQUIRED'},401);
     const user=await auth.json(),body=await req.json();
     if(action==='checkout'&&req.method==='POST') {
+      if(!legacyProducts.has(String(body.slug)))return reply({error:'NEW_PURCHASES_DISABLED'},403);
+      const accessResponse=await fetch(env('SUPABASE_URL')+'/rest/v1/rpc/postispop_access',{method:'POST',headers:{Authorization:authorization,apikey:env('SUPABASE_ANON_KEY'),'Content-Type':'application/json'},body:'{}'});
+      if(!accessResponse.ok)throw new Error('DATABASE_ERROR');
+      const access=await accessResponse.json();
+      if(access.owner||access.premium)return reply({error:'ALREADY_OWNED'},409);
       const products=await db('store_products?active=eq.true&slug=eq.'+encodeURIComponent(String(body.slug))+'&select=*'),p=products?.[0];
       if(!p) return reply({error:'PRODUCT_NOT_FOUND'},404);
       const owned=await db('store_entitlements?user_id=eq.'+user.id+'&select=product_slug');

@@ -1,17 +1,22 @@
+const {browserOptions}=require('./browser-options.cjs');
 const {chromium}=require('playwright');
 const fs=require('node:fs/promises');const path=require('node:path');
 (async()=>{
  const root=path.resolve(__dirname,'../android/app/src/main/assets/www');
- const b=await chromium.launch({headless:true,executablePath:process.env.POSTISPOP_CHROME,args:['--no-sandbox']});
+ const host=await fs.readFile(path.resolve(__dirname,'../android/app/src/main/java/com/postispop/android/MainActivity.java'),'utf8');
+ const policy=host.match(/headers\.put\("Content-Security-Policy", "([^"]+)"\)/)?.[1];
+ if(!policy)throw Error('Native content security policy missing');
+ const b=await chromium.launch(browserOptions({args:['--no-sandbox']}));
  const c=await b.newContext({serviceWorkers:'block',locale:'es-ES',viewport:{width:412,height:850}});const p=await c.newPage();
  const errors=[];p.on('pageerror',e=>errors.push(e.message));
+ p.on('console',message=>{if(message.type()==='error'&&/violates.*Content Security Policy|Refused to.*(?:script|style|font|connect)/i.test(message.text()))errors.push(message.text());});
  await c.route('**/*',async route=>{
   const u=new URL(route.request().url());
   if(u.hostname!=='postispop.com') return route.abort('internetdisconnected');
   let name=decodeURIComponent(u.pathname);if(name.endsWith('/'))name+='index.html';
   const file=path.join(root,name);const ext=path.extname(file);
   const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.wasm':'application/wasm','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.avif':'image/avif'};
-  try {await route.fulfill({status:200,contentType:types[ext]||'application/octet-stream',body:await fs.readFile(file)});}catch{await route.fulfill({status:404,body:'not bundled'});}
+  try {await route.fulfill({status:200,contentType:types[ext]||'application/octet-stream',headers:{'Content-Security-Policy':policy,'X-Content-Type-Options':'nosniff'},body:await fs.readFile(file)});}catch{await route.fulfill({status:404,body:'not bundled'});}
  });
  await p.goto('https://postispop.com/');
  await p.waitForSelector('.sticky-note:not([disabled])',{timeout:30000});

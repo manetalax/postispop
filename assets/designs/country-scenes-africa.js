@@ -1,0 +1,56 @@
+// Original place studies. A location is an editorial example, not a symbol
+// intended to describe every resident or culture of the corresponding country.
+export function createAfricaLandmarks(h){
+ const {P,R,C,E,G,arch,windowRow,roof,waves,mountain,dome}=h;
+ const tree=(x,y,s=1)=>G(P('M0 0v55m0-27-13-12m13 20 15-18')+E(-9,0,18,16,'#8aa482')+E(12,-9,18,20,'#7e9b7b')+E(21,9,18,15,'#9aae87'),x,y,s);
+ const palm=(x,y,s=1)=>G(P('M0 54 5 0M5 0q-25-30-37 1 19-9 37-1 13-29 35-3-15-7-35 3-6-29 16-35 7 17-16 35Z','#88a17d')+P('M5 0q17-4 25 15m-25-15q-19 6-25 22'),x,y,s);
+ const savannaTree=(x,y,s=1)=>G(P('M0 50V8m0 17-16-13m16 21 18-21')+E(0,3,31,9,'#8b9f7b'),x,y,s);
+ const study={
+ AO:()=>P('M8 145V83l20-25h105l20 23v64Z','#b4aa88')+P('M22 141V80h20v61m23 0V77h32v64m22 0V80h21v61','none','#d0c2a0',6)+P('M65 77q16-27 32 0M12 92h130')+tree(126,41,.47)+P('M5 150h149'),
+ BJ:()=>R(9,80,143,64,'#b79775')+P('M4 81 28 65h105l25 16Z','#9c866e')+R(55,76,48,68,'#c7ac86')+arch(64,93,31,51)+P('M61 84h37M16 97h28v24H16Zm100 0h27v24h-27Z')+P('M19 103l11 11 11-11m79 0 9 12 10-12'),
+ BW:()=>P('M0 94q29-24 63-1t50-5 47 10v54H0Z','#a6b391')+P('M13 148q12-52 41-37t22-38m16 78q7-38 41-32t23-16','none','#83afa4',13)+savannaTree(37,42,.76)+savannaTree(122,62,.54)+P('M94 148v-26m8 25v-28m-7 11-7-8m13 9 7-10'),
+ BF:()=>R(12,80,52,64,'#b19a79')+R(77,61,69,83,'#baa687')+P('M8 81h59m6-20h77M16 106h44m21-20h61m-61 26h61')+[0,1,2].map(i=>P(`M${18+i*14} 91l6 9 6-9m55-19 9 9 9-9`,'none','#e2cf9f',2)).join('')+P('M83 117l10 16 10-16 10 16 10-16 10 16M19 119l8 17 8-17 8 17 8-17','none','#665f50',3)+arch(102,118,20,26),
+ BI:()=>P('M0 151V46l43-22 16 22 57-11 44 33v83Z','#78977b')+P('M32 33v27h39v33h43v55H88v-38H42V77H15V45Z','#c7d5bc')+P('M28 48v17m24 14v18m47 19v25','none','#8fafa0',3)+tree(134,36,.58)+waves(145),
+ CV:()=>P('M1 141 15 110l32-48 58 2 47 77Z','#94a081')+R(40,65,58,22,'#b6a587')+P('M35 66h67l-7-14H44Z','#9c9075')+[17,55,98].map((x,i)=>R(x,111-i%2*13,35,34+i%2*13,'#c4b593')+roof(x-4,111-i%2*13,43,14)).join('')+P('M8 151h143'),
+ CM:()=>P('M0 147q25-16 58-1t47-23 55 5v29H0Z','#8ab1a3')+tree(27,49,1.02)+tree(82,35,.87)+tree(126,53,.9)+P('M14 133 31 102l16 28m40-13 13-26 21 33','none','#749276',3),
+ CF:()=>P('M0 136q37-32 73-12t87-22v55H0Z','#a9ad83')+P('M8 154q48-27 79-20t71-24','none','#87aba0',7)+savannaTree(37,69,.93)+savannaTree(124,72,.65)+P('M13 140v-20m5 23v-14m96 8 4-23m7 23 4-16'),
+ TD:()=>P('M0 94 40 48l31 40 36-33 53 42v55H0Z','#c4ae84')+E(47,117,34,15,'#90b6a7')+E(113,100,27,12,'#9dc1af')+P('M12 141q69-9 135-6')+palm(23,68,.4)+palm(131,50,.4),
+ KM:()=>R(11,95,57,50,'#b5b79b')+R(91,74,54,70,'#cbc3a4')+arch(24,112,24,33)+arch(107,102,23,42)+R(63,42,18,91,'#c4c5a5')+dome(72,39,13)+P('M62 64h21m-20 13h20m17 12h37')+palm(29,42,.55),
+ CG:()=>P('M0 135q43-21 83-7t77-30v57H0Z','#9aad8c')+tree(19,49,.98)+tree(55,29,1.02)+tree(127,49,.93)+P('M69 151q-13-18 5-29 18-10 28-35','none','#8eafa2',10)+P('M80 138q19-7 37 5m-80 7 5-23'),
+ CD:()=>mountain('M0 144 30 89l18 10 24-54 13-8 20 24 9 49 46 33Z')+P('M63 53h31l-9-16H76Z','#aaa98b')+P('M78 35q-8-17 5-28m3 15q21-8 10-20','none','#c4c8b0',2)+tree(29,85,.65)+tree(130,82,.64)+P('M10 151h140'),
+ CI:()=>R(16,85,132,59,'#c6b897')+roof(8,85,148,28,'#a28e72')+P('M18 107h130')+windowRow(7,24,114,17,9,29)+windowRow(6,31,90,19,8,11)+palm(16,38,.57)+P('M8 150h147'),
+ DJ:()=>P('M0 132 18 65l29 24 37-19 31-26 45 87Z','#b3a785')+E(81,131,75,24,'#d9d3b3')+E(82,130,55,14,'#a7c7b5')+P('M14 120l10 4m6 22 11-6m76-21 10 4m-8 24 11-6','none','#e8ddbd',3),
+ GQ:()=>P('M1 145 42 48l35 21 29-48 53 117v17H1Z','#76947a')+tree(21,89,.62)+tree(70,93,.62)+tree(127,86,.63)+P('M34 149q24-45 36-21t30-40','none','#a7b89a',3),
+ ER:()=>R(48,89,62,50,'#c4bca0')+P('M8 65 50 76h61l43-15-7 14-37 17H49L9 78Z','#c9c5ab')+R(43,82,72,11,'#a8ad95')+P('M55 93v43m15-43v43m20-43v43m15-43v43')+C(81,106,6)+P('M7 146h147'),
+ SZ:()=>P('M0 149 28 100l26-66 18 46 28-21 27 47 33 41Z','#9d9f80')+P('M38 131 56 75l30 14 19 29-45 19Z','#ad8a6e')+P('M55 109 85 101l17 18-34 5Z','#c0a282')+P('M55 147l-8-19 10-15m51 29 8-25'),
+ GA:()=>P('M0 150V69q32-32 68-10t92-17v108Z','#7b9a7c')+P('M0 101q21-15 43-9t31-9 35 3 51-8v47q-63-13-160 27Z','#c4d1b8')+P('M13 106v29m16-34v25m36-27v25m19-31v27m19-23v25m21-27v18m18-22v27','none','#8dab9a',3)+waves(146),
+ GM:()=>E(81,126,70,20,'#a4ad8b')+[[17,103,12,39],[41,78,14,47],[74,72,14,52],[108,85,16,47],[138,111,13,32]].map(([x,y,w,hh],i)=>R(x,y,w,hh,['#b99c7c','#a89a7c','#c1ab84'][i%3],'currentColor',3)).join('')+P('M9 151h143'),
+ GH:()=>R(12,76,134,68,'#c2b087')+roof(7,76,144,21,'#8c866b')+R(51,78,59,66,'#ddd0a7')+arch(66,93,29,51)+P('M21 92h20v33H21Zm98 0h19v34h-19Z')+P('M25 99q13 1 9 20m93-20q-8 7 4 19M59 85h43','none','#a97963',3),
+ GN:()=>mountain('M0 148 23 107l25-20 24-59 30 33 15 42 43 43Z')+P('M48 89 72 28l30 33m-30-33 6 49','none','#a0ac88',2)+P('M2 152q45-13 76 0t78-4')+tree(31,99,.57)+tree(132,105,.5),
+ GW:()=>P('M2 132q34-37 75-16t78 0v38H2Z','#88b2a5')+E(45,97,40,19,'#c5c29a')+E(113,127,37,14,'#cbc59e')+palm(40,61,.57)+palm(112,101,.36)+waves(144),
+ LS:()=>P('M0 145 14 88l18-9 9-37h28l16 13 30-5 10 34 17 13 18 48Z','#999f83')+P('M38 44h30l19 13 26-6 8 29-37-8-43-8Z','#c3c5a3')+P('M28 89v41m19-55v65m20-62v42m26-38v63m21-48v40')+P('M0 152h160'),
+ LR:()=>P('M1 133q48-25 91-10t66 5v29H1Z','#8db4a6')+P('M20 130q40-35 113-18l19 16-61 21Z','#babf97')+tree(83,62,.94)+tree(40,87,.57)+P('M115 111v-21h31v29m-31-29 15-12 19 12')+waves(148),
+ LY:()=>P('M16 143V72l14-11h103l13 11v71Z','#b8aa88')+P('M7 66 29 48h105l20 18ZM21 78h117M18 139h125')+arch(56,86,50,57)+[29,42,123,136].map(x=>R(x,81,6,57,'#cfbc99')).join('')+P('M5 150h150'),
+ MG:()=>P('M0 148 28 108l44-67 40 27 47 80Z','#819c7c')+R(48,70,48,49,'#bdad86')+P('M44 69 73 43l28 26Z','#8c816a')+arch(66,95,14,25)+P('M33 145 41 122l23-3m33 5h16v18')+tree(133,85,.61),
+ MW:()=>P('M0 143V68l37-35 24 37 44-16 54 27v66Z','#839c7e')+P('M0 104q62-27 159-1v51H0Z','#8fb8ab')+waves(117)+P('M60 130 89 123l20 10-18 9H64Z','#bca787')+P('M89 123V78l21 42H89'),
+ ML:()=>P('M7 143V77h20V49h18v28h22V24h25v53h22V49h18v28h22v66Z','#ba9a78')+P('M22 50 36 29l14 21Zm40-26L80 5l18 19Zm47 26 14-21 14 21Z','#c3a680')+windowRow(5,19,101,25,13,42)+[24,37,72,86,121,134].map(x=>P(`M${x} 68h11m-11 16h11m-11 16h11m-11 16h11`)).join(''),
+ MU:()=>P('M3 142 25 109l12-50 43-16 34 16 22 79Z','#7e9b7d')+P('M37 60 80 43l34 16-12 17-54 1Z','#bac0a0')+P('M49 79 38 124m29-46-4 56m33-53 6 42')+P('M0 148q78-17 160-3','#94b7a6')+waves(151),
+ MZ:()=>P('M2 144 21 95l111 4 26 45Z','#b9b795')+P('M20 101h112v42H20Z','#c8c0a0')+R(53,74,37,51,'#d5c8a8')+roof(46,74,51,16)+arch(66,99,14,26)+P('M20 102v-9h11v9m88 0v-10h12v10')+waves(148),
+ NA:()=>P('M0 145 45 43l52 41 30-18 33 78Z','#c3a278')+P('M45 43 61 146H0Z','#ad8d6c')+P('M87 145 127 66l33 78Z','#d0b285')+P('M30 145h20m-8 0V111l-12-15m12 33 15-17','none','#6c7665',3)+P('M2 152h155'),
+ NE:()=>P('M35 145 55 21h43l22 124Z','#b79a78')+P('M52 21h48v-9H52Z')+Array.from({length:8},(_,i)=>P(`M${48-i*1.3} ${36+i*13}h${59+i*2.6}`)).join('')+P('M68 145v-25q10-17 19 0v25')+R(3,115,35,30,'#c4ac86')+R(120,111,38,34,'#c3ab85'),
+ NG:()=>tree(25,44,1.03)+tree(130,41,1.08)+P('M2 153q54-70 81-37t74-25','none','#8bb2a3',13)+P('M43 138V82h70v56M37 82h83m-68-12h54','none','#c2b695',5)+P('M66 83q-5 20 0 40m23-39q7 20 0 40','none','#bba27e',3),
+ RW:()=>P('M0 147 28 88l29 22 37-74 40 31 26 80Z','#799a7c')+tree(29,80,.61)+tree(71,91,.63)+tree(116,65,.76)+P('M9 145q59-44 131-22','none','#bfbd95',4)+P('M25 137v-14m21 5v-17m24 10v-14m24 13v-16m24 17v-15','none','#b1b397',1.5),
+ ST:()=>R(25,76,115,68,'#c4b394')+roof(14,76,137,28,'#9d8770')+R(77,28,14,22,'#b4a786')+roof(72,28,25,10)+windowRow(5,35,89,22,9,16)+windowRow(5,35,119,22,9,25)+P('M27 112h111')+tree(15,61,.48)+P('M6 150h149'),
+ SC:()=>palm(78,63,1.27)+palm(27,70,.7)+palm(131,81,.64)+P('M3 150q81-22 153-3')+P('M56 147q-4-28 11-24 15-4 11 24-10 15-22 0Z','#a58f70'),
+ SL:()=>P('M0 137q30-21 70-7t90-15v40H0Z','#94b9a8')+P('M25 121q33-59 74-17l30 33-72 9Z','#a7b491')+tree(70,52,.9)+tree(28,64,.78)+tree(125,64,.75)+waves(149),
+ SO:()=>P('M0 148 36 112h61l27 23 36 11Z','#c6bc95')+R(54,46,38,82,'#d2c7a9')+R(59,34,28,15,'#a7b39c')+roof(52,34,43,17,'#a1aa91')+P('M46 51h54M55 98h36M67 61h11v16H67Zm0 45h11v21H67Z')+waves(147),
+ SS:()=>P('M0 146q70-27 160-4v14H0Z','#a7ad83')+savannaTree(34,46,1)+savannaTree(130,67,.57)+P('M45 137q9-15 22 0l10 1 7-7m-29 8-2 11m17-11 1 11m23-17q9-15 22 0l10 1 7-7m-29 8-2 11m17-11 1 11','none','#c1b58d',3)+P('M17 152h133'),
+ SD:()=>[13,57,108].map((x,i)=>P(`M${x} 142l${20+i*2}-${86-i%2*19} ${23+i*2} ${86-i%2*19}Z`,'#c4ab80')+P(`M${x+20+i*2} ${56+i%2*19}v86`)+R(x+4,124,15,19,'#b39772')+arch(x+7,129,9,14)).join('')+P('M5 149h150'),
+ TG:()=>P('M15 144V77q19-21 37 0v67Zm46 0V50q19-21 38 0v94Zm49 0V82q19-21 37 0v62Z','#b39a76')+P('M10 68 33 24l26 44Zm46-27L80 1l25 40Zm49 34 22-41 25 41Z','#a49773')+P('M51 109h11m38 0h10')+arch(71,117,16,27)+R(27,87,10,14,'#69715e'),
+ UG:()=>P('M11 124q22-80 70-85 47 6 69 85Z','#b3a17c')+P('M23 124h116v22H23Z','#c3b592')+Array.from({length:8},(_,i)=>P(`M80 42Q${80+(i-3.5)*9} 81 ${29+i*15} 124`,'none','#d0bb92',1)).join('')+arch(66,120,26,26)+P('M8 151h145'),
+ ZM:()=>P('M0 64q71-14 160 0v32q-81 20-160-1Z','#859e7d')+P('M7 77h147v67H7Z','#c9d7be')+Array.from({length:12},(_,i)=>P(`M${12+i*12} 79v${43+i%3*8}`,'none','#90b2a4',2)).join('')+P('M0 142q30-17 52 1t45-5 63 6','#b4cdb6')+P('M29 80q53-76 105 0','none','#c4b990',3)+waves(148),
+ ZW:()=>P('M12 139V76q68-25 137 0v63q-69 26-137 0Z','#b2b095')+P('M12 94q70 27 137 0M12 111q70 27 137 0M12 127q70 27 137 0')+P('M72 71q-2-60 15-59 15 0 17 59Z','#bcb799')+P('M75 43h27m-27 12h27')+P('M13 74q20-15 46-7m54 0 37 8')+arch(107,114,18,30),
+ };
+ const names={AO:'Mbanza Kongo',BJ:'Palacios Reales de Abomey',BW:'Delta del Okavango',BF:'Corte Real de Tiébélé',BI:'Cascadas de Karera',CV:'Cidade Velha',CM:'Reserva de Fauna de Dja',CF:'Parque Nacional de Manovo-Gounda Saint-Floris',TD:'Lagos de Ounianga',KM:'Medinas de los sultanatos históricos de Comoras',CG:'Macizo Forestal de Odzala-Kokoua',CD:'Parque Nacional de Virunga',CI:'Ciudad histórica de Grand-Bassam',DJ:'Lago Assal',GQ:'Parque Nacional de Monte Alén',ER:'Arquitectura modernista de Asmara',SZ:'Minas de Ngwenya',GA:'Parque Nacional de Ivindo',GM:'Círculos de piedra de Senegambia',GH:'Edificaciones tradicionales asante',GN:'Reserva Natural del Monte Nimba',GW:'Archipiélago de Bijagós · Omatí Minhô',LS:'Parque Maloti-Drakensberg',LR:'Isla de Providence',LY:'Sitio arqueológico de Leptis Magna',MG:'Colina Real de Ambohimanga',MW:'Parque Nacional del Lago Malawi',ML:'Ciudades antiguas de Djenné',MU:'Paisaje cultural de Le Morne',MZ:'Isla de Mozambique',NA:'Mar de Arena del Namib',NE:'Centro histórico de Agadez',NG:'Bosque Sagrado de Osun-Osogbo',RW:'Parque Nacional de Nyungwe',ST:'Roças de Santo Tomé y Príncipe',SC:'Reserva Natural de Vallée de Mai',SL:'Complejo Gola-Tiwai',SO:'Faro Secondo-Lido de Mogadiscio',SS:'Paisaje migratorio Boma-Badingilo',SD:'Sitios arqueológicos de Meroe',TG:'Koutammakou · tierra de los batammariba',UG:'Tumbas de los reyes de Buganda en Kasubi',ZM:'Mosi-oa-Tunya · cataratas Victoria',ZW:'Gran Zimbabue'};
+ return Object.fromEntries(Object.entries(study).map(([code,draw])=>[code,{name:names[code],draw}]));
+}

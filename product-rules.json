@@ -23,7 +23,8 @@
     "position_12": {
       "editable": true,
       "permanently_unlocked": true,
-      "daily_quote": true
+      "daily_quote": true,
+      "warn_before_editing_quote": true
     },
     "maximum_positions": 100,
     "additional_positions_created_on_demand": true,
@@ -62,7 +63,12 @@
   },
   "billing": {
     "subscription_implementation_status": "pending",
-    "subscription_price_and_period": null,
+    "subscription_price_and_period": {
+      "currency": "EUR",
+      "monthly_cents": 295,
+      "annual_cents": 995,
+      "scope": "Full access while subscription is active"
+    },
     "existing_one_time_products_are_not_subscription_terms": true,
     "required_validation": [
       "successful test payment",
@@ -73,7 +79,11 @@
       "entitlement recovery",
       "expiry and renewal",
       "refund behavior"
-    ]
+    ],
+    "payment_provider": "Stripe",
+    "payment_setup_status": "deferred_by_user",
+    "payment_setup_destination": "A different, more secure account chosen by the user",
+    "current_session_scope": "Prepare website and display agreed offers; do not configure Stripe products, credentials, webhooks or activate charges in this session"
   },
   "downloads": {
     "implementation_phase": "after website refinement",
@@ -124,5 +134,242 @@
     "ui_check_status": "Not completed locally: browser startup is blocked by the execution environment; must pass in GitHub Actions.",
     "deployment_status": "Prepared on release/complete-web-20261002; publication requires successful GitHub Actions checks and merge into main.",
     "new_lighthouse_score": null
+  },
+  "cart_proposal": {
+    "status": "pending_implementation",
+    "currency": "EUR",
+    "individual_upgrade_price_cents": 95,
+    "pricing_status": "Confirmed: each board design and drawing instrument costs 0.95 EUR; payment activation deferred",
+    "selection": "User chooses individual upgrades",
+    "unlock_scope": "Only successfully paid selected products",
+    "full_bundle_threshold_cents": null,
+    "automatic_full_unlock": false,
+    "charge_trigger": "Explicit checkout confirmation; adding to cart never charges",
+    "existing_owned_items": "Exclude from payable cart to prevent duplicate purchases",
+    "premium_note_capacity": "Separate existing requirement; not changed by this cart correction",
+    "payment_activation": "deferred_by_user_to_other_account",
+    "priced_categories": [
+      "board_designs",
+      "drawing_instruments"
+    ],
+    "clock_price_cents": null,
+    "clock_price_status": "Awaiting clarification of spoken amount 95; do not infer 0.95, 9.95 or 95 EUR"
+  },
+  "roulette_purchase": {
+    "status": "rules_recorded_not_implemented",
+    "spins_per_pack": 5,
+    "price_cents": 100,
+    "currency": "EUR",
+    "win_probability": {
+      "numerator": 1,
+      "denominator": 6,
+      "scope": "each_spin",
+      "independent": true
+    },
+    "regular_prize": "random_digital_object",
+    "valuable_prize": {
+      "type": "gift_card",
+      "value_cents": 10000,
+      "currency": "EUR",
+      "probability": {
+        "numerator": 1,
+        "denominator": 100000,
+        "scope": "each_brand_per_spin",
+        "status": "planned_paid_spins_disabled"
+      },
+      "included_in_total_win_probability": true,
+      "brands": [
+        "Amazon",
+        "Google Play",
+        "Apple",
+        "Xbox",
+        "PlayStation",
+        "Fortnite"
+      ],
+      "fulfillment_status": "Planned; verify regional denominations and formats before enabling"
+    },
+    "five_spins_guarantee_prize": true,
+    "payments": "deferred_to_other_account",
+    "pending": [
+      "Define eligible objects and handling of already-owned objects",
+      "Implement server-authoritative randomness and atomic spin consumption",
+      "Verify prize fulfillment and end-to-end behavior",
+      "Define consolation reward pool and verify once-only grant after five losing spins in the same purchased pack"
+    ],
+    "daily_streak_rewards": "Separate rules; this change applies to paid roulette only",
+    "consolation": {
+      "when": "all_five_spins_in_purchased_pack_completed_with_zero_prizes",
+      "reward": "one_random_consolation_reward",
+      "pool": "pending_definition",
+      "maximum_per_pack": 1,
+      "grant_once_atomically": true
+    },
+    "every_spin_grants_reward": false,
+    "guarantee_description": "Each purchased five-spin pack guarantees at least one reward: if all five spins yield no prize, grant one random consolation reward after the fifth spin. Individual spins may yield nothing."
+  },
+  "saturday_roulette": {
+    "status": "deployed_supabase",
+    "day": "Saturday",
+    "free_spins_per_account_per_saturday": 1,
+    "independent_of_streak_rewards": true,
+    "win_probability": {
+      "numerator": 1,
+      "denominator": 6
+    },
+    "objects": "unowned_store_items",
+    "exclude_countries": true,
+    "lifetime_premium": {
+      "numerator": 1,
+      "denominator": 10000,
+      "scope": "conditional_on_winning"
+    },
+    "result_persisted_on_server": true,
+    "paid_spins": "Separate five-spin packs; consolation applies only to a paid pack with five losses",
+    "period_start": "first_successfully_recorded_free_saturday_spin_per_account",
+    "verification": {
+      "anonymous_ui": "passed",
+      "database_execution": "migration_applied_permissions_and_status_verified_2026_10_03",
+      "concurrency_and_awards": "pending_database_integration",
+      "deployment": "supabase_functions_updated"
+    },
+    "timezone": "Europe/Madrid",
+    "unused_saturdays_accumulate": false,
+    "visits_or_registration_start_period": false,
+    "duration": "indefinite_until_user_disables",
+    "initial_win_probability": {
+      "numerator": 1,
+      "denominator": 6
+    },
+    "later_win_probability": {
+      "numerator": 1,
+      "denominator": 10
+    },
+    "initial_saturdays": 6,
+    "initial_period_calendar_days": 42,
+    "later_prizes_include_countries": true,
+    "valuable_prize_probability": {
+      "numerator": 1,
+      "denominator": 100000,
+      "scope": "each_gift_card_brand_per_free_spin_both_phases_included_in_total_win_probability"
+    }
+  },
+  "audit_20261003": {
+    "scope": "Partial reconciliation of recovered agreements against current local code; not a complete audit",
+    "confirmed_gaps": [
+      "Saturday roulette is rules only, not executable server functionality",
+      "60 calendar day limit was missing from recorded roulette rules",
+      "Clock pricing rule remains unresolved while product catalog displays 4.99 EUR; Stripe configuration unverified",
+      "Cart is temporary UI; per-product entitlements and checkout are not integrated",
+      "Remove launch placeholder only alongside real activation; roulette remains nonfunctional",
+      "Current local changes have not been pushed, deployed or migrated to Supabase"
+    ],
+    "unverified": [
+      "Note expiry, recovery and deletion end to end",
+      "Note 12 edit warning and dismissal",
+      "Protected-note leakage and isolation across accounts",
+      "Persistence, import and recovery against live backend",
+      "Installers and Meta/Apple device compatibility"
+    ],
+    "reporting_rule": "Separate recorded requirement, local implementation, checked behavior and deployed behavior"
+  },
+  "saturday_reminder_email": {
+    "status": "template_updated_sender_not_implemented",
+    "schedule": "Saturday",
+    "timezone": "Europe/Madrid",
+    "audience": "registered_accounts_with_email_reminders_enabled_and_free_spin_available",
+    "include_accounts_that_never_spun": true,
+    "exclude": [
+      "already_spun_this_saturday",
+      "unsubscribed"
+    ],
+    "sending_starts_trial": false,
+    "deduplication_key": "account_id_and_Madrid_Saturday_date",
+    "destination": "https://postispop.com/atelier.html#premios",
+    "unsubscribe": true,
+    "pending": [
+      "sender integration",
+      "scheduled eligibility query",
+      "persistent once-per-Saturday delivery tracking",
+      "delivery verification"
+    ],
+    "send_time": "not_yet_selected",
+    "duration": "indefinite_until_unsubscribed"
+  },
+  "special_prize_pool": {
+    "status": "gift_cards_deployed_devices_pending_models_and_fulfillment",
+    "prizes": [
+      {
+        "type": "gift_card",
+        "value_cents": 10000,
+        "currency": "EUR",
+        "brands": [
+          "Amazon",
+          "Google Play",
+          "Apple",
+          "Xbox",
+          "PlayStation",
+          "Fortnite"
+        ]
+      },
+      {
+        "type": "iphone",
+        "generation": "latest",
+        "model_and_storage": "pending",
+        "model": "iPhone 18 Pro"
+      },
+      {
+        "type": "mac",
+        "generation": "2026",
+        "form_factor_model_and_configuration": "pending",
+        "model": "MacBook Air",
+        "reference_budget_eur": 1200
+      }
+    ],
+    "selection_weights": "equal_probability_per_special_prize",
+    "physical_delivery": "pending",
+    "gift_card_probability": {
+      "numerator": 1,
+      "denominator": 100000,
+      "scope": "each_brand_per_free_spin",
+      "combined_numerator": 6
+    },
+    "device_probability": {
+      "numerator": 1,
+      "denominator": 100000,
+      "scope": "each_device_per_spin",
+      "status": "planned_not_active"
+    },
+    "device_catalog_policy": {
+      "real_physical_prizes": true,
+      "refresh_on_new_generation": true,
+      "official_product_images": true,
+      "image_must_match_awarded_model": true,
+      "preserve_model_at_win_for_existing_claims": true,
+      "automatic_refresh_implementation": "pending"
+    }
+  },
+  "analytics": {
+    "status": "internal_consent_based_deployed_ga4_pending",
+    "owner_account": "manetala@gmail.com",
+    "content_collection": false,
+    "full_ip_collection": false,
+    "metrics": [
+      "page_views",
+      "visitors",
+      "sessions",
+      "active_time",
+      "clicks",
+      "scroll",
+      "observed_exits",
+      "note_edits",
+      "board_creation",
+      "exports",
+      "traffic_source_groups",
+      "viewport_device_groups",
+      "retention_day_1_7_14"
+    ],
+    "countries": "pending_real_geography_provider",
+    "ga4": "pending_property_connection",
+    "window_days": 30
   }
 }

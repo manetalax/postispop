@@ -1,0 +1,107 @@
+{
+  "ME": {
+    "landmark": {
+      "name": "Región natural e histórica de Kotor",
+      "source": "https://whc.unesco.org/en/list/125/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Kačamak",
+      "source": "https://www.montenegro.travel/en/explore-montenegro/food-wine/food-routes",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "La referencia culinaria procede de las rutas de productos y cocina de montaña, con mención de Kolašin. No se afirma origen exclusivo ni se resume toda la cocina montenegrina. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "MK": {
+    "landmark": {
+      "name": "Región de Ohrid",
+      "source": "https://whc.unesco.org/en/list/99/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Tavče gravče",
+      "source": "https://tourismmacedonia.gov.mk/wp-content/uploads/2018/09/1.-Skopje-A-WALK-THROUGH-THE-ETERNAL-CITY.pdf",
+      "verified": true,
+      "verificationLevel": "institutional-indexed"
+    },
+    "notes": "El paisaje y patrimonio de Ohrid es compartido con Albania; aquí se selecciona su relación con Macedonia del Norte. El folleto oficial de Skopje identifica tavče gravče como especialidad de alubias al horno; verificado mediante extracto indexado, con acceso directo al PDF incompleto. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "SM": {
+    "landmark": {
+      "name": "Centro histórico de San Marino y monte Titano",
+      "source": "https://whc.unesco.org/en/list/1245/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Piadina de San Marino",
+      "source": "https://www.visitsanmarino.com/pub1/VisitSM/contenuto/About-San-Marino/Gastronomia.html",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "La piadina se documenta en el portal turístico de San Marino dentro de una tradición compartida con regiones italianas vecinas. No se afirma exclusividad ni origen nacional propio. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "RS": {
+    "landmark": {
+      "name": "Monasterio de Studenica",
+      "source": "https://whc.unesco.org/en/list/389/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Ajvar de Leskovac",
+      "source": "https://www.serbia.travel/en/green-markets/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Se selecciona la variante de ajvar de Leskovac documentada por turismo de Serbia; otras comunidades balcánicas también preparan ajvar. El monasterio es una referencia arquitectónica y religiosa concreta, no una descripción de toda la población. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "SK": {
+    "landmark": {
+      "name": "Vlkolínec",
+      "source": "https://whc.unesco.org/en/list/622/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Bryndzové halušky",
+      "source": "https://slovakia.travel/en/slovak-gastronomy",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Se elige un asentamiento concreto y una preparación de masa de patata con bryndza. La selección culinaria no implica que todos los habitantes la consuman ni sustituye la diversidad de cocinas regionales. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "SI": {
+    "landmark": {
+      "name": "Cuevas de Škocjan",
+      "source": "https://whc.unesco.org/en/list/390/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Potica",
+      "source": "https://www.slovenia.info/en/stories/fragrant-slovenian-holiday-dishes",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "Potica es una preparación de masa enrollada con numerosos rellenos; la fuente documenta la variante de nueces y otras. Se selecciona un ejemplo festivo sin asignar costumbres religiosas a toda la población. Fuentes consultadas el 2 de octubre de 2026."
+  },
+  "VA": {
+    "landmark": {
+      "name": "Basílica de San Pedro",
+      "source": "https://whc.unesco.org/en/list/286/",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "food": {
+      "name": "Pizza napolitana (Museos Vaticanos)",
+      "source": "https://www.museivaticani.va/content/museivaticani/en/organizza-visita/servizi-per-i-visitatori/ristorazione.html",
+      "verified": true,
+      "verificationLevel": "institutional-page"
+    },
+    "notes": "La basílica se documenta dentro del bien Ciudad del Vaticano. La comida es una oferta contemporánea del servicio de restauración de los Museos Vaticanos, expresamente pizza napolitana; no se afirma una receta originaria del Vaticano ni una gastronomía nacional distinta de la italiana. El lugar mantiene su significado religioso. Fuentes consultadas el 2 de octubre de 2026."
+  }
+}

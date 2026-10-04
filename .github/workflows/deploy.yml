@@ -32,8 +32,15 @@ jobs:
         run: node scripts/stage-site.mjs
       - name: Install browser for UI verification
         run: npx playwright install --with-deps chromium
-      - name: Verify editing, search, installation guide and responsive layout
-        run: npm run test:experience
+      - name: Verify editing, catalogue, encryption, offline use and responsive layout
+        run: npm run test:autosave && npm run test:experience && npm run test:premium && npm run test:atelier && npm run test:protected && npm run test:offline-shell
+      - name: Preserve UI verification screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: postispop-deploy-screenshots
+          path: test-results/
+          if-no-files-found: ignore
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload Pages artifact

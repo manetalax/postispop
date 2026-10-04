@@ -9,8 +9,14 @@
     "preview": "astro preview --host 0.0.0.0",
     "test:mobile": "node tests/mobile-ui.cjs",
     "test": "node --test tests/*.test.cjs",
-    "lint": "node --check experience.js && node --check board-tools.js && node --check usage-metrics.js && node --check supabase-bridge.js && node --check guest-board.js && node --check scripts/build-guides.mjs",
-    "test:experience": "node tests/experience-ui.cjs"
+    "lint": "node scripts/check-js.mjs",
+    "test:experience": "node tests/experience-ui.cjs",
+    "test:premium": "node tests/premium-ui.cjs",
+    "test:atelier": "node tests/atelier-ui.cjs",
+    "test:protected": "node tests/protected-share-ui.cjs && node tests/protected-concurrency-ui.cjs",
+    "test:offline-shell": "node tests/offline-shell-ui.cjs",
+    "test:cloud-import": "node tests/cloud-import-ui.cjs",
+    "test:autosave": "node tests/autosave-ui.cjs"
   },
   "dependencies": {
     "astro": "^5.0.0"

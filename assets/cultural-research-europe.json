@@ -1,0 +1,210 @@
+{
+  "GB": {
+    "food": {
+      "name": "Fish and chips",
+      "source": "https://www.visitbritain.com/es/cosas-que-hacer-en-gran-bretana/gastronomia-tipica-mapa-gastronomico-de-gran-bretana",
+      "verified": true
+    },
+    "notes": "Pescado rebozado con patatas fritas, recogido por VisitBritain. Es una selección concreta entre las diversas cocinas del Reino Unido. Fuente consultada el 2 de octubre de 2026."
+  },
+  "DE": {
+    "food": {
+      "name": "Currywurst",
+      "source": "https://www.germany.travel/en/campaign/culinary-germany/home.html",
+      "verified": true
+    },
+    "notes": "Salchicha con salsa de curry, destacada como comida callejera de Berlín por la oficina alemana de turismo. Su origen se disputa entre varias ciudades; esta selección no atribuye un origen único. Fuente consultada el 2 de octubre de 2026."
+  },
+  "NL": {
+    "food": {
+      "name": "Stroopwafel",
+      "source": "https://www.holland.com/global/tourism/getting-around/interests/regional-products-in-the-netherlands",
+      "verified": true
+    },
+    "notes": "Galleta fina rellena de sirope de caramelo, vinculada a Gouda por la oficina neerlandesa de turismo. Es una especialidad regional difundida por el país. Fuente consultada el 2 de octubre de 2026."
+  },
+  "BE": {
+    "food": {
+      "name": "Gofre de Bruselas",
+      "source": "https://www.visitflanders.com/en/stories/flemish-street-food-every-taste",
+      "verified": true
+    },
+    "notes": "Variedad de gofre citada por VisitFlanders, que distingue los gofres de Bruselas de los de Lieja. La selección conserva esa distinción regional. Fuente consultada el 2 de octubre de 2026."
+  },
+  "CZ": {
+    "food": {
+      "name": "Svíčková na smetaně",
+      "source": "https://www.visitczechia.com/es-es/things-to-do/places/gastronomic-tourism/czech-cuisine-and-regional-products/g-svickova-na-smetane",
+      "verified": true
+    },
+    "notes": "Ternera con salsa de verduras y nata, descrita por VisitCzechia. Existen variantes familiares; la ficha selecciona un plato concreto sin reducir a él la cocina checa. Fuente consultada el 2 de octubre de 2026."
+  },
+  "HU": {
+    "food": {
+      "name": "Sopa goulash (gulyás)",
+      "source": "https://visithungary.com/documents/a/af/af6/af6b60d1f3140320e50d3ebbecca34921166197.pdf",
+      "verified": true
+    },
+    "notes": "La guía Treasures of Hungary de VisitHungary presenta el goulash como sopa con dados de ternera y verduras, en el apartado Culinary Treasures de la página 12 del PDF. La guía también subraya la diversidad de la cocina húngara. Fuente consultada el 2 de octubre de 2026."
+  },
+  "PL": {
+    "food": {
+      "name": "Pierogi",
+      "source": "https://www.poland.travel/en/flavours-of-polish-cuisine/",
+      "verified": true
+    },
+    "notes": "Piezas de masa rellena con numerosas variantes saladas y dulces, descritas por la oficina polaca de turismo. La selección no fija un relleno único. Fuente consultada el 2 de octubre de 2026."
+  },
+  "IE": {
+    "food": {
+      "name": "Estofado irlandés (Irish stew)",
+      "source": "https://www.bordbia.ie/recipes/lamb-recipes/irish-stew",
+      "verified": true
+    },
+    "notes": "Bord Bia, el organismo irlandés de alimentación, documenta este estofado de cordero o carnero con patatas y cebollas. Fuente consultada el 2 de octubre de 2026."
+  },
+  "NO": {
+    "food": {
+      "name": "Fårikål",
+      "source": "https://www.visitnorway.com/things-to-do/food-and-drink/the-norwegian-cookbook/farikal/",
+      "verified": true
+    },
+    "notes": "Estofado de cordero y col, documentado por VisitNorway. La receta y sus variantes se presentan como una tradición otoñal noruega. Fuente consultada el 2 de octubre de 2026."
+  },
+  "SE": {
+    "food": {
+      "name": "Albóndigas suecas (köttbullar)",
+      "source": "https://visitsweden.com/what-to-do/food-drink/swedish-kitchen/best-swedish-meatballs-and-where-get-them/",
+      "verified": true
+    },
+    "notes": "VisitSweden describe las köttbullar y distintas variantes, incluidas opciones vegetales. Entre los acompañamientos citados figuran puré de patata, salsa y arándanos rojos. Fuente consultada el 2 de octubre de 2026."
+  },
+  "FI": {
+    "food": {
+      "name": "Pastel de Carelia (karjalanpiirakka)",
+      "source": "https://finland.fi/life-society/rolling-out-pies-rye-bread-and-other-essential-eastern-finnish-recipes/",
+      "verified": true
+    },
+    "notes": "ThisisFINLAND documenta este pequeño pastel de corteza fina y relleno de arroz. Procede de Carelia, en el este, y actualmente se encuentra en todo el país; se mantiene explícito su contexto regional. Fuente consultada el 2 de octubre de 2026."
+  },
+  "DK": {
+    "food": {
+      "name": "Smørrebrød",
+      "source": "https://www.visitdenmark.com/denmark/things-to-do/eat-drink/traditional-danish-food",
+      "verified": true
+    },
+    "notes": "VisitDenmark describe este bocadillo abierto sobre pan de centeno con combinaciones diversas de ingredientes. La ficha no impone una cobertura única. Fuente consultada el 2 de octubre de 2026."
+  },
+  "IS": {
+    "food": {
+      "name": "Skyr",
+      "source": "https://www.visiticeland.com/article/enjoy-icelandic-food/",
+      "verified": true
+    },
+    "notes": "VisitIceland presenta el skyr como producto lácteo elaborado con leche desnatada y recoge su servicio con arándanos silvestres y nata. Fuente consultada el 2 de octubre de 2026."
+  },
+  "HR": {
+    "food": {
+      "name": "Štrukli de Zagorje",
+      "source": "https://www.infozagreb.hr/en/news/zagorje-strukli-protected-cultural-asset-en",
+      "verified": true
+    },
+    "notes": "La oficina de turismo de Zagreb documenta este plato de masa rellena de queso fresco y huevos, cocido u horneado. Se conserva su vínculo con Zagorje; no se atribuye a todas las regiones croatas. Fuente consultada el 2 de octubre de 2026."
+  },
+  "RU": {
+    "food": {
+      "name": "Echpochmak de Tartaristán",
+      "source": "https://visit-tatarstan.com/en/guides/gastronomicheskie-udovolstviya-v-tatarstane/",
+      "verified": true
+    },
+    "notes": "La oficina de turismo de Tartaristán describe esta empanada triangular con carne, patatas y cebolla. Es una especialidad tártara regional de la Federación de Rusia, no una representación de todas sus culturas. Fuente consultada el 2 de octubre de 2026."
+  },
+  "RO": {
+    "food": {
+      "name": "Sarmale",
+      "source": "https://romaniatourism.com/romanian-food-wine.html",
+      "verified": true
+    },
+    "notes": "RomaniaTourism documenta los rollos de hojas de col rellenas de carne y arroz, además de variantes sin carne. Esta selección no atribuye exclusividad de origen al país. Fuente consultada el 2 de octubre de 2026."
+  },
+  "AZ": {
+    "food": {
+      "name": "Gutab de carne",
+      "source": "https://azerbaijan.travel/gutab-with-meat",
+      "verified": true
+    },
+    "notes": "Azerbaijan Travel vincula expresamente el gutab con la comida callejera de Azerbaiyán. Esta variante consiste en masa fina doblada sobre carne picada de cordero o ternera, cocinada sobre un saj. No se afirma un origen exclusivo. Fuente consultada el 2 de octubre de 2026."
+  },
+  "IR": {
+    "food": {
+      "name": "Kelane del Kurdistán iraní",
+      "source": "https://visitiran.ir/en/cuisine/kelane",
+      "verified": true
+    },
+    "notes": "VisitIran documenta el kelane como pan relleno de verduras de la provincia iraní de Kurdistán, también preparado en las zonas kurdas de Azerbaiyán Occidental. Se mantiene ese contexto regional y no se atribuye a todas las cocinas iraníes. Fuente consultada el 2 de octubre de 2026."
+  },
+  "KZ": {
+    "food": {
+      "name": "Baursak",
+      "source": "https://www.gov.kz/memleket/entities/mfa-istanbul/press/news/details/899316?lang=tr",
+      "verified": true
+    },
+    "notes": "El consulado de Kazajistán en Estambul documentó un concurso de elaboración de baursak y lo identificó expresamente como un alimento tradicional kazajo. La noticia del 6 de diciembre de 2024 menciona distintas recetas; no se afirma un origen exclusivo. Fuente consultada el 2 de octubre de 2026."
+  },
+  "KG": {
+    "food": {
+      "name": "Boorsok",
+      "source": "https://old.cbtkyrgyzstan.kg/tour-products/",
+      "verified": true
+    },
+    "notes": "La asociación local de turismo comunitario CBT Kyrgyzstan incluye expresamente el boorsok entre las elaboraciones de masa de la cocina kirguisa. Es una selección específica documentada en el país, sin atribuirle exclusividad de origen. Fuente consultada el 2 de octubre de 2026."
+  },
+  "TR": {
+    "food": {
+      "name": "Simit",
+      "source": "https://goturkiye.com/gastronomy/turkish-cuisine",
+      "verified": true
+    },
+    "notes": "GoTürkiye describe el simit como pan redondo y crujiente cubierto de sésamo, habitual en el desayuno turco. Es una preparación concreta entre las numerosas tradiciones culinarias del país; no se afirma un origen exclusivo. Fuente consultada el 2 de octubre de 2026."
+  },
+  "LS": {
+    "food": {
+      "name": "Motoho",
+      "source": "https://www.gov.ls/about-lesotho/tourism/",
+      "verified": true
+    },
+    "notes": "El Gobierno de Lesoto identifica el motoho como una papilla tradicional ofrecida en las aldeas del país. Se selecciona este alimento concreto, sin atribuir exclusividad de origen. Fuente consultada el 2 de octubre de 2026."
+  },
+  "NG": {
+    "food": {
+      "name": "Arroz jollof nigeriano",
+      "source": "https://tournigeria.gov.ng/nigerian-party-jollof-the-king-of-rice/",
+      "verified": true
+    },
+    "notes": "La autoridad nigeriana de turismo describe el arroz jollof de las celebraciones, preparado con tomate, pimiento y cebolla. La fuente reconoce variantes en África occidental; esta ficha selecciona la nigeriana sin atribuirle origen exclusivo. Fuente consultada el 2 de octubre de 2026."
+  },
+  "SO": {
+    "food": {
+      "name": "Canjeero",
+      "source": "https://link.springer.com/article/10.1186/s42779-022-00138-3",
+      "verified": true
+    },
+    "notes": "Un estudio de campo publicado en Journal of Ethnic Foods documenta este pan plano fermentado y esponjoso, llamado canjeero en el sur de Somalia y laxoox en zonas del norte. Se mantienen los distintos nombres regionales; no se atribuye origen exclusivo. Fuente consultada el 2 de octubre de 2026."
+  },
+  "TG": {
+    "food": {
+      "name": "Fufu togolés",
+      "source": "https://togotourisme.tg/un-patrimoine-historique/",
+      "verified": true
+    },
+    "notes": "El portal del Ministerio de Cultura y Turismo de Togo documenta el fufu de ñame o yuca cocidos y machacados, servido con salsas. Se selecciona su preparación togolesa, sin atribuirle exclusividad de origen. Fuente consultada el 2 de octubre de 2026."
+  },
+  "KM": {
+    "food": {
+      "name": "Mkatre wa djungu",
+      "source": "https://www.unesco.org/fr/articles/tisser-lheritage-lunesco-soutient-la-sauvegarde-du-patrimoine-culturel-immateriel-aux-comores-0",
+      "verified": true
+    },
+    "notes": "La UNESCO identifica el Mkatre wa djungu, también llamado Good-Good, entre las tradiciones culinarias tratadas en un taller celebrado en Moroni con participantes de Gran Comora, Anjouan y Mohéli en febrero de 2026. Es una referencia documentada al alimento, no una inscripción de este plato en una lista UNESCO. Fuente consultada el 2 de octubre de 2026."
+  }
+}
