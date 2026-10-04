@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['android/**', 'mobile/**', 'scripts/**', 'src/**', 'assets/**', '_next/**', '*.js', '*.css', '*.html', 'package*.json', '.github/workflows/android.yml']
+    paths: ['android/**', 'mobile/**', 'scripts/**', 'src/**', 'assets/**', '_next/**', '*.js', '*.css', '*.html', 'tests/**', '*.xml', '*.json', '*.webmanifest', '*.txt', '.github/workflows/android.yml']
 permissions:
   contents: read
 jobs:
