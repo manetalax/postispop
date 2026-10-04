@@ -60,7 +60,7 @@ window.addEventListener('online',()=>{streakChecked='';streakRetry=0;syncVisitSt
 document.addEventListener('visibilitychange',syncVisitStreak);
 setInterval(syncVisitStreak,60000);
 
-const SEO_TITLE='Bloc de notas online gratis y pizarra de post-it compartida | PostisPop';
+const SEO_TITLE='Bloc de notas online gratis y pizarra | PostisPop';
 let lastSave=null, installPrompt=null;
 const notice=(message)=>{
   let node=document.querySelector('.pp-onboarding-tip');
@@ -75,7 +75,7 @@ function update() {
     const nav=document.createElement('nav');nav.className='pp-arcade-nav';nav.setAttribute('aria-label','Explorar');
     for(const [label,href] of [['✦ Premios','/premios.html'],['Tienda','/atelier.html'],['? Ayuda','/ayuda.html']]){const link=document.createElement('a');link.textContent=label;link.href=href;nav.append(link);}header.append(nav);
   }
-  if(hydrated)document.querySelector('.onboarding-card .onboarding-heading button')?.click();
+  // Keep the first-visit guide open until the visitor starts or dismisses it.
 
   // The mobile layout hides the text inside this icon button.
   document.querySelectorAll('.header-share').forEach(button=>{
