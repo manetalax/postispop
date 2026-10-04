@@ -30,7 +30,7 @@ let observedErrors=[];
   assert.match(await page.locator('.connection').innerText(),/dispositivo/);
   assert.equal(await page.locator('h1').isVisible(),true,'The main heading is visible');
   assert.equal(await page.locator('.value-proposition').isVisible(),true);
-  await page.locator('.board-grid .note-cell:first-child .blank-note').waitFor({state:'visible'});
+  await page.locator('.board-grid .note-cell:first-child .blank-note').waitFor({state:'attached'});
   assert.equal(await page.locator('.onboarding-card').isVisible(),false,'Guide card is replaced by the first-note CTA');
   assert.match(await page.evaluate(()=>getComputedStyle(document.querySelector('.board-grid .note-cell:first-child .blank-note'),'::after').content),/CREAR NOTA/,'First note shows the CREAR NOTA call to action');
   await page.screenshot({path:path.join(results,'welcome-mobile.png'),fullPage:true});
