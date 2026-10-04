@@ -37,7 +37,15 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
   assert.match(await page.locator('.at-preview').innerText(),checkedCountry.edition==='foundation'?/Edición en desarrollo/:/Edición cultural/);
   await page.keyboard.press('Escape');
   await page.locator('.at-shop-nav a[href="#herramientas"]').click();
-  await page.getByRole('button',{name:'Explorar Tu trazo, tu estilo',exact:true}).click();assert.equal(await page.locator('.at-preview .at-stroke-sample').count(),instruments.length);await page.keyboard.press('Escape');
+  await page.getByRole('button',{name:'Explorar Tu trazo, tu estilo',exact:true}).click();assert.equal(await page.locator('.at-preview .at-stroke-sample').count(),0);assert.equal(await page.locator('.at-trial-surface canvas').count(),1);
+  assert.equal(await page.getByLabel('Texto de prueba',{exact:true}).isVisible(),false);
+  const trialCanvas=page.getByLabel('Dibujo de prueba',{exact:true});
+  const blank=await trialCanvas.evaluate(c=>c.toDataURL());
+  await trialCanvas.evaluate(c=>{const r=c.getBoundingClientRect();c.setPointerCapture=()=>{};c.hasPointerCapture=()=>true;c.releasePointerCapture=()=>{};for(const [type,x] of [['pointerdown',.2],['pointermove',.5],['pointerup',.6]])c.dispatchEvent(new PointerEvent(type,{pointerId:2,pointerType:'touch',button:0,clientX:r.left+r.width*x,clientY:r.top+r.height*.5,bubbles:true}));});
+  assert.notEqual(await trialCanvas.evaluate(c=>c.toDataURL()),blank);
+  await page.getByRole('button',{name:'Borrar prueba',exact:true}).click();assert.equal(await trialCanvas.evaluate(c=>c.toDataURL()),blank);
+  await page.setViewportSize({width:360,height:800});assert.equal(await page.locator('.at-preview').evaluate(el=>el.scrollWidth<=el.clientWidth+1),true);await page.screenshot({path:'test-results/atelier-trial-mobile.png'});await page.setViewportSize({width:1440,height:1000});
+  await page.keyboard.press('Escape');
   await page.getByRole('button',{name:'Explorar Letras con personalidad',exact:true}).click();
   const beforeTrial=await page.evaluate(()=>JSON.stringify({...localStorage}));
   await page.getByLabel('Texto de prueba',{exact:true}).fill('PRUEBA QUE NO DEBE GUARDARSE');
@@ -47,7 +55,8 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
   await page.getByRole('button',{name:'Cerrar y descartar prueba',exact:true}).click();
   await page.getByRole('button',{name:'Explorar Letras con personalidad',exact:true}).click();
   assert.equal(await page.getByLabel('Texto de prueba',{exact:true}).inputValue(),'');
-  await page.evaluate(()=>document.fonts.ready);assert.equal(await page.locator('.at-preview .at-font-sample').count(),6);
+  await page.getByLabel('Letra de prueba',{exact:true}).selectOption('hand');await page.getByLabel('Texto de prueba',{exact:true}).fill('Prueba de letra');
+  await page.evaluate(()=>document.fonts.ready);assert.equal(await page.locator('.at-preview .at-font-sample').count(),0);
   assert.equal(await page.evaluate(()=>document.fonts.check('16px "PP Manuscrita"')),true);await page.keyboard.press('Escape');
   await page.locator('.at-shop-nav a[href="#colecciones"]').click();
   await page.getByRole('button',{name:'Limpiar filtros',exact:true}).click();
@@ -83,6 +92,6 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
   for(const width of [360,768,1440]){await page.setViewportSize({width,height:900});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);}
   await page.locator('.pp-launch-promo').screenshot({path:'test-results/home-promo.png'});
   assert.deepEqual(errors,[]);assert.deepEqual([...new Set(missing)],[]);
-  console.log('PASS: 298 catalogue, 50 rewards, developed editions, pack/search filters, exact papers, dialog focus, all drawing samples, 6 local fonts, 4 responsive widths and truthful country/purchase status.');
+  console.log('PASS: 298 catalogue, 50 rewards, developed editions, pack/search filters, exact papers, dialog focus, shared finger drawing surface, selected local fonts, 4 responsive widths and truthful country/purchase status.');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});

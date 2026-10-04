@@ -263,25 +263,28 @@ function renderProgress() {
     : `${rights.credits || 0} elecciones disponibles · ${rights.streak || 0} de 5 días para la siguiente.`;
 }
 
-function trialNote(current, initialPaper='plain') {
+function trialNote(current, initialPaper='plain', initialMode='draw') {
   const area=node('section','at-trial-note');
-  area.append(node('h3','','Tu nota de prueba'),node('p','','Prueba libremente. No se guarda y se descarta al cerrar. Probar no compra ni desbloquea productos.'));
+  area.append(node('h3','','Escribe o dibuja con el dedo para probar'),node('p','','Prueba libremente. No se guarda y se descarta al cerrar. Probar no compra ni desbloquea productos.'));
   const controls=node('div','at-trial-controls');
   const choice=(label,items,initial)=>{
     const wrapper=node('label','',label),select=node('select');select.setAttribute('aria-label',label);
     for(const item of items){const option=node('option','',item.name);option.value=item.id;select.append(option);}
     select.value=initial;wrapper.append(select);controls.append(wrapper);return select;
   };
+  const mode=choice('Modo de prueba',[{id:'draw',name:'Dibujar con el dedo'},{id:'write',name:'Escribir texto'}],initialMode);
   const pen=choice('Instrumento de prueba',instruments,'ballpoint');
   const paper=choice('Papel de prueba',papers,initialPaper);
   const font=choice('Letra de prueba',fonts,'sans');
   const ink=node('input');ink.type='color';ink.value='#163b62';ink.setAttribute('aria-label','Color de prueba');
   const colour=node('label','','Color');colour.append(ink);controls.append(colour);
   const thickness=node('input');thickness.type='range';thickness.min='.5';thickness.max='28';thickness.step='.5';thickness.value='2';thickness.setAttribute('aria-label','Grosor de prueba');controls.append(thickness);
-  const text=node('textarea');text.placeholder='Escribe aquí para probar…';text.setAttribute('aria-label','Texto de prueba');text.maxLength=4000;
+  const text=node('textarea');text.placeholder='Escribe aquí para probar la letra…';text.setAttribute('aria-label','Texto de prueba');text.maxLength=4000;
   const canvas=node('canvas');canvas.width=640;canvas.height=400;canvas.setAttribute('aria-label','Dibujo de prueba');
+  const surface=node('div','at-trial-surface');surface.append(canvas,text);
+  const updateMode=()=>{text.hidden=mode.value!=='write';canvas.style.pointerEvents=mode.value==='draw'?'auto':'none';};mode.addEventListener('change',updateMode);updateMode();
   let strokes=[],active=null;
-  const render=()=>{const bg=paperColor(paper.value);for(const surface of [text,canvas])surface.style.backgroundImage=`url("${svgUrl(paperSvg(paper.value))}")`;text.style.color=readableInk(ink.value,bg);text.style.fontFamily=fonts.find(f=>f.id===font.value).css;drawStrokes(canvas.getContext('2d'),{strokes},640,400,bg);};
+  const render=()=>{const bg=paperColor(paper.value);canvas.style.backgroundImage=`url("${svgUrl(paperSvg(paper.value))}")`;text.style.color=readableInk(ink.value,bg);text.style.fontFamily=fonts.find(f=>f.id===font.value).css;drawStrokes(canvas.getContext('2d'),{strokes},640,400,bg);};
   for(const input of [paper,font,ink])input.addEventListener('input',render);
   pen.addEventListener('change',()=>{thickness.value=String(instruments.find(p=>p.id===pen.value).width);if(pen.value==='blood')ink.value='#7d1020';if(pen.value==='stamp')ink.value='#b52335';render();});
   const point=e=>{const r=canvas.getBoundingClientRect();return{x:Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),y:Math.max(0,Math.min(1,(e.clientY-r.top)/r.height)),p:e.pointerType==='pen'?e.pressure:.5};};
@@ -291,7 +294,7 @@ function trialNote(current, initialPaper='plain') {
   const clear=node('button','','Borrar prueba');clear.type='button';clear.addEventListener('click',()=>{strokes=[];active=null;text.value='';render();});
   const close=node('button','','Cerrar y descartar prueba');close.type='button';close.addEventListener('click',()=>current.close());
   current.addEventListener('close',()=>{strokes=[];active=null;text.value='';canvas.width=canvas.width;},{once:true});
-  area.append(controls,text,canvas,clear,close);render();return area;
+  area.append(controls,surface,clear,close);render();return area;
 }
 
 function toolPreview(kind) {
@@ -300,21 +303,6 @@ function toolPreview(kind) {
   current.append(node('p', '', 'Explora cada acabado. Esta vista previa no cambia tus notas ni realiza compras.'));
   const grid = node('div', 'at-sample-grid');
   const sampleText = 'Las ideas empiezan aquí.';
-  if (kind === 'fonts') for (const font of fonts) {
-    const item = node('article', 'at-sample');
-    const text = node('p', 'at-font-sample', sampleText); text.style.fontFamily = font.css;
-    item.append(node('h3', '', font.name), text); grid.append(item);
-  }
-  if (kind === 'pens') for (const pen of instruments) {
-    const item = node('article', 'at-sample');
-    const canvas = node('canvas','at-stroke-sample'); canvas.width=640; canvas.height=160;
-    canvas.setAttribute('role','img'); canvas.setAttribute('aria-label',`Muestra de trazo: ${pen.name}`);
-    const points=Array.from({length:95},(_,n)=>({x:.05+n/105,y:.5+Math.sin(n/12)*.29,p:.15+.75*(1+Math.sin(n/15))/2}));
-    drawStrokes(canvas.getContext('2d'),{strokes:[{instrument:pen.id,color:'#304b3e',width:pen.width,points}]},640,160);
-    item.append(node('h3', '', pen.name), canvas);
-    if(!rights?.owner&&!rights?.premium&&!rights?.unlocked?.includes('pens'))item.append(cartButton('pen:'+pen.id,pen.name));
-    grid.append(item);
-  }
   if (kind === 'papers') for (const paper of papers) {
     const item = node('article', 'at-sample');
     const img = node('img', 'at-paper-sample'); img.src = svgUrl(paperSvg(paper.id)); img.alt = paper.name;
@@ -326,7 +314,9 @@ function toolPreview(kind) {
     for (const color of palette.colors) { const swatch = node('span'); swatch.style.backgroundColor = color; swatch.title = color; swatch.setAttribute('role','img'); swatch.setAttribute('aria-label','Color '+color); swatches.append(swatch); }
     item.append(node('h3', '', palette.name), swatches); grid.append(item);
   }
-  current.append(trialNote(current),grid); current.showModal();
+  current.append(trialNote(current,'plain',kind==='fonts'?'write':'draw'));
+  if(kind==='pens'&&!rights?.owner&&!rights?.premium&&!rights?.unlocked?.includes('pens')){const purchase=node('div','at-trial-purchase'),select=current.querySelector('[aria-label="Instrumento de prueba"]');const update=()=>{const pen=instruments.find(p=>p.id===select.value);purchase.replaceChildren(cartButton('pen:'+pen.id,pen.name));};select.addEventListener('change',update);update();current.append(purchase);}
+  if(kind==='papers'||kind==='palettes')current.append(grid); current.showModal();
 }
 
 function renderTools() {
@@ -338,7 +328,7 @@ function renderTools() {
   ];
   for (const [kind, sample, title, description] of specs) {
     const card = node('article', 'at-tool-card');
-    const button = node('button', 'at-preview-link', 'Ver todas las muestras');
+    const button = node('button', 'at-preview-link', 'Probar aquí');
     button.type = 'button'; button.setAttribute('aria-label', 'Explorar ' + title);
     button.addEventListener('click', () => { selectedTool = kind; toolPreview(selectedTool); });
     card.append(node('div', 'at-tool-sample', sample), node('h3', '', title), node('p', '', description), button);
