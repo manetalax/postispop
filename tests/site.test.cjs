@@ -1,6 +1,6 @@
 const {test}=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');
 test('Sitemap URLs are unique, public and point to complete Spanish documents',()=>{
- const urls=[...fs.readFileSync('sitemap.xml','utf8').matchAll(/<loc>(.*?)<\/loc>/g)].map(m=>m[1]);assert.equal(new Set(urls).size,urls.length);assert.equal(urls.length,18);
+ const urls=[...fs.readFileSync('sitemap.xml','utf8').matchAll(/<loc>(.*?)<\/loc>/g)].map(m=>m[1]);assert.equal(new Set(urls).size,urls.length);assert.equal(urls.length,21);
  for(const url of urls){assert.ok(!/\/(api|share|invite|favoritos|buscar)\//.test(url));if(url.includes('/tienda/'))continue;const pathname=new URL(url).pathname;const file=pathname==='/'?'index.html':pathname.slice(1);const html=fs.readFileSync(file,'utf8');assert.equal((html.match(/<title>/g)||[]).length,1,file);assert.equal((html.match(/<meta name="description"/g)||[]).length,1,file);assert.equal((html.match(/<h1\b/g)||[]).length,1,file);assert.ok(html.includes('lang="es"'),file);assert.ok(html.includes(`rel="canonical" href="${url}"`),file);}
 });
 test('Install manifest references real PNG icons with required sizes',()=>{
