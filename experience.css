@@ -96,3 +96,7 @@ body.pp-arcade .postispop .board-frame.pp-fixed-notes .pp-quote-copy{-webkit-lin
 }
 /* Narrow landscape windows scroll the board sideways instead of shrinking paper. */
 body.pp-arcade .postispop .board-frame.pp-fixed-notes{overflow-x:auto!important}
+
+.pp-add-note{min-height:44px;padding:10px 14px;border:1px solid #b7f7d8;border-radius:10px;background:#193b35;color:#b7f7d8;font:700 13px system-ui;cursor:pointer}.pp-note-action-status{font:12px/1.4 system-ui;width:100%;text-align:center;color:#b7f7d8}.pp-note-action-status:empty{display:none}.pp-add-note[hidden]{display:none!important}.pp-add-note:focus-visible{outline:3px solid #ffdf77;outline-offset:3px}
+
+body.pp-arcade .postispop .board-frame.pp-fixed-notes:has(.board-grid:empty) .board-grid{grid-template-rows:none!important}

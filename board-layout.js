@@ -18,10 +18,22 @@ function update(){
  }
  const pager=frame.querySelector('.zoom-button');
  if(pager){
-  const label=boardViewLabel(Number(frame.dataset.ppView)||0,Number(data.dataset.noteCount)||12);
+  const label=boardViewLabel(Number(frame.dataset.ppView)||0,Number(data.dataset.noteCount)||0);
+  pager.disabled=Number(data.dataset.noteCount)<=6;
   const span=pager.querySelector('span');if(span&&span.textContent!==label)span.textContent=label;
   if(pager.getAttribute('aria-label')!==label)pager.setAttribute('aria-label',label);if(pager.title!==label)pager.title=label;
  }
+ const rail=frame.querySelector('.rail-center');
+ if(rail&&!rail.querySelector('.pp-add-note')){
+  const add=create('button','＋ Añadir nota','pp-add-note');add.type='button';
+  const status=create('span','','pp-note-action-status');status.setAttribute('role','status');
+  add.onclick=async()=>{add.disabled=true;status.textContent='Creando nota…';try{
+    const response=await fetch('api/board/'+encodeURIComponent(data.dataset.boardId)+'/notes',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}),board=await response.json();if(!response.ok)throw Error(board.error||'ERROR');
+    window.dispatchEvent(new CustomEvent('postispop:board-reload',{detail:{boardId:board.id,view:Math.ceil(board.order.length/6)}}));status.textContent='Nota creada';
+   }catch(error){status.textContent=['BOARD_FULL','PREMIUM_REQUIRED'].some(code=>error.message.includes(code))?'Has alcanzado el límite de notas de esta pizarra.':error.message.includes('OFFLINE')?'Conéctate para añadir una nota a tu pizarra en la nube.':'No se pudo añadir la nota. Inténtalo de nuevo.';}finally{add.disabled=false;}};
+  rail.append(add,status);
+ }
+ const add=rail?.querySelector('.pp-add-note');if(add)add.hidden=data.dataset.boardRole!=='owner';
  let choice=null;const key=quotePreferenceKey(data.dataset.boardId);try{choice=localStorage.getItem(key);}catch{}
  const filled=[...data.dataset.filled].map((c,index)=>c==='1'||Boolean(drawings.get(data.dataset.boardId)?.[index]));const location=data.dataset.boardId!=='guest-board'&&!drawings.has(data.dataset.boardId)?null:quoteLocation(filled,choice);
  for(const note of frame.querySelectorAll('.sticky-note[data-note-id]')){

@@ -9,7 +9,7 @@ const guestError = (code,status=400) => Object.assign(new Error(code),{status});
 const reserved = note => Boolean(localStorage.getItem('pp:protected-note:'+note.id));
 const markProtection = note => {try{if(note.protectedEnvelope)localStorage.setItem('pp:protected-note:'+note.id,'1');else localStorage.removeItem('pp:protected-note:'+note.id);}catch{/* The persisted envelope remains authoritative if a redundant UI marker cannot be saved. */}};
 export function readGuest() {
-  try { const saved=JSON.parse(localStorage.getItem(KEY)); if(saved?.id==='guest-board' && Array.isArray(saved.notes)) return saved; } catch {}
+  try { const saved=JSON.parse(localStorage.getItem(KEY)); if(saved?.id==='guest-board' && Array.isArray(saved.notes)) return {...saved,capacity:Math.max(12,saved.capacity||0,saved.notes.length)}; } catch {}
   const notes=Array.from({length:12},(_,i)=>makeNote(i));
   return {id:'guest-board',title:'Mi pizarra',revision:1,order:notes.map(n=>n.id),expires:null,role:'owner',owner:'guest',notes,members:[],trash:[]};
 }
@@ -19,6 +19,11 @@ export function guestRequest(endpoint, method, payload={}) {
   const save=()=>{board.revision++;try{localStorage.setItem(KEY,JSON.stringify(board));}catch(error){if(error?.name==='QuotaExceededError')throw guestError('LOCAL_STORAGE_FULL',507);throw error;}return board;};
   if(parts[0]==='board') {
     if(method==='GET') return parts[2]==='trash'?{items:board.trash||[]}:parts[2]==='export'?{format:'postispop',version:1,title:board.title,notes:board.order.map(id=>board.notes.find(n=>n.id===id)).filter(Boolean),exportedAt:new Date().toISOString()}:board;
+    if(parts[2]==='notes' && method==='POST'){
+      if(board.notes.length>=(board.capacity||12))throw guestError('BOARD_FULL',409);
+      const ids=[...board.notes,...(board.trash||[]).map(t=>t.note)];const position=Math.max(11,...ids.map(n=>Number(n.id.split('-').pop())))+1;
+      const note=makeNote(position);board.notes.push(note);board.order.push(note.id);return save();
+    }
     if(parts[2]==='import' && method==='POST') {
       // Validate the entire copy before saving anything. Only fill empty slots.
       const imported=normalizeBackup(payload,{maxNotes:12,maxBytes:50*1024*1024}).notes.map(n=>n.protectedEnvelope?{text:'Nota protegida',marks:[],paper:n.paper,doodle:'',image:null,style:null,protectedEnvelope:n.protectedEnvelope}:n);
@@ -37,8 +42,16 @@ export function guestRequest(endpoint, method, payload={}) {
   }
   if(parts[0]==='restore') {
     const found=(board.trash||[]).find(n=>n.id===parts[1]);
+    if(!found||found.expires<=Date.now())throw guestError('TRASH_EXPIRED',404);
+    if(found.removed){
+      if(board.notes.length>=(board.capacity||12))throw guestError('BOARD_FULL',409);
+      if(board.notes.some(n=>n.id===found.note.id))throw guestError('CONFLICT',409);
+      const restored={...found.note,revision:found.note.revision+2,styleRevision:(found.note.styleRevision||0)+1,lockedUntil:0,editing:'',updated:Date.now()};
+      board.notes.push(restored);board.order.splice(Math.min(found.position||0,board.order.length),0,restored.id);board.trash=board.trash.filter(n=>n.id!==found.id);const saved=save();markProtection(restored);return saved;
+    }
+    // Backwards compatibility for trash saved before removal of paper slots.
     const target=board.notes.find(n=>!n.text&&!n.doodle&&!n.image&&!n.protectedEnvelope&&!reserved(n)&&!n.style?.drawing?.strokes?.length);
-    if(!found||!target) throw new Error('BOARD_FULL');
+    if(!target)throw guestError('BOARD_FULL',409);
     const revision=target.revision+1,styleRevision=(target.styleRevision||0)+1;
     Object.assign(target,found.note,{id:target.id,revision,styleRevision,lockedUntil:0,editing:''});
     board.trash=board.trash.filter(n=>n.id!==found.id);const saved=save();markProtection(target);return saved;
@@ -51,11 +64,11 @@ export function guestRequest(endpoint, method, payload={}) {
   if(kind==='unlock') return {ok:true};
   if(kind==='share') throw new Error('SESSION_REQUIRED');
   if(kind==='trash') {
-    const id='guest-trash-'+crypto.randomUUID();
-    board.trash=[...(board.trash||[]),{id,note:{...note},text:note.text,doodle:note.doodle,expires:Date.now()+2592000000}];
-    const revision=note.revision+1,styleRevision=(note.styleRevision||0)+1;
-    Object.assign(note,makeNote(Number(note.id.split('-').pop())),{revision,styleRevision});
-    const saved=save();markProtection(note);return {board:saved,trashId:id};
+    if(payload.revision!==undefined&&payload.revision!==note.revision)throw guestError('CONFLICT',409);
+    const id='guest-trash-'+crypto.randomUUID(),position=board.order.indexOf(note.id);
+    board.trash=[...(board.trash||[]),{id,note:{...note},text:note.text,doodle:note.doodle,image:note.image,removed:true,position,expires:Date.now()+2592000000}];
+    board.notes=board.notes.filter(n=>n.id!==note.id);board.order=board.order.filter(id=>id!==note.id);
+    const saved=save();markProtection({id:note.id});return {board:saved,trashId:id};
   }
   if(kind==='protect'||kind==='protected-save') {
     if(payload.revision!==note.revision||(payload.styleRevision!==undefined&&payload.styleRevision!==(note.styleRevision||0)))throw guestError('CONFLICT',409);

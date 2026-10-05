@@ -54,13 +54,20 @@ const fs=require('node:fs/promises'),path=require('node:path');
    await page.locator('.zoom-button').click();await page.waitForSelector('.board-frame[data-pp-view="1"]');
    console.log(`PASS ${count} notes: only populated groups and twelve-note overview`);
   }
+  async function noteCount(){return page.evaluate(()=>JSON.parse(localStorage.getItem('postispop-guest-board-v1')).order.length);}
+  async function goGroup(group){for(let i=0;i<8&&Number(await page.locator('.board-frame').getAttribute('data-pp-view'))!==group;i++){await page.locator('.zoom-button').click();await page.waitForTimeout(40);}await page.waitForSelector(`.board-frame[data-pp-view="${group}"]`);}
+  const undoName=/Deshacer|Undo/;
   for(const count of [30,25,24,19,18,13,12]){
-   await page.evaluate(count=>{const b=JSON.parse(localStorage.getItem('postispop-guest-board-v1'));b.notes=b.notes.slice(0,count);b.order=b.order.slice(0,count);localStorage.setItem('postispop-guest-board-v1',JSON.stringify(b));},count);
-   await page.reload();await page.waitForSelector('[data-pp-slot="1"]');
-   for(let group=2;group<=Math.ceil(count/6);group++){await page.locator('.zoom-button').click();await page.waitForSelector(`[data-pp-slot="${(group-1)*6+1}"]`);}
-   await page.getByRole('button',{name:'Ver 12 notas · 1–12',exact:true}).waitFor();assert.equal(await page.locator('.sticky-note[data-note-id]').count(),count%6||6);
-   console.log(`PASS removal down to ${count}: no empty group in cycle`);
+   while(await noteCount()>count){const before=await noteCount();await goGroup(Math.ceil(before/6));await page.locator(`[data-pp-slot="${before}"]`).click();await page.waitForSelector('.editor-dialog textarea');await page.getByRole('button',{name:'A la papelera',exact:true}).click();await page.waitForSelector('.editor-dialog',{state:'detached'});await page.waitForFunction(n=>JSON.parse(localStorage.getItem('postispop-guest-board-v1')).order.length===n,before-1);}
+   await goGroup(Math.ceil(count/6));await page.getByRole('button',{name:'Ver 12 notas · 1–12',exact:true}).waitFor();assert.equal(await page.locator('.sticky-note[data-note-id]').count(),count%6||6);
+   console.log(`PASS real trash down to ${count}: empty group removed automatically`);
   }
+  // Creation opens its populated page; deleting and Undo adjust it immediately.
+  await page.getByRole('button',{name:'＋ Añadir nota',exact:true}).click();await page.waitForSelector('[data-pp-slot="13"]');assert.equal(await noteCount(),13);
+  await page.locator('[data-pp-slot="13"]').click();await page.waitForSelector('.editor-dialog textarea');await page.locator('.editor-dialog textarea').fill('Nota trece recién creada, conservar');await page.getByRole('button',{name:'Volver a la pizarra',exact:true}).click();await page.waitForSelector('.editor-dialog',{state:'detached'});
+  await page.locator('[data-pp-slot="13"]').click();await page.waitForSelector('.editor-dialog textarea');await page.getByRole('button',{name:'A la papelera',exact:true}).click();await page.waitForSelector('.editor-dialog',{state:'detached'});await page.waitForFunction(()=>JSON.parse(localStorage.getItem('postispop-guest-board-v1')).order.length===12);
+  await page.getByRole('button',{name:undoName}).last().click();await page.waitForFunction(()=>JSON.parse(localStorage.getItem('postispop-guest-board-v1')).order.length===13);await goGroup(3);assert.match(await page.locator('[data-pp-slot="13"]').innerText(),/Nota trece recién creada/);
+  console.log('PASS create 13 → trash 12 → Undo 13: page updates, original text preserved');
   assert.deepEqual(errors,[]);
  }catch(e){console.log('device diagnostics',errors,await page.evaluate(()=>({body:document.body.className,frame:document.querySelector('.board-frame')?.className,sheets:[...document.styleSheets].map(s=>s.href),head:document.head.innerHTML.slice(-1500),notes:document.querySelectorAll('.sticky-note').length})));await page.screenshot({path:'test-results/devices-failure.png',fullPage:true});throw e;}finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});

@@ -305,6 +305,22 @@ async function api(endpoint, init) {
     return json({format:'postispop',version:1,title:board.title,notes:board.order.map(id=>board.notes.find(n=>n.id===id)).filter(Boolean).map(n=>n.protectedEnvelope?{paper:n.paper,protectedEnvelope:n.protectedEnvelope}:{text:n.text,marks:n.marks,paper:n.paper,doodle:n.doodle,image:n.image}),exportedAt:new Date().toISOString()});
   }
 
+  const addMatch=endpoint.match(/^board\/([^/]+)\/notes$/);
+  if(addMatch&&method==='POST'){
+    await rest('rpc/postispop_add_board_note','',{method:'POST',body:JSON.stringify({p_board:addMatch[1]})});return api('board/'+addMatch[1],{method:'GET'});
+  }
+  const trashMatch=endpoint.match(/^note\/([^/]+)\/trash$/);
+  if(trashMatch&&method==='POST'){
+    const result=await rest('rpc/postispop_remove_board_note','',{method:'POST',body:JSON.stringify({p_note:trashMatch[1],p_revision:payload.revision})});
+    const board=await (await api('board/'+result.board_id,{method:'GET'})).json();return json({board,trashId:result.trashId});
+  }
+  const trashList=endpoint.match(/^board\/([^/]+)\/trash$/);
+  if(trashList&&method==='GET')return json(await rest('rpc/postispop_board_note_trash','',{method:'POST',body:JSON.stringify({p_board:trashList[1]})}));
+  const restoreMatch=endpoint.match(/^restore\/([^/]+)$/);
+  if(restoreMatch&&method==='POST'){
+    const result=await rest('rpc/postispop_restore_board_note','',{method:'POST',body:JSON.stringify({p_trash:restoreMatch[1]})});return api('board/'+result.board_id,{method:'GET'});
+  }
+
   const boardMatch = endpoint.match(/^board\/([^/]+)$/);
   if (boardMatch && method === "GET") {
     const id = boardMatch[1];
