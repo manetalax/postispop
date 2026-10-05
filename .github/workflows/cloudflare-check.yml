@@ -1,0 +1,24 @@
+name: Check Cloudflare migration
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      WRANGLER_SEND_METRICS: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - run: npm test && npm run lint && npm run build:cloudflare
+      - run: npx wrangler deploy --dry-run
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:devices && npm run test:experience
