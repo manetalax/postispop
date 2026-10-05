@@ -2,6 +2,7 @@ import {cp,mkdir,rm,readdir,writeFile,readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {publicFiles,copyPublicTree,auditBundle,writeBundleManifest} from '../mobile/bundle-tools.mjs';
+import {transformBoardLayout} from './board-layout-transform.mjs';
 import {optimizeQuotes} from './optimize-quotes.mjs';
 import {repairLegalPage} from './repair-static-pages.mjs';
 import {writePublicServiceWorker} from '../mobile/service-worker.mjs';
@@ -69,6 +70,8 @@ html=html.replace(/<body\b([^>]*)>/i,(_,attrs)=>'<body'+( /\bclass=/.test(attrs)
 html=html.replace(/<meta name="theme-color" content="[^"]*"\s*\/?\s*>/g,'<meta name="theme-color" content="#ff007a">');await writeFile(file,html);}
 console.log('Staged WPO/PWA, public search and accessible tools. Captured API data excluded.');
 
+const boardEntry=new URL('_next/static/chunks/Board-BrRAatyY.js',out);
+await writeFile(boardEntry,transformBoardLayout(await readFile(boardEntry,'utf8')));
 console.log('Daily quote loading optimized:', await optimizeQuotes(out));
 await auditBundle(fileURLToPath(out));
 console.log('Offline public shell:',await writePublicServiceWorker(fileURLToPath(out)),'resources; API responses excluded.');

@@ -1,3 +1,4 @@
+import './board-layout.js';
 import {track, metricsEnabled, setMetricsEnabled, readMetrics, recordVisit} from './usage-metrics.js';
 import {initBoardTools, download} from './board-tools.js?v=2';
 
@@ -51,7 +52,7 @@ function installVisitStreak(header){
     const label=document.createElement('strong');label.textContent='Días seguidos para premios';
     const days=document.createElement('span');days.className='pp-streak-days';
     const status=document.createElement('span');status.className='pp-streak-status';status.setAttribute('role','status');
-    bar.append(label,days,status);header.before(bar);paintStreak(0,'Confirmando visita…');
+    bar.append(label,days,status);header.closest('.postispop')?.append(bar);paintStreak(0,'Confirmando visita…');
   }
   syncVisitStreak();
 }
