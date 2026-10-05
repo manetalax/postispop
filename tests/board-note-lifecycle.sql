@@ -10,6 +10,7 @@ begin
  for i in 13..25 loop perform public.postispop_add_board_note(b);end loop;
  select id into n from public.notes where board_id=b and position=24;
  update public.notes set text='Nota protegida',protected_envelope='{"v":1,"alg":"AES-256-GCM","kdf":"PBKDF2-SHA-256","iterations":600000,"salt":"AAAAAAAAAAAAAAAAAAAAAA","iv":"AAAAAAAAAAAAAAAA","id":"AAAAAAAAAAAAAAAAAAAAAA","ciphertext":"AAAAAAAAAAAAAAAAAAAAAA"}',paper=5 where id=n;
+ insert into postispop_private.note_shares(note_id,created_by,token_hash)values(n,actor,encode(extensions.digest('postispop-archive-share-test','sha256'),'hex'));
  perform set_config('pp.test_note',n::text,true);
 end $$;
 set local role authenticated;
@@ -22,11 +23,14 @@ begin
  if(select count(*)from public.notes where board_id=b)<>24 or exists(select 1 from public.notes where id=n)then raise exception 'archived note still visible';end if;
  denied:=false;begin perform public.postispop_read_protected_share(token);exception when sqlstate 'P0002'then denied:=true;end;
  if not denied then raise exception 'archived share remains available';end if;
+ denied:=false;begin perform public.postispop_read_note_share('postispop-archive-share-test');exception when others then if sqlerrm='SHARE_UNAVAILABLE'then denied:=true;else raise;end if;end;
+ if not denied then raise exception 'ordinary archived share remains available';end if;
  if jsonb_array_length(public.postispop_board_note_trash(b)->'items')<>1 then raise exception 'trash missing';end if;
  fresh:=(public.postispop_add_board_note(b)->>'id')::uuid;
  if fresh=n then raise exception 'identity reused';end if;
  update public.notes set text='Nueva nota intacta'where id=fresh;
  perform public.postispop_restore_board_note(t);
+ if public.postispop_read_note_share('postispop-archive-share-test')->>'text'<>'Nota protegida'then raise exception 'ordinary restored share unavailable';end if;
  if public.postispop_read_protected_share(token)->'envelope'->>'ciphertext'<>'AAAAAAAAAAAAAAAAAAAAAA'then raise exception 'restored share unavailable';end if;
  if (select count(*)from public.notes where board_id=b)<>26 then raise exception 'restore count';end if;
  if not exists(select 1 from public.notes where id=n and paper=5 and protected_envelope->>'ciphertext'='AAAAAAAAAAAAAAAAAAAAAA' and text='Nota protegida')then raise exception 'protected contents lost';end if;

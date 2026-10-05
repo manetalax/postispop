@@ -117,4 +117,18 @@ begin
  return jsonb_build_object('envelope',envelope);
 end $$;
 
+-- Ordinary note links also respect the recoverable archive.
+create or replace function postispop_private.read_note_share(p_token text) returns jsonb
+language plpgsql stable security definer set search_path='' as $$
+declare note public.notes;share postispop_private.note_shares;state jsonb;
+begin
+ if auth.uid() is null then raise exception 'SESSION_REQUIRED';end if;
+ select * into share from postispop_private.note_shares where token_hash=encode(extensions.digest(p_token,'sha256'),'hex') and revoked_at is null and expires_at>now();
+ if share.id is null then raise exception 'SHARE_UNAVAILABLE';end if;
+ select * into note from public.notes where id=share.note_id;
+ if note.id is null or note.position<0 then raise exception 'SHARE_UNAVAILABLE';end if;
+ -- A share never unlocks an expired trial's extra notes.
+ if note.position>=12 and not exists(select 1 from public.boards b where b.id=note.board_id and (exists(select 1 from public.store_entitlements e where e.user_id=b.owner_id and e.product_slug='postispop-pro') or exists(select 1 from public.board_trials t where t.user_id=b.owner_id and t.expires_at>now()))) then raise exception 'PREMIUM_REQUIRED';end if;
+ return jsonb_build_object('text',note.text,'marks',note.marks,'paper',note.paper,'doodle',note.doodle,'image',case when note.image_url is null then null else jsonb_build_object('url',note.image_url) end);
+end $$;
 commit;
