@@ -46,7 +46,7 @@ body.pp-arcade .board-grid .note-cell:first-child .sticky-note:has(>.blank-note)
 .pp-quote-reward p{line-height:1.5}
 .pp-quote-reward button{min-height:44px;padding:10px 14px;margin:4px;border-radius:10px;border:1px solid #b7f7d8;background:#b7f7d8;color:#153b38;font:700 14px system-ui;cursor:pointer}
 .pp-quote-reward button+button{background:transparent;color:#fff}
-@media(max-width:700px){
+@media(max-width:700px), (max-width:1000px) and (max-height:500px) and (orientation:landscape){
  body.pp-arcade .postispop{padding:4px!important;min-height:100dvh}
  body.pp-arcade .postispop>.workspace-seo-title,body.pp-arcade .postispop>.value-proposition{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%);margin:0!important;padding:0!important;white-space:nowrap}
  body.pp-arcade .postispop .app-header.pp-pattern-header{grid-template-columns:minmax(70px,1fr) minmax(100px,1.2fr) 52px!important;gap:5px!important;padding:5px 8px!important;min-height:50px!important;margin:0!important}
@@ -70,6 +70,29 @@ body.pp-arcade .board-grid .note-cell:first-child .sticky-note:has(>.blank-note)
  body.pp-arcade .postispop.pp-six-note-mobile .board-frame .zoom-button span{font:700 13px system-ui!important}
  body.pp-arcade .postispop.pp-six-note-mobile .board-frame .rail-center>.icon-button{display:none!important}
  body.pp-arcade .postispop.pp-six-note-mobile .pp-visit-streak{margin:14px 0!important}
- body.pp-arcade .postispop.pp-six-note-mobile .board-grid .note-cell:nth-child(n+7){display:none!important}
  body.pp-arcade .pp-daily-quote-banner{border-radius:10px;margin:6px 0;padding:10px 12px}
 }
+
+/* Paper dimensions never depend on viewport height or the selected view. */
+body.pp-arcade .postispop .board-frame.pp-fixed-notes{width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;gap:10px!important;padding:16px 12px 12px!important}
+body.pp-arcade .postispop .board-frame.pp-fixed-notes .board-grid{display:grid!important;min-width:max-content!important;grid-template-columns:repeat(3,144px)!important;grid-template-rows:repeat(2,144px)!important;grid-auto-rows:144px!important;justify-content:center!important;gap:8px!important;flex:none!important;padding:0!important;border:0!important;background:transparent!important}
+body.pp-arcade .postispop .board-frame.pp-fixed-notes.pp-twelve-notes .board-grid{grid-template-columns:repeat(4,144px)!important;grid-template-rows:repeat(3,144px)!important}
+body.pp-arcade .postispop .board-frame.pp-fixed-notes .note-cell{display:block!important;width:144px!important;height:144px!important;aspect-ratio:1!important}
+body.pp-arcade .postispop .board-frame.pp-fixed-notes .sticky-note{box-sizing:border-box!important;width:144px!important;height:144px!important;min-height:0!important;padding:18px 12px 12px!important;overflow:hidden!important;transform:none!important}
+body.pp-arcade .postispop .board-frame.pp-fixed-notes .note-text{font-size:16px!important;line-height:1.4!important;text-align:left;align-self:flex-start;display:block!important;overflow:hidden!important;max-height:100%;white-space:pre-wrap}
+body.pp-arcade .postispop .board-frame.pp-fixed-notes .pp-frame-ornament{display:none!important}
+body.pp-arcade .postispop .board-frame.pp-fixed-notes .board-rail{position:static!important;transform:none!important;width:100%!important;height:auto!important;min-height:48px!important;margin:4px 0 0!important}
+body.pp-arcade .postispop .board-frame.pp-fixed-notes .rail-center{opacity:1!important;width:100%!important;justify-content:center!important;flex-wrap:wrap}
+body.pp-arcade .postispop .board-frame.pp-fixed-notes .zoom-button{min-height:44px!important;height:44px!important;width:296px!important;padding:10px!important;border-color:#b7f7d8!important;color:#b7f7d8!important}
+body.pp-arcade .postispop .board-frame.pp-fixed-notes .zoom-button span{font:700 13px system-ui!important}
+body.pp-arcade .postispop .board-frame.pp-fixed-notes .pp-quote-copy{-webkit-line-clamp:unset;line-height:1.4}
+@media(max-width:700px) and (orientation:portrait){
+ body.pp-arcade .postispop .board-frame.pp-fixed-notes .board-grid{grid-template-columns:repeat(2,144px)!important;grid-template-rows:repeat(3,144px)!important}
+ body.pp-arcade .postispop .board-frame.pp-fixed-notes.pp-twelve-notes .board-grid{grid-template-rows:repeat(6,144px)!important}
+}
+@media(max-width:700px) and (orientation:landscape), (max-width:1000px) and (max-height:500px) and (orientation:landscape){
+ body.pp-arcade .postispop .board-frame.pp-fixed-notes .board-grid{grid-template-columns:repeat(3,144px)!important;grid-template-rows:repeat(2,144px)!important}
+ body.pp-arcade .postispop .board-frame.pp-fixed-notes.pp-twelve-notes .board-grid{grid-template-columns:repeat(4,144px)!important;grid-template-rows:repeat(3,144px)!important}
+}
+/* Narrow landscape windows scroll the board sideways instead of shrinking paper. */
+body.pp-arcade .postispop .board-frame.pp-fixed-notes{overflow-x:auto!important}

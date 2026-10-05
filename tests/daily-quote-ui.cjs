@@ -18,8 +18,8 @@ const fs=require('node:fs/promises'),path=require('node:path');
    await page.locator('.editor-dialog textarea').fill(text);await page.getByRole('button',{name:'Volver a la pizarra',exact:true}).click();await page.waitForSelector('.editor-dialog',{state:'detached'});
    await page.waitForFunction(({slot,text})=>JSON.parse(localStorage.getItem('postispop-guest-board-v1'))?.notes[slot-1]?.text===text,{slot,text});
   }
-  async function first(){if(await page.locator('.board-frame.zoom-2').count())await page.getByRole('button',{name:'← Ver las 6 primeras · 1–6',exact:true}).click();await page.waitForSelector('[data-pp-slot="1"]');}
-  async function second(){if(await page.locator('.board-frame.zoom-1').count())await page.getByRole('button',{name:'Ver las 6 siguientes · 7–12 →',exact:true}).click();await page.waitForSelector('[data-pp-slot="7"]');}
+  async function first(){for(let i=0;i<3&&await page.locator('.board-frame').getAttribute('data-pp-view')!=='1';i++){await page.locator('.zoom-button').click();await page.waitForTimeout(30);}await page.waitForSelector('[data-pp-slot="1"]');}
+  async function second(){for(let i=0;i<3&&await page.locator('.board-frame').getAttribute('data-pp-view')!=='2';i++){await page.locator('.zoom-button').click();await page.waitForTimeout(30);}await page.waitForSelector('[data-pp-slot="7"]');}
   await page.locator('[data-pp-slot="6"]').click();await page.waitForSelector('.editor-dialog textarea');assert.equal(await page.locator('textarea').inputValue(),originalQuote);
   await page.getByRole('button',{name:'Volver a la pizarra',exact:true}).click();await page.waitForSelector('.editor-dialog',{state:'detached'});
   await page.waitForSelector('[data-pp-slot="6"].pp-quote-host');assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('postispop-guest-board-v1'))?.notes[5]?.text||''),'','Opening is not editing');
