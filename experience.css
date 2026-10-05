@@ -88,7 +88,7 @@ body.pp-arcade .postispop .board-frame.pp-fixed-notes .zoom-button span{font:700
 body.pp-arcade .postispop .board-frame.pp-fixed-notes .pp-quote-copy{-webkit-line-clamp:unset;line-height:1.4}
 @media(max-width:700px) and (orientation:portrait){
  body.pp-arcade .postispop .board-frame.pp-fixed-notes .board-grid{grid-template-columns:repeat(2,144px)!important;grid-template-rows:repeat(3,144px)!important}
- body.pp-arcade .postispop .board-frame.pp-fixed-notes.pp-twelve-notes .board-grid{grid-template-rows:repeat(6,144px)!important}
+ body.pp-arcade .postispop .board-frame.pp-fixed-notes.pp-twelve-notes .board-grid{grid-template-columns:repeat(2,144px)!important;grid-template-rows:repeat(6,144px)!important}
 }
 @media(max-width:700px) and (orientation:landscape), (max-width:1000px) and (max-height:500px) and (orientation:landscape){
  body.pp-arcade .postispop .board-frame.pp-fixed-notes .board-grid{grid-template-columns:repeat(3,144px)!important;grid-template-rows:repeat(2,144px)!important}
