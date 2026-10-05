@@ -17,3 +17,26 @@ body.pp-arcade .board-grid .sticky-note .note-text{font-size:16px!important}
 .board-grid .note-cell:first-child .sticky-note .blank-note{font-size:14px}
 body.pp-arcade .board-grid .sticky-note .note-text{font-size:14px!important}
 }
+
+/* Keep every paper within its grid cell, including the daily quote. On short
+   screens the board scrolls rather than shrinking text and overlapping targets. */
+body.pp-arcade .board-frame{min-height:440px!important}
+body.pp-arcade .board-grid .note-cell:not(.quote-expanded) .sticky-note{padding:14px 8px 8px!important;overflow:hidden!important;min-height:0!important}
+body.pp-arcade .board-grid .daily-quote:not(.quote-expanded) .sticky-note{gap:3px!important}
+body.pp-arcade .daily-quote:not(.quote-expanded) small{font:700 10px/1.2 system-ui;flex-shrink:0}
+body.pp-arcade .daily-quote:not(.quote-expanded) cite{font:italic 10px/1.2 system-ui;flex-shrink:0}
+body.pp-arcade .board-grid .quote-expanded .sticky-note{position:fixed!important;top:50%!important;left:50%!important;transform:translate(-50%,-50%)!important;width:min(520px,calc(100vw - 32px))!important;height:auto!important;min-height:0!important;max-height:calc(100dvh - 120px)!important;padding:28px 22px!important;overflow:auto!important;transition:none!important;z-index:1001}
+body.pp-arcade .quote-expanded{z-index:1001}
+body.pp-arcade .pp-quote-close{position:fixed;top:12px;right:12px;z-index:1003;min-width:44px;min-height:44px;padding:10px 16px;border:1px solid #b899de;border-radius:12px;background:#28213e;color:#fff;font:700 14px system-ui;cursor:pointer}
+body.pp-arcade .quote-expanded .quote-source{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:1002;padding:10px 16px;border-radius:10px;background:#28213e;color:#fff}
+body.pp-arcade .quote-expanded .quote-source a{color:#fff}
+@media(max-width:700px){body.pp-arcade .board-frame{min-height:400px!important}}
+@media(max-height:480px) and (orientation:landscape){body.pp-arcade .board-frame{min-height:250px!important}}
+
+@media(max-height:480px) and (orientation:landscape){
+ body.pp-arcade .board-frame.pp-designed-board{padding:16px 10px!important}
+ body.pp-arcade .pp-designed-board .board-grid{grid-template-columns:repeat(6,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+ body.pp-arcade .pp-designed-board .pp-frame-ornament{display:none}
+}
+
+body.pp-arcade .board-grid .note-cell:first-child .sticky-note:has(>.blank-note){padding:10px 8px!important}
