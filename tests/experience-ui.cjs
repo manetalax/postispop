@@ -53,7 +53,7 @@ let observedErrors=[];
   assert.equal(await page.locator('.onboarding-card').isVisible(),false,'Guide card stays hidden');
   assert.equal(await page.locator('.pp-learn').isVisible(),false);
   assert.equal(await page.locator('[aria-label="Promoción de estreno"]').isVisible(),false);
-  assert.equal(await page.getByRole('link',{name:'? Ayuda',exact:true}).getAttribute('href'),'/ayuda.html');
+  assert.equal(await page.getByRole('link',{name:'? Ayuda',exact:true,includeHidden:true}).getAttribute('href'),'/ayuda.html');
 
   // Visit streak is automatic, idempotent today, and resets after a skipped day.
   await page.waitForSelector('.pp-streak-days .done');
@@ -91,7 +91,7 @@ let observedErrors=[];
   assert.equal(await page.getByRole('searchbox',{name:'Buscar notas o etiquetas'}).isVisible(),true);
   await page.getByRole('searchbox',{name:'Buscar notas o etiquetas'}).fill('#estudio');
   await page.waitForFunction(()=>document.querySelector('.pp-tools [role=status]')?.textContent.startsWith('1 notas'));
-  assert.equal(await page.locator('.note-cell.pp-filtered').count(),11);
+  assert.equal(await page.locator('.note-cell.pp-filtered').count(),(await page.locator('.sticky-note[data-note-id]').count())-1);
   await page.getByRole('searchbox',{name:'Buscar notas o etiquetas'}).fill('');
   await page.waitForFunction(()=>document.querySelectorAll('.note-cell.pp-filtered').length===0);
   await page.getByRole('combobox',{name:'Filtrar por color'}).selectOption('1');

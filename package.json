@@ -17,7 +17,8 @@
     "test:offline-shell": "node tests/offline-shell-ui.cjs",
     "test:cloud-import": "node tests/cloud-import-ui.cjs",
     "test:autosave": "node tests/autosave-ui.cjs",
-    "test:devices": "node tests/devices-ui.cjs"
+    "test:devices": "node tests/devices-ui.cjs",
+    "test:daily-quote": "node tests/daily-quote-ui.cjs"
   },
   "dependencies": {
     "astro": "^5.0.0"

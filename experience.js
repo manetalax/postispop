@@ -1,3 +1,4 @@
+import './board-layout.js';
 import {track, metricsEnabled, setMetricsEnabled, readMetrics, recordVisit} from './usage-metrics.js';
 import {initBoardTools, download} from './board-tools.js?v=2';
 
@@ -51,7 +52,7 @@ function installVisitStreak(header){
     const label=document.createElement('strong');label.textContent='Días seguidos para premios';
     const days=document.createElement('span');days.className='pp-streak-days';
     const status=document.createElement('span');status.className='pp-streak-status';status.setAttribute('role','status');
-    bar.append(label,days,status);header.before(bar);paintStreak(0,'Confirmando visita…');
+    bar.append(label,days,status);header.closest('.postispop')?.append(bar);paintStreak(0,'Confirmando visita…');
   }
   syncVisitStreak();
 }
@@ -100,13 +101,6 @@ function update() {
       if(node.title!==title)node.title=title;
     }
   });
-  const quote=document.querySelector('.daily-quote.quote-expanded');
-  if(quote&&!quote.querySelector('.pp-quote-close')){
-    const close=document.createElement('button');close.type='button';close.className='pp-quote-close';
-    close.textContent='Cerrar frase del día';close.onclick=()=>quote.querySelector('.sticky-note')?.click();
-    quote.append(close);
-  }
-  document.querySelectorAll('.daily-quote:not(.quote-expanded) .pp-quote-close').forEach(node=>node.remove());
   initBoardTools();
   const frame=document.querySelector('.board-frame');if(frame&&hydrated){const top=frame.getBoundingClientRect().top+window.scrollY;const height=Math.max(240,Math.floor(window.innerHeight-top-14))+'px';if(frame.style.getPropertyValue('--pp-board-height')!==height)frame.style.setProperty('--pp-board-height',height);}
 
@@ -147,8 +141,3 @@ recordVisit();update();
 document.addEventListener('click',event=>{const button=event.target.closest('button');if(button?.textContent.trim()==='Cómo funciona'){event.preventDefault();event.stopImmediatePropagation();location.href='/ayuda.html';}},true);
 
 window.addEventListener('resize',update);
-
-// The quote is a separate recovered component, so it needs its own dismissal.
-function dismissQuote(){document.querySelector('.daily-quote.quote-expanded .sticky-note')?.click();}
-document.addEventListener('keydown',event=>{if(event.key==='Escape'&&document.querySelector('.daily-quote.quote-expanded')){event.preventDefault();dismissQuote();}});
-document.addEventListener('pointerdown',event=>{if(document.querySelector('.daily-quote.quote-expanded')&&!event.target.closest('.daily-quote .sticky-note,.daily-quote .quote-source,.pp-quote-close'))dismissQuote();});

@@ -56,6 +56,7 @@ function renderBoard() {
     if(selected){const src=designBadge(selected);if(badge.getAttribute('src')!==src)badge.src=src;}
     header.classList.add('pp-pattern-header');
   }
+  if(board?.id)window.dispatchEvent(new CustomEvent('postispop:quote-drawings',{detail:{boardId:board.id,filled:board.order.map(id=>{const note=noteById(id);return Boolean(note&&!note.protectedEnvelope&&styleFor(note).drawing.strokes.length);})}}));
   const summary=document.querySelector('.pp-design-summary');if(summary){const text=design?design.title:'Tu pizarra, a tu manera';if(summary.textContent!==text)summary.textContent=text;}
 }
 async function refresh() {

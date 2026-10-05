@@ -22,14 +22,6 @@ body.pp-arcade .board-grid .sticky-note .note-text{font-size:14px!important}
    screens the board scrolls rather than shrinking text and overlapping targets. */
 body.pp-arcade .board-frame{min-height:440px!important}
 body.pp-arcade .board-grid .note-cell:not(.quote-expanded) .sticky-note{padding:14px 8px 8px!important;overflow:hidden!important;min-height:0!important}
-body.pp-arcade .board-grid .daily-quote:not(.quote-expanded) .sticky-note{gap:3px!important}
-body.pp-arcade .daily-quote:not(.quote-expanded) small{font:700 10px/1.2 system-ui;flex-shrink:0}
-body.pp-arcade .daily-quote:not(.quote-expanded) cite{font:italic 10px/1.2 system-ui;flex-shrink:0}
-body.pp-arcade .board-grid .quote-expanded .sticky-note{position:fixed!important;top:50%!important;left:50%!important;transform:translate(-50%,-50%)!important;width:min(520px,calc(100vw - 32px))!important;height:auto!important;min-height:0!important;max-height:calc(100dvh - 120px)!important;padding:28px 22px!important;overflow:auto!important;transition:none!important;z-index:1001}
-body.pp-arcade .quote-expanded{z-index:1001}
-body.pp-arcade .pp-quote-close{position:fixed;top:12px;right:12px;z-index:1003;min-width:44px;min-height:44px;padding:10px 16px;border:1px solid #b899de;border-radius:12px;background:#28213e;color:#fff;font:700 14px system-ui;cursor:pointer}
-body.pp-arcade .quote-expanded .quote-source{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:1002;padding:10px 16px;border-radius:10px;background:#28213e;color:#fff}
-body.pp-arcade .quote-expanded .quote-source a{color:#fff}
 @media(max-width:700px){body.pp-arcade .board-frame{min-height:400px!important}}
 @media(max-height:480px) and (orientation:landscape){body.pp-arcade .board-frame{min-height:250px!important}}
 
@@ -40,3 +32,44 @@ body.pp-arcade .quote-expanded .quote-source a{color:#fff}
 }
 
 body.pp-arcade .board-grid .note-cell:first-child .sticky-note:has(>.blank-note){padding:10px 8px!important}
+
+.pp-mobile-menu{display:none}
+.pp-daily-quote-preview{display:flex;flex-direction:column;gap:6px;width:100%;min-height:0;max-height:100%;overflow:hidden;pointer-events:none}
+.pp-daily-quote-preview small{font:700 11px/1.3 system-ui;text-transform:uppercase;letter-spacing:.03em}
+.pp-daily-quote-preview .pp-quote-copy{font:16px/1.45 system-ui;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4}
+.pp-daily-quote-preview cite{font:italic 11px/1.2 system-ui}
+.pp-quote-host>.blank-note{display:none!important}
+.pp-daily-quote-banner,.pp-quote-reward{width:100%;box-sizing:border-box;padding:14px 18px;border:1px solid #8c71b0;border-radius:14px;background:linear-gradient(110deg,#302341,#153b38);color:#fff;margin:10px 0}
+.pp-daily-quote-banner strong{font:700 12px/1.4 system-ui;color:#b7f7d8}
+.pp-daily-quote-banner p{margin:6px 0;font:17px/1.5 system-ui}
+.pp-daily-quote-banner cite{font:italic 12px/1.4 system-ui}
+.pp-quote-reward p{line-height:1.5}
+.pp-quote-reward button{min-height:44px;padding:10px 14px;margin:4px;border-radius:10px;border:1px solid #b7f7d8;background:#b7f7d8;color:#153b38;font:700 14px system-ui;cursor:pointer}
+.pp-quote-reward button+button{background:transparent;color:#fff}
+@media(max-width:700px){
+ body.pp-arcade .postispop{padding:4px!important;min-height:100dvh}
+ body.pp-arcade .postispop>.workspace-seo-title,body.pp-arcade .postispop>.value-proposition{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%);margin:0!important;padding:0!important;white-space:nowrap}
+ body.pp-arcade .postispop .app-header.pp-pattern-header{grid-template-columns:minmax(70px,1fr) minmax(100px,1.2fr) 52px!important;gap:5px!important;padding:5px 8px!important;min-height:50px!important;margin:0!important}
+ body.pp-arcade .postispop .app-header .brand{min-width:0!important;width:90px!important}
+ body.pp-arcade .postispop .app-header .brand-logo{height:36px!important;max-height:36px!important;max-width:90px!important}
+ body.pp-arcade .postispop .app-header .pp-template-selector{grid-column:2;grid-row:1;min-height:38px!important}
+ body.pp-arcade .postispop .app-header .pp-mobile-menu{display:block;grid-column:3;grid-row:1;padding:6px!important;min-width:44px;min-height:44px;font-size:12px!important}
+ body.pp-arcade .postispop .app-header:not(.pp-mobile-menu-open) .top-controls,body.pp-arcade .postispop .app-header:not(.pp-mobile-menu-open) .pp-arcade-nav,body.pp-arcade .postispop .app-header:not(.pp-mobile-menu-open) .header-title{display:none!important}
+ body.pp-arcade .postispop .app-header.pp-mobile-menu-open .top-controls{grid-column:1/-1!important;grid-row:2!important;min-height:70px!important;justify-self:center}
+ body.pp-arcade .postispop .app-header.pp-mobile-menu-open .pp-arcade-nav{grid-row:4!important;display:flex!important}
+ body.pp-arcade .postispop .app-header.pp-mobile-menu-open .header-title{grid-row:3!important}
+ body.pp-arcade .postispop.pp-six-note-mobile .board-frame{width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;margin:6px 0!important;padding:12px 6px 8px!important;gap:10px!important}
+ body.pp-arcade .postispop.pp-six-note-mobile .board-frame .board-grid{grid-template-columns:repeat(2,144px)!important;grid-template-rows:repeat(3,144px)!important;grid-auto-rows:144px!important;justify-content:center!important;gap:8px!important;flex:none!important;padding:0!important;border:0!important;background:transparent!important}
+ body.pp-arcade .postispop.pp-six-note-mobile .board-frame .note-cell{width:144px!important;height:144px!important;aspect-ratio:1!important}
+ body.pp-arcade .postispop.pp-six-note-mobile .board-frame .sticky-note{padding:18px 12px 12px!important;min-height:0!important;overflow:hidden!important}
+ body.pp-arcade .postispop.pp-six-note-mobile .board-frame .note-text{font-size:16px!important;line-height:1.5!important;text-align:left;align-self:flex-start;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden!important}
+ body.pp-arcade .postispop.pp-six-note-mobile .board-frame .pp-frame-ornament{display:none!important}
+ body.pp-arcade .postispop.pp-six-note-mobile .board-frame .board-rail{position:static!important;transform:none!important;left:auto!important;right:auto!important;width:100%!important;height:48px!important;min-height:48px!important;margin:4px 0 0!important}
+ body.pp-arcade .postispop.pp-six-note-mobile .board-frame .rail-center{opacity:1!important;width:100%!important;justify-content:center!important}
+ body.pp-arcade .postispop.pp-six-note-mobile .board-frame .zoom-button{min-height:44px!important;height:44px!important;width:296px!important;padding:10px!important;font-size:13px!important;border-color:#b7f7d8!important;color:#b7f7d8!important}
+ body.pp-arcade .postispop.pp-six-note-mobile .board-frame .zoom-button span{font:700 13px system-ui!important}
+ body.pp-arcade .postispop.pp-six-note-mobile .board-frame .rail-center>.icon-button{display:none!important}
+ body.pp-arcade .postispop.pp-six-note-mobile .pp-visit-streak{margin:14px 0!important}
+ body.pp-arcade .postispop.pp-six-note-mobile .board-grid .note-cell:nth-child(n+7){display:none!important}
+ body.pp-arcade .pp-daily-quote-banner{border-radius:10px;margin:6px 0;padding:10px 12px}
+}

@@ -10,7 +10,7 @@ export const publicFiles = [
   'privacy.html', 'terms.html', 'legal.html', 'cookies.html',
   'postispop-shop.js', 'commerce-ui.js', 'home-promo.js', 'commerce.css', 'supabase-bridge.js', 'supabase-config.js',
   'guest-board.js', 'guest-status.js', 'note-attachments.js', 'note-attachments.css',
-  'experience-content.js', 'experience.css', 'experience.js', 'usage-metrics.js', 'board-tools.js', 'backup-import.js',
+  'board-layout.js', 'daily-quote-model.js', 'experience-content.js', 'experience.css', 'experience.js', 'usage-metrics.js', 'board-tools.js', 'backup-import.js',
   'search.js', 'search-index.json', 'premios.html', 'site-metrics.js', 'atelier.html', 'atelier.js', 'atelier.css', 'design-catalog.js',
   'design-tools.js', 'design-tools.css', 'style-model.js', 'fonts.css',
   'note-crypto.js', 'protected-notes.js', 'protected-notes.css', 'protected-share.js', 'compartir.html', 'attachment-lock.js',
