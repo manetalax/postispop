@@ -1,25 +1,39 @@
+import {mobileBoardQuery,boardViewLabel} from './board-view-model.js';
 import {quoteLocation,quotePreferenceKey} from './daily-quote-model.js';
 const create=(tag,text='',className='')=>{const n=document.createElement(tag);n.textContent=text;n.className=className;return n;};
 let scheduled=false;const drawings=new Map();
 function update(){
  const frame=document.querySelector('.board-frame:not(.is-loading)'),data=document.querySelector('.pp-daily-quote-data');
  if(!frame||!data?.dataset.boardId)return;
- const mobile=matchMedia('(max-width:700px)').matches;
+ const mobile=matchMedia(mobileBoardQuery).matches;
  const header=document.querySelector('.app-header');
  if(header&&!header.querySelector('.pp-mobile-menu')){
   const button=create('button','Menú','pp-mobile-menu');button.type='button';button.setAttribute('aria-expanded','false');
   button.onclick=()=>{const open=header.classList.toggle('pp-mobile-menu-open');button.setAttribute('aria-expanded',String(open));};header.append(button);
  }
  const main=frame.closest('.postispop');main?.classList.toggle('pp-six-note-mobile',mobile);
+ frame.classList.add('pp-fixed-notes');frame.classList.toggle('pp-twelve-notes',frame.dataset.ppView==='0');
  if(mobile){
   for(const node of document.querySelectorAll('.workspace-caption,.pp-note-search'))if(node.previousElementSibling!==frame&&node.compareDocumentPosition(frame)&Node.DOCUMENT_POSITION_FOLLOWING)frame.after(node);
  }
  const pager=frame.querySelector('.zoom-button');
- if(pager&&mobile){
-  const second=frame.classList.contains('zoom-2');const label=second?'← Ver las 6 primeras · 1–6':'Ver las 6 siguientes · 7–12 →';
+ if(pager){
+  const label=boardViewLabel(Number(frame.dataset.ppView)||0,Number(data.dataset.noteCount)||0);
+  pager.disabled=Number(data.dataset.noteCount)<=6;
   const span=pager.querySelector('span');if(span&&span.textContent!==label)span.textContent=label;
-  pager.setAttribute('aria-label',label);pager.title=label;
+  if(pager.getAttribute('aria-label')!==label)pager.setAttribute('aria-label',label);if(pager.title!==label)pager.title=label;
  }
+ const rail=frame.querySelector('.rail-center');
+ if(rail&&!rail.querySelector('.pp-add-note')){
+  const add=create('button','＋ Añadir nota','pp-add-note');add.type='button';
+  const status=create('span','','pp-note-action-status');status.setAttribute('role','status');
+  add.onclick=async()=>{add.disabled=true;status.textContent='Creando nota…';try{
+    const response=await fetch('api/board/'+encodeURIComponent(data.dataset.boardId)+'/notes',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}),board=await response.json();if(!response.ok)throw Error(board.error||'ERROR');
+    window.dispatchEvent(new CustomEvent('postispop:board-reload',{detail:{boardId:board.id,view:Math.ceil(board.order.length/6)}}));status.textContent='Nota creada';
+   }catch(error){status.textContent=['BOARD_FULL','PREMIUM_REQUIRED'].some(code=>error.message.includes(code))?'Has alcanzado el límite de notas de esta pizarra.':error.message.includes('OFFLINE')?'Conéctate para añadir una nota a tu pizarra en la nube.':'No se pudo añadir la nota. Inténtalo de nuevo.';}finally{add.disabled=false;}};
+  rail.append(add,status);
+ }
+ const add=rail?.querySelector('.pp-add-note');if(add)add.hidden=data.dataset.boardRole!=='owner';
  let choice=null;const key=quotePreferenceKey(data.dataset.boardId);try{choice=localStorage.getItem(key);}catch{}
  const filled=[...data.dataset.filled].map((c,index)=>c==='1'||Boolean(drawings.get(data.dataset.boardId)?.[index]));const location=data.dataset.boardId!=='guest-board'&&!drawings.has(data.dataset.boardId)?null:quoteLocation(filled,choice);
  for(const note of frame.querySelectorAll('.sticky-note[data-note-id]')){
@@ -47,12 +61,12 @@ function update(){
    prompt=create('section','','pp-quote-reward');prompt.setAttribute('role','region');prompt.setAttribute('aria-label','Conservar la frase del día');
    prompt.append(create('strong','¡Has usado tus 12 notas!'),create('p','¿Quieres conservar la frase del día en una barra encima de la pizarra? A partir de ahora tus doce notas serán siempre tuyas.'));
    const status=create('p','','pp-quote-preference-status');status.setAttribute('role','status');
-   for(const [label,value]of [['Sí, conservar la frase del día','banner'],['No, gracias','declined']]){const b=create('button',label);b.type='button';b.onclick=()=>{try{localStorage.setItem(key,value);if(value==='banner'&&mobile&&frame.classList.contains('zoom-2'))frame.querySelector('.zoom-button')?.click();schedule();}catch{status.textContent='No se pudo guardar tu elección. Libera espacio y vuelve a intentarlo.';}};prompt.append(b);}
+   for(const [label,value]of [['Sí, conservar la frase del día','banner'],['No, gracias','declined']]){const b=create('button',label);b.type='button';b.onclick=()=>{try{localStorage.setItem(key,value);if(value==='banner'&&mobile)window.dispatchEvent(new Event('postispop:first-page'));schedule();}catch{status.textContent='No se pudo guardar tu elección. Libera espacio y vuelve a intentarlo.';}};prompt.append(b);}
    prompt.append(status);frame.after(prompt);
   }
  }else prompt?.remove();
 }
 function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;update();});}
-new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-filled','data-text','data-author','data-board-id','class']});
+new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-filled','data-text','data-author','data-board-id','data-note-count','data-pp-view','class']});
 window.addEventListener('postispop:quote-drawings',event=>{const {boardId,filled}=event.detail||{};if(boardId&&Array.isArray(filled)){drawings.set(boardId,filled);schedule();}});
 window.addEventListener('resize',schedule);window.addEventListener('storage',schedule);window.addEventListener('postispop:save',schedule);schedule();

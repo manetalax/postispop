@@ -9,3 +9,5 @@ test('Recovered editor integration preserves a quote as an unsaved draft until a
  const source=await fs.readFile('_next/static/chunks/Board-BrRAatyY.js','utf8');const result=transformBoardLayout(source);
  assert.doesNotMatch(result,/xn.indexOf\(e\)===11&&hd/);assert.match(result,/ppQuoteDraft/);assert.match(result,/data-pp-slot/);assert.throws(()=>transformBoardLayout('changed'),/changed/);
 });
+
+test('Quote follows active slots when papers are removed',async()=>{const {quoteLocation}=await import('../daily-quote-model.js');assert.equal(quoteLocation(Array(5).fill(false),null),null);assert.equal(quoteLocation(Array(6).fill(false),null),6);assert.equal(quoteLocation(Array(11).fill(false),null),6);assert.equal(quoteLocation(Array(11).fill(true),null),null);});

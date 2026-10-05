@@ -25,8 +25,8 @@ test('Stale guest edits are rejected without overwriting the saved note',async()
   assert.equal((await request('board/guest-board')).data.notes[0].text,'Prueba local');
 });
 test('Trash can be restored and note order can be swapped',async()=>{
-  const trashed=await request('note/guest-note-0/trash',{});assert.equal(trashed.data.board.notes[0].text,'');
-  const restored=await request('restore/'+trashed.data.trashId,{});assert.equal(restored.data.notes[0].text,'Prueba local');
+  const trashed=await request('note/guest-note-0/trash',{});assert.equal(trashed.data.board.notes.length,11);assert.equal(trashed.data.board.order.includes('guest-note-0'),false);
+  const restored=await request('restore/'+trashed.data.trashId,{});assert.equal(restored.data.notes.find(n=>n.id==='guest-note-0').text,'Prueba local');
   const swapped=await request('board/guest-board/swap',{from:'guest-note-0',to:'guest-note-1'});assert.equal(swapped.data.order[0],'guest-note-1');
 });
 test('Guest sharing requests sign-in rather than pretending to succeed',async()=>{
@@ -56,9 +56,9 @@ test('All six colors survive save, reload, reorder, trash and restore',async()=>
   const trashed=await request(`note/${note.id}/trash`,{});
   assert.equal(trashed.data.board.trash[0].note.paper,5);
   const restored=await request(`restore/${trashed.data.trashId}`,{});
-  assert.equal(restored.data.notes.find(n=>n.id==='guest-note-0').paper,5);
+  assert.equal(restored.data.notes.find(n=>n.id===note.id).paper,5);
   board=(await request('board/guest-board')).data;
-  assert.equal(board.notes.find(n=>n.id==='guest-note-0').paper,5);
+  assert.equal(board.notes.find(n=>n.id===note.id).paper,5);
 });
 
 test('Backup import preserves existing notes, colors and order in exported copy',async()=>{
@@ -155,14 +155,16 @@ test('Storage quota exhaustion leaves the previously saved board intact',async()
   try{const failure=await request('note/guest-note-0/style',{style:{size:25},styleRevision:0});assert.equal(failure.status,507);assert.equal(failure.data.error,'LOCAL_STORAGE_FULL');assert.equal(storage.get('postispop-guest-board-v1'),before);}finally{context.localStorage.setItem=original;}
 });
 
-test('Trash, restore and slot reuse never recycle a revision accepted by an old editor',async()=>{
+test('Removed notes stay recoverable and stale editors cannot recreate or overwrite a slot',async()=>{
   storage.clear();const original=await request('note/guest-note-0',{text:'Original',marks:[],revision:1});
-  const trashed=await request('note/guest-note-0/trash',{});assert.ok(trashed.data.board.notes[0].revision>original.data.note.revision);
-  const restored=await request('restore/'+trashed.data.trashId,{});const note=restored.data.notes[0];assert.ok(note.revision>trashed.data.board.notes[0].revision);
+  const trashed=await request('note/guest-note-0/trash',{revision:original.data.note.revision});assert.equal(trashed.data.board.notes.length,11);
+  assert.equal((await request('note/guest-note-0',{text:'Stale',marks:[],revision:original.data.note.revision})).data.error,'NOT_FOUND');
+  const restored=await request('restore/'+trashed.data.trashId,{});const note=restored.data.notes.find(n=>n.id==='guest-note-0');assert.ok(note.revision>original.data.note.revision);
   const stale=await request('note/guest-note-0',{text:'Editor obsoleto',marks:[],revision:original.data.note.revision});assert.equal(stale.data.error,'CONFLICT');
-  const replaced=await request('note/guest-note-0/trash',{});const revision=replaced.data.board.notes[0].revision;
-  const written=await request('note/guest-note-0',{text:'Nota nueva',marks:[],revision});assert.equal(written.status,200);
-  assert.equal((await request('note/guest-note-0/style',{style:{size:16},styleRevision:0})).status,409);
+  await request('note/guest-note-0/trash',{revision:note.revision});const added=await request('board/guest-board/notes',{}),newNote=added.data.notes.at(-1);assert.notEqual(newNote.id,'guest-note-0');
+  const written=await request('note/'+newNote.id,{text:'Nota nueva',marks:[],revision:newNote.revision});assert.equal(written.status,200);
+  assert.equal((await request('note/guest-note-0/style',{style:{size:16},styleRevision:0})).data.error,'NOT_FOUND');
+  assert.equal((await request('restore/'+trashed.data.trashId,{})).data.error,'TRASH_EXPIRED');
 });
 
 test('Protected slot markers follow successful trash/restore and import skips an encryption reservation',async()=>{

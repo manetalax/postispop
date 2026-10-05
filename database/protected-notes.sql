@@ -121,7 +121,7 @@ declare envelope jsonb;
 begin
  if p_token is null or p_token !~ '^[a-f0-9]{64}$' then raise exception 'LINK_UNAVAILABLE' using errcode='P0002'; end if;
  select n.protected_envelope into envelope from public.postispop_protected_shares s join public.notes n on n.id=s.note_id join public.boards b on b.id=n.board_id
- where s.token_hash=encode(sha256(convert_to(p_token,'UTF8')),'hex') and s.revoked_at is null and s.expires_at>now() and b.owner_id=s.owner_id;
+ where s.token_hash=encode(sha256(convert_to(p_token,'UTF8')),'hex') and s.revoked_at is null and s.expires_at>now() and b.owner_id=s.owner_id and n.position>=0;
  if envelope is null then raise exception 'LINK_UNAVAILABLE' using errcode='P0002'; end if;
  return jsonb_build_object('envelope',envelope);
 end $$;
