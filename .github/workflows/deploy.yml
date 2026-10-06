@@ -32,6 +32,8 @@ jobs:
         run: npm test && npm run test:database && npm run lint && npm run build
       - name: Stage the notes app and public pages
         run: node scripts/stage-site.mjs
+      - name: Verify all public language versions before deployment
+        run: npm run test:seo
       - name: Verify note layout, editing, encryption, cloud import and offline use
         run: npm run test:backup && npm run test:notes-first && node tests/hydration-ui.cjs && npm run test:autosave && npm run test:experience && npm run test:premium && npm run test:atelier && npm run test:protected && npm run test:cloud-import && npm run test:offline-shell
       - name: Preserve UI verification screenshots

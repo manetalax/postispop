@@ -22,6 +22,10 @@ jobs:
         run: npm test && npm run lint && npm run build && node scripts/package-mobile.mjs
       - name: Verify bundled resources, offline data and Android CSP
         run: node --test tests/packaging.test.cjs && npm run test:mobile
+      - name: Verify multilingual public pages and board language entry
+        env:
+          POSTISPOP_TEST_ROOT: android/app/src/main/assets/www
+        run: npm run test:seo
       - name: Verify local attachment backups in the Android payload
         env:
           POSTISPOP_TEST_ROOT: android/app/src/main/assets/www
