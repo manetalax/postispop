@@ -71,7 +71,14 @@ document.addEventListener('click',async event=>{
     note?.click();
     if(!note)notice('La pizarra se está preparando. Espera un momento y vuelve a pulsar.');
   }
-  if(action==='metrics')download('PostisPop-contadores.json',JSON.stringify(readMetrics(),null,2),'application/json');
+  if(action==='metrics'){
+    button.disabled=true;
+    try{
+      const saved=await download('PostisPop-contadores.json',JSON.stringify(readMetrics(),null,2),'application/json');
+      if(!saved)notice('Guardado cancelado. Tus contadores se conservan.');
+    }catch{notice('No se pudieron guardar los contadores. Vuelve a intentarlo; los datos se conservan.');}
+    finally{button.disabled=false;}
+  }
   if(action==='install' && installPrompt){await installPrompt.prompt();installPrompt=null;button.hidden=true;}
 });
 // Sharing controls in the recovered UI call APIs that are not implemented.
