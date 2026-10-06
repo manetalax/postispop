@@ -6,6 +6,7 @@ import {transformBoardLayout} from './board-layout-transform.mjs';
 import {optimizeQuotes} from './optimize-quotes.mjs';
 import {repairLegalPage} from './repair-static-pages.mjs';
 import {writePublicServiceWorker} from '../mobile/service-worker.mjs';
+import {buildMultilingualSeo} from './build-seo.mjs';
 const root=new URL('../',import.meta.url),out=new URL('_site/',root);
 await rm(out,{recursive:true,force:true});await mkdir(new URL('tienda/',out),{recursive:true});
 const files=[...publicFiles];
@@ -99,6 +100,7 @@ console.log('Staged WPO/PWA, public search and accessible tools. Captured API da
 const boardEntry=new URL('_next/static/chunks/Board-BrRAatyY.js',out);
 await writeFile(boardEntry,transformBoardLayout(await readFile(boardEntry,'utf8')));
 console.log('Daily quote loading optimized:', await optimizeQuotes(out));
+await buildMultilingualSeo(fileURLToPath(out));
 await auditBundle(fileURLToPath(out));
 console.log('Offline public shell:',await writePublicServiceWorker(fileURLToPath(out)),'resources; API responses excluded.');
 const manifest=await writeBundleManifest(fileURLToPath(out),{target:'web',version:'0.5.0',includes:['atelier','design-tools','protected-notes','offline-sync','local-fonts','notes-first']});

@@ -1,6 +1,11 @@
 // Checked transformations of the recovered editor; the original bundle stays intact.
 export function transformBoardLayout(source){
  const replace=(from,to)=>{if(source.split(from).length!==2)throw Error('Board layout integration changed: '+from.slice(0,60));source=source.replace(from,to);};
+ // Keep the Spanish SSR/first render identical. Apply an explicit entry-page
+ // language or saved preference only in React's existing mount effect.
+ source='import {readBoardLanguage as ppBoardLanguage,consumeBoardLanguageQuery as ppConsumeBoardLanguage} from "../../../seo-language.js";'+source;
+ replace('return n(`es`),i(Pd(`store-theme`,`neutral`)),Rt()', 'return n(ppBoardLanguage()),ppConsumeBoardLanguage(),i(Pd(`store-theme`,`neutral`)),Rt()');
+ replace('Object.entries($u).filter(([e])=>e===`es`).map', 'Object.entries($u).map');
  replace('./assets/postispop-logo.png','./assets/postispop-logo.svg');
  source='import {mobileBoardQuery as ppBoardMedia,nextBoardView as ppBoardNext,boardViewNotes as ppBoardSlice,clampBoardView as ppBoardClamp,filterBoardNotes as ppBoardFilter} from "../../../board-view-model.js";'+source;
  replace('function Nd(e,t){return t===1?e.slice(0,6):t===2?e.slice(6,12):e.slice(0,12)}','function Nd(e,t){return ppBoardSlice(e,t)}');
