@@ -1,13 +1,21 @@
-# PostisPop Android 0.4.0 — recursos incluidos
+# PostisPop Android 0.5.0 — recursos incluidos
 
-La aplicación ejecuta archivos del APK con WebViewAssetLoader bajo el origen lógico `https://postispop.com`. No descarga la página pública como sustitución cuando falta un recurso. La pizarra, tienda, colecciones, 195 banderas, papelería, fuentes, herramientas y módulos de cifrado/offline forman parte del manifiesto obligatorio del empaquetado. Una dependencia local ausente o un CDN de código, imagen o fuente hace fallar la verificación.
+La aplicación ejecuta archivos del APK con WebViewAssetLoader bajo el origen lógico `https://postispop.com`. No descarga la página pública como sustitución cuando falta un recurso. La pizarra, las fuentes, las herramientas y los módulos de cifrado/offline forman parte del manifiesto obligatorio del empaquetado. Una dependencia local ausente o un CDN de código, imagen o fuente hace fallar la verificación.
 
 ## Identidad y estado real
 
-- Release: `com.postispop.android`, versión `0.4.0`, código `4`. Android 6+ con WebView actualizado.
+- Release: `com.postispop.android`, versión `0.5.0`, código `5`. Android 6+ con WebView actualizado.
 - Debug/beta: `com.postispop.android.beta`, identidad separada. Instalar release no migra ni reemplaza automáticamente los datos privados de la beta o del navegador.
 - Se mantiene R8, reducción de recursos, depuración de WebView desactivada y bloqueo de tráfico HTTP. Los mapas privados no se incluyen en web ni APK; el JavaScript fuente permanece legible.
-- El empaquetado de archivos no equivale a compilar, firmar, publicar ni instalar. Esta sesión no dispone de la clave original ni del SDK/Gradle. No se entrega un binario antiguo o sin firmar como instalador final.
+- El empaquetado de archivos no equivale a compilar, firmar, publicar ni instalar. La validación de código puede utilizar un SDK/JDK/Gradle temporal; la clave original sigue siendo necesaria para un instalador de distribución. No se entrega un binario antiguo o sin firmar como instalador final.
+
+## Producto y navegación
+
+Una sola oferta Premium: 2,95 €/mes, 9,95 €/año o 59,95 € de por vida. Los controles de compra muestran «Próximamente» y no abren un pago. La opción gratuita permite seis notas. La misma interfaz adaptable y los mismos límites del cliente web se incluyen en el APK; un derecho Premium debe proceder de la cuenta verificada, nunca de una bandera local modificable.
+
+Volver a abrir la aplicación desde el icono conserva el editor que estaba abierto. Al pasar al fondo se emite `postispop:native-background` para guardar los cambios pendientes del dibujo. Si Android elimina el proceso de renderizado, se muestra una acción de recuperación explícita; no se borran notas, adjuntos, borradores ni la cola pendiente.
+
+Google se abre en el navegador externo. `auth-pkce.js` mantiene el verificador durante diez minutos en el almacenamiento local del mismo origen para sobrevivir a la destrucción de la WebView; lo elimina al finalizar el intento y solo permite regresar a una ruta interna. Las contraseñas y los tokens de sesión no se guardan en ese registro. El intento anterior de un navegador abierto se puede migrar desde `sessionStorage`.
 
 ## Datos y funcionamiento sin conexión
 
@@ -33,11 +41,19 @@ POSTISPOP_CHROME=/ruta/a/chromium npm run test:mobile
 
 El script comparte `scripts/stage-site.mjs` con la web e incluye las optimizaciones presentes en la rama principal (documentos legales estáticos y catálogo de citas dividido por idioma). Genera `bundle-manifest.json` con ruta, tamaño y SHA-256 de cada archivo. Excluye datos capturados de API, mapas de depuración, claves y APK/AAB. Android no registra el service worker web: el host nativo ya dispone de todos los recursos.
 
+La configuración AAPT conserva las carpetas `_next` y `_astro`, que Android excluye por defecto. **Verificar la carpeta de origen no basta**: después de compilar se comparan los recursos realmente incluidos en cada APK/AAB con el manifiesto auditado:
+
+```sh
+python3 android/verify-archive.py android/app/build/outputs/apk/debug/app-debug-unsigned.apk android/app/build/outputs/bundle/release/app-release.aab
+```
+
+El verificador falla ante recursos ausentes, cambiados, duplicados o no auditados. No verifica la firma ni la instalación; esos controles siguen siendo independientes.
+
 Con poco espacio, `POSTISPOP_MOBILE_ASSET_LINKS=1 node scripts/package-mobile.mjs` permite enlaces duros únicamente entre las dos salidas generadas, `_site` y los recursos Android, dentro del mismo sistema de archivos. HTML y metadatos reciben copias independientes; nunca se enlazan archivos fuente. El APK sigue incluyendo los bytes locales de cada recurso. Tras empaquetar, conservar las salidas sin modificarlas y verificar sus manifiestos; para actualizar, volver a ejecutar el empaquetado completo.
 
 ## Compilar y firmar con la clave existente
 
-Requiere JDK 17, Gradle 8.13, SDK 36 y Build Tools 36.0.0. Restaurar la clave privada original **fuera del repositorio**. No generar ni sustituirla. Configurar variables de entorno mediante el gestor privado del propietario:
+Requiere JDK 17, Gradle 8.13, SDK 36, Build Tools 36.0.0 y Python 3 para verificar los recursos del APK. Restaurar la clave privada original **fuera del repositorio**. No generar ni sustituirla. Configurar variables de entorno mediante el gestor privado del propietario:
 
 - `ANDROID_HOME`: directorio del SDK.
 - `POSTISPOP_KEYSTORE`: ruta absoluta al almacén existente.
