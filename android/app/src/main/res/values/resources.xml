@@ -3,7 +3,7 @@
     <string name="recover_explanation">PostisPop necesita volver a abrirse. Las notas guardadas siguen en este dispositivo.</string>
     <string name="reopen_notes">Abrir mis notas</string>
     <string name="no_link_app">No hay una aplicación para abrir este enlace</string>
-    <string name="image_saved">Imagen guardada</string>
-    <string name="image_save_failed">No se pudo guardar la imagen</string>
     <string name="resource_unavailable">Recurso no incluido en esta versión local</string>
+    <string name="file_saved">Archivo guardado</string>
+    <string name="file_save_failed">No se pudo guardar el archivo</string>
 </resources>
