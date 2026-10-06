@@ -2,7 +2,7 @@
     <string name="recover_explanation">PostisPop doit être rouvert. Les notes enregistrées restent sur cet appareil.</string>
     <string name="reopen_notes">Ouvrir mes notes</string>
     <string name="no_link_app">Aucune application ne peut ouvrir ce lien</string>
-    <string name="image_saved">Image enregistrée</string>
-    <string name="image_save_failed">Impossible d’enregistrer l’image</string>
     <string name="resource_unavailable">Ressource non incluse dans cette version locale</string>
+    <string name="file_saved">Fichier enregistré</string>
+    <string name="file_save_failed">Impossible d’enregistrer le fichier</string>
 </resources>
