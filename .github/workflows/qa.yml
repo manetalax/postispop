@@ -6,10 +6,10 @@ permissions:
   contents: read
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6.0.3
+      - uses: actions/setup-node@v6.5.0
         with:
           node-version: 22
           cache: npm
@@ -18,7 +18,7 @@ jobs:
       - run: npm test && npm run test:database && npm run lint && npm run build
       - run: node scripts/stage-site.mjs
       - run: npm run test:backup && npm run test:notes-first && node tests/hydration-ui.cjs && npm run test:autosave && npm run test:experience && npm run test:premium && npm run test:atelier && npm run test:protected && npm run test:cloud-import && npm run test:offline-shell
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6.0.0
         if: always()
         with:
           name: postispop-review-screenshots
