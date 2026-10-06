@@ -11,6 +11,17 @@ const safeStyle=value=>{try{return normalizeStyle(value||{});}catch{return norma
 const noteById=id=>board?.notes?.find(note=>note.id===id);
 // Apply the current writing default only when the note has no saved style.
 const styleFor=note=>safeStyle(styles.get(note.id)||note.style||{ink:'#2d3933'});
+// Extension labels use the same document-language fallback as guest-status.
+const noteOptionsLabels={
+  es:['Opciones','Más opciones de la nota'],
+  en:['Options','More note options'],
+  de:['Optionen','Weitere Notizoptionen'],
+  fr:['Options','Plus d’options pour la note'],
+  ja:['オプション','ノートの追加オプション'],
+  pt:['Opções','Mais opções da nota'],
+  it:['Opzioni','Altre opzioni della nota'],
+  ko:['옵션','노트 추가 옵션']
+};
 const ICONS={
   text:'M4 5h16M12 5v15M8 20h8',
   pen:'m15 4 5 5M4 20l4-1 12-12a2 2 0 0 0-4-4L4 15z',
@@ -149,6 +160,10 @@ function enhanceEditor(){
     }
   }
   const text=paper.querySelector('textarea');
+  const textContainer=text.closest('.rich-paper-input');
+  const updateTextOverflow=()=>textContainer.classList.toggle('pp-text-scrollable',text.scrollHeight>text.clientHeight+1);
+  const textResize=new ResizeObserver(updateTextOverflow);
+  textResize.observe(text);text.addEventListener('input',updateTextOverflow);
   const drawingSnapshot=()=>JSON.stringify(value.drawing.strokes);
   function pushUndo(snapshot){undoHistory.push(snapshot);if(undoHistory.length>20)undoHistory.shift();redoHistory.length=0;}
   function syncTools(){
@@ -165,7 +180,7 @@ function enhanceEditor(){
   }
   function preview(){
     paper.classList.add('pp-styled-editor');setVariables(paper,value);canvas.style.backgroundImage=`url("${paperImage(value.paper)}")`;
-    paintSketch();syncTools();
+    paintSketch();syncTools();updateTextOverflow();
   }
   function changed(){dirty=true;status.textContent='Guardando…';status.dataset.state='saving';preview();clearTimeout(saveTimer);saveTimer=setTimeout(()=>flush(),350);}
   function finishGesture(){
@@ -254,6 +269,7 @@ function enhanceEditor(){
   for(const name of ['pagehide','online','postispop:native-background'])window.addEventListener(name,backgroundSave);
   const cleanup=new MutationObserver(()=>{
     if(panel.isConnected)return;
+    textResize.disconnect();text.removeEventListener('input',updateTextOverflow);
     clearTimeout(saveTimer);window.removeEventListener('postispop:editor-flush',beforeClose);
     for(const name of ['pagehide','online','postispop:native-background'])window.removeEventListener(name,backgroundSave);
     cleanup.disconnect();
@@ -262,9 +278,11 @@ function enhanceEditor(){
   const actions=paper.querySelector('.editor-actions');
   if(actions){
     paper.dataset.ppSecondary='closed';
-    const secondary=iconButton('Más opciones de la nota','more',()=>{
+    const [optionsText,optionsLabel]=noteOptionsLabels[(document.documentElement.lang||'es').split('-')[0]]||noteOptionsLabels.es;
+    const secondary=iconButton(optionsLabel,'more',()=>{
       const open=paper.dataset.ppSecondary!=='open';paper.dataset.ppSecondary=open?'open':'closed';secondary.setAttribute('aria-expanded',String(open));
     });
+    secondary.append(el('span',optionsText));
     secondary.classList.add('pp-editor-secondary');secondary.setAttribute('aria-expanded','false');
     const controls=[];
     for(const [index,node]of [...paper.querySelectorAll('.note-customization,.pen-tray,.capture-editor,.pp-attachments')].entries()){

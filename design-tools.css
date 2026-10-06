@@ -11,6 +11,12 @@
 .pp-styled-editor .rich-paper-mirror,.pp-styled-editor textarea{font-family:var(--pp-font)!important;font-size:var(--pp-font-size)!important;font-style:var(--pp-slant)!important;line-height:1.5!important;text-decoration:var(--pp-decoration);overflow-wrap:anywhere!important}
 .pp-styled-editor .rich-paper-mirror{color:var(--pp-ink)!important}
 .pp-styled-editor textarea{caret-color:var(--pp-ink)!important}
+/* A narrow native scrollbar reveals long text. Reserve the same gutter on
+   the ink mirror so typing, selection and marked text stay aligned. */
+.editor-dialog .rich-paper-input.pp-text-scrollable :is(textarea,.rich-paper-mirror){scrollbar-width:thin;scrollbar-gutter:stable;scrollbar-color:#69775a transparent}
+.editor-dialog .rich-paper-input.pp-text-scrollable .rich-paper-mirror{min-height:0}
+.editor-dialog .rich-paper-input.pp-text-scrollable textarea::-webkit-scrollbar{display:block;width:6px}
+.editor-dialog .rich-paper-input.pp-text-scrollable textarea::-webkit-scrollbar-thumb{background:#69775a;border-radius:4px}
 .pp-styled-editor[data-pp-paper=music],.pp-styled-editor[data-pp-paper=prescription]{padding-top:44px!important}
 
 /* One compact toolbar inside the note. Secondary controls open on demand. */
@@ -81,7 +87,8 @@
 .editor-dialog .edit-paper[data-pp-secondary=closed] .capture-actions{display:none!important}
 .editor-dialog .edit-paper .editor-actions button{display:inline-flex;align-items:center;justify-content:center;min-width:42px;width:42px;height:42px;min-height:42px;padding:9px;font-size:0;gap:0;border:0;border-radius:10px;background:transparent}
 .editor-dialog .edit-paper .editor-actions button svg{width:21px;height:21px;min-width:21px;font-size:initial}
-.editor-dialog .edit-paper .editor-actions .pp-editor-secondary{margin-left:auto}
+.editor-dialog .edit-paper .editor-actions button:not(.pp-editor-secondary){flex:0 0 42px}
+.editor-dialog .edit-paper .editor-actions .pp-editor-secondary{margin-left:auto;width:auto;flex:none;gap:5px;padding-inline:8px;font-size:12px;font-weight:600;white-space:nowrap}
 .editor-dialog .edit-paper .editor-actions .pp-editor-secondary[aria-expanded=true]{background:#244b3d;color:#fff}
 .editor-dialog .edit-paper[data-pp-secondary=open] :is(.note-customization,.pen-tray,.pp-attachments){animation:none}
 .editor-dialog .edit-paper .capture-preview{max-width:100%;max-height:210px;overflow:hidden;margin:0 0 10px}
