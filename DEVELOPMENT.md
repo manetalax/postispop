@@ -10,6 +10,9 @@ Consultar primero:
 - [Validación Android](docs/ANDROID_VALIDACION_20261006.md): cambios nativos, empaquetado, pruebas realizadas y límites de la verificación.
 - [Validación del backend](docs/BACKEND_OFFLINE_VALIDATION.md): alcance del entorno de pruebas y límites frente a producción.
 - [Importación a la nube](docs/CLOUD_IMPORT.md): guardado explícito y protección de los datos existentes.
+- [Auditoría competitiva](docs/AUDITORIA_COMPETITIVA_20261006.md): diez referencias y mediciones externas con su alcance real.
+- [Identidad visual](docs/IDENTIDAD_VISUAL.md): paleta, logotipo y criterios de legibilidad.
+- [Validación web](docs/VALIDACION_WEB_20261006.md): versiones medidas, pruebas y capturas.
 
 Las anotaciones del 2 y 3 de octubre que siguen son historial: no autorizan a restaurar la antigua tienda ni sustituyen estas decisiones. Este documento no acredita por sí solo un despliegue, una APK firmada ni una instalación en un dispositivo real.
 

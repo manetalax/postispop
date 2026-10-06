@@ -68,19 +68,19 @@ const mapBoard = (b, notes, members = []) => ({
   notes: notes.map(mapNote), members
 });
 
-async function createBoard(user, rest) {
-  const owned=await rest('boards','?owner_id=eq.'+encodeURIComponent(user.id)+'&select=id&limit=1');
-  // Entitlements are verified by the server; browser flags cannot create boards.
-  const premium=await rest('rpc/postispop_has_license','',{method:'POST',body:JSON.stringify({subject_id:'premium'})});
-  if(owned.length&&premium!==true)throw Object.assign(new Error('BOARD_LIMIT_REACHED'),{status:409});
-  const boardRows = await rest("boards", "", {
-    method: "POST", headers: { Prefer: "return=representation" },
-    body: JSON.stringify({ owner_id: user.id, title: "Mi pizarra" })
-  });
-  const board = boardRows[0];
-  const notes = Array.from({ length: premium===true?12:6 }, (_, position) => ({ board_id: board.id, author_id: user.id, position, paper: position % 6, marks: [], text: "" }));
-  await rest("notes", "", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify(notes) });
-  return board;
+async function createBoard(user, rest, startedAt) {
+  // The server owns the account, allowance and initial six/twelve notes. One
+  // transaction prevents an empty board if any seed insert fails. Retain the
+  // ticket on a lost response so Premium retries do not create duplicates.
+  const ticket=await importTicket(localStorage,user.id,'new-board',[],startedAt);
+  try {
+    const board=await rest('rpc/postispop_create_board','',{method:'POST',body:JSON.stringify({p_request_id:ticket.requestId})});
+    ticket.finish();return board;
+  } catch(error) {
+    if(error.body?.code==='PGRST202'||error.body?.code==='42883')throw Object.assign(new Error('CREATE_BOARD_UNAVAILABLE'),{status:503});
+    if(error.message==='BOARD_LIMIT_REACHED')error.status=409;
+    throw error;
+  }
 }
 
 let userCache = null, refreshPromise = null, sessionGeneration = 0;
@@ -264,7 +264,7 @@ async function api(endpoint, init) {
   if (endpoint === "me" && method === "GET") {
     if (!user) return json({ actor: actorFor(null), boards: [{ id: "guest-board", title: "Mi pizarra", owner: "guest", expires: null, role: "owner" }] });
     let boards = await rest("boards", "?select=*&order=created_at.asc");
-    if (!boards.length) boards = [await createBoard(user,rest)];
+    if (!boards.length) boards = [await createBoard(user,rest,requestStartedAt)];
     return json({ actor: actorFor(user), boards: boards.map(b => ({ id: b.id, title: b.title || "", owner: b.owner_id, expires: b.expires_at, role: b.owner_id===user.id?"owner":"member" })) });
   }
   if (!user && endpoint === "boards" && method === "POST") return json(readGuest());
@@ -320,7 +320,7 @@ async function api(endpoint, init) {
   if(revoke&&method==='POST')return json(await rest('rpc/postispop_revoke_protected_share','',{method:'POST',body:JSON.stringify({p_share_id:revoke[1]})}));
 
   if (endpoint === "boards" && method === "POST") {
-    const board = await createBoard(user,rest);
+    const board = await createBoard(user,rest,requestStartedAt);
     return api(`board/${board.id}`, { method: "GET" });
   }
 
