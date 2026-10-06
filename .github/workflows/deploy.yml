@@ -26,12 +26,12 @@ jobs:
           node-version: 22
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
+      - name: Install browser for verification
+        run: npx playwright install --with-deps chromium
       - name: Build public pages and search index
         run: npm test && npm run test:database && npm run lint && npm run build
       - name: Stage the notes app and public pages
         run: node scripts/stage-site.mjs
-      - name: Install browser for UI verification
-        run: npx playwright install --with-deps chromium
       - name: Verify note layout, editing, encryption, cloud import and offline use
         run: npm run test:notes-first && node tests/hydration-ui.cjs && npm run test:autosave && npm run test:experience && npm run test:premium && npm run test:atelier && npm run test:protected && npm run test:cloud-import && npm run test:offline-shell
       - name: Preserve UI verification screenshots

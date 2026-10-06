@@ -14,10 +14,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Bundle local notes UI and public pages
-        run: npm ci --no-audit --no-fund && npm test && npm run lint && npm run build && node scripts/package-mobile.mjs
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
       - name: Install browser for local payload verification
         run: npx playwright install --with-deps chromium
+      - name: Bundle local notes UI and public pages
+        run: npm test && npm run lint && npm run build && node scripts/package-mobile.mjs
       - name: Verify bundled resources, offline data and Android CSP
         run: node --test tests/packaging.test.cjs && npm run test:mobile
       - name: Verify Android authentication survives WebView recreation
