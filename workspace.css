@@ -1,0 +1,139 @@
+/* PostisPop visual system: calm workspace, readable notes, compact controls.
+   Note size and page capacity remain measured by board-layout.js. */
+:root {
+  --pp-bg: #f6f5f1;
+  --pp-surface: #fffefa;
+  --pp-text: #283633;
+  --pp-muted: #66716a;
+  --pp-border: #daddd4;
+  --pp-accent: #315c50;
+  --pp-accent-soft: #e9efea;
+  --pp-focus: #286b5b;
+  --pp-radius: 10px;
+  --pp-menu-shadow: 0 12px 36px #23392a14;
+  color-scheme: light;
+}
+:root[data-color-scheme=dark] {
+  --pp-bg: #1d2522;
+  --pp-surface: #28322d;
+  --pp-text: #edf0e9;
+  --pp-muted: #bcc6be;
+  --pp-border: #48594e;
+  --pp-accent: #c0d8c8;
+  --pp-accent-soft: #35483c;
+  --pp-focus: #b0d3bf;
+  --pp-menu-shadow: 0 12px 36px #0003;
+  color-scheme: dark;
+}
+html, body { margin: 0; min-width: 280px; background: var(--pp-bg)!important; color: var(--pp-text); }
+body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+button, a, input, select, summary { -webkit-tap-highlight-color: transparent; }
+button, summary, a { touch-action: manipulation; }
+:focus-visible { outline: 3px solid var(--pp-focus)!important; outline-offset: 3px; }
+[hidden] { display: none!important; }
+
+/* A flat, quiet header. The title is an action, not a second wordmark. */
+.postispop { box-sizing: border-box; width: 100%; max-width: none; min-height: 100dvh; margin: 0; padding: 14px 24px 8px; background: transparent; color: var(--pp-text); }
+.postispop > .value-proposition,
+.postispop > #pp-start,
+.postispop > .onboarding-card,
+.postispop > .pp-learn,
+.postispop > #pp-learn:empty,
+.postispop > .workspace-foot { display: none!important; }
+.postispop > .workspace-seo-title { display: block!important; position: absolute; width: 1px; height: 1px; margin: 0!important; padding: 0!important; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.postispop .app-header { position: relative; z-index: 20; display: grid!important; grid-template-columns: 156px minmax(0, 1fr) 44px; align-items: center; height: 48px!important; min-height: 48px!important; gap: 16px; margin: 0 0 2px; padding: 0!important; border: 0!important; border-radius: 0!important; background: transparent!important; box-shadow: none!important; }
+.postispop .app-header .brand { grid-column: 1; grid-row: 1; display: inline-flex; align-items: center; width: 148px; min-width: 0; height: 44px; padding: 0; }
+.postispop .brand-logo { display: block; width: 148px!important; height: 37px!important; object-fit: contain; filter: none!important; border-radius: 0; box-shadow: none; }
+:root[data-color-scheme=dark] .brand-logo { content: url('/assets/postispop-logo-light.svg'); }
+.postispop .app-header .header-title { grid-column: 2; grid-row: 1; justify-self: center; min-height: 44px; max-width: min(100%, 500px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0; padding: 6px 10px; border: 0!important; border-radius: 0!important; color: var(--pp-text)!important; background: transparent!important; box-shadow: none!important; font: 600 16px/1.35 ui-sans-serif, system-ui, sans-serif!important; letter-spacing: -.3px; }
+.postispop .app-header .header-title:hover { color: var(--pp-accent)!important; }
+.pp-menu-toggle { grid-column: 3; grid-row: 1; }
+.app-header .top-controls, .pp-app-links { display: none; }
+.app-header.pp-menu-open .top-controls { display: flex; flex-wrap: wrap; position: absolute; top: 54px; right: 0; width: 260px; z-index: 22; padding: 14px 14px 70px; gap: 10px; border: 1px solid var(--pp-border); border-radius: 16px; box-shadow: var(--pp-menu-shadow); background: var(--pp-surface); }
+.app-header.pp-menu-open .top-controls button { min-height: 44px; }
+.pp-menu-open .pp-app-links { display: flex; justify-content: space-around; position: absolute; z-index: 23; top: 160px; right: 14px; width: 260px; gap: 8px; font-size: 13px; }
+.pp-app-links a { color: var(--pp-accent); min-height: 44px; display: flex; align-items: center; }
+.pp-icon { display: inline-flex; justify-content: center; align-items: center; flex: none; width: 44px; min-width: 44px; height: 44px; padding: 0; border: 1px solid var(--pp-border); border-radius: var(--pp-radius); background: var(--pp-surface); color: var(--pp-text); font: 24px/1 system-ui; cursor: pointer; box-shadow: none; }
+.pp-icon:disabled { opacity: .4; cursor: default; }
+.pp-icon:hover:not(:disabled) { background: var(--pp-accent-soft); border-color: color-mix(in srgb, var(--pp-accent) 35%, var(--pp-border)); }
+.workspace-caption { display: flex; justify-content: flex-end; margin: 0; padding: 0; min-height: 24px; color: var(--pp-muted); }
+.workspace-caption .board-title { display: none; }
+.postispop .connection { color: var(--pp-muted)!important; font: 11px/1.3 system-ui; }
+
+/* Search stays close to the notes; everything secondary opens on demand. */
+.pp-tools.pp-note-search { position: relative; z-index: 10; display: flex; flex-wrap: nowrap; width: min(760px, 100%); max-width: none; box-sizing: border-box; margin: 0 auto 8px; padding: 0; gap: 8px; }
+.pp-note-search input { min-width: 0; width: 100%; flex: 1; height: 42px; border: 1px solid var(--pp-border); border-radius: var(--pp-radius); background: var(--pp-surface); color: var(--pp-text); padding: 8px 14px; font: 14px system-ui; box-shadow: none; }
+.pp-note-search input::placeholder { color: var(--pp-muted); opacity: 1; }
+.pp-note-search > select { width: 44px; min-width: 44px; max-width: 44px; min-height: 42px; padding: 0 8px; border: 1px solid var(--pp-border); border-radius: var(--pp-radius); background-color: var(--pp-surface); color: var(--pp-text); font-size: 0; appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23315c50' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a9 9 0 1 0 0 18h1.4a2 2 0 0 0 1.4-3.4 1.2 1.2 0 0 1 .9-2.1H17a4 4 0 0 0 4-4C21 6.8 17 3 12 3Z'/%3E%3Ccircle cx='7.5' cy='10' r='.7'/%3E%3Ccircle cx='11' cy='7' r='.7'/%3E%3Ccircle cx='15.5' cy='8' r='.7'/%3E%3Ccircle cx='7.5' cy='15' r='.7'/%3E%3C/svg%3E"); background-position: center; background-size: 22px; background-repeat: no-repeat; }
+:root[data-color-scheme=dark] .pp-note-search > select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c0d8c8' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a9 9 0 1 0 0 18h1.4a2 2 0 0 0 1.4-3.4 1.2 1.2 0 0 1 .9-2.1H17a4 4 0 0 0 4-4C21 6.8 17 3 12 3Z'/%3E%3Ccircle cx='7.5' cy='10' r='.7'/%3E%3Ccircle cx='11' cy='7' r='.7'/%3E%3Ccircle cx='15.5' cy='8' r='.7'/%3E%3Ccircle cx='7.5' cy='15' r='.7'/%3E%3C/svg%3E"); }
+.pp-note-search > select option { font-size: 14px; }
+.pp-board-options { padding: 0; margin: 0; flex: none; }
+.pp-board-options > summary { width: 44px; height: 42px; min-height: 42px; justify-content: center; padding: 0; font: 25px/1 system-ui; border: 1px solid var(--pp-border); background: var(--pp-surface); color: var(--pp-text)!important; border-radius: var(--pp-radius); }
+.pp-board-options > summary::after { display: none; }
+.pp-board-options .pp-tools { position: absolute; z-index: 40; top: 44px; right: 0; max-width: min(92vw, 520px); padding: 14px; margin: 4px 0 0; background: var(--pp-surface); border: 1px solid var(--pp-border); border-radius: 14px; box-shadow: var(--pp-menu-shadow); }
+.pp-board-options .pp-tools button, .pp-board-options .pp-tools a { font-size: 13px; color: var(--pp-text); background: var(--pp-surface); min-height: 44px; }
+.pp-search-status { position: absolute; top: 45px; left: 0; background: var(--pp-surface); z-index: 21; padding: 5px 8px; border-radius: 8px; }
+.pp-search-status:empty { display: none; }
+
+/* Square paper is the dominant shape. Saved paper codes and marked ink remain
+   unchanged; only the unstyled paper's presentation receives a softer tint. */
+.postispop .board-frame { --pp-note-size: max(160px, min(calc((100vw - 104px)/3), calc((100dvh - 234px)/2))); --pp-columns: 3; --pp-gap: 16px; --pp-note-font: 17px; display: flex!important; flex-direction: column; align-items: center; box-sizing: border-box; width: 100%; max-width: none; height: auto!important; max-height: none!important; min-height: 0!important; margin: 0; padding: 8px 12px 0; border: 0; border-radius: 0; background: none!important; box-shadow: none; overflow: visible; }
+.postispop .board-frame .board-grid { display: grid!important; grid-template-columns: repeat(var(--pp-columns), var(--pp-note-size))!important; grid-template-rows: none!important; grid-auto-rows: var(--pp-note-size)!important; justify-content: center; gap: var(--pp-gap)!important; width: auto; min-width: 0; max-width: 100%; padding: 0; border: 0; background: none; flex: none; }
+.postispop .board-frame .note-cell { display: block; width: var(--pp-note-size)!important; height: var(--pp-note-size)!important; aspect-ratio: 1; min-height: 0; position: relative; }
+.postispop .board-frame .sticky-note { display: flex; align-items: flex-start; justify-content: flex-start; box-sizing: border-box; width: 100%!important; height: 100%!important; min-height: 0; max-height: none; aspect-ratio: 1; padding: 22px 20px 27px!important; overflow: hidden; transform: none!important; border: 1px solid #2936280b; border-radius: 3px 3px 15px 3px; box-shadow: 0 2px 3px #26312607, 0 7px 14px #26312608; transition: box-shadow .15s ease, border-color .15s ease; text-align: left; }
+.postispop .board-frame .sticky-note:not(.pp-styled-note) { background: linear-gradient(145deg, color-mix(in srgb, var(--paper, #ffec86) 76%, #fffefa), color-mix(in srgb, var(--paper, #ffec86) 88%, #fffefa))!important; color: #2d3933; }
+.postispop .board-frame .sticky-note:hover { border-color: #314b3433; box-shadow: 0 3px 5px #2631260b, 0 10px 20px #2631260e; }
+.postispop .board-frame .sticky-note .note-text { display: block!important; align-self: flex-start; width: 100%; height: auto; max-height: 100%; margin: 0; padding: 0; text-align: left; font-size: var(--pp-note-font)!important; line-height: 1.48!important; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-weight: 400; letter-spacing: 0; white-space: pre-wrap; overflow-wrap: anywhere; overflow: hidden; -webkit-line-clamp: unset!important; }
+.postispop .board-frame .sticky-note:not(.pp-styled-note) .note-text { color: #2d3933; }
+.postispop .board-frame .sticky-note .blank-note { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font: 500 var(--pp-note-font)/1.5 system-ui; color: #59624b; text-align: center; opacity: 1; white-space: normal; }
+.postispop .board-frame .sticky-note :is(.note-pin, .pin, .pin-sprite) { display: none; }
+.postispop .note-number { position: absolute; right: 13px; bottom: 10px; top: auto; left: auto; color: #505c4e; font: 500 10px/1 system-ui; opacity: 1; }
+.postispop .board-frame .board-rail { display: none!important; }
+.postispop:not(:has(.pp-note-search)) .workspace-caption { margin-bottom: 52px; }
+.pp-pagination { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; padding: 10px 0 0; min-height: 44px; }
+.pp-page-select { height: 42px; padding: 7px 12px; border: 1px solid var(--pp-border); border-radius: var(--pp-radius); background: var(--pp-surface); color: var(--pp-text); font: 13px system-ui; }
+.pp-note-action-status { width: 100%; text-align: center; color: var(--pp-muted); font: 12px/1.4 system-ui; }
+.pp-note-action-status:empty { display: none; }
+.pp-empty-search { text-align: center; color: var(--pp-muted); padding: 48px 16px; }
+.site-legal-links { margin: 10px 0 0; gap: 15px; font-size: 11px; opacity: 1!important; }
+.site-legal-links a { min-height: 30px; display: inline-flex; align-items: center; color: var(--pp-muted)!important; }
+.pp-onboarding-tip { margin: 8px auto; max-width: 680px; font-size: 13px; }
+
+/* The editor is the paper itself. No dark application chrome around the note. */
+.editor-dialog { width: min(760px, calc(100vw - 32px))!important; max-width: calc(100vw - 32px)!important; max-height: calc(100dvh - 32px)!important; overflow: auto; padding: 20px!important; border: 1px solid #3144311a; border-radius: 5px 5px 20px 5px!important; background: var(--editor-paper, #fff0ad)!important; color: #2d3933; box-shadow: 0 20px 70px #172b2326; }
+.editor-dialog::backdrop { background: #233b3259; backdrop-filter: blur(4px); }
+/* Match the legacy dialog selector so its glossy paper and red pin cannot
+   override this finish. Saved note typography and ink remain untouched. */
+.editor-dialog.pp-dialog { rotate: 0deg; color: #2d3933; background: color-mix(in srgb, var(--editor-paper, #ffec86) 80%, #fffefa)!important; border: 1px solid #3144311a!important; border-radius: 5px 5px 20px 5px!important; box-shadow: 0 18px 50px #233b3226!important; }
+.editor-dialog.pp-dialog::before, .editor-dialog.pp-dialog::after { content: none!important; }
+[data-slot=dialog-overlay]:has(+.editor-dialog) { background: #233b3259; backdrop-filter: blur(4px); }
+.editor-dialog .dialog-heading { margin: 0 0 12px; padding: 0; border-bottom: 1px solid #3144311a; }
+.editor-dialog .dialog-heading :is(h2, [data-slot=dialog-title]) { font: 600 14px/1.4 ui-sans-serif, system-ui, sans-serif!important; color: #505b4c!important; letter-spacing: .1px; }
+.editor-dialog .pp-vault-note-action { color: #2d3933; }
+.editor-dialog .pp-vault-note-action svg { display: block; width: 20px; height: 20px; margin: auto; }
+.editor-dialog .edit-paper { min-height: 220px; padding: 12px 4px; border: 0; background: transparent!important; box-shadow: none; }
+.editor-dialog textarea, .editor-dialog .rich-paper-mirror { font: 18px/1.65 system-ui; min-height: 260px; background: transparent; }
+.editor-dialog .editor-meta { font-size: 11px; opacity: .8; }
+.pp-vault-toolbar { margin: 8px 0!important; width: 100%; max-width: 100%; box-sizing: border-box; padding: 8px!important; }
+.pp-vault-toolbar label { font-size: 13px; }
+.pp-help { max-width: 850px; padding: 30px 20px; margin: auto; }
+.pp-help p, .pp-help li { line-height: 1.7; }
+.pp-help-nav { display: flex; gap: 20px; }
+
+@media (max-width: 700px) {
+  .postispop { padding: 6px 8px; }
+  .postispop .app-header { grid-template-columns: 120px minmax(0, 1fr) 44px; height: 44px!important; min-height: 44px!important; gap: 6px; }
+  .postispop .app-header .brand { width: 118px; }
+  .postispop .brand-logo { width: 118px!important; height: 29px!important; }
+  .postispop .app-header .header-title { font-size: 14px!important; padding: 4px; }
+  .workspace-caption { min-height: 18px; }
+  .pp-tools.pp-note-search { gap: 6px; margin: 2px auto 6px; }
+  .pp-note-search input { font-size: 16px; }
+  .postispop .board-frame { --pp-columns: 2; --pp-gap: 10px; --pp-note-size: max(128px, min(calc((100vw - 34px)/2), calc((100dvh - 220px)/3))); padding: 4px 4px 0; }
+  .postispop .board-frame .sticky-note { padding: 14px 12px 22px!important; }
+  .postispop .note-number { right: 11px; bottom: 9px; font-size: 9px; }
+  .editor-dialog { width: calc(100vw - 12px)!important; max-width: calc(100vw - 12px)!important; max-height: calc(100dvh - 12px)!important; padding: 12px!important; }
+  .editor-dialog textarea, .editor-dialog .rich-paper-mirror { min-height: 200px; font-size: 17px; }
+  .site-legal-links { gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) { .sticky-note { transition: none!important; } }

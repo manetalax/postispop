@@ -16,12 +16,18 @@
     const language = (document.documentElement.lang || "es").split("-")[0];
     const [cloud, local] = labels[language] || labels.es;
     document.querySelectorAll(".connection, .sr-only[role='status']").forEach(status => {
-      if (status.textContent.trim() === cloud) status.textContent = local;
+      // Preserve React's SVG/span children; replace only the existing text leaf.
+      const leaf = status.querySelector('span') || status;
+      if (leaf.textContent.trim() === cloud) leaf.textContent = local;
     });
   };
 
-  new MutationObserver(update).observe(document.documentElement, {
-    childList: true, subtree: true, characterData: true
-  });
-  update();
+  const start = () => {
+    new MutationObserver(update).observe(document.documentElement, {
+      childList: true, subtree: true, characterData: true
+    });
+    update();
+  };
+  if (document.documentElement.dataset.ppReady === 'true') start();
+  else window.addEventListener('postispop:ui-ready', start, { once: true });
 })();

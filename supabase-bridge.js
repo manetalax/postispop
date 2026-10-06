@@ -1,14 +1,20 @@
-import { readGuest, guestRequest } from './guest-board.js';
+import { readGuest, guestRequest, guestImportSlots } from './guest-board.js';
 import { createOfflineStore, sameMutation } from './offline-sync.js';
 import { getOfflineRights, saveOfflineReceipt } from './offline-license.js';
 import { installOfflineUI } from './offline-ui.js';
-import { normalizeBackup, importTicket, withImportSlots } from './backup-import.js';
+import { normalizeBackup, importTicket, withImportSlots, backupNotesForServer, verifyBackupAttachments, restoreBackupAttachments, createBoardBackup, LOCAL_BACKUP_BYTES, CLOUD_BACKUP_BYTES } from './backup-import.js';
 const SUPABASE_URL = "https://htfyjefmviwlgmfqrwue.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ox1LUYhmz57iSU7mPtGStg_-FZl-zQT";
 const originalFetch = window.fetch.bind(window);
 const sessionKey = "postispop-supabase-session";
 const offline = createOfflineStore(localStorage);
 const online = () => typeof navigator === "undefined" || navigator.onLine !== false;
+// One Premium offer, three billing choices. Checkout stays disconnected.
+const premiumProducts = () => [
+  {slug:'premium-monthly',title:'Premium mensual',description:'2,95 € al mes · Próximamente',price_cents:295,currency:'eur',stripe_payment_link:null},
+  {slug:'premium-yearly',title:'Premium anual',description:'9,95 € al año · Próximamente',price_cents:995,currency:'eur',stripe_payment_link:null},
+  {slug:'premium-lifetime',title:'Premium de por vida',description:'59,95 € · Un único pago · Próximamente',price_cents:5995,currency:'eur',stripe_payment_link:null}
+];
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
   status,
@@ -62,23 +68,17 @@ const mapBoard = (b, notes, members = []) => ({
   notes: notes.map(mapNote), members
 });
 
-const guestBoard = () => {
-  const id = "guest-board";
-  const notes = Array.from({ length: 12 }, (_, position) => ({
-    id: `guest-note-${position}`, paper: position % 5, text: "", marks: [], doodle: "",
-    author_id: "guest", revision: 1, created_ms: Date.now(), updated_ms: Date.now(),
-    locked_until: null, editing: null, image_url: null
-  }));
-  return { id, title: "Mi pizarra", revision: 1, order: notes.map(n => n.id), expires: null, role: "owner", owner: "guest", notes: notes.map(mapNote), members: [] };
-};
-
 async function createBoard(user, rest) {
+  const owned=await rest('boards','?owner_id=eq.'+encodeURIComponent(user.id)+'&select=id&limit=1');
+  // Entitlements are verified by the server; browser flags cannot create boards.
+  const premium=await rest('rpc/postispop_has_license','',{method:'POST',body:JSON.stringify({subject_id:'premium'})});
+  if(owned.length&&premium!==true)throw Object.assign(new Error('BOARD_LIMIT_REACHED'),{status:409});
   const boardRows = await rest("boards", "", {
     method: "POST", headers: { Prefer: "return=representation" },
     body: JSON.stringify({ owner_id: user.id, title: "Mi pizarra" })
   });
   const board = boardRows[0];
-  const notes = Array.from({ length: 12 }, (_, position) => ({ board_id: board.id, author_id: user.id, position, paper: position % 5, marks: [], text: "" }));
+  const notes = Array.from({ length: premium===true?12:6 }, (_, position) => ({ board_id: board.id, author_id: user.id, position, paper: position % 6, marks: [], text: "" }));
   await rest("notes", "", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify(notes) });
   return board;
 }
@@ -113,14 +113,45 @@ async function api(endpoint, init) {
   const requestStartedAt=Date.now();
   const authGeneration=sessionGeneration;
   const requestUserId=session()?.user?.id;
+  const validateSession=()=>{if(authGeneration!==sessionGeneration||session()?.user?.id!==requestUserId)throw Object.assign(new Error('SESSION_CHANGED'),{status:401});};
   const rest=async(table,query='',options={})=>{
-    if(authGeneration!==sessionGeneration||session()?.user?.id!==requestUserId)throw Object.assign(new Error('SESSION_CHANGED'),{status:401});
+    validateSession();
     const result=await rawRest(table,query,options);
-    if(authGeneration!==sessionGeneration||session()?.user?.id!==requestUserId)throw Object.assign(new Error('SESSION_CHANGED'),{status:401});
+    validateSession();
     return result;
   };
   const method = init?.method || "GET";
   const payload = init?.body ? JSON.parse(init.body) : undefined;
+  if(endpoint==='board/guest-board/export'&&method==='GET'){
+    const backup=await createBoardBackup(readGuest());validateSession();return json(backup);
+  }
+  if(endpoint==='board/guest-board/import'&&method==='POST'){
+    const backup=normalizeBackup(payload,{maxNotes:6,maxBytes:LOCAL_BACKUP_BYTES});
+    const ticket=await importTicket(localStorage,'guest','guest-board',backup.notes,requestStartedAt);
+    const lockedIds=readGuest().notes.map(note=>note.id);
+    return withImportSlots(lockedIds,async excluded=>{
+      validateSession();
+      const board=readGuest();
+      // A response can be lost after localStorage committed. Do not import a
+      // second copy when two tabs share the same pending request ticket.
+      if(board.importRequests?.[ticket.requestId]){ticket.finish();return json(board);}
+      const unavailable=[...new Set([...excluded,...board.notes.filter(note=>!lockedIds.includes(note.id)).map(note=>note.id)])];
+      const slots=guestImportSlots(board,unavailable);
+      if(backup.notes.length>slots.length||board.notes.length-slots.length+backup.notes.length>6)throw Object.assign(new Error('BOARD_FULL'),{status:409});
+      const noteIds=slots.slice(0,backup.notes.length).map(note=>note.id);
+      const validate=()=>{
+        validateSession();const current=readGuest();
+        if(current.revision!==board.revision||noteIds.some(id=>!guestImportSlots(current,unavailable).some(note=>note.id===id)))throw Object.assign(new Error('CONFLICT'),{status:409});
+      };
+      let restored;
+      try{
+        restored=await restoreBackupAttachments(backup.notes,noteIds,{requestId:ticket.requestId,validate});
+        validate();
+        const saved=guestRequest(endpoint,method,{...backup,notes:backupNotesForServer(backup.notes)},{expectedRevision:board.revision,noteIds,excluded:unavailable,requestId:ticket.requestId});
+        ticket.finish();return json(saved);
+      }catch(error){await restored?.rollback();throw error;}
+    });
+  }
   const local=guestRequest(endpoint,method,payload);
   if(local) return json(local);
 
@@ -150,22 +181,18 @@ async function api(endpoint, init) {
     const user=await currentUser();
     if(!user&&endpoint!=='commerce/catalog') return json({error:'SESSION_REQUIRED'},401);
     if(endpoint==='commerce/status') return json(await rest('rpc/postispop_access','',{method:'POST',body:'{}'}));
-    if(endpoint==='commerce/catalog') {
-      const products=await rest('store_products','?active=eq.true&select=slug,title,description,price_cents,currency&order=sort_order.asc');
-      const response=await originalFetch(`${SUPABASE_URL}/functions/v1/postispop-commerce/status`,{headers:{apikey:SUPABASE_KEY}});
-      const state=response.ok?await response.json():{};
-      return json({products,checkoutReady:state.checkoutReady===true});
-    }
+    if(endpoint==='commerce/catalog') return json({products:premiumProducts(),checkoutReady:false});
     if(endpoint==='commerce/alarms') {
       if(method==='GET') return json({alarms:await rest('note_alarms','?select=*&order=due_at.asc')});
       if(payload.action==='delete') {await rest('note_alarms',`?id=eq.${encodeURIComponent(payload.id)}&user_id=eq.${user.id}`,{method:'DELETE'});return json({ok:true});}
       if(payload.action==='ack') {const rows=await rest('note_alarms',`?id=eq.${encodeURIComponent(payload.id)}&user_id=eq.${user.id}&delivered_at=is.null`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({delivered_at:new Date().toISOString()})});return json({claimed:rows.length>0});}
       const rows=await rest('note_alarms','',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({user_id:user.id,note_id:payload.note_id,label:String(payload.label||'Recordatorio').slice(0,200),due_at:payload.due_at})});return json({alarm:rows[0]});
     }
+    if(endpoint!=='commerce/reconcile')return json({error:'COMING_SOON',checkoutReady:false},503);
     return originalFetch(`${SUPABASE_URL}/functions/v1/postispop-commerce/${endpoint.slice(9)}`,{method,headers:headers(),body:method==='GET'?undefined:JSON.stringify(payload)});
   }
 
-  if (endpoint === "config") return json({ features: { notes: 12, textLimit: 10000, guestDays: 90, trashDays: 30, lockSeconds: 45, payments: false, clock: false, games: false, awards: false, phoneRequired: false, captures: true }, authReady: true, currency: "EUR" });
+  if (endpoint === "config") return json({ features: { notes: 6, textLimit: 10000, guestDays: 90, trashDays: 30, lockSeconds: 45, payments: false, clock: false, games: false, awards: false, phoneRequired: false, captures: true }, authReady: true, currency: "EUR" });
 
   if (endpoint === "auth/login" && method === "POST") {
     const response = await originalFetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, { method: "POST", headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ email: payload.email, password: payload.password }) });
@@ -230,19 +257,7 @@ async function api(endpoint, init) {
     return json({ ok: true, serverRevoked, ...(serverRevoked ? {} : { warning: "REMOTE_LOGOUT_UNCONFIRMED" }) });
   }
   if (endpoint === "auth/settings") return json({ google: true, email: true });
-  if (endpoint === "store/products" && method === "GET") {
-    try {
-      const products = await rest("store_products", "?active=eq.true&select=*&order=sort_order.asc");
-      return json({ products });
-    } catch {
-      return json({ products: [
-        { slug: "pack-rebel", title: "Pack Rebel", description: "Un estilo más atrevido para tus pizarras y notas.", price_cents: 299, currency: "eur", stripe_payment_link: null },
-        { slug: "pack-minimal", title: "Pack Minimal", description: "Un estilo limpio y concentrado para organizarte.", price_cents: 299, currency: "eur", stripe_payment_link: null },
-        { slug: "reloj-recordatorios", title: "Reloj y recordatorios", description: "Añade fechas y horas a tus notas para no olvidar nada.", price_cents: 499, currency: "eur", stripe_payment_link: null },
-        { slug: "postispop-pro", title: "PostisPop Pro", description: "Todos los estilos, recordatorios y funciones premium.", price_cents: 999, currency: "eur", stripe_payment_link: null }
-      ] });
-    }
-  }
+  if (endpoint === "store/products" && method === "GET") return json({products:premiumProducts(),checkoutReady:false});
   if (endpoint === "session" && method === "GET") return json({ actor: actorFor(await currentUser()) });
 
   const user = await currentUser();
@@ -264,15 +279,28 @@ async function api(endpoint, init) {
     if(!online())return json({error:'OFFLINE'},503);
     const state=offline.status(user.id);
     if(state.pending||state.conflicts)return json({error:'SYNC_PENDING_BEFORE_IMPORT'},409);
-    const boardId=importMatch[1],backup=normalizeBackup(payload);
+    const boardId=importMatch[1],backup=normalizeBackup(payload,{maxBytes:LOCAL_BACKUP_BYTES});
+    await verifyBackupAttachments(backup.notes);validateSession();
+    const serverNotes=backupNotesForServer(backup.notes);
+    // Large local binaries stay on this device; independently enforce the RPC
+    // payload budget so file backups cannot bypass the server's text limits.
+    normalizeBackup({...backup,notes:serverNotes},{maxBytes:CLOUD_BACKUP_BYTES});
     const boards=await rest('boards','?id=eq.'+encodeURIComponent(boardId)+'&select=id,owner_id');
     if(boards[0]?.owner_id!==user.id)return json({error:'OWNER_REQUIRED'},403);
     const notes=await rest('notes','?board_id=eq.'+encodeURIComponent(boardId)+'&select=id');
     const ticket=await importTicket(localStorage,user.id,boardId,backup.notes,requestStartedAt);
     return withImportSlots(notes.map(n=>n.id),async excluded=>{
       let result;
-      try{result=await rest('rpc/postispop_import_board','',{method:'POST',body:JSON.stringify({p_board_id:boardId,p_request_id:ticket.requestId,p_notes:backup.notes,p_excluded_note_ids:excluded})});}
+      try{result=await rest('rpc/postispop_import_board','',{method:'POST',body:JSON.stringify({p_board_id:boardId,p_request_id:ticket.requestId,p_notes:serverNotes,p_excluded_note_ids:excluded})});}
       catch(error){if(error.body?.code==='PGRST202'||error.body?.code==='42883')return json({error:'IMPORT_UNAVAILABLE'},503);throw error;}
+      // If another client added a slot after our snapshot, retry with the new
+      // snapshot and the same RPC ticket before writing that slot's local files.
+      if(backup.notes.some(note=>note.attachments?.length)&&result.noteIds?.some(id=>!notes.some(note=>note.id===id)))throw Object.assign(new Error('IMPORT_RETRY_REQUIRED'),{status:409});
+      let restored;
+      try{
+        restored=await restoreBackupAttachments(backup.notes,result.noteIds,{requestId:ticket.requestId,validate:validateSession});
+        validateSession();
+      }catch(error){await restored?.rollback();throw error;}
       for(let i=0;i<(result.noteIds||[]).length;i++)if(backup.notes[i]?.protectedEnvelope){try{localStorage.setItem('pp:protected-note:'+result.noteIds[i],'1');}catch{/* The server envelope is authoritative. */}}
       ticket.finish();return json(result);
     });
@@ -302,11 +330,18 @@ async function api(endpoint, init) {
     const response = await api('board/'+exportMatch[1], {method:'GET'});
     if(!response.ok) return response;
     const board=await response.json();
-    return json({format:'postispop',version:1,title:board.title,notes:board.order.map(id=>board.notes.find(n=>n.id===id)).filter(Boolean).map(n=>n.protectedEnvelope?{paper:n.paper,protectedEnvelope:n.protectedEnvelope}:{text:n.text,marks:n.marks,paper:n.paper,doodle:n.doodle,image:n.image}),exportedAt:new Date().toISOString()});
+    const backup=await createBoardBackup(board);validateSession();return json(backup);
   }
 
   const addMatch=endpoint.match(/^board\/([^/]+)\/notes$/);
   if(addMatch&&method==='POST'){
+    // Keep the six-note client contract while older servers are being migrated.
+    // The server admission trigger remains authoritative for concurrent requests.
+    const existing=await rest('notes','?board_id=eq.'+encodeURIComponent(addMatch[1])+'&select=id');
+    if(existing.length>=6){
+      const premium=await rest('rpc/postispop_has_license','',{method:'POST',body:JSON.stringify({subject_id:'premium'})});
+      if(premium!==true||existing.length>=100)return json({error:'BOARD_FULL'},409);
+    }
     await rest('rpc/postispop_add_board_note','',{method:'POST',body:JSON.stringify({p_board:addMatch[1]})});return api('board/'+addMatch[1],{method:'GET'});
   }
   const trashMatch=endpoint.match(/^note\/([^/]+)\/trash$/);
@@ -330,6 +365,13 @@ async function api(endpoint, init) {
     const notes = await rest("notes", `?board_id=eq.${id}&select=*&order=position.asc`);
     const members = await rest("board_members", `?board_id=eq.${id}&select=*`);
     return json(mapBoard(boards[0], notes, members));
+  }
+
+  const swapMatch=endpoint.match(/^board\/([^/]+)\/swap$/);
+  if(swapMatch&&method==='POST') {
+    try{await rest('rpc/postispop_swap_board_notes','',{method:'POST',body:JSON.stringify({p_board:swapMatch[1],p_from:payload.from,p_to:payload.to,p_revision:payload.revision})});}
+    catch(error){if(error.body?.code==='PGRST202'||error.body?.code==='42883')return json({error:'REORDER_UNAVAILABLE'},503);throw error;}
+    return api('board/'+swapMatch[1],{method:'GET'});
   }
 
   const titleMatch=endpoint.match(/^board\/([^/]+)\/title$/);

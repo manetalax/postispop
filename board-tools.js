@@ -1,17 +1,7 @@
 import {track} from './usage-metrics.js';
 import {drawStrokes} from './style-model.js';
-import {normalizeBackup,CLOUD_BACKUP_BYTES} from './backup-import.js';
+import {normalizeBackup,LOCAL_BACKUP_BYTES,createBoardBackup,verifyBackupAttachments} from './backup-import.js';
 
-const templates = {
-  'Lista de tareas':['Por hacer\n#tareas','En marcha\n#tareas','Terminado\n#tareas'],
-  'Plan semanal':['Lunes:','Martes:','Miércoles:','Jueves:','Viernes:','Fin de semana:'],
-  'Reunión':['Objetivo de la reunión','Temas para tratar','Decisiones','Próximos pasos · Responsable · Fecha'],
-  'Estudio':['Pregunta clave\n#estudio','Explícalo con tus palabras','Ejemplo práctico','Qué repasar mañana'],
-  'Lluvia de ideas':['El reto que queremos resolver','Ideas sin filtrar','Ideas para explorar','Primer experimento'],
-  'Objetivos':['Mi objetivo','Por qué me importa','Primer paso','Cómo mediré el avance'],
-  'Compras':['Alimentación\n#compras','Hogar\n#compras','Otros\n#compras'],
-  'Hábitos':['Hábito que quiero practicar','Cuándo y dónde','Versión mínima para días difíciles','Revisión semanal']
-};
 let tools=null, options=null, searchTools=null, lastFocus=null;
 export function download(name,body,type='application/json') {
   const url=URL.createObjectURL(body instanceof Blob?body:new Blob([body],{type}));
@@ -32,8 +22,8 @@ async function currentBoard() {
   return data;
 }
 function message(value){const node=searchTools?.querySelector('[role=status]');if(node)node.textContent=value;}
-function dialog(title) {
-  lastFocus=document.activeElement;
+function dialog(title,returnFocus=document.activeElement) {
+  lastFocus=returnFocus;
   const el=document.createElement('dialog');el.className='pp-feature-dialog';
   el.setAttribute('aria-labelledby','pp-feature-title');
   const heading=text('h2',title);heading.id='pp-feature-title';el.append(heading);
@@ -41,8 +31,11 @@ function dialog(title) {
   el.addEventListener('close',()=>{el.remove();lastFocus?.focus();},{once:true});document.body.append(el);el.showModal();return el;
 }
 const ordered=board=>board.order.map(id=>board.notes.find(n=>n.id===id)).filter(Boolean);
-function exportData(board){return {format:'postispop',version:1,title:board.title,exportedAt:new Date().toISOString(),notes:ordered(board).map(note=>note.protectedEnvelope?{paper:note.paper,protectedEnvelope:note.protectedEnvelope}:{text:note.text,marks:note.marks,paper:note.paper,doodle:note.doodle,image:note.image,style:note.style||null})};}
-async function exportJson(){const board=await currentBoard();download('PostisPop-copia.json',JSON.stringify(exportData(board),null,2));track('export');message('Copia descargada con los estilos y las notas cifradas. Los adjuntos de notas abiertas se guardan por separado y no se incluyen.');}
+async function exportJson(){
+  const board=await currentBoard(),backup=await createBoardBackup(board);
+  download('PostisPop-copia.json',JSON.stringify(backup));track('export');
+  message('Copia completa descargada: notas, dibujos y adjuntos de este dispositivo. Las notas protegidas permanecen cifradas.');
+}
 async function exportPng() {
   const board=await currentBoard(), notes=ordered(board);
   const canvas=document.createElement('canvas');canvas.width=1600;canvas.height=1200;const ctx=canvas.getContext('2d');
@@ -86,26 +79,18 @@ const importError=error=>({
   LOCAL_STORAGE_FULL:'El almacenamiento de este dispositivo está lleno. Conserva el archivo de copia.',
   IMPORT_STORAGE_UNAVAILABLE:'No se pudo preparar un reintento seguro. Libera almacenamiento y conserva tu copia.',
   STORAGE_LOCK_UNAVAILABLE:'Este navegador no permite coordinar la importación con los adjuntos. Prueba un navegador actualizado.',
+  INVALID_ATTACHMENT:'La copia contiene un adjunto no compatible. No se ha restaurado.',
+  ATTACHMENT_INTEGRITY:'Un archivo de la copia está dañado. Conserva el original y vuelve a exportarlo.',
+  ATTACHMENT_MAPPING_FAILED:'No se pudo vincular cada archivo a su nota. Conserva la copia y reintenta.',
+  ATTACHMENT_RESTORE_FAILED:'No se pudieron guardar los archivos en este dispositivo. Libera espacio y reintenta con la misma copia.',
+  ATTACHMENT_ROLLBACK_FAILED:'No se pudo deshacer una restauración de archivos incompleta. Conserva tu copia y vuelve a intentarlo.',
   ATTACHMENT_CHECK_UNAVAILABLE:'No se pudieron comprobar los adjuntos locales. Cierra otras pestañas y vuelve a intentarlo.',
+  IMPORT_RETRY_REQUIRED:'La pizarra cambió durante la restauración. Vuelve a intentarlo con la misma copia; no se duplicarán las notas ya añadidas.',
   IDEMPOTENCY_CONFLICT:'Este reintento no coincide con la copia original. Conserva el archivo y vuelve a abrir el diálogo.'
 }[error.message]||'No se pudo confirmar el resultado. Reintenta con la misma copia; la importación en cuenta evita duplicar un envío ya completado.');
-async function showTemplates(){
-  const board=await currentBoard(),el=dialog('Plantillas para empezar');
-  el.append(text('p','Las plantillas añaden notas en espacios vacíos. No sustituyen tus notas.'));
-  const status=text('p',board.id==='guest-board'?'':'Para tu cuenta se necesita conexión. Se respetan el límite de tu plan y los espacios disponibles.');status.setAttribute('role','status');el.append(status);
-  const grid=document.createElement('div');grid.className='pp-template-grid';el.append(grid);
-  Object.entries(templates).forEach(([name,notes])=>{
-    const button=text('button',name);button.type='button';grid.append(button);
-    button.addEventListener('click',async()=>{
-      grid.querySelectorAll('button').forEach(b=>b.disabled=true);
-      try{const data={format:'postispop',version:1,notes:notes.map((text,i)=>({text,paper:i%6,marks:[]}))};await api('board/'+board.id+'/import',data);location.reload();}
-      catch(error){status.textContent=importError(error);grid.querySelectorAll('button').forEach(b=>b.disabled=false);}
-    });
-  });
-}
-async function showImport(initialFile){
-  const board=await currentBoard(),el=dialog('Restaurar una copia de seguridad'),cloud=board.id!=='guest-board',maxBytes=cloud?CLOUD_BACKUP_BYTES:50*1024*1024;
-  el.append(text('p','Añade texto, colores, estilos, dibujos y notas cifradas a espacios vacíos. Conserva los adjuntos dentro de notas cifradas; los adjuntos de notas abiertas se guardan aparte. Las notas actuales se conservan. Máximo '+(cloud?'24':'50')+' MB.'));
+async function showImport(initialFile,returnFocus=document.activeElement){
+  const board=await currentBoard(),el=dialog('Restaurar una copia de seguridad',returnFocus),cloud=board.id!=='guest-board',maxBytes=LOCAL_BACKUP_BYTES;
+  el.append(text('p','Añade texto, colores, estilos, dibujos y notas cifradas a espacios vacíos. Incluye los archivos y enlaces de la copia. Los archivos se restauran en este dispositivo; las notas protegidas conservan su cifrado. Las notas actuales se conservan. Máximo 50 MB.'));
   if(cloud)el.append(text('p','Necesita conexión. Se respetan el límite de tu plan y los espacios disponibles. Los adjuntos locales de otro dispositivo no pueden comprobarse aquí.'));
   const label=text('label','Selecciona una copia de PostisPop'),file=document.createElement('input');file.type='file';file.accept='.json,application/json';label.append(file);el.append(label);
   const status=text('p','');status.setAttribute('role','status');el.append(status);
@@ -118,8 +103,9 @@ async function showImport(initialFile){
       if(selected.size>maxBytes)throw Error('BACKUP_TOO_LARGE');
       let data;try{data=JSON.parse(await selected.text());}catch{throw Error('INVALID_BACKUP');}
       const normalized=normalizeBackup(data,{maxNotes:cloud?100:12,maxBytes});
+      await verifyBackupAttachments(normalized.notes);
       if(generation!==selection)return;
-      prepared=cloud?normalized:data;
+      prepared=normalized;
       status.textContent=normalized.notes.length?selected.name+' · '+normalized.notes.length+' notas con contenido. Se añadirán sin sustituir las actuales.':'La copia no contiene notas para añadir.';
       submit.disabled=!normalized.notes.length;
     }catch(error){if(generation===selection)status.textContent=importError(error);}
@@ -133,30 +119,29 @@ async function showImport(initialFile){
   void preview(initialFile);
 }
 window.addEventListener('postispop:import-legacy',event=>{showImport(event.detail?.file).catch(()=>message('No se pudo abrir la restauración. Conserva tu archivo de copia.'));});
-async function filter(){
-  try{
-    const board=await currentBoard(),query=searchTools.querySelector('[type=search]').value.trim().toLocaleLowerCase('es'),color=searchTools.querySelector('select').value;
-    let matches=0;const notes=ordered(board),cells=document.querySelectorAll('.board-grid .note-cell');
-    cells.forEach(cell=>{const button=cell.querySelector('.sticky-note'),note=notes.find(n=>n.id===button?.dataset.noteId),match=note?(!query||note.text.toLocaleLowerCase('es').includes(query))&&(!color||String(note.paper)===color):!query&&!color;cell.classList.toggle('pp-filtered',!match);if(button)button.tabIndex=match?0:-1;if(match&&note)matches++;});
-    message(query||color?`${matches} notas coinciden. Las demás siguen guardadas. Usa #etiqueta en el texto para agrupar notas.`:'Puedes buscar por texto o por #etiqueta.');
-  }catch{message('No se pudo actualizar la búsqueda. Tus notas se conservan.');}
+function filter(){
+  const query=searchTools.querySelector('[type=search]').value.trim();
+  const color=searchTools.querySelector('select').value;
+  window.dispatchEvent(new CustomEvent('postispop:filter',{detail:{query,color}}));
+  message(query||color?'Búsqueda en todas tus notas. Las notas protegidas no exponen su texto.':'');
 }
 export function initBoardTools(){
   const board=document.querySelector('.board-frame:not(.is-loading)');if(!board)return;
   if(tools?.isConnected)return;
   searchTools?.remove();
   options=document.createElement('details');options.className='pp-board-options';
-  const summary=text('summary','Opciones avanzadas');options.append(summary);
+  const summary=text('summary','⋯');summary.title='Opciones de la pizarra';summary.setAttribute('aria-label','Opciones avanzadas');options.append(summary);
   tools=document.createElement('div');tools.className='pp-tools';tools.setAttribute('aria-label','Herramientas de la pizarra');
   searchTools=document.createElement('section');searchTools.className='pp-tools pp-note-search';searchTools.setAttribute('aria-label','Buscar en tus notas');board.before(searchTools);
   const search=document.createElement('input');search.type='search';search.placeholder='Buscar notas o #etiqueta';search.setAttribute('aria-label','Buscar notas o etiquetas');searchTools.append(search);
   const colors=document.createElement('select');colors.setAttribute('aria-label','Filtrar por color');['Todos los colores','Amarillo','Rosa','Azul','Crema','Verde','Violeta'].forEach((label,i)=>{const opt=text('option',label);opt.value=i===0?'':String(i-1);colors.append(opt);});searchTools.append(colors);
   let timer;search.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(filter,180);});colors.addEventListener('change',filter);
-  const operations=[['Guardar una copia',exportJson],['Restaurar una copia',showImport],['Descargar imagen',exportPng],['Imprimir',printPdf],['Plantillas',showTemplates]];
-  operations.forEach(([name,fn])=>{const button=text('button',name);button.type='button';button.addEventListener('click',async()=>{button.disabled=true;try{await fn();}catch{message('No se pudo completar la operación. Tus notas se conservan.');}finally{button.disabled=false;}});tools.append(button);});
+  window.addEventListener('postispop:clear-filter',()=>{if(!searchTools?.contains(search))return;clearTimeout(timer);search.value='';colors.value='';filter();});
+  const operations=[['Guardar una copia',exportJson],['Restaurar una copia',trigger=>showImport(undefined,trigger)],['Descargar imagen',exportPng],['Imprimir',printPdf]];
+  operations.forEach(([name,fn])=>{const button=text('button',name);button.type='button';button.addEventListener('click',async()=>{button.disabled=true;try{await fn(button);}catch(error){message(error.message==='BACKUP_TOO_LARGE'?'La copia completa supera 50 MB. Descarga los archivos por separado antes de reducir sus adjuntos. Tus notas se conservan.':error.message==='NOTE_PROTECTED'?'Una nota acaba de protegerse. Vuelve a guardar la copia para incluir su versión cifrada.':'No se pudo completar la operación. No se ha descargado una copia incompleta. Tus notas se conservan.');}finally{button.disabled=false;}});tools.append(button);});
   const installHelp=text('a','Descargas e instalación');installHelp.href='/descargas/';tools.append(installHelp);
   const install=text('button','Instalar aplicación');install.type='button';install.dataset.experience='install';install.hidden=true;tools.append(install);
-  const status=text('span','');status.setAttribute('role','status');searchTools.append(status);options.append(tools);board.after(options);
+  const status=text('span','');status.className='pp-search-status';status.setAttribute('role','status');searchTools.append(status);options.append(tools);searchTools.append(options);
 }
 document.addEventListener('keydown',event=>{
   if(event.target.closest('input,textarea,[contenteditable=true],dialog,[role=dialog]'))return;
