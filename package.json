@@ -8,6 +8,7 @@
     "build": "node scripts/build-guides.mjs && astro check && astro build && pagefind --site astro-dist",
     "preview": "astro preview --host 0.0.0.0",
     "test:mobile": "node tests/mobile-ui.cjs",
+    "test:backup": "node --test tests/attachment-backup-ui.cjs",
     "test": "node --test tests/*.test.cjs",
     "lint": "node scripts/check-js.mjs",
     "test:experience": "node tests/experience-ui.cjs",
