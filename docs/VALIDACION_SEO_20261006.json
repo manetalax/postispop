@@ -1,0 +1,407 @@
+{
+  "createdAt": "2026-10-06T09:30:18.678388+00:00",
+  "baseSourceCommit": "b78d22ebde2db5bb955a7f2a24f92de5ac43cdd6",
+  "priorRemoteCommit": "c2757497bf032c424c563d26d1bfa6e54c627343",
+  "scope": [
+    "web",
+    "android"
+  ],
+  "sourceSha256": {
+    "install-page.js": "10ea895f2f4a7f9816dfa3e48a64956eb54d0721f949c6f96d5226432c1e522a",
+    "seo-language.js": "d9e39a290b463af02226493981220b578a3c745a32f152ea4131a30d7dfd5c08",
+    "terms.html": "432b1c9f914da620846fc50461678081e01c9c60592e448bb93c67f7da764a08",
+    "package.json": "8c81f188f2a11157a22b33ae0cdb58fdf180b0306460162a7653c54a4b6834c7",
+    "package-lock.json": "bebf6968455787e352e8181d3db4e44625b9dd1db1e77bc76193f9064d61ad01",
+    "mobile/bundle-tools.mjs": "8ace4a3a4302106e2d23d714103ed37f12d18523af1f026262d0abd1308c6770",
+    "scripts/build-seo.mjs": "fbf55f94ecf9fe5856a5543292d951703bc18d5685e5f22bcdcee0d3b7e959a6",
+    "scripts/seo-source.mjs": "d3d3edb324e9e8e54b44067154436e26dd0fb701b9f8a159ffdefe4e751b635e",
+    "scripts/board-layout-transform.mjs": "d1f0de240d4980918619be14779227308a30600b4dfd3a96e71967cb379e245d",
+    "scripts/stage-site.mjs": "1574c09bb19c6d62ba703e3281a8fa25512a588310de824cecedfeab156ab495",
+    "tests/seo-ui.cjs": "9c8c00512f267c31317dc6f3c53b475241a1ea6c20034c47171c3fc83683fb4c",
+    "tests/seo-language.test.cjs": "55cbcbe7a4e9c8b74913e5a8c610bef58e91038f5e70a8c44efc9743250e53c1",
+    "tests/install-language.test.cjs": "7151792211fffd83caab56170d765149622729b9e6b23706ca87da25d7eab597",
+    "scripts/seo-content/de.json": "3a8c52a3b36cfb0cd261a3faa07755c7b8ff5438052db871fe485faff84b888b",
+    "scripts/seo-content/en.json": "6677b9ee582b7b584005de1d80c433e3b46527d9db6f9d52741cfd2fc60fe573",
+    "scripts/seo-content/es.json": "2c22e39e8cbba32fdc9fa1985df3ea30dd3fae5c0ff3922782fcf11ae0d4ed1e",
+    "scripts/seo-content/fr.json": "10608e399d660904d2f81e3ed8ee820969aec2648017c5b215a7889a5fd3825a",
+    "scripts/seo-content/it.json": "b2b5590a7d5499f07c19c894a40c6aba2d75fa465c318b65d6c84aeec6038dbd",
+    "scripts/seo-content/ja.json": "b166932bf7825e0be913ebd6e068faaf441de9d8747df7170f6d391c51f2fc35",
+    "scripts/seo-content/ko.json": "11111bd3fa0bcdc7f562c42ebd6305312283c74a71fa9ca9882245a762e0b2f7",
+    "scripts/seo-content/pt.json": "6609aa305b7499b3d595fe7f346748e85fea507a01fbe50112e8efb059261a45"
+  },
+  "catalogs": {
+    "languages": [
+      "es",
+      "en",
+      "de",
+      "fr",
+      "ja",
+      "pt",
+      "it",
+      "ko"
+    ],
+    "keysPerLanguage": 384,
+    "publicPagesPerLanguage": 17,
+    "canonicalUrls": 136
+  },
+  "tests": {
+    "unit": {
+      "passed": 170,
+      "failed": 0
+    },
+    "syntaxModules": 121,
+    "astroBuild": "passed",
+    "webSeo": {
+      "createdAt": "2026-10-06T09:29:29.097Z",
+      "urls": 136,
+      "localTargets": 137,
+      "languages": [
+        "es",
+        "en",
+        "de",
+        "fr",
+        "ja",
+        "pt",
+        "it",
+        "ko"
+      ],
+      "checks": [
+        "136 canonical documents: titles, descriptions, H1, language, nine reciprocal hreflang links, JSON-LD and Open Graph/Twitter",
+        "137 unique internal links and social images return local HTTP 200; legacy fragment targets are not audited"
+      ],
+      "browserCases": [
+        {
+          "locale": "es",
+          "path": "/",
+          "noScriptParity": true
+        },
+        {
+          "locale": "es",
+          "path": "/bloc-de-notas-online.html",
+          "noScriptParity": true
+        },
+        {
+          "locale": "es",
+          "cta": true,
+          "coreLabel": true,
+          "persisted": true,
+          "notesPreserved": true
+        },
+        {
+          "locale": "en",
+          "path": "/",
+          "noScriptParity": true
+        },
+        {
+          "locale": "en",
+          "path": "/bloc-de-notas-online.html",
+          "noScriptParity": true
+        },
+        {
+          "locale": "en",
+          "cta": true,
+          "coreLabel": true,
+          "persisted": true,
+          "notesPreserved": true
+        },
+        {
+          "locale": "de",
+          "path": "/",
+          "noScriptParity": true
+        },
+        {
+          "locale": "de",
+          "path": "/bloc-de-notas-online.html",
+          "noScriptParity": true
+        },
+        {
+          "locale": "de",
+          "cta": true,
+          "coreLabel": true,
+          "persisted": true,
+          "notesPreserved": true
+        },
+        {
+          "locale": "fr",
+          "path": "/",
+          "noScriptParity": true
+        },
+        {
+          "locale": "fr",
+          "path": "/bloc-de-notas-online.html",
+          "noScriptParity": true
+        },
+        {
+          "locale": "fr",
+          "cta": true,
+          "coreLabel": true,
+          "persisted": true,
+          "notesPreserved": true
+        },
+        {
+          "locale": "ja",
+          "path": "/",
+          "noScriptParity": true
+        },
+        {
+          "locale": "ja",
+          "path": "/bloc-de-notas-online.html",
+          "noScriptParity": true
+        },
+        {
+          "locale": "ja",
+          "cta": true,
+          "coreLabel": true,
+          "persisted": true,
+          "notesPreserved": true
+        },
+        {
+          "locale": "pt",
+          "path": "/",
+          "noScriptParity": true
+        },
+        {
+          "locale": "pt",
+          "path": "/bloc-de-notas-online.html",
+          "noScriptParity": true
+        },
+        {
+          "locale": "pt",
+          "cta": true,
+          "coreLabel": true,
+          "persisted": true,
+          "notesPreserved": true
+        },
+        {
+          "locale": "it",
+          "path": "/",
+          "noScriptParity": true
+        },
+        {
+          "locale": "it",
+          "path": "/bloc-de-notas-online.html",
+          "noScriptParity": true
+        },
+        {
+          "locale": "it",
+          "cta": true,
+          "coreLabel": true,
+          "persisted": true,
+          "notesPreserved": true
+        },
+        {
+          "locale": "ko",
+          "path": "/",
+          "noScriptParity": true
+        },
+        {
+          "locale": "ko",
+          "path": "/bloc-de-notas-online.html",
+          "noScriptParity": true
+        },
+        {
+          "locale": "ko",
+          "cta": true,
+          "coreLabel": true,
+          "persisted": true,
+          "notesPreserved": true
+        }
+      ],
+      "limitations": [
+        "Local staged-output checks do not certify live indexing, search ranking, Supabase accounts, or physical Android devices."
+      ]
+    },
+    "androidSeo": {
+      "createdAt": "2026-10-06T09:28:41.413Z",
+      "urls": 136,
+      "localTargets": 137,
+      "languages": [
+        "es",
+        "en",
+        "de",
+        "fr",
+        "ja",
+        "pt",
+        "it",
+        "ko"
+      ],
+      "checks": [
+        "136 canonical documents: titles, descriptions, H1, language, nine reciprocal hreflang links, JSON-LD and Open Graph/Twitter",
+        "137 unique internal links and social images return local HTTP 200; legacy fragment targets are not audited"
+      ],
+      "browserCases": [
+        {
+          "locale": "es",
+          "path": "/",
+          "noScriptParity": true
+        },
+        {
+          "locale": "es",
+          "path": "/bloc-de-notas-online.html",
+          "noScriptParity": true
+        },
+        {
+          "locale": "es",
+          "cta": true,
+          "coreLabel": true,
+          "persisted": true,
+          "notesPreserved": true
+        },
+        {
+          "locale": "en",
+          "path": "/",
+          "noScriptParity": true
+        },
+        {
+          "locale": "en",
+          "path": "/bloc-de-notas-online.html",
+          "noScriptParity": true
+        },
+        {
+          "locale": "en",
+          "cta": true,
+          "coreLabel": true,
+          "persisted": true,
+          "notesPreserved": true
+        },
+        {
+          "locale": "de",
+          "path": "/",
+          "noScriptParity": true
+        },
+        {
+          "locale": "de",
+          "path": "/bloc-de-notas-online.html",
+          "noScriptParity": true
+        },
+        {
+          "locale": "de",
+          "cta": true,
+          "coreLabel": true,
+          "persisted": true,
+          "notesPreserved": true
+        },
+        {
+          "locale": "fr",
+          "path": "/",
+          "noScriptParity": true
+        },
+        {
+          "locale": "fr",
+          "path": "/bloc-de-notas-online.html",
+          "noScriptParity": true
+        },
+        {
+          "locale": "fr",
+          "cta": true,
+          "coreLabel": true,
+          "persisted": true,
+          "notesPreserved": true
+        },
+        {
+          "locale": "ja",
+          "path": "/",
+          "noScriptParity": true
+        },
+        {
+          "locale": "ja",
+          "path": "/bloc-de-notas-online.html",
+          "noScriptParity": true
+        },
+        {
+          "locale": "ja",
+          "cta": true,
+          "coreLabel": true,
+          "persisted": true,
+          "notesPreserved": true
+        },
+        {
+          "locale": "pt",
+          "path": "/",
+          "noScriptParity": true
+        },
+        {
+          "locale": "pt",
+          "path": "/bloc-de-notas-online.html",
+          "noScriptParity": true
+        },
+        {
+          "locale": "pt",
+          "cta": true,
+          "coreLabel": true,
+          "persisted": true,
+          "notesPreserved": true
+        },
+        {
+          "locale": "it",
+          "path": "/",
+          "noScriptParity": true
+        },
+        {
+          "locale": "it",
+          "path": "/bloc-de-notas-online.html",
+          "noScriptParity": true
+        },
+        {
+          "locale": "it",
+          "cta": true,
+          "coreLabel": true,
+          "persisted": true,
+          "notesPreserved": true
+        },
+        {
+          "locale": "ko",
+          "path": "/",
+          "noScriptParity": true
+        },
+        {
+          "locale": "ko",
+          "path": "/bloc-de-notas-online.html",
+          "noScriptParity": true
+        },
+        {
+          "locale": "ko",
+          "cta": true,
+          "coreLabel": true,
+          "persisted": true,
+          "notesPreserved": true
+        }
+      ],
+      "limitations": [
+        "Local staged-output checks do not certify live indexing, search ranking, Supabase accounts, or physical Android devices."
+      ]
+    },
+    "webRegression": {
+      "notesFirst": 13,
+      "addNoteCases": 5,
+      "hydrationReloads": 20,
+      "experience": "passed"
+    },
+    "androidPayload": "test:mobile passed"
+  },
+  "bundles": {
+    "web": "842bfc55b899022707332dcff2eaf4d016c54b55ad01dda61d9a985313c0873a",
+    "android": "153ef7aaf8cac29d039413eede3d3bc487e11d0bff7f556a9f85ac82d942663e"
+  },
+  "native": {
+    "result": "BUILD SUCCESSFUL",
+    "clean": true,
+    "offline": true,
+    "seconds": 32,
+    "tasks": 91,
+    "executed": 88,
+    "archivesVerified": 319,
+    "signed": false,
+    "apkSha256": "7bcb78605d182c8a951fc8bccbb49e314e84fff06a74fb8fc7a1dec8ae1f5c2e",
+    "aabSha256": "f5a8df0a764a84fb1d89e5cd0f06eff2ddf28c6658d3561cbc2bbdb4e376aa17",
+    "lintErrors": 0,
+    "lintWarningsPerVariant": [
+      "SetJavaScriptEnabled"
+    ]
+  },
+  "limits": [
+    "Review branch only; no production deployment or Google indexing verification.",
+    "Real Supabase synchronization, original release signing and installation on a physical Android device remain outside these local checks.",
+    "Public SEO pages are translated; some editor extensions still use Spanish interface strings."
+  ]
+}
