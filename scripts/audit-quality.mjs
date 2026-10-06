@@ -12,6 +12,20 @@ import { chromium } from 'playwright';
 const require=createRequire(import.meta.url);
 const {browserOptions}=require('../tests/browser-options.cjs');
 const {isolatedContext,fixture,ready,VIEWPORTS,ROOT}=require('../tests/notes-first-ui.cjs');
+async function settledUI(page,state){
+  await page.evaluate(async()=>{
+    await document.fonts.ready;
+    // Let newly mounted controls commit styles before inspecting animations.
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+  });
+  await page.waitForFunction(state=>{
+    const moving=document.getAnimations().some(animation=>
+      animation.effect?.getTiming?.().iterations!==Infinity&&
+      (animation.pending||animation.playState==='running'));
+    const dialog=document.querySelector('.editor-dialog');
+    return !moving&&(state==='board'||(dialog&&Number(getComputedStyle(dialog).opacity)===1));
+  },state);
+}
 const output=path.resolve('test-results/quality');
 await mkdir(output,{recursive:true});
 const summary={createdAt:new Date().toISOString(),site:ROOT,axe:[],lighthouse:[],limitations:['Automated accessibility checks are partial; no physical device or screen reader is covered.','Lighthouse runs on a gzip-enabled local static server with external host resolution blocked; scores do not represent production network performance.']};
@@ -25,10 +39,12 @@ try {
   for(const [width,height] of VIEWPORTS){
     const {context}=await isolatedContext(browser,{width,height},fixture(6));const page=await context.newPage();
     await page.goto('https://postispop.com/');await ready(page);
-    for(const state of ['board','editor']){
+    for(const state of ['board','editor','editor-empty']){
       if(state==='editor'){await page.locator('.sticky-note[data-note-id]').first().click();await page.waitForSelector('.pp-editor-toolbar');}
-      // Audit settled UI, not intermediate colors while a dialog fades in.
-      await page.waitForFunction(()=>document.getAnimations().every(animation=>animation.effect?.getTiming?.().iterations===Infinity||animation.playState!=='running'));
+      if(state==='editor-empty')await page.locator('.editor-dialog textarea').fill('');
+      // Keep real animations and every axe rule; inspect the settled UI. Empty
+      // notes separately cover placeholder contrast, which populated notes hide.
+      await settledUI(page,state);
       await page.addScriptTag({path:axePath});
       const result=await page.evaluate(async()=>{
         const r=await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa','best-practice']}});
