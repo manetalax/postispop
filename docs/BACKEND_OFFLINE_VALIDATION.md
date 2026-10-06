@@ -1,6 +1,12 @@
 # Backend, licencias y sincronización — 2 de octubre de 2026
 
-## Lo escrito y probado
+> **Documento histórico. Estado vigente: 6 de octubre de 2026.** La oferta, los límites y el orden actual de migración están en [dirección del producto](PRODUCTO_Y_DIRECCION.md) y [entrega de datos del 6 de octubre](../database/DELIVERY_20261006.md). Esos documentos prevalecen sobre las referencias siguientes a catálogo, recompensas, materiales de pago y despliegue. Conservar esta evidencia no reactiva esas funciones ni acredita que su SQL esté aplicado en producción.
+
+En el cliente actual, Gratis admite seis notas y una pizarra propia; Premium conserva el límite técnico de cien notas por pizarra. Las notas y pizarras históricas no se recortan. La cola offline mantiene las notas ya disponibles y separa las cuentas; los límites nuevos deben quedar verificados también en el servidor mediante las migraciones vigentes. Hay una sola oferta Premium, con compra «Próximamente»; las referencias a productos anteriores describen únicamente compatibilidad de derechos y conciliación histórica.
+
+La copia propia v2 ya incluye adjuntos locales y verifica SHA-256 al restaurarlos. Esto no sincroniza los binarios ordinarios con Supabase. La implementación se describe en [auditoría actual, evidencia local](AUDITORIA_COMPETITIVA_20261006.md#evidencia-local-y-límites-que-evitan-promesas-incorrectas); el respaldo administrativo del servicio es un proceso distinto en [respaldo y restauración](RESPALDO_Y_RESTAURACION.md).
+
+## Lo escrito y probado el 2 de octubre
 
 - `database/designs.sql` es una migración idempotente para catálogo, packs superpuestos, licencias, recompensas, apariencia, estilos y estadísticas. `database/design-catalog-seed.sql` siembra 298 entradas y sus packs; no concede compras. Se conserva la división de las 100 temáticas iniciales en 50 recompensas y 50 Premium, más 3 profesiones y 195 países.
 - La racha usa la fecha del servidor en Europe/Madrid y bloqueo de la fila de recompensas. La quinta visita consecutiva concede un crédito; repetir check-in o reclamar lo ya adquirido no gasta ni duplica créditos. No se aceptan fechas del cliente.
@@ -9,7 +15,7 @@
 - El panel sólo muestra agregados y datos de cuenta. Ser propietario de la aplicación no permite leer notas privadas de otras personas ni eludir su cifrado.
 - Estilos tienen revisión propia y escritura con comparación de revisión. Las operaciones de protección y estilo bloquean primero la nota. Un papel de una colección desbloqueada puede utilizarse cuando esa colección está seleccionada; los demás materiales requieren su licencia. Los packs médico/profesiones pueden compartir diseños.
 - `offline-sync.js` usa una cola persistente de operaciones, separada por UUID y con una clave distinta para cada operación. El guardado se confirma sólo después de escribir al almacenamiento. Una cuota llena devuelve error, nunca un guardado ficticio.
-- Una cuenta debe haberse verificado por red y la pizarra debe haberse abierto en el dispositivo. Después puede escribir en los 12 espacios disponibles, editar texto, papel, dibujo y estilos; cerrar/reabrir y sincronizar al volver la conexión. Las revisiones del servidor evitan reemplazar silenciosamente cambios de otro dispositivo. Los conflictos conservan las versiones y ofrecen una decisión explícita y un archivo de recuperación.
+- Una cuenta debe haberse verificado por red y la pizarra debe haberse abierto en el dispositivo. Después puede editar los espacios ya disponibles y sincronizar al volver la conexión. El ensayo original usaba doce espacios; desde el 6 de octubre las pizarras gratuitas nuevas tienen seis, sin eliminar notas históricas que excedan ese número. Las revisiones del servidor evitan reemplazar silenciosamente cambios de otro dispositivo. Los conflictos conservan las versiones y ofrecen una decisión explícita y un archivo de recuperación.
 - La cola no comparte cachés entre cuentas. Las respuestas de red iniciadas antes de cerrar/cambiar sesión se descartan. Cerrar sesión funciona también sin red y no elimina cambios pendientes de esa cuenta.
 - Las notas protegidas sólo entran a la cola como sobres cifrados. Al proteger localmente una nota, las ediciones pendientes bloquean la operación. Con consentimiento de retirar versiones anteriores, se borran los estilos y recuperaciones locales de esa nota y se sustituyen las cachés de todas las cuentas de ese dispositivo por la versión cifrada.
 - Las licencias offline se obtienen de un recibo ES256 firmado por el servidor. Su vigencia máxima es siete días, limitada por el vencimiento más próximo de las licencias. `license-public-keys.json` permanece vacío hasta configurar la clave pública y desplegar la función correspondiente: actualmente no se conceden derechos offline de pago mediante una casilla local.
@@ -27,11 +33,11 @@ npm install --prefix /tmp/postispop-pg-test @electric-sql/pglite --ignore-script
 PGLITE_MODULE=/tmp/postispop-pg-test/node_modules/@electric-sql/pglite/dist/index.js node tests/database-integration.mjs
 ```
 
-## Límites y pasos de despliegue pendientes
+## Límites y pasos de despliegue registrados el 2 de octubre
 
 No se ha conectado a Supabase administrativo, exportado su estado real, vinculado el UUID del propietario ni aplicado estas migraciones allí. Las pruebas son locales sobre un esquema de referencia; no sustituyen una validación con el esquema/RLS real ni una prueba multicliente en staging.
 
-Orden previsto después de respaldo y revisión: comprobar prerrequisitos de `commerce.sql` existentes, aplicar `designs.sql`, `design-catalog-seed.sql` y `protected-notes.sql`, vincular el propietario comprobado, desplegar funciones y verificar con cuentas independientes. `commerce.sql` heredado no es idempotente: no repetirlo ciegamente en producción.
+Orden previsto en aquella entrega, conservado como historial: comprobar prerrequisitos de `commerce.sql` existentes, aplicar `designs.sql`, `design-catalog-seed.sql` y `protected-notes.sql`, vincular el propietario comprobado, desplegar funciones y verificar con cuentas independientes. **No utilizar esa secuencia como receta de la entrega actual**: seguir el preflight y las migraciones de [entrega de datos del 6 de octubre](../database/DELIVERY_20261006.md). `commerce.sql` heredado no es idempotente: no repetirlo ciegamente en producción.
 
 Crear una cuenta, abrir por primera vez una pizarra, crear una pizarra adicional, compartir por enlace, hacer compras y ver estadísticas requieren Internet. No se ha probado una APK instalada en un teléfono. La persistencia del navegador no es un respaldo externo y puede perderse si el usuario borra los datos de la aplicación; los errores de almacenamiento se muestran.
 
