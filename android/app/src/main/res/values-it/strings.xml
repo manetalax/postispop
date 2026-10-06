@@ -1,0 +1,8 @@
+<resources>
+    <string name="recover_explanation">PostisPop deve essere riaperto. Le note salvate sono ancora su questo dispositivo.</string>
+    <string name="reopen_notes">Apri le mie note</string>
+    <string name="no_link_app">Nessuna app disponibile per aprire questo link</string>
+    <string name="image_saved">Immagine salvata</string>
+    <string name="image_save_failed">Impossibile salvare l’immagine</string>
+    <string name="resource_unavailable">Risorsa non inclusa in questa versione locale</string>
+</resources>
