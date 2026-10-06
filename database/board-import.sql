@@ -91,9 +91,7 @@ begin
     or jsonb_typeof(style->'ink') is distinct from 'string' or (style->>'ink') !~ '^#[0-9a-fA-F]{6}$'
     or jsonb_typeof(style->'paper') is distinct from 'string' or style->>'paper' not in('plain','ruled','grid','dots','journal','papyrus','washi','music','prescription','blueprint','shift','study') then raise exception 'INVALID_STYLE' using errcode='22023'; end if;
    if (style->>'size')::integer not between 12 and 36 then raise exception 'INVALID_STYLE' using errcode='22023'; end if;
-   if (style->>'font'<>'sans' and not public.postispop_has_license('tools:fonts'))
-    or (lower(style->>'ink')<>'#163b62' and not (public.postispop_has_license('tools:palettes') or public.postispop_has_license('tools:pens')))
-    or not public.postispop_can_paper(style->>'paper') then raise exception 'STYLE_LOCKED' using errcode='42501'; end if;
+   if not public.postispop_can_paper(style->>'paper') then raise exception 'INVALID_STYLE' using errcode='22023'; end if;
    drawing:=style->'drawing';
    if drawing is null or not coalesce(public.postispop_valid_drawing(drawing),false) then raise exception 'INVALID_STYLE' using errcode='22023'; end if;
    style:=jsonb_set(style,'{ink}',to_jsonb(lower(style->>'ink')));
@@ -104,14 +102,15 @@ begin
   end if;
  end loop;
  wanted:=jsonb_array_length(normalized);
- limit_notes:=case when public.postispop_has_license('premium') then 100 else 7 end;
+ limit_notes:=case when public.postispop_has_license('premium') then 100 else 6 end;
  -- Lock every existing note in deterministic order. Legacy note writes and
  -- postispop_save_note_style/protect_note use these same row locks.
  perform 1 from public.notes where board_id=p_board_id order by id for update;
- select count(*) into occupied from public.notes n where n.board_id=p_board_id and (
+ select count(*) into occupied from public.notes n where n.board_id=p_board_id and n.position>=0 and (
   coalesce(n.text,'')<>'' or coalesce(n.marks,'[]')<>'[]' or coalesce(n.doodle,'null'::jsonb) not in ('null'::jsonb,'""'::jsonb) or n.image_url is not null or n.protected_envelope is not null
   or exists(select 1 from public.postispop_note_style s where s.note_id=n.id and s.drawing<>'[]' and s.drawing->'strokes' is distinct from '[]'::jsonb));
- select coalesce(array_agg(n.id order by n.position,n.id),'{}') into slots from public.notes n where n.board_id=p_board_id
+ select coalesce(array_agg(n.id order by n.position,n.id),'{}') into slots from public.notes n where n.board_id=p_board_id and n.position>=0
+  and postispop_private.can_access_note(p_board_id,n.position)
   and coalesce(n.text,'')='' and coalesce(n.marks,'[]')='[]' and coalesce(n.doodle,'null'::jsonb) in ('null'::jsonb,'""'::jsonb) and n.image_url is null and n.protected_envelope is null
   and (n.locked_until is null or n.locked_until<=now()) and not(n.id=any(p_excluded_note_ids))
   and not exists(select 1 from public.postispop_note_style s where s.note_id=n.id and s.drawing<>'[]' and s.drawing->'strokes' is distinct from '[]'::jsonb);
