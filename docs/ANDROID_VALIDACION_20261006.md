@@ -28,7 +28,7 @@ La prueba inicia un intento en un contexto de navegador, conserva exclusivamente
 
 `node --test tests/android-archive.test.cjs`: **correcto**. Comprueba archivos APK y AAB, detectando omisión de `_next`, cambio de bytes y recursos adicionales no auditados.
 
-La prueba OAuth también se ejecutó correctamente contra los recursos reales de `android/app/src/main/assets/www` mediante `POSTISPOP_TEST_ROOT`.
+La prueba OAuth también se ejecutó correctamente contra los recursos reales de `android/app/src/main/assets/www` mediante `POSTISPOP_TEST_ROOT`, incluida la copia aislada final con huella `0a2bb9cd` descrita abajo.
 
 Las fuentes nativas de Android se integraron en la rama `review/notes-first-20261006`. Un `git fetch` y un diff completo contra los archivos locales confirmaron igualdad byte por byte, incluidos los siete idiomas adicionales y la eliminación del recurso TWA sin uso. Esta comprobación no implica publicación en `main`.
 
@@ -43,19 +43,21 @@ gradle -p android --no-daemon assembleDebug assembleRelease bundleRelease lintDe
 python3 android/verify-archive.py android/app/build/outputs/apk/debug/app-debug-unsigned.apk android/app/build/outputs/apk/release/app-release-unsigned.apk android/app/build/outputs/bundle/release/app-release.aab
 ```
 
-**Compilación de la candidata definitiva terminada correctamente:** `assembleDebug`, `assembleRelease` y `bundleRelease`, incorporando el RPC transaccional de creación de pizarras. La reconstrucción final sobre copia aislada terminó en 29 s: 82 tareas, 14 ejecutadas y 68 al día. Se confirmó que los 21 archivos nativos seguían idénticos a la compilación limpia previa de 98 tareas en 1 min 12 s, en la que también se ejecutaron `lintDebug` y `lintRelease`.
+**Compilación de la candidata definitiva terminada correctamente:** `clean`, `assembleDebug`, `assembleRelease` y `bundleRelease`, incorporando el RPC transaccional de creación de pizarras, las correcciones de respaldo y caché y la lectura paginada completa. Se partió de `postispop-release-paginated-20261006` y se creó una carpeta nueva de compilación exclusiva para esta huella. La compilación limpia terminó en 43 s: 83 tareas, 82 ejecutadas y 1 al día. `lintVitalRelease` pasó en esta compilación. Se confirmó que los 21 archivos nativos seguían idénticos a la compilación limpia previa de 98 tareas en 1 min 12 s, en la que también se ejecutaron `lintDebug` y `lintRelease`; sus informes se conservan como validación de esas mismas fuentes nativas.
 
 El informe release contiene **0 errores y 1 advertencia**: la activación de JavaScript, necesaria para la interfaz local. Debug contiene **0 errores y 2 advertencias**: la anterior y la disponibilidad de una versión posterior de AndroidX WebKit. Se conserva la dependencia fijada y comprobada; no se han ocultado advertencias. La variante final sigue siendo una candidata interna sin firma, pendiente de la publicación coordinada del backend y de las pruebas de instalación.
 
-Los tres archivos compilados pasan la verificación de **198 de 198 recursos**, incluida cada ruta `_next` y `_astro`, y todos sus tamaños y SHA-256 coinciden con el manifiesto, sin recursos adicionales. La copia aislada se comprobó antes y después de copiarla; contiene un único CSS consolidado con huella. Huella del contenido comprobado: `6345cb224d4704c33f10fffa99c642944f701de29fd3b10f3c0afe12cf4f365f`.
+Los tres archivos compilados pasan la verificación de **198 de 198 recursos**, incluida cada ruta `_next` y `_astro`, y todos sus tamaños y SHA-256 coinciden con el manifiesto, sin recursos adicionales. La copia aislada se comprobó antes y después de copiarla; contiene un único CSS consolidado con huella. Huella del contenido comprobado: `0a2bb9cdda8dc831554fc59cbfd38565ee2f6b785cdfb1bbcc7d8dc56e04fdec`.
 
 | Candidato interno | Bytes | SHA-256 |
 | --- | ---: | --- |
-| APK debug 0.5.0-beta | 13.636.006 | `f8c0643e2c9f5a7bd142b81d60d8854cf5789d9cd5e6ee258b3350d371b04c5b` |
-| APK release 0.5.0 | 11.068.579 | `2e25a2602b08eaf6459697c08beaf28aa3250dca568adc451bb33ba01f3953d6` |
-| AAB release 0.5.0 | 11.015.600 | `6c46600f527bd58d7f75f7e8a8360bae14d2d2c4d2688be4d25fbeeae8a38823` |
+| APK debug 0.5.0-beta | 13.625.051 | `7aadada4a396beb40ef6ebe7d925f769af9fdc53eff104a37826907d617b61d2` |
+| APK release 0.5.0 | 11.069.767 | `25a12e11876f1e28f6ecd3bf699675afabbf3ff6c35818325dd4b6092dfa425b` |
+| AAB release 0.5.0 | 11.016.789 | `a5e05e36bfce960bab347299144b7c7c09c3e5314834e3aa4bce74be5514633b` |
 
-Se conservaron candidatos, manifiesto e informes en `android/app/build/verified-internal/final-6345cb22/`, excluidos de Git. Los resultados anteriores permanecen separados y no representan la candidata definitiva. **No están firmados**: `apksigner` confirma la ausencia de firma del APK release. Ningún candidato constituye un instalador de distribución. Si cambia el bundle, debe repetirse la compilación y la comparación del archivo final; estos hashes solo describen el contenido indicado.
+Se conservaron candidatos, manifiesto e informes en `android/app/build/verified-internal/final-0a2bb9cd/`, excluidos de Git. Los resultados anteriores permanecen separados y no representan la candidata definitiva. **No están firmados**: `apksigner` confirma la ausencia de firma del APK release. Ningún candidato constituye un instalador de distribución. Si cambia el bundle, debe repetirse la compilación y la comparación del archivo final; estos hashes solo describen el contenido indicado.
+
+La revisión de solo lectura de GitHub Actions confirmó que el repositorio y sus entornos no tenían secretos ni variables configurados para reutilizar una firma existente. No se leyó ningún valor ni se modificó la configuración de acceso o de firma.
 
 No se ha ejecutado un APK instalado: este entorno no dispone de emulador Android, imágenes de sistema ni aceleración KVM, y no se ha aportado un dispositivo físico. Las pruebas de OAuth recrean el contexto de navegador con almacenamiento persistente; no sustituyen una instalación y pruebas de ciclo de vida en Android real.
 
