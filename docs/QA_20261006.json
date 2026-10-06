@@ -1,0 +1,399 @@
+{
+  "schema": 1,
+  "date": "2026-10-06",
+  "updatedAt": "2026-10-06T07:41:02.198201+00:00",
+  "status": "web_visual_verified_atomic_rpc_and_final_integrated_tests_passed",
+  "auditBuild": {
+    "contentHash": "9d72c9ee3e3b048d89aeca7b46915a616387ee3c245bd1a1f70a4cd33f393564",
+    "version": "0.5.0",
+    "files": 198,
+    "immutableAudit": true
+  },
+  "functionalBuild": {
+    "contentHash": "691465d3f43c9142f82e80aea51866eb73d8e957aa0618b07e0116e4bfc53208",
+    "notesFirst": {
+      "passed": 13,
+      "total": 13,
+      "command": "node tests/notes-first-ui.cjs"
+    },
+    "addNote": {
+      "passed": 5,
+      "total": 5,
+      "command": "node tests/add-note-ui.cjs"
+    },
+    "hydration": {
+      "immediateReloadsPassed": 20,
+      "earlySaveResizePreservesSSR": true,
+      "command": "node tests/hydration-ui.cjs"
+    },
+    "reactErrors": [],
+    "consoleErrors": []
+  },
+  "unitTests": {
+    "passed": 139,
+    "total": 139,
+    "command": "npm test",
+    "scope": "Corrida integrada final posterior al RPC; repetida en una copia limpia sin sitio preparado.",
+    "atomicBoardCreationRpc": {
+      "status": "local_specific_tests_and_postgres_suite_passed",
+      "affectedModule": "supabase-bridge.js",
+      "changesInitialPaint": false,
+      "offlineBridgeTestsPassed": 14,
+      "postgresLocalNewAssertionsPassed": 24,
+      "postgresEngine": "PGlite",
+      "covers": [
+        "seed failure rolls back board and notes",
+        "row-level security",
+        "free six notes",
+        "paid twelve initial notes",
+        "idempotency"
+      ],
+      "supabaseProductionApplied": false,
+      "postgresFullSuite": "passed",
+      "artifactBuildHash": "5a5aef4e3ac04bb95d4b27127d81c03c1b914561e2feba865ec0a72a0a008ecc"
+    },
+    "integratedPostRpcRerun": "passed",
+    "skipped": 0,
+    "cleanCheckoutWithoutStagedSite": "139/139 passed, 0 skipped",
+    "backupIntegration": {
+      "command": "npm run test:backup",
+      "passed": 3,
+      "total": 3,
+      "moduleTests": 2,
+      "browserIntegrationTests": 1,
+      "requiresPreparedSite": true,
+      "status": "passed"
+    }
+  },
+  "otherSmokeTests": [
+    {
+      "name": "experience-ui",
+      "status": "passed",
+      "command": "node tests/experience-ui.cjs",
+      "buildHashPrefix": "415734c6",
+      "scope": "Flujo observado de recarga temprana; guardado local sin conexión; filtros; exportación JSON/PNG; importación no destructiva; rechazo de copia insegura; retorno del foco; instalación/descargas; Premium Próximamente y ocho guías."
+    },
+    {
+      "name": "protected-share-ui",
+      "status": "passed",
+      "command": "node tests/protected-share-ui.cjs",
+      "buildHash": "691465d3f43c9142f82e80aea51866eb73d8e957aa0618b07e0116e4bfc53208",
+      "scope": "Interfaz preparada y RPC de compartición cifrada simulado."
+    },
+    {
+      "name": "protected-concurrency-ui",
+      "status": "passed",
+      "command": "node tests/protected-concurrency-ui.cjs",
+      "buildHash": "691465d3f43c9142f82e80aea51866eb73d8e957aa0618b07e0116e4bfc53208",
+      "scope": "Dos pestañas reales con módulos preparados y datos controlados; coordinación de protección."
+    },
+    {
+      "name": "premium-ui",
+      "status": "passed",
+      "command": "node tests/premium-ui.cjs",
+      "buildHash": "691465d3f43c9142f82e80aea51866eb73d8e957aa0618b07e0116e4bfc53208",
+      "scope": "Interfaz preparada, invitado local real y denegaciones controladas; sin pago real."
+    },
+    {
+      "name": "cloud-import-ui",
+      "status": "passed",
+      "command": "node tests/cloud-import-ui.cjs",
+      "buildHash": "691465d3f43c9142f82e80aea51866eb73d8e957aa0618b07e0116e4bfc53208",
+      "scope": "Módulos preparados y backend simulado para idempotencia."
+    },
+    {
+      "name": "autosave-ui",
+      "status": "passed",
+      "command": "node tests/autosave-ui.cjs",
+      "buildHash": "691465d3f43c9142f82e80aea51866eb73d8e957aa0618b07e0116e4bfc53208",
+      "scope": "Interfaz preparada, cierre y persistencia; prueba móvil actualizada al menú de opciones."
+    },
+    {
+      "name": "offline-shell-ui",
+      "status": "passed",
+      "command": "node tests/offline-shell-ui.cjs",
+      "buildHash": "691465d3f43c9142f82e80aea51866eb73d8e957aa0618b07e0116e4bfc53208",
+      "scope": "Service worker real y servidor HTTP local detenido para comprobar apertura offline."
+    },
+    {
+      "name": "attachment-backup-browser",
+      "status": "passed",
+      "command": null,
+      "buildHash": "691465d3f43c9142f82e80aea51866eb73d8e957aa0618b07e0116e4bfc53208",
+      "scope": "Tres casos con IndexedDB real, modo offline, cuota/reintento; ocho módulos de source overlay verificados idénticos byte a byte al sitio preparado."
+    }
+  ],
+  "accessibility": {
+    "engine": "axe-core 4.14.0",
+    "states": 10,
+    "violations": 0,
+    "viewports": [
+      [
+        320,
+        568
+      ],
+      [
+        390,
+        844
+      ],
+      [
+        768,
+        1024
+      ],
+      [
+        1366,
+        768
+      ],
+      [
+        1440,
+        900
+      ]
+    ],
+    "surfaces": [
+      "board",
+      "editor"
+    ],
+    "waitsForFiniteAnimations": true,
+    "automatedOnly": true
+  },
+  "localLighthouse": {
+    "version": "13.5.0",
+    "chromiumUserAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
+    "samplesPerProfile": 3,
+    "aggregation": "median_each_metric",
+    "server": "local static files with gzip; external origins blocked",
+    "liveProduction": false,
+    "profiles": {
+      "mobile": {
+        "runs": 3,
+        "scores": {
+          "performance": 0.85,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        },
+        "metricValues": {
+          "first-contentful-paint": 2851.00025,
+          "largest-contentful-paint": 3639.715000000001,
+          "cumulative-layout-shift": 0.008353671797924228,
+          "total-blocking-time": 0,
+          "speed-index": 2851.00025
+        },
+        "transferBytes": 362140
+      },
+      "desktop": {
+        "runs": 3,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        },
+        "metricValues": {
+          "first-contentful-paint": 656.5530000000001,
+          "largest-contentful-paint": 716.5530000000001,
+          "cumulative-layout-shift": 0.003055791068860949,
+          "total-blocking-time": 0,
+          "speed-index": 656.5530000000001
+        },
+        "transferBytes": 362140
+      }
+    },
+    "rawSampleScores": [
+      {
+        "formFactor": "mobile",
+        "scores": {
+          "performance": 0.85,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        },
+        "metricValues": {
+          "first-contentful-paint": 2889.7149999999992,
+          "largest-contentful-paint": 3639.715000000001,
+          "cumulative-layout-shift": 0.008353671797924228,
+          "total-blocking-time": 0,
+          "speed-index": 2889.7149999999992
+        },
+        "transferBytes": 362140
+      },
+      {
+        "formFactor": "desktop",
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        },
+        "metricValues": {
+          "first-contentful-paint": 656.5530000000001,
+          "largest-contentful-paint": 716.5530000000001,
+          "cumulative-layout-shift": 0.003055791068860949,
+          "total-blocking-time": 0,
+          "speed-index": 656.5530000000001
+        },
+        "transferBytes": 362140
+      },
+      {
+        "formFactor": "mobile",
+        "scores": {
+          "performance": 0.85,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        },
+        "metricValues": {
+          "first-contentful-paint": 2851.00025,
+          "largest-contentful-paint": 3681.20035,
+          "cumulative-layout-shift": 0.008353671797924228,
+          "total-blocking-time": 0,
+          "speed-index": 2851.00025
+        },
+        "transferBytes": 362140
+      },
+      {
+        "formFactor": "desktop",
+        "scores": {
+          "performance": 0.99,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        },
+        "metricValues": {
+          "first-contentful-paint": 681.0725,
+          "largest-contentful-paint": 762.1450000000001,
+          "cumulative-layout-shift": 0.003055791068860949,
+          "total-blocking-time": 0,
+          "speed-index": 681.0725
+        },
+        "transferBytes": 362140
+      },
+      {
+        "formFactor": "mobile",
+        "scores": {
+          "performance": 0.86,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        },
+        "metricValues": {
+          "first-contentful-paint": 2574.1665000000003,
+          "largest-contentful-paint": 3624.166500000001,
+          "cumulative-layout-shift": 0.008353671797924228,
+          "total-blocking-time": 0,
+          "speed-index": 2574.1665000000003
+        },
+        "transferBytes": 362140
+      },
+      {
+        "formFactor": "desktop",
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        },
+        "metricValues": {
+          "first-contentful-paint": 642.4764999999999,
+          "largest-contentful-paint": 702.4765,
+          "cumulative-layout-shift": 0.003055791068860949,
+          "total-blocking-time": 0,
+          "speed-index": 642.4764999999999
+        },
+        "transferBytes": 362140
+      }
+    ]
+  },
+  "publicPageSpeedBaseline": {
+    "capturedAt": "2026-10-06T06:59:00Z",
+    "url": "https://postispop.com/",
+    "version": "public_before_current_local_changes",
+    "mobile": {
+      "performance": 58,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100
+    },
+    "desktop": {
+      "performance": 72,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100
+    },
+    "source": "AUDITORIA_COMPETITIVA_20261006.md",
+    "comparableAsControlledBeforeAfter": false,
+    "cruxAvailable": false
+  },
+  "screenshots": [
+    {
+      "path": "vista-escritorio-6.png",
+      "caption": "Escritorio: seis notas",
+      "bytes": 388788,
+      "width": 1440,
+      "height": 900,
+      "sha256": "0c32d04ead6d35f25433b840ce3c66c1963faef1a3adefb61b96e54de3849ccb",
+      "buildHash": "9d72c9ee3e3b048d89aeca7b46915a616387ee3c245bd1a1f70a4cd33f393564"
+    },
+    {
+      "path": "vista-escritorio-12.png",
+      "caption": "Escritorio: doce notas de una colección de veinticuatro",
+      "bytes": 388988,
+      "width": 1440,
+      "height": 900,
+      "sha256": "9e1ac57f6a00e4b9ffc5ac3caa4d3c3b3addb008f295e823263e199d3175e3f5",
+      "buildHash": "9d72c9ee3e3b048d89aeca7b46915a616387ee3c245bd1a1f70a4cd33f393564"
+    },
+    {
+      "path": "vista-movil-6.png",
+      "caption": "Móvil: seis notas",
+      "bytes": 149050,
+      "width": 390,
+      "height": 844,
+      "sha256": "16cf76b686922029bee8cd9f92095081669bfad53951246153bb8d0363d930fd",
+      "buildHash": "9d72c9ee3e3b048d89aeca7b46915a616387ee3c245bd1a1f70a4cd33f393564"
+    },
+    {
+      "path": "vista-editor-movil.png",
+      "caption": "Editor en móvil",
+      "bytes": 74181,
+      "width": 390,
+      "height": 844,
+      "sha256": "86df2c7b016a8f98365c81579dcfb52cb425b3f833656dbf7aa46821c01c7b94",
+      "buildHash": "9d72c9ee3e3b048d89aeca7b46915a616387ee3c245bd1a1f70a4cd33f393564"
+    },
+    {
+      "path": "vista-editor-escritorio.png",
+      "caption": "Editor en escritorio",
+      "bytes": 189513,
+      "width": 1440,
+      "height": 900,
+      "sha256": "393e9247789e521541415bf6e00a4fb789b435e3e9ed337750f078b9b1ba7cee",
+      "buildHash": "9d72c9ee3e3b048d89aeca7b46915a616387ee3c245bd1a1f70a4cd33f393564"
+    }
+  ],
+  "limitations": [
+    "Lighthouse local y PageSpeed público miden entornos y versiones distintos; no constituyen una comparación controlada.",
+    "La ausencia de errores en estos recorridos no garantiza ausencia total de fallos ni superioridad frente a otras aplicaciones.",
+    "No se certifican en este informe migraciones desplegadas, sincronización real entre cuentas/dispositivos, pago, instalación Android física ni paridad funcional con competidores.",
+    "El RPC atómico cuenta con 14 pruebas locales, PostgreSQL local completo y npm test final 139/139 sin omisiones aprobados. Las métricas visuales conservan el hash de auditBuild y no se presentan como nueva medición del artifactBuild."
+  ],
+  "reproduction": {
+    "functional": [
+      "node tests/notes-first-ui.cjs",
+      "node tests/add-note-ui.cjs",
+      "node tests/hydration-ui.cjs"
+    ],
+    "visual": "POSTISPOP_SITE_ROOT=/ruta/al/sitio-preparado node scripts/audit-quality.mjs --lighthouse --lighthouse-runs=3",
+    "note": "Usar el mismo contenido del manifiesto auditado para reproducir estas cifras. No sumar muestras de builds distintos."
+  },
+  "artifactBuild": {
+    "contentHash": "5a5aef4e3ac04bb95d4b27127d81c03c1b914561e2feba865ec0a72a0a008ecc",
+    "version": "0.5.0",
+    "files": 198,
+    "changedManifestEntriesFromVisualAudit": [
+      "supabase-bridge.js",
+      "sw.js"
+    ],
+    "visualEvidenceRetainsAuditBuildHash": true
+  }
+}

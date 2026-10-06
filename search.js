@@ -27,7 +27,7 @@
         if(url.origin!==location.origin)continue;
         const li=document.createElement('li');
         const title=document.createElement('a');
-        title.href=url.pathname;title.textContent=item.title;
+        title.href=url.pathname+url.hash;title.textContent=item.title;
         const description=document.createElement('p');description.textContent=item.description;
         li.append(title,description);results.append(li);
       }

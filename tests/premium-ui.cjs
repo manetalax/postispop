@@ -15,16 +15,18 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
   await page.goto('https://postispop.com/');await page.waitForSelector('.sticky-note:not([disabled])');
   await page.locator('.sticky-note').first().click();await page.locator('.editor-dialog textarea').fill('Secreto de prueba 6429');
   await page.waitForFunction(()=>JSON.parse(localStorage.getItem('postispop-guest-board-v1'))?.notes[0]?.text==='Secreto de prueba 6429');
-  await page.getByText('Papeles, letras y trazos',{exact:true}).click();await page.getByRole('button',{name:'Cursiva',exact:true}).click();
+  await page.waitForSelector('.pp-design-tools');assert.equal(await page.locator('.edit-paper').getAttribute('data-pp-edit-mode'),'text');
+  await page.locator('.pp-editor-options>summary').click();await page.getByRole('button',{name:'Cursiva',exact:true}).click();
+  await page.getByRole('button',{name:'Lápiz',exact:true}).click();
   const canvas=page.locator('.pp-drawing-canvas');await canvas.scrollIntoViewIfNeeded();const box=await canvas.boundingBox();
   await page.mouse.move(box.x+30,box.y+30);await page.mouse.down();await page.mouse.move(box.x+80,box.y+65,{steps:8});await page.mouse.up();
-  await page.waitForFunction(()=>document.querySelector('.pp-style-status')?.textContent.includes('guardados en este dispositivo'));
+  await page.waitForFunction(()=>document.querySelector('.pp-style-status')?.dataset.state==='saved');
   await page.waitForFunction(()=>{const s=JSON.parse(localStorage.getItem('postispop-guest-board-v1'))?.notes[0]?.style;return s?.italic&&s.drawing.strokes.length===1;});
   await context.setOffline(true);await page.reload();await page.waitForSelector('.sticky-note:not([disabled])');
   assert.match(await page.locator('.sticky-note').first().innerText(),/Secreto de prueba/);await page.waitForSelector('.pp-note-sketch');
   assert.equal(await page.locator('.pp-vault-toolbar').isVisible(),false);
   await page.locator('.sticky-note').first().click();
-  await page.getByRole('button',{name:'🔒 Contraseña',exact:true}).click();
+  await page.getByRole('button',{name:'Contraseña de la nota',exact:true}).click();
   await page.getByLabel('Contraseña de esta nota',{exact:true}).fill('Una frase privada 6429');await page.getByLabel('Repite la contraseña',{exact:true}).fill('Una frase privada 6429');await page.locator('.pp-vault-consent input').check();
   await page.getByRole('button',{name:'Cifrar y proteger',exact:true}).click();
   await page.waitForFunction(()=>Boolean(JSON.parse(localStorage.getItem('postispop-guest-board-v1'))?.notes[0]?.protectedEnvelope),{timeout:15000});
@@ -39,12 +41,18 @@ const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.jso
   await page.getByLabel('Texto de la nota protegida').fill('Secreto actualizado');await page.keyboard.press('Escape');await page.waitForSelector('.pp-vault-dialog',{state:'detached'});
   await page.reload();await page.waitForSelector('.pp-vault-locked');assert.equal(await page.evaluate(()=>JSON.stringify({...localStorage}).includes('Secreto actualizado')),false);
   await page.screenshot({path:'test-results/nota-protegida-mobile.png',fullPage:true});
-  await context.setOffline(false);await page.goto('https://postispop.com/atelier.html');await page.waitForSelector('#at-grid article');
+  await page.waitForSelector('.pp-board-options');
+  const downloadReady=page.waitForEvent('download');await page.keyboard.press('Control+Shift+E');const download=await downloadReady;
+  const backup=JSON.parse(await fs.readFile(await download.path(),'utf8'));
+  assert.equal(backup.format,'postispop');assert.ok(backup.notes[0].protectedEnvelope?.ciphertext,'export retains the encrypted note');
+  assert.equal(JSON.stringify(backup).includes('Secreto'),false,'export never discloses protected text');
+  assert.equal('text' in backup.notes[0],false,'protected export contains no plaintext field');
+  await context.setOffline(false);await page.goto('https://postispop.com/atelier.html');await page.waitForSelector('.payment-options');
   for(const width of [360,768,1440]){await page.setViewportSize({width,height:1000});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,'Atelier width '+width);await page.screenshot({path:`test-results/atelier-${width}.png`,fullPage:false});}
   await page.goto('https://postispop.com/propietario.html');await page.waitForFunction(()=>!document.querySelector('#status').textContent.includes('Comprobando'));assert.equal(await page.locator('#dashboard').isHidden(),true,'Guest cannot see owner metrics');
   await page.goto('https://postispop.com/compartir.html#invalido');await page.waitForFunction(()=>document.querySelector('#share-status').textContent.includes('no es válido'));
   assert.deepEqual(errors,[]);assert.deepEqual([...new Set(missing)],[]);
-  console.log('PASS: styles, drawing, offline guest reopen, encrypted text/drawing, wrong password, encrypted edits, responsive atelier and owner access denial.');
+  console.log('PASS: styles, drawing, offline guest reopen, encrypted text/drawing, wrong password, encrypted edits and export, responsive Premium pricing and owner access denial.');
  }catch(e){if(page){console.error('URL:',page.url());console.error('UI:',(await page.locator('body').innerText()).slice(-4500));await page.screenshot({path:'test-results/premium-failure.png',fullPage:true}).catch(()=>{});}console.error('Errors:',errors,'Missing:',missing);throw e;}
  finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

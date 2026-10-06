@@ -8,33 +8,57 @@ permissions:
   contents: read
 jobs:
   android:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6.0.3
+      - uses: actions/setup-node@v6.5.0
         with:
           node-version: 22
-      - name: Bundle local UI and shop
-        run: npm ci && npm test && npm run lint && npm run build && node scripts/package-mobile.mjs
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
       - name: Install browser for local payload verification
         run: npx playwright install --with-deps chromium
+      - name: Bundle local notes UI and public pages
+        run: npm test && npm run lint && npm run build && node scripts/package-mobile.mjs
       - name: Verify bundled resources, offline data and Android CSP
         run: node --test tests/packaging.test.cjs && npm run test:mobile
-      - uses: actions/setup-java@v4
+      - name: Verify multilingual public pages and board language entry
+        env:
+          POSTISPOP_TEST_ROOT: android/app/src/main/assets/www
+        run: npm run test:seo
+      - name: Verify local attachment backups in the Android payload
+        env:
+          POSTISPOP_TEST_ROOT: android/app/src/main/assets/www
+        run: npm run test:backup
+      - name: Verify image and backup export controls in the Android payload
+        env:
+          POSTISPOP_SITE_ROOT: android/app/src/main/assets/www
+        run: npm run test:exports
+      - name: Verify Android authentication survives WebView recreation
+        env:
+          POSTISPOP_TEST_ROOT: android/app/src/main/assets/www
+        run: npm run test:android-auth
+      - uses: actions/setup-java@v5.7.0
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4.0.4
         with:
+          cmdline-tools-version: '12266719'
           packages: platform-tools
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5.0.2
         with:
           gradle-version: '8.13'
       - name: Install Android SDK
         run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
       - name: Validate unsigned build candidates (not distributable installers)
         run: gradle -p android --no-daemon assembleDebug bundleRelease lintDebug lintRelease -PunsignedBeta
-      - uses: actions/upload-artifact@v4
+      - name: Verify resources inside the actual APK and AAB
+        run: >-
+          python3 android/verify-archive.py
+          android/app/build/outputs/apk/debug/*.apk
+          android/app/build/outputs/bundle/release/*.aab
+      - uses: actions/upload-artifact@v6.0.0
         with:
           name: postispop-internal-build-validation-NOT-AN-INSTALLER
           path: |

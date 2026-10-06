@@ -1,0 +1,8 @@
+<resources>
+    <string name="recover_explanation">PostisPop needs to reopen. Saved notes are still on this device.</string>
+    <string name="reopen_notes">Open my notes</string>
+    <string name="no_link_app">No app is available to open this link</string>
+    <string name="resource_unavailable">Resource not included in this local version</string>
+    <string name="file_saved">File saved</string>
+    <string name="file_save_failed">The file could not be saved</string>
+</resources>

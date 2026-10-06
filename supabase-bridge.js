@@ -1,14 +1,20 @@
-import { readGuest, guestRequest } from './guest-board.js';
+import { readGuest, guestRequest, guestImportSlots } from './guest-board.js';
 import { createOfflineStore, sameMutation } from './offline-sync.js';
 import { getOfflineRights, saveOfflineReceipt } from './offline-license.js';
 import { installOfflineUI } from './offline-ui.js';
-import { normalizeBackup, importTicket, withImportSlots } from './backup-import.js';
+import { normalizeBackup, importTicket, withImportSlots, backupNotesForServer, verifyBackupAttachments, restoreBackupAttachments, createBoardBackup, LOCAL_BACKUP_BYTES, CLOUD_BACKUP_BYTES } from './backup-import.js';
 const SUPABASE_URL = "https://htfyjefmviwlgmfqrwue.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ox1LUYhmz57iSU7mPtGStg_-FZl-zQT";
 const originalFetch = window.fetch.bind(window);
 const sessionKey = "postispop-supabase-session";
 const offline = createOfflineStore(localStorage);
 const online = () => typeof navigator === "undefined" || navigator.onLine !== false;
+// One Premium offer, three billing choices. Checkout stays disconnected.
+const premiumProducts = () => [
+  {slug:'premium-monthly',title:'Premium mensual',description:'2,95 € al mes · Próximamente',price_cents:295,currency:'eur',stripe_payment_link:null},
+  {slug:'premium-yearly',title:'Premium anual',description:'9,95 € al año · Próximamente',price_cents:995,currency:'eur',stripe_payment_link:null},
+  {slug:'premium-lifetime',title:'Premium de por vida',description:'59,95 € · Un único pago · Próximamente',price_cents:5995,currency:'eur',stripe_payment_link:null}
+];
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
   status,
@@ -36,16 +42,41 @@ const headers = () => {
 };
 
 const rawRest = async (table, query = "", options = {}) => {
+  const { metadata = false, ...requestOptions } = options;
   const response = await originalFetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
-    ...options,
+    ...requestOptions,
     headers: { ...headers(), ...(options.headers || {}) }
   });
   const text = await response.text();
   let body = null;
   try { body = text ? JSON.parse(text) : null; } catch { body = text; }
   if (!response.ok) throw Object.assign(new Error(body?.message || "SUPABASE_ERROR"), { status: body?.code === "40001" || body?.message === "CONFLICT" ? 409 : response.status, body });
-  return body;
+  return metadata ? { data:body, contentRange:response.headers.get('Content-Range') } : body;
 };
+
+// PostgREST may cap a response below our requested limit. Only its exact
+// Content-Range can prove that every authorized style has been collected.
+async function readStyleRows(rest,noteId) {
+  const styles=[],ids=new Set();let offset=0,total=null,previousId='';
+  do {
+    const result=await rest('postispop_note_style','?select=*&order=note_id.asc'+(noteId?'&note_id=eq.'+encodeURIComponent(noteId):'')+'&offset='+offset+'&limit=100',{headers:{Prefer:'count=exact'},metadata:true});
+    const rows=result.data,range=/^(?:(\d+)-(\d+)|\*)\/(\d+)$/.exec(result.contentRange||'');
+    if(!Array.isArray(rows)||!range)throw new Error('STYLES_INCOMPLETE');
+    const count=Number(range[3]);
+    if(!Number.isSafeInteger(count)||(total!==null&&total!==count))throw new Error('STYLES_INCOMPLETE');
+    total=count;
+    if(total===0){if(offset!==0||rows.length||range[1]!==undefined)throw new Error('STYLES_INCOMPLETE');return [];}
+    const first=Number(range[1]),last=Number(range[2]);
+    if(!Number.isSafeInteger(first)||!Number.isSafeInteger(last)||first!==offset||last<first||last>=total||rows.length!==last-first+1)throw new Error('STYLES_INCOMPLETE');
+    for(const row of rows){
+      if(!row||typeof row.note_id!=='string'||!row.note_id||ids.has(row.note_id)||(previousId&&row.note_id<=previousId)||(noteId&&row.note_id!==noteId))throw new Error('STYLES_INCOMPLETE');
+      ids.add(row.note_id);previousId=row.note_id;styles.push(row);
+    }
+    offset=last+1;
+  } while(offset<total);
+  if(styles.length!==total)throw new Error('STYLES_INCOMPLETE');
+  return styles;
+}
 
 const mapNote = (n) => n.protected_envelope ? ({id:n.id,paper:n.paper??0,text:"Nota protegida",marks:[],doodle:"",image:null,author:n.author_id||"",revision:n.revision||1,created:n.created_ms||Date.parse(n.created_at),updated:n.updated_ms||Date.parse(n.updated_at),lockedUntil:0,editing:"",protectedEnvelope:n.protected_envelope}) : ({
   id: n.id, doodle: n.doodle || "", paper: n.paper ?? 0, text: n.text || "",
@@ -62,25 +93,19 @@ const mapBoard = (b, notes, members = []) => ({
   notes: notes.map(mapNote), members
 });
 
-const guestBoard = () => {
-  const id = "guest-board";
-  const notes = Array.from({ length: 12 }, (_, position) => ({
-    id: `guest-note-${position}`, paper: position % 5, text: "", marks: [], doodle: "",
-    author_id: "guest", revision: 1, created_ms: Date.now(), updated_ms: Date.now(),
-    locked_until: null, editing: null, image_url: null
-  }));
-  return { id, title: "Mi pizarra", revision: 1, order: notes.map(n => n.id), expires: null, role: "owner", owner: "guest", notes: notes.map(mapNote), members: [] };
-};
-
-async function createBoard(user, rest) {
-  const boardRows = await rest("boards", "", {
-    method: "POST", headers: { Prefer: "return=representation" },
-    body: JSON.stringify({ owner_id: user.id, title: "Mi pizarra" })
-  });
-  const board = boardRows[0];
-  const notes = Array.from({ length: 12 }, (_, position) => ({ board_id: board.id, author_id: user.id, position, paper: position % 5, marks: [], text: "" }));
-  await rest("notes", "", { method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify(notes) });
-  return board;
+async function createBoard(user, rest, startedAt) {
+  // The server owns the account, allowance and initial six/twelve notes. One
+  // transaction prevents an empty board if any seed insert fails. Retain the
+  // ticket on a lost response so Premium retries do not create duplicates.
+  const ticket=await importTicket(localStorage,user.id,'new-board',[],startedAt);
+  try {
+    const board=await rest('rpc/postispop_create_board','',{method:'POST',body:JSON.stringify({p_request_id:ticket.requestId})});
+    ticket.finish();return board;
+  } catch(error) {
+    if(error.body?.code==='PGRST202'||error.body?.code==='42883')throw Object.assign(new Error('CREATE_BOARD_UNAVAILABLE'),{status:503});
+    if(error.message==='BOARD_LIMIT_REACHED')error.status=409;
+    throw error;
+  }
 }
 
 let userCache = null, refreshPromise = null, sessionGeneration = 0;
@@ -113,14 +138,45 @@ async function api(endpoint, init) {
   const requestStartedAt=Date.now();
   const authGeneration=sessionGeneration;
   const requestUserId=session()?.user?.id;
+  const validateSession=()=>{if(authGeneration!==sessionGeneration||session()?.user?.id!==requestUserId)throw Object.assign(new Error('SESSION_CHANGED'),{status:401});};
   const rest=async(table,query='',options={})=>{
-    if(authGeneration!==sessionGeneration||session()?.user?.id!==requestUserId)throw Object.assign(new Error('SESSION_CHANGED'),{status:401});
+    validateSession();
     const result=await rawRest(table,query,options);
-    if(authGeneration!==sessionGeneration||session()?.user?.id!==requestUserId)throw Object.assign(new Error('SESSION_CHANGED'),{status:401});
+    validateSession();
     return result;
   };
   const method = init?.method || "GET";
   const payload = init?.body ? JSON.parse(init.body) : undefined;
+  if(endpoint==='board/guest-board/export'&&method==='GET'){
+    const backup=await createBoardBackup(readGuest());validateSession();return json(backup);
+  }
+  if(endpoint==='board/guest-board/import'&&method==='POST'){
+    const backup=normalizeBackup(payload,{maxNotes:6,maxBytes:LOCAL_BACKUP_BYTES});
+    const ticket=await importTicket(localStorage,'guest','guest-board',backup.notes,requestStartedAt);
+    const lockedIds=readGuest().notes.map(note=>note.id);
+    return withImportSlots(lockedIds,async excluded=>{
+      validateSession();
+      const board=readGuest();
+      // A response can be lost after localStorage committed. Do not import a
+      // second copy when two tabs share the same pending request ticket.
+      if(board.importRequests?.[ticket.requestId]){ticket.finish();return json(board);}
+      const unavailable=[...new Set([...excluded,...board.notes.filter(note=>!lockedIds.includes(note.id)).map(note=>note.id)])];
+      const slots=guestImportSlots(board,unavailable);
+      if(backup.notes.length>slots.length||board.notes.length-slots.length+backup.notes.length>6)throw Object.assign(new Error('BOARD_FULL'),{status:409});
+      const noteIds=slots.slice(0,backup.notes.length).map(note=>note.id);
+      const validate=()=>{
+        validateSession();const current=readGuest();
+        if(current.revision!==board.revision||noteIds.some(id=>!guestImportSlots(current,unavailable).some(note=>note.id===id)))throw Object.assign(new Error('CONFLICT'),{status:409});
+      };
+      let restored;
+      try{
+        restored=await restoreBackupAttachments(backup.notes,noteIds,{requestId:ticket.requestId,validate});
+        validate();
+        const saved=guestRequest(endpoint,method,{...backup,notes:backupNotesForServer(backup.notes)},{expectedRevision:board.revision,noteIds,excluded:unavailable,requestId:ticket.requestId});
+        ticket.finish();return json(saved);
+      }catch(error){await restored?.rollback();throw error;}
+    });
+  }
   const local=guestRequest(endpoint,method,payload);
   if(local) return json(local);
 
@@ -137,7 +193,12 @@ async function api(endpoint, init) {
       if(endpoint==='designs/status'&&online()) {try {const response=await originalFetch(SUPABASE_URL+'/functions/v1/postispop-offline-license',{method:'POST',headers:headers(),body:'{}'});if(response.ok){const receipt=await response.json();await saveOfflineReceipt(user.id,receipt.token);}}catch{/* Offline Premium remains disabled until a valid signed receipt exists. */}}
       return json(status);}
     if(endpoint==='designs/styles') {
-      if(method==='GET') {const noteId=new URLSearchParams(init?.search||'').get('note_id');const styles=await rest('postispop_note_style','?select=*'+(noteId?'&note_id=eq.'+encodeURIComponent(noteId):''));return json({styles,...(noteId?{style:styles[0]||null}:{})});}
+      if(method==='GET') {
+        const noteId=new URLSearchParams(init?.search||'').get('note_id');
+        if(!noteId)offline.remember(user.id,'designs/styles-complete',{complete:false,version:2});
+        const styles=await readStyleRows(rest,noteId);
+        return json({styles,...(noteId?{style:styles[0]||null}:{stylesComplete:true})});
+      }
       const allowed=['note_id','font','size','italic','underline','ink','paper','drawing','revision'];
       const data=Object.fromEntries(allowed.filter(k=>payload?.[k]!==undefined).map(k=>[k,payload[k]]));
       const row=await rest('rpc/postispop_save_note_style','',{method:'POST',body:JSON.stringify({p_style:data})});
@@ -150,22 +211,18 @@ async function api(endpoint, init) {
     const user=await currentUser();
     if(!user&&endpoint!=='commerce/catalog') return json({error:'SESSION_REQUIRED'},401);
     if(endpoint==='commerce/status') return json(await rest('rpc/postispop_access','',{method:'POST',body:'{}'}));
-    if(endpoint==='commerce/catalog') {
-      const products=await rest('store_products','?active=eq.true&select=slug,title,description,price_cents,currency&order=sort_order.asc');
-      const response=await originalFetch(`${SUPABASE_URL}/functions/v1/postispop-commerce/status`,{headers:{apikey:SUPABASE_KEY}});
-      const state=response.ok?await response.json():{};
-      return json({products,checkoutReady:state.checkoutReady===true});
-    }
+    if(endpoint==='commerce/catalog') return json({products:premiumProducts(),checkoutReady:false});
     if(endpoint==='commerce/alarms') {
       if(method==='GET') return json({alarms:await rest('note_alarms','?select=*&order=due_at.asc')});
       if(payload.action==='delete') {await rest('note_alarms',`?id=eq.${encodeURIComponent(payload.id)}&user_id=eq.${user.id}`,{method:'DELETE'});return json({ok:true});}
       if(payload.action==='ack') {const rows=await rest('note_alarms',`?id=eq.${encodeURIComponent(payload.id)}&user_id=eq.${user.id}&delivered_at=is.null`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({delivered_at:new Date().toISOString()})});return json({claimed:rows.length>0});}
       const rows=await rest('note_alarms','',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({user_id:user.id,note_id:payload.note_id,label:String(payload.label||'Recordatorio').slice(0,200),due_at:payload.due_at})});return json({alarm:rows[0]});
     }
+    if(endpoint!=='commerce/reconcile')return json({error:'COMING_SOON',checkoutReady:false},503);
     return originalFetch(`${SUPABASE_URL}/functions/v1/postispop-commerce/${endpoint.slice(9)}`,{method,headers:headers(),body:method==='GET'?undefined:JSON.stringify(payload)});
   }
 
-  if (endpoint === "config") return json({ features: { notes: 12, textLimit: 10000, guestDays: 90, trashDays: 30, lockSeconds: 45, payments: false, clock: false, games: false, awards: false, phoneRequired: false, captures: true }, authReady: true, currency: "EUR" });
+  if (endpoint === "config") return json({ features: { notes: 6, textLimit: 10000, guestDays: 90, trashDays: 30, lockSeconds: 45, payments: false, clock: false, games: false, awards: false, phoneRequired: false, captures: true }, authReady: true, currency: "EUR" });
 
   if (endpoint === "auth/login" && method === "POST") {
     const response = await originalFetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, { method: "POST", headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ email: payload.email, password: payload.password }) });
@@ -230,26 +287,14 @@ async function api(endpoint, init) {
     return json({ ok: true, serverRevoked, ...(serverRevoked ? {} : { warning: "REMOTE_LOGOUT_UNCONFIRMED" }) });
   }
   if (endpoint === "auth/settings") return json({ google: true, email: true });
-  if (endpoint === "store/products" && method === "GET") {
-    try {
-      const products = await rest("store_products", "?active=eq.true&select=*&order=sort_order.asc");
-      return json({ products });
-    } catch {
-      return json({ products: [
-        { slug: "pack-rebel", title: "Pack Rebel", description: "Un estilo más atrevido para tus pizarras y notas.", price_cents: 299, currency: "eur", stripe_payment_link: null },
-        { slug: "pack-minimal", title: "Pack Minimal", description: "Un estilo limpio y concentrado para organizarte.", price_cents: 299, currency: "eur", stripe_payment_link: null },
-        { slug: "reloj-recordatorios", title: "Reloj y recordatorios", description: "Añade fechas y horas a tus notas para no olvidar nada.", price_cents: 499, currency: "eur", stripe_payment_link: null },
-        { slug: "postispop-pro", title: "PostisPop Pro", description: "Todos los estilos, recordatorios y funciones premium.", price_cents: 999, currency: "eur", stripe_payment_link: null }
-      ] });
-    }
-  }
+  if (endpoint === "store/products" && method === "GET") return json({products:premiumProducts(),checkoutReady:false});
   if (endpoint === "session" && method === "GET") return json({ actor: actorFor(await currentUser()) });
 
   const user = await currentUser();
   if (endpoint === "me" && method === "GET") {
     if (!user) return json({ actor: actorFor(null), boards: [{ id: "guest-board", title: "Mi pizarra", owner: "guest", expires: null, role: "owner" }] });
     let boards = await rest("boards", "?select=*&order=created_at.asc");
-    if (!boards.length) boards = [await createBoard(user,rest)];
+    if (!boards.length) boards = [await createBoard(user,rest,requestStartedAt)];
     return json({ actor: actorFor(user), boards: boards.map(b => ({ id: b.id, title: b.title || "", owner: b.owner_id, expires: b.expires_at, role: b.owner_id===user.id?"owner":"member" })) });
   }
   if (!user && endpoint === "boards" && method === "POST") return json(readGuest());
@@ -264,15 +309,28 @@ async function api(endpoint, init) {
     if(!online())return json({error:'OFFLINE'},503);
     const state=offline.status(user.id);
     if(state.pending||state.conflicts)return json({error:'SYNC_PENDING_BEFORE_IMPORT'},409);
-    const boardId=importMatch[1],backup=normalizeBackup(payload);
+    const boardId=importMatch[1],backup=normalizeBackup(payload,{maxBytes:LOCAL_BACKUP_BYTES});
+    await verifyBackupAttachments(backup.notes);validateSession();
+    const serverNotes=backupNotesForServer(backup.notes);
+    // Large local binaries stay on this device; independently enforce the RPC
+    // payload budget so file backups cannot bypass the server's text limits.
+    normalizeBackup({...backup,notes:serverNotes},{maxBytes:CLOUD_BACKUP_BYTES});
     const boards=await rest('boards','?id=eq.'+encodeURIComponent(boardId)+'&select=id,owner_id');
     if(boards[0]?.owner_id!==user.id)return json({error:'OWNER_REQUIRED'},403);
     const notes=await rest('notes','?board_id=eq.'+encodeURIComponent(boardId)+'&select=id');
     const ticket=await importTicket(localStorage,user.id,boardId,backup.notes,requestStartedAt);
     return withImportSlots(notes.map(n=>n.id),async excluded=>{
       let result;
-      try{result=await rest('rpc/postispop_import_board','',{method:'POST',body:JSON.stringify({p_board_id:boardId,p_request_id:ticket.requestId,p_notes:backup.notes,p_excluded_note_ids:excluded})});}
+      try{result=await rest('rpc/postispop_import_board','',{method:'POST',body:JSON.stringify({p_board_id:boardId,p_request_id:ticket.requestId,p_notes:serverNotes,p_excluded_note_ids:excluded})});}
       catch(error){if(error.body?.code==='PGRST202'||error.body?.code==='42883')return json({error:'IMPORT_UNAVAILABLE'},503);throw error;}
+      // If another client added a slot after our snapshot, retry with the new
+      // snapshot and the same RPC ticket before writing that slot's local files.
+      if(backup.notes.some(note=>note.attachments?.length)&&result.noteIds?.some(id=>!notes.some(note=>note.id===id)))throw Object.assign(new Error('IMPORT_RETRY_REQUIRED'),{status:409});
+      let restored;
+      try{
+        restored=await restoreBackupAttachments(backup.notes,result.noteIds,{requestId:ticket.requestId,validate:validateSession});
+        validateSession();
+      }catch(error){await restored?.rollback();throw error;}
       for(let i=0;i<(result.noteIds||[]).length;i++)if(backup.notes[i]?.protectedEnvelope){try{localStorage.setItem('pp:protected-note:'+result.noteIds[i],'1');}catch{/* The server envelope is authoritative. */}}
       ticket.finish();return json(result);
     });
@@ -292,7 +350,7 @@ async function api(endpoint, init) {
   if(revoke&&method==='POST')return json(await rest('rpc/postispop_revoke_protected_share','',{method:'POST',body:JSON.stringify({p_share_id:revoke[1]})}));
 
   if (endpoint === "boards" && method === "POST") {
-    const board = await createBoard(user,rest);
+    const board = await createBoard(user,rest,requestStartedAt);
     return api(`board/${board.id}`, { method: "GET" });
   }
 
@@ -301,12 +359,25 @@ async function api(endpoint, init) {
     // Reuse the authorized board read. Never bypass the existing RLS policies.
     const response = await api('board/'+exportMatch[1], {method:'GET'});
     if(!response.ok) return response;
-    const board=await response.json();
-    return json({format:'postispop',version:1,title:board.title,notes:board.order.map(id=>board.notes.find(n=>n.id===id)).filter(Boolean).map(n=>n.protectedEnvelope?{paper:n.paper,protectedEnvelope:n.protectedEnvelope}:{text:n.text,marks:n.marks,paper:n.paper,doodle:n.doodle,image:n.image}),exportedAt:new Date().toISOString()});
+    const board=offline.project(user.id,await response.json());
+    const styles=await readStyleRows(rest);
+    // Include unsynchronised local strokes just like the board toolbar does.
+    // RLS still authorizes the server rows; protected styles stay encrypted.
+    const byNote=new Map(styles.map(style=>[style.note_id,style]));
+    for(const op of offline.pending(user.id))if(op.kind==='style')byNote.set(op.noteId,op.after);
+    for(const note of board.notes)if(!note.protectedEnvelope)note.style=byNote.get(note.id)||null;
+    const backup=await createBoardBackup(board);validateSession();return json(backup);
   }
 
   const addMatch=endpoint.match(/^board\/([^/]+)\/notes$/);
   if(addMatch&&method==='POST'){
+    // Keep the six-note client contract while older servers are being migrated.
+    // The server admission trigger remains authoritative for concurrent requests.
+    const existing=await rest('notes','?board_id=eq.'+encodeURIComponent(addMatch[1])+'&select=id');
+    if(existing.length>=6){
+      const premium=await rest('rpc/postispop_has_license','',{method:'POST',body:JSON.stringify({subject_id:'premium'})});
+      if(premium!==true||existing.length>=100)return json({error:'BOARD_FULL'},409);
+    }
     await rest('rpc/postispop_add_board_note','',{method:'POST',body:JSON.stringify({p_board:addMatch[1]})});return api('board/'+addMatch[1],{method:'GET'});
   }
   const trashMatch=endpoint.match(/^note\/([^/]+)\/trash$/);
@@ -330,6 +401,13 @@ async function api(endpoint, init) {
     const notes = await rest("notes", `?board_id=eq.${id}&select=*&order=position.asc`);
     const members = await rest("board_members", `?board_id=eq.${id}&select=*`);
     return json(mapBoard(boards[0], notes, members));
+  }
+
+  const swapMatch=endpoint.match(/^board\/([^/]+)\/swap$/);
+  if(swapMatch&&method==='POST') {
+    try{await rest('rpc/postispop_swap_board_notes','',{method:'POST',body:JSON.stringify({p_board:swapMatch[1],p_from:payload.from,p_to:payload.to,p_revision:payload.revision})});}
+    catch(error){if(error.body?.code==='PGRST202'||error.body?.code==='42883')return json({error:'REORDER_UNAVAILABLE'},503);throw error;}
+    return api('board/'+swapMatch[1],{method:'GET'});
   }
 
   const titleMatch=endpoint.match(/^board\/([^/]+)\/title$/);
@@ -450,8 +528,13 @@ window.fetch = async (input, init = {}) => {
     }
     if(response.ok&&active&&endpoint==='designs/styles'&&method==='GET'){
       const data=await response.clone().json(),noteId=new URLSearchParams(url.search).get('note_id');
+      if(!Array.isArray(data.styles))throw new Error('STYLES_UNAVAILABLE');
       if(noteId){const existing=offline.cached(active.id,'designs/styles')?.styles||[];offline.cacheStyles(active.id,[...existing.filter(s=>s.note_id!==noteId),...data.styles]);const style=offline.projectStyles(active.id).find(s=>s.note_id===noteId)||null;result=json({styles:style?[style]:[],style});}
-      else result=json({styles:offline.cacheStyles(active.id,data.styles)});
+      else {
+        if(data.stylesComplete!==true)throw new Error('STYLES_INCOMPLETE');
+        result=json({styles:offline.cacheStyles(active.id,data.styles)});
+        offline.remember(active.id,'designs/styles-complete',{complete:true,version:2,total:data.styles.length});
+      }
     }
     if(mutation)announce('postispop:save',{state:response.ok?'saved':'error',mode,at:response.ok?Date.now():null});
     if(response.ok&&endpoint==='auth/signup')announce('postispop:activity',{name:'signup_completed'});
@@ -464,7 +547,14 @@ window.fetch = async (input, init = {}) => {
       if(endpoint==='designs/status') {const rights=await getOfflineRights(account.id);if(rights)return json({...rights,offline:true});return json({error:'OFFLINE_LICENSE_UNAVAILABLE'},503);}
       if(endpoint==='session')return json({actor:actorFor(account),offline:true});
       if(/^note\/[^/]+\/(lock|unlock)$/.test(endpoint)){const note=offline.findNote(account.id,endpoint.split('/')[1])?.note;if(note?.protectedEnvelope)return json({error:'PROTECTED_NOTE'},403);if(note)return json({note,lock:account.id,offline:true});}
-      if(method==='GET'&&endpoint==='designs/styles'){const styles=offline.projectStyles(account.id),noteId=new URLSearchParams(url.search).get('note_id');return json({styles:noteId?styles.filter(s=>s.note_id===noteId):styles,...(noteId?{style:styles.find(s=>s.note_id===noteId)||null}:{}),offline:true});}
+      if(method==='GET'&&endpoint==='designs/styles'){
+        const noteId=new URLSearchParams(url.search).get('note_id');
+        // An absent or partially populated cache cannot prove that a board has
+        // no drawings. Only a successful full read certifies an empty list.
+        const certificate=offline.cached(account.id,'designs/styles-complete');
+        if(!noteId&&(!certificate?.complete||certificate.version!==2||!Array.isArray(offline.cached(account.id,'designs/styles')?.styles)))return json({error:'OFFLINE_STYLES_NOT_CACHED'},503);
+        const styles=offline.projectStyles(account.id);return json({styles:noteId?styles.filter(s=>s.note_id===noteId):styles,...(noteId?{style:styles.find(s=>s.note_id===noteId)||null}:{}),offline:true});
+      }
       if(method==='GET'&&(endpoint==='me'||/^board\/[^/]+$/.test(endpoint))){const value=offline.cached(account.id,endpoint);if(value)return json({...value,offline:true});}
     }
     if(mutation)announce('postispop:save',{state:'error',mode});

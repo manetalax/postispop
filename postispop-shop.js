@@ -1,2 +1,3 @@
-// Compatibility entry for already cached HTML.
-import './commerce-ui.js?v=2';
+// Compatibility entry for previously cached board HTML.
+// New purchases remain unavailable; commerce-ui preserves existing reminder access.
+import './commerce-ui.js?v=3';

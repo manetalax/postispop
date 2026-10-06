@@ -10,12 +10,16 @@ import android.os.Bundle;
 import android.content.pm.PackageManager;
 import android.webkit.*;
 import android.widget.FrameLayout;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
 import android.view.WindowInsets;
 import androidx.webkit.WebViewAssetLoader;
 import androidx.webkit.WebViewCompat;
 import androidx.webkit.WebViewFeature;
+import androidx.webkit.JavaScriptReplyProxy;
 import org.json.JSONObject;
 import android.util.Base64;
 import java.io.*;
@@ -27,13 +31,23 @@ public final class MainActivity extends ComponentActivity {
     private static final String HOME_URL = "https://" + HOST + "/";
     private WebView web;
     private ValueCallback<Uri[]> fileResult;
-    private byte[] pendingDownload;
+    private static final int MAX_DOWNLOAD_BYTES = 10000000;
+    private PendingDownload pendingDownload;
     private PermissionRequest pendingWebPermission;
+
+    private static final class PendingDownload {
+        final String id;
+        final byte[] bytes;
+        final JavaScriptReplyProxy reply;
+        PendingDownload(String id, byte[] bytes, JavaScriptReplyProxy reply) {
+            this.id = id; this.bytes = bytes; this.reply = reply;
+        }
+    }
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
         FrameLayout root = new FrameLayout(this);
-        root.setBackgroundColor(0xfffffdf9);
+        root.setBackgroundColor(getColor(R.color.paper));
         root.setOnApplyWindowInsetsListener((view, insets) -> {
             view.setPadding(insets.getSystemWindowInsetLeft(), insets.getSystemWindowInsetTop(),
                     insets.getSystemWindowInsetRight(), insets.getSystemWindowInsetBottom());
@@ -46,7 +60,7 @@ public final class MainActivity extends ComponentActivity {
         setContentView(root);
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() {
-                if (web.canGoBack()) web.goBack(); else finish();
+                if (web != null && web.canGoBack()) web.goBack(); else finish();
             }
         });
         WebSettings settings = web.getSettings();
@@ -75,6 +89,35 @@ public final class MainActivity extends ComponentActivity {
                 return route(request.getUrl());
             }
             @Override public boolean shouldOverrideUrlLoading(WebView view, String url) { return route(Uri.parse(url)); }
+            @Override public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
+                // Android can reclaim a background WebView independently of
+                // this Activity. Never keep using that destroyed renderer.
+                if (web != view) return true;
+                if (fileResult != null) { fileResult.onReceiveValue(null); fileResult = null; }
+                pendingDownload = null;
+                pendingWebPermission = null;
+                root.removeView(view);
+                view.destroy();
+                web = null;
+                LinearLayout recovery = new LinearLayout(MainActivity.this);
+                recovery.setOrientation(LinearLayout.VERTICAL);
+                recovery.setGravity(android.view.Gravity.CENTER);
+                int padding = (int) (24 * getResources().getDisplayMetrics().density);
+                recovery.setPadding(padding, padding, padding, padding);
+                TextView explanation = new TextView(MainActivity.this);
+                explanation.setText(R.string.recover_explanation);
+                explanation.setTextSize(18);
+                explanation.setGravity(android.view.Gravity.CENTER);
+                recovery.addView(explanation);
+                Button reopen = new Button(MainActivity.this);
+                reopen.setText(R.string.reopen_notes);
+                reopen.setOnClickListener(button -> recreate());
+                recovery.addView(reopen);
+                root.addView(recovery, new FrameLayout.LayoutParams(-1, -1));
+                // Let the user retry explicitly rather than looping on a
+                // resource that caused a renderer crash.
+                return true;
+            }
         });
         web.setWebChromeClient(new WebChromeClient() {
             @Override public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
@@ -104,36 +147,84 @@ public final class MainActivity extends ComponentActivity {
         if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
             WebViewCompat.addWebMessageListener(web, "PostisPopFiles", Collections.singleton("https://" + HOST),
                 (view, message, origin, mainFrame, reply) -> {
-                    if (!mainFrame || !isLocal(origin) || pendingDownload != null) return;
-                    try {
-                        String raw = message.getData();
-                        if (raw == null || raw.length() > 14000000) return;
-                        JSONObject file = new JSONObject(raw);
-                        String data = file.getString("dataUrl");
-                        if (!data.startsWith("data:image/png;base64,")) return;
-                        pendingDownload = Base64.decode(data.substring(data.indexOf(',') + 1), Base64.DEFAULT);
-                        Intent save = new Intent(Intent.ACTION_CREATE_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE)
-                            .setType("image/png").putExtra(Intent.EXTRA_TITLE, "PostisPop.png");
-                        startActivityForResult(save, 11);
-                    } catch (Exception e) { pendingDownload = null; }
+                    if (!mainFrame || !isLocal(origin)) return;
+                    try { prepareDownload(message.getData(), reply); }
+                    catch (Exception e) { replyDownload(reply, "", "error", "NATIVE_DOWNLOAD_INVALID"); }
                 });
         }
         web.setDownloadListener((url, agent, disposition, type, size) -> {
-            if (isLocal(Uri.parse(web.getUrl())) && (url.startsWith("blob:https://" + HOST + "/") || url.startsWith("data:image/png;"))) {
-                web.evaluateJavascript("window.__postispopSaveDownload?.(" + JSONObject.quote(url) + ")", null);
+            if (web != null && isLocal(Uri.parse(web.getUrl())) && (url.startsWith("blob:https://" + HOST + "/") || url.startsWith("data:image/png;base64,"))) {
+                // Older download links use the same acknowledged path. A
+                // rejected save must be visible rather than silently ignored.
+                web.evaluateJavascript("(async()=>{try{if(!window.__postispopSaveDownload)throw Error('No se pudo preparar el archivo. Vuelve a abrir la aplicación.');await window.__postispopSaveDownload(" + JSONObject.quote(url) + ");}catch(error){window.alert(error.message);}})()", null);
             }
         });
-        if (state == null || web.restoreState(state) == null) openIntent(getIntent());
+        // A fresh app link (including an OAuth callback) takes precedence over
+        // an older saved navigation history after process recreation.
+        if (isLocal(getIntent().getData())) openIntent(getIntent());
+        else if (state == null || web.restoreState(state) == null) openIntent(getIntent());
+    }
+
+    private void replyDownload(JavaScriptReplyProxy reply, String id, String status, String error) {
+        try {
+            JSONObject result = new JSONObject().put("id", id).put("status", status);
+            if (error != null) result.put("error", error);
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
+                reply.postMessage(result.toString());
+            }
+        } catch (Exception ignored) {
+            // The originating document may have closed while its picker was open.
+        }
+    }
+
+    private void prepareDownload(String raw, JavaScriptReplyProxy reply) {
+        String id = "";
+        try {
+            if (raw == null || raw.length() > 14000000) {
+                replyDownload(reply, id, "error", "NATIVE_DOWNLOAD_TOO_LARGE"); return;
+            }
+            JSONObject file = new JSONObject(raw);
+            id = file.getString("id");
+            if (!id.matches("[A-Za-z0-9_-]{1,80}")) {
+                replyDownload(reply, "", "error", "NATIVE_DOWNLOAD_INVALID"); return;
+            }
+            if (pendingDownload != null) {
+                replyDownload(reply, id, "error", "NATIVE_DOWNLOAD_BUSY"); return;
+            }
+            String data = file.getString("dataUrl");
+            final String mime;
+            if (data.startsWith("data:image/png;base64,")) mime = "image/png";
+            else if (data.startsWith("data:application/json;base64,")) mime = "application/json";
+            else { replyDownload(reply, id, "error", "NATIVE_DOWNLOAD_TYPE"); return; }
+            String encoded = data.substring(data.indexOf(',') + 1);
+            if (encoded.length() > ((MAX_DOWNLOAD_BYTES + 2) / 3) * 4) {
+                replyDownload(reply, id, "error", "NATIVE_DOWNLOAD_TOO_LARGE"); return;
+            }
+            byte[] bytes = Base64.decode(encoded, Base64.DEFAULT);
+            if (bytes.length > MAX_DOWNLOAD_BYTES) {
+                replyDownload(reply, id, "error", "NATIVE_DOWNLOAD_TOO_LARGE"); return;
+            }
+            String filename = "image/png".equals(mime) ? "PostisPop-pizarra.png"
+                : "PostisPop-contadores.json".equals(file.optString("filename")) ? "PostisPop-contadores.json" : "PostisPop-copia.json";
+            Intent save = new Intent(Intent.ACTION_CREATE_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE)
+                .setType(mime).putExtra(Intent.EXTRA_TITLE, filename);
+            pendingDownload = new PendingDownload(id, bytes, reply);
+            try { startActivityForResult(save, 11); }
+            catch (Exception e) {
+                pendingDownload = null;
+                replyDownload(reply, id, "error", "NATIVE_DOWNLOAD_PICKER_UNAVAILABLE");
+            }
+        } catch (Exception e) { replyDownload(reply, id, "error", "NATIVE_DOWNLOAD_INVALID"); }
     }
 
     private boolean isLocal(Uri uri) {
-        return "https".equals(uri.getScheme()) && HOST.equals(uri.getHost()) && (uri.getPort() == -1 || uri.getPort() == 443);
+        return uri != null && "https".equals(uri.getScheme()) && HOST.equals(uri.getHost()) && (uri.getPort() == -1 || uri.getPort() == 443);
     }
     private boolean route(Uri uri) {
         if (isLocal(uri)) return false;
         if (Arrays.asList("https", "mailto", "tel").contains(uri.getScheme())) {
             try { startActivity(new Intent(Intent.ACTION_VIEW, uri)); }
-            catch (ActivityNotFoundException e) { Toast.makeText(this, "No hay una aplicación para abrir este enlace", Toast.LENGTH_LONG).show(); }
+            catch (ActivityNotFoundException e) { Toast.makeText(this, R.string.no_link_app, Toast.LENGTH_LONG).show(); }
         }
         return true;
     }
@@ -161,28 +252,49 @@ public final class MainActivity extends ComponentActivity {
     }
     private WebResourceResponse missing() {
         return new WebResourceResponse("text/plain", "UTF-8", 404, "Not Found", Collections.emptyMap(),
-                new ByteArrayInputStream("Recurso no incluido en esta versión local".getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+                new ByteArrayInputStream(getString(R.string.resource_unavailable).getBytes(java.nio.charset.StandardCharsets.UTF_8)));
     }
     private void openIntent(Intent intent) {
         Uri uri = intent.getData();
         web.loadUrl(uri != null && isLocal(uri) ? uri.toString() : HOME_URL);
+        // The URL is now owned by the WebView. Do not replay a one-time OAuth
+        // code from the Activity intent after a later recreation.
+        if (uri != null) setIntent(new Intent(intent).setData(null));
     }
-    @Override protected void onNewIntent(Intent intent) { super.onNewIntent(intent); setIntent(intent); openIntent(intent); }
+    @Override protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        // singleTask also delivers launcher taps here. A tap without a deep
+        // link must not reload the board and discard the open editor state.
+        if (isLocal(intent.getData())) {
+            if (web == null) recreate(); else openIntent(intent);
+        }
+    }
     @Override protected void onActivityResult(int request, int result, Intent data) {
         super.onActivityResult(request, result, data);
         if (request == 11 && pendingDownload != null) {
-            byte[] bytes = pendingDownload; pendingDownload = null;
-            if (result == RESULT_OK && data != null && data.getData() != null) {
+            PendingDownload download = pendingDownload; pendingDownload = null;
+            if (result != RESULT_OK) replyDownload(download.reply, download.id, "cancelled", null);
+            else if (data == null || data.getData() == null) replyDownload(download.reply, download.id, "error", "NATIVE_DOWNLOAD_WRITE_FAILED");
+            else {
                 try (OutputStream out = getContentResolver().openOutputStream(data.getData())) {
-                    if (out != null) { out.write(bytes); Toast.makeText(this, "Imagen guardada", Toast.LENGTH_SHORT).show(); }
-                } catch (IOException e) { Toast.makeText(this, "No se pudo guardar la imagen", Toast.LENGTH_LONG).show(); }
+                    if (out == null) throw new IOException("Document output unavailable");
+                    out.write(download.bytes);
+                } catch (Exception e) {
+                    replyDownload(download.reply, download.id, "error", "NATIVE_DOWNLOAD_WRITE_FAILED");
+                    Toast.makeText(this, R.string.file_save_failed, Toast.LENGTH_LONG).show();
+                    return;
+                }
+                // Do not acknowledge until write AND close have both succeeded.
+                replyDownload(download.reply, download.id, "saved", null);
+                Toast.makeText(this, R.string.file_saved, Toast.LENGTH_SHORT).show();
             }
         }
         if (request == 10 && fileResult != null) {
             fileResult.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(result, data)); fileResult = null;
         }
     }
-    @Override protected void onSaveInstanceState(Bundle state) { web.saveState(state); super.onSaveInstanceState(state); }
+    @Override protected void onSaveInstanceState(Bundle state) { if (web != null) web.saveState(state); super.onSaveInstanceState(state); }
     @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
         super.onRequestPermissionsResult(requestCode, permissions, results);
         if (requestCode == 12 && pendingWebPermission != null) {
@@ -192,7 +304,17 @@ public final class MainActivity extends ComponentActivity {
             else request.deny();
         }
     }
-    @Override protected void onPause() { web.onPause(); CookieManager.getInstance().flush(); super.onPause(); }
+    @Override protected void onPause() {
+        if (web != null) {
+            // Persist pending drawing/attachment edits when Home, the file
+            // picker or OAuth moves this app into the background. Ordinary
+            // text edits already keep their local draft on each input.
+            web.evaluateJavascript("window.dispatchEvent(new Event('postispop:native-background'))", null);
+            web.onPause();
+        }
+        CookieManager.getInstance().flush();
+        super.onPause();
+    }
     @Override protected void onResume() { super.onResume(); if (web != null) web.onResume(); }
-    @Override protected void onDestroy() { if (fileResult != null) fileResult.onReceiveValue(null); if (pendingWebPermission != null) pendingWebPermission.deny(); web.destroy(); super.onDestroy(); }
+    @Override protected void onDestroy() { if (fileResult != null) fileResult.onReceiveValue(null); if (pendingWebPermission != null) pendingWebPermission.deny(); if (web != null) web.destroy(); super.onDestroy(); }
 }

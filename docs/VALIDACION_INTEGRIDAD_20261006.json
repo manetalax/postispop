@@ -1,0 +1,325 @@
+{
+  "validatedAt": "2026-10-06T07:43:45.157Z",
+  "reportUpdatedAt": "2026-10-06T07:50:16.214558+00:00",
+  "scope": "Integrated local build on dfbbf13; no production backend or physical-device validation",
+  "integration": {
+    "repository": "manetalax/postispop",
+    "branch": "review/notes-first-20261006",
+    "pullRequest": 18,
+    "codeBase": "dfbbf13",
+    "preservedRemoteDocumentationCommit": "96472e9",
+    "publishedApplicationCommit": "297f263",
+    "atomicBoardCreationPreserved": true,
+    "existingBackupCommand": "test:backup",
+    "packageAndWorkflowsPreserved": true,
+    "files": [
+      "board-tools.js",
+      "supabase-bridge.js",
+      "workspace.css",
+      "tests/attachment-backup-ui.cjs",
+      "tests/backup-integrity.test.cjs",
+      "scripts/audit-quality.mjs",
+      "PUNTO_CONTROL_20261006_INTEGRIDAD.md",
+      "docs/VALIDACION_INTEGRIDAD_20261006.json",
+      "docs/ANDROID_VALIDACION_CONTINUACION_20261006.md"
+    ],
+    "publishedTestsCommit": "6a7fc63",
+    "publishedAuditCommit": "92b582c"
+  },
+  "unitTests": {
+    "passed": 147,
+    "failed": 0,
+    "skipped": 0,
+    "evidence": "../integration-unit.log"
+  },
+  "syntaxModules": 113,
+  "build": {
+    "errors": 0,
+    "warnings": 0,
+    "hints": 0,
+    "evidence": "../integration-build.log"
+  },
+  "browserChecks": [
+    {
+      "check": "Attachment backup UI against staged web",
+      "passed": true,
+      "command": "npm run test:backup",
+      "evidence": "../integration-backup-web.log"
+    },
+    {
+      "check": "Attachment backup UI against Android assets",
+      "passed": true,
+      "command": "POSTISPOP_TEST_ROOT=android/app/src/main/assets/www npm run test:backup",
+      "evidence": "../integration-backup-android.log"
+    },
+    {
+      "check": "Cloud import UI",
+      "passed": true,
+      "backend": "mocked",
+      "evidence": "../integration-cloud-import.log"
+    },
+    {
+      "check": "Android PKCE after simulated recreation",
+      "passed": true,
+      "identityProvider": "simulated",
+      "evidence": "../integration-auth.log"
+    }
+  ],
+  "priorValidation": {
+    "scope": "First isolated continuation copy, before integration of remote atomic board creation",
+    "repeatedOnCurrentIntegration": false,
+    "checks": [
+      "13 board/editor scenarios",
+      "4 add-note scenarios",
+      "20 hydration reloads plus deferred React",
+      "autosave",
+      "protected sharing and two-tab encryption",
+      "real service worker offline reload"
+    ],
+    "webContentHash": "4c66294565cc8120843acfe9682b6ee3d83cf4b94dace38e9c82aa64fafa01a7",
+    "limitation": "Earlier passes do not certify these scenarios on the current integrated content hash"
+  },
+  "database": {
+    "result": "passed",
+    "scope": "PGlite synthetic schema, including atomic board creation; production unchanged",
+    "evidence": "../integration-database.log"
+  },
+  "accessibility": {
+    "states": 15,
+    "violations": 0,
+    "contentHash": "5fa2d304a9e9a7134a636abeb8119accc41b61c33fdf892f849e927c422e3b1c",
+    "evidence": "test-results/quality/summary.json",
+    "incomplete": [
+      {
+        "name": "board-320x568",
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": 14
+          },
+          {
+            "id": "label-content-name-mismatch",
+            "nodes": 2
+          }
+        ]
+      },
+      {
+        "name": "editor-320x568",
+        "incomplete": [
+          {
+            "id": "aria-hidden-focus",
+            "nodes": 6
+          },
+          {
+            "id": "color-contrast",
+            "nodes": 16
+          }
+        ]
+      },
+      {
+        "name": "editor-empty-320x568",
+        "incomplete": [
+          {
+            "id": "aria-hidden-focus",
+            "nodes": 6
+          },
+          {
+            "id": "color-contrast",
+            "nodes": 15
+          }
+        ]
+      },
+      {
+        "name": "board-390x844",
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": 14
+          },
+          {
+            "id": "label-content-name-mismatch",
+            "nodes": 2
+          }
+        ]
+      },
+      {
+        "name": "editor-390x844",
+        "incomplete": [
+          {
+            "id": "aria-hidden-focus",
+            "nodes": 6
+          },
+          {
+            "id": "color-contrast",
+            "nodes": 16
+          }
+        ]
+      },
+      {
+        "name": "editor-empty-390x844",
+        "incomplete": [
+          {
+            "id": "aria-hidden-focus",
+            "nodes": 6
+          },
+          {
+            "id": "color-contrast",
+            "nodes": 15
+          }
+        ]
+      },
+      {
+        "name": "board-768x1024",
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": 14
+          },
+          {
+            "id": "label-content-name-mismatch",
+            "nodes": 2
+          }
+        ]
+      },
+      {
+        "name": "editor-768x1024",
+        "incomplete": [
+          {
+            "id": "aria-hidden-focus",
+            "nodes": 6
+          },
+          {
+            "id": "color-contrast",
+            "nodes": 16
+          }
+        ]
+      },
+      {
+        "name": "editor-empty-768x1024",
+        "incomplete": [
+          {
+            "id": "aria-hidden-focus",
+            "nodes": 6
+          },
+          {
+            "id": "color-contrast",
+            "nodes": 15
+          }
+        ]
+      },
+      {
+        "name": "board-1366x768",
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": 14
+          },
+          {
+            "id": "label-content-name-mismatch",
+            "nodes": 2
+          }
+        ]
+      },
+      {
+        "name": "editor-1366x768",
+        "incomplete": [
+          {
+            "id": "aria-hidden-focus",
+            "nodes": 6
+          },
+          {
+            "id": "color-contrast",
+            "nodes": 16
+          }
+        ]
+      },
+      {
+        "name": "editor-empty-1366x768",
+        "incomplete": [
+          {
+            "id": "aria-hidden-focus",
+            "nodes": 6
+          },
+          {
+            "id": "color-contrast",
+            "nodes": 15
+          }
+        ]
+      },
+      {
+        "name": "board-1440x900",
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": 14
+          },
+          {
+            "id": "label-content-name-mismatch",
+            "nodes": 2
+          }
+        ]
+      },
+      {
+        "name": "editor-1440x900",
+        "incomplete": [
+          {
+            "id": "aria-hidden-focus",
+            "nodes": 6
+          },
+          {
+            "id": "color-contrast",
+            "nodes": 16
+          }
+        ]
+      },
+      {
+        "name": "editor-empty-1440x900",
+        "incomplete": [
+          {
+            "id": "aria-hidden-focus",
+            "nodes": 6
+          },
+          {
+            "id": "color-contrast",
+            "nodes": 15
+          }
+        ]
+      }
+    ],
+    "limitation": "Automated checks do not certify full WCAG compliance"
+  },
+  "lighthouseRepeatedOnIntegration": false,
+  "webResources": 198,
+  "webContentHash": "5fa2d304a9e9a7134a636abeb8119accc41b61c33fdf892f849e927c422e3b1c",
+  "androidResources": 198,
+  "androidContentHash": "33098cda8313f36eb0afeb44097eb2b83773b6546b9772e3efc29e7c8c1e1096",
+  "androidNative": {
+    "result": "passed",
+    "executedTasks": 97,
+    "verifiedArtifacts": [
+      "debug APK",
+      "release APK",
+      "release AAB"
+    ],
+    "lintErrorsPerVariant": 0,
+    "lintWarningsPerVariant": 1,
+    "signed": false,
+    "physicalInstallationTested": false,
+    "report": "docs/ANDROID_VALIDACION_CONTINUACION_20261006.md"
+  },
+  "signed": false,
+  "productionChanges": false,
+  "remoteUpload": {
+    "authorized": true,
+    "status": "code_published_documents_in_this_delivery",
+    "applicationFilesPublished": true,
+    "publishedApplicationCommit": "297f263",
+    "finalCommitCIVerified": false,
+    "merged": false,
+    "deployed": false,
+    "codeFilesVerifiedByteForByte": true,
+    "githubQA": "passed_on_92b582c",
+    "supabasePreview": "skipped",
+    "verifiedQARun": "37431849858"
+  }
+}

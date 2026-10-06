@@ -1,0 +1,8 @@
+<resources>
+    <string name="recover_explanation">PostisPopを開き直してください。保存済みのノートはこの端末に残っています。</string>
+    <string name="reopen_notes">ノートを開く</string>
+    <string name="no_link_app">このリンクを開くアプリがありません</string>
+    <string name="resource_unavailable">このローカル版には含まれていないリソースです</string>
+    <string name="file_saved">ファイルを保存しました</string>
+    <string name="file_save_failed">ファイルを保存できませんでした</string>
+</resources>

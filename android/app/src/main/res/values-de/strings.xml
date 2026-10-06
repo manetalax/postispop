@@ -1,0 +1,8 @@
+<resources>
+    <string name="recover_explanation">PostisPop muss neu geöffnet werden. Gespeicherte Notizen bleiben auf diesem Gerät.</string>
+    <string name="reopen_notes">Meine Notizen öffnen</string>
+    <string name="no_link_app">Keine App zum Öffnen dieses Links verfügbar</string>
+    <string name="resource_unavailable">Ressource in dieser lokalen Version nicht enthalten</string>
+    <string name="file_saved">Datei gespeichert</string>
+    <string name="file_save_failed">Die Datei konnte nicht gespeichert werden</string>
+</resources>

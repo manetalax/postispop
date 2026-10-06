@@ -5,7 +5,9 @@ const fs=require('node:fs');
 const storage=new Map();let calls=0;
 const context=vm.createContext({console,Response,Request,URL,URLSearchParams,Date,JSON,crypto,encodeURIComponent,setTimeout,clearTimeout,localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},location:{origin:'https://postispop.com',href:'https://postispop.com/'},window:{fetch:async()=>{calls++;throw Error('Unexpected guest network request');}}});
 const ready=Promise.all([import('../style-model.js'),import('../note-crypto.js'),import('../offline-sync.js'),import('../offline-license.js'),import('../backup-import.js')]).then(([style,cryptoModule,sync,licenses,imports])=>{
-  Object.assign(context,{normalizeStyle:style.normalizeStyle,validateEnvelope:cryptoModule.validateEnvelope,...sync,...licenses,...imports,installOfflineUI:()=>{}});
+  // Storage-lock and attachment persistence are exercised with real IndexedDB
+  // in backup-attachments-ui; these unit fixtures contain no attachment rows.
+  Object.assign(context,{normalizeStyle:style.normalizeStyle,validateEnvelope:cryptoModule.validateEnvelope,...sync,...licenses,...imports,withImportSlots:async(ids,work)=>work([]),createBoardBackup:async board=>({format:'postispop',version:2,title:board.title,notes:board.order.map(id=>board.notes.find(n=>n.id===id)).filter(Boolean)}),installOfflineUI:()=>{}});
   vm.runInContext(fs.readFileSync('guest-board.js','utf8').replace(/^import .*\n/gm,'').replaceAll('export function','function')+'\n'+fs.readFileSync('supabase-bridge.js','utf8').replace(/^import .*\n/gm,''),context);
 });
 const request=async(path,data)=>{await ready;const r=await context.window.fetch('/api/'+path,data===undefined?{}:{method:'POST',body:JSON.stringify(data)});return{status:r.status,data:await r.json()};};
@@ -25,7 +27,7 @@ test('Stale guest edits are rejected without overwriting the saved note',async()
   assert.equal((await request('board/guest-board')).data.notes[0].text,'Prueba local');
 });
 test('Trash can be restored and note order can be swapped',async()=>{
-  const trashed=await request('note/guest-note-0/trash',{});assert.equal(trashed.data.board.notes.length,11);assert.equal(trashed.data.board.order.includes('guest-note-0'),false);
+  const trashed=await request('note/guest-note-0/trash',{});assert.equal(trashed.data.board.notes.length,5);assert.equal(trashed.data.board.order.includes('guest-note-0'),false);
   const restored=await request('restore/'+trashed.data.trashId,{});assert.equal(restored.data.notes.find(n=>n.id==='guest-note-0').text,'Prueba local');
   const swapped=await request('board/guest-board/swap',{from:'guest-note-0',to:'guest-note-1'});assert.equal(swapped.data.order[0],'guest-note-1');
 });
@@ -157,7 +159,7 @@ test('Storage quota exhaustion leaves the previously saved board intact',async()
 
 test('Removed notes stay recoverable and stale editors cannot recreate or overwrite a slot',async()=>{
   storage.clear();const original=await request('note/guest-note-0',{text:'Original',marks:[],revision:1});
-  const trashed=await request('note/guest-note-0/trash',{revision:original.data.note.revision});assert.equal(trashed.data.board.notes.length,11);
+  const trashed=await request('note/guest-note-0/trash',{revision:original.data.note.revision});assert.equal(trashed.data.board.notes.length,5);
   assert.equal((await request('note/guest-note-0',{text:'Stale',marks:[],revision:original.data.note.revision})).data.error,'NOT_FOUND');
   const restored=await request('restore/'+trashed.data.trashId,{});const note=restored.data.notes.find(n=>n.id==='guest-note-0');assert.ok(note.revision>original.data.note.revision);
   const stale=await request('note/guest-note-0',{text:'Editor obsoleto',marks:[],revision:original.data.note.revision});assert.equal(stale.data.error,'CONFLICT');
@@ -174,4 +176,80 @@ test('Protected slot markers follow successful trash/restore and import skips an
   await request('restore/'+trashed.data.trashId,{});assert.equal(storage.get('pp:protected-note:guest-note-0'),'1');
   storage.clear();storage.set('pp:protected-note:guest-note-0','1');
   const imported=await request('board/guest-board/import',{notes:[{text:'Debe ir a otra nota'}]});assert.equal(imported.data.notes[0].text,'');assert.equal(imported.data.notes[1].text,'Debe ir a otra nota');assert.equal(storage.get('pp:protected-note:guest-note-0'),'1');
+});
+
+test('Free boards start with six notes and refuse a seventh without touching saved data',async()=>{
+  storage.clear();
+  const initial=await request('board/guest-board');assert.equal(initial.data.notes.length,6);assert.equal(initial.data.capacity,6);
+  assert.equal((await request('config')).data.features.notes,6);
+  const before=storage.get('postispop-guest-board-v1');
+  const extra=await request('board/guest-board/notes',{});assert.equal(extra.status,409);assert.equal(extra.data.error,'BOARD_FULL');assert.equal(storage.get('postispop-guest-board-v1'),before);
+  const removed=await request('note/guest-note-2/trash',{revision:1});assert.equal(removed.data.board.notes.length,5);
+  const replaced=await request('board/guest-board/notes',{});assert.equal(replaced.data.notes.length,6);
+  assert.equal((await request('restore/'+removed.data.trashId,{})).data.error,'BOARD_FULL');
+});
+
+test('A legacy twelve-note board stays readable, editable, exportable and recoverable at the six-note limit',async()=>{
+  storage.clear();
+  const template=(await request('board/guest-board')).data;
+  const notes=Array.from({length:12},(_,i)=>({...template.notes[0],id:'guest-note-'+i,text:'Conservar '+i}));
+  storage.set('postispop-guest-board-v1',JSON.stringify({...template,schemaVersion:undefined,legacyNoteIds:undefined,capacity:12,notes,order:notes.map(n=>n.id)}));
+  const board=await request('board/guest-board');assert.equal(board.data.notes.length,12);assert.equal(board.data.capacity,6);
+  assert.equal((await request('board/guest-board/notes',{})).data.error,'BOARD_FULL');
+  const last=await request('note/guest-note-11',{text:'Sigue accesible',marks:[],revision:1});assert.equal(last.status,200);
+  assert.equal((await request('board/guest-board/export')).data.notes[11].text,'Sigue accesible');
+  const removed=await request('note/guest-note-11/trash',{revision:2});assert.equal(removed.data.board.notes.length,11);
+  const restored=await request('restore/'+removed.data.trashId,{});assert.equal(restored.data.notes.length,12);assert.equal(restored.data.notes.find(n=>n.id==='guest-note-11').text,'Sigue accesible');
+});
+
+test('Guest image and doodle changes reject stale revisions and unsafe image URLs',async()=>{
+  storage.clear();
+  const image=await request('note/guest-note-0/image',{url:'https://example.org/note.png',revision:1});assert.equal(image.status,200);assert.equal(image.data.note.image.url,'https://example.org/note.png');
+  assert.equal((await request('note/guest-note-0/doodle',{doodle:'heart',revision:1})).status,409);
+  assert.equal((await request('note/guest-note-0/image',{url:'javascript:alert(1)',revision:2})).status,400);
+  assert.equal((await request('note/guest-note-0/doodle',{doodle:'<svg>',revision:2})).status,400);
+  assert.equal((await request('board/guest-board')).data.notes[0].image.url,'https://example.org/note.png');
+});
+
+test('Guest import excludes notes with local attachments even when their text is empty',async()=>{
+  await ready;storage.clear();const previous=context.withImportSlots;
+  try{
+    context.withImportSlots=async(ids,work)=>{assert.ok(ids.includes('guest-note-0'));return work(['guest-note-0']);};
+    const result=await request('board/guest-board/import',{notes:[{text:'Restaurada'}]});
+    assert.equal(result.status,200);assert.equal(result.data.notes[0].text,'');assert.equal(result.data.notes[1].text,'Restaurada');
+  }finally{context.withImportSlots=previous;storage.clear();}
+});
+test('Guest attachment restore aborts and rolls back local files when another edit changes its reserved snapshot',async()=>{
+  await ready;storage.clear();const previous=context.restoreBackupAttachments;let rolledBack=0;
+  try{
+    context.restoreBackupAttachments=async(notes,ids,{validate})=>{
+      await validate();assert.equal(ids[0],'guest-note-0');
+      const edit=await request('note/guest-note-0',{text:'Edición concurrente',marks:[],revision:1});assert.equal(edit.status,200);
+      return {rollback:async()=>rolledBack++};
+    };
+    const result=await request('board/guest-board/import',{version:2,notes:[{text:'Copia',attachments:[{kind:'link',name:'Documento',url:'https://example.org/doc',created:1}]}]});
+    assert.equal(result.data.error,'CONFLICT');assert.equal(rolledBack,1);
+    const board=(await request('board/guest-board')).data;
+    assert.equal(board.notes[0].text,'Edición concurrente');assert.equal(board.notes.some(note=>note.text==='Copia'),false);
+    assert.equal(JSON.parse([...storage].find(([key])=>key.startsWith('pp:import-request:'))[1]).finishedAt,undefined);
+  }finally{context.restoreBackupAttachments=previous;storage.clear();}
+});
+test('Guest attachment restore rolls back its local files when the board commit exceeds storage quota',async()=>{
+  await ready;storage.clear();const previous=context.restoreBackupAttachments,save=context.localStorage.setItem;let rolledBack=0;
+  try{
+    context.restoreBackupAttachments=async(notes,ids,{validate})=>{await validate();context.localStorage.setItem=(key,value)=>{if(key==='postispop-guest-board-v1')throw Object.assign(Error('quota'),{name:'QuotaExceededError'});save(key,value);};return {rollback:async()=>rolledBack++};};
+    const result=await request('board/guest-board/import',{notes:[{text:'No confirmar'}]});
+    assert.equal(result.data.error,'LOCAL_STORAGE_FULL');assert.equal(rolledBack,1);assert.equal(storage.has('postispop-guest-board-v1'),false);
+    assert.equal(JSON.parse([...storage].find(([key])=>key.startsWith('pp:import-request:'))[1]).finishedAt,undefined);
+  }finally{context.restoreBackupAttachments=previous;context.localStorage.setItem=save;storage.clear();}
+});
+test('Concurrent guest imports sharing a pending ticket never duplicate notes',async()=>{
+  await ready;storage.clear();const previous=context.withImportSlots;let serial=Promise.resolve();
+  try{
+    context.withImportSlots=(ids,work)=>{const next=serial.then(()=>work([]));serial=next.catch(()=>{});return next;};
+    const backup={notes:[{text:'Una sola copia'}]};
+    const responses=await Promise.all([request('board/guest-board/import',backup),request('board/guest-board/import',backup)]);
+    assert.ok(responses.every(response=>response.status===200));
+    assert.equal((await request('board/guest-board')).data.notes.filter(note=>note.text==='Una sola copia').length,1);
+  }finally{context.withImportSlots=previous;storage.clear();}
 });

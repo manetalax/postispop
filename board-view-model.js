@@ -1,5 +1,25 @@
-// View 0 shows twelve notes; views 1 onward show existing groups of six.
-export const mobileBoardQuery='(max-width:700px), (max-width:1000px) and (max-height:500px) and (orientation:landscape)';
-export function nextBoardView(view,count){const pages=Math.max(1,Math.ceil(count/6));return view>=pages?0:view+1;}
-export function boardViewNotes(notes,view){return view===0?notes.slice(0,12):notes.slice((view-1)*6,view*6);}
-export function boardViewLabel(view,count){if(count<=6)return count+' notas';const next=nextBoardView(view,count);return next===0?'Ver '+Math.min(count,12)+' notas · 1–'+Math.min(count,12):next===1?'Ver las 6 primeras · 1–6':'Ver las 6 siguientes · '+((next-1)*6+1)+'–'+(next*6)+' →';}
+/** Paging is zero based; every note belongs to exactly one page. */
+export const mobileBoardQuery = '(max-width:700px), (max-width:1000px) and (max-height:500px) and (orientation:landscape)';
+export function boardPageSize(count, compact = typeof matchMedia === 'function' && matchMedia(mobileBoardQuery).matches) {
+  return compact || count <= 6 ? 6 : 12;
+}
+export function boardPageCount(count, size = boardPageSize(count)) {
+  return Math.max(1, Math.ceil(count / size));
+}
+export function clampBoardView(view, count, size = boardPageSize(count)) {
+  return Math.max(0, Math.min(Number.isFinite(view) ? Math.floor(view) : 0, boardPageCount(count, size) - 1));
+}
+export function nextBoardView(view, count, size = boardPageSize(count)) {
+  return Math.min(clampBoardView(view, count, size) + 1, boardPageCount(count, size) - 1);
+}
+export function boardViewNotes(notes, view, size = boardPageSize(notes.length)) {
+  const start = clampBoardView(view, notes.length, size) * size;
+  return notes.slice(start, start + size);
+}
+export function boardViewLabel(view, count, size = boardPageSize(count)) {
+  return `Página ${clampBoardView(view, count, size) + 1} de ${boardPageCount(count, size)}`;
+}
+export function filterBoardNotes(notes, { query = '', color = '' } = {}) {
+  const normalized = String(query).trim().toLocaleLowerCase();
+  return notes.filter(note => (!normalized || (!note.protectedEnvelope && String(note.text || '').toLocaleLowerCase().includes(normalized))) && (color === '' || String(note.paper) === String(color)));
+}

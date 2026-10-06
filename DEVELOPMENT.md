@@ -1,5 +1,30 @@
 # Desarrollo y continuidad de PostisPop
 
+## Estado vigente — 6 de octubre de 2026
+
+La dirección actual es una pizarra centrada en las notas, con seis notas gratuitas y un único Premium: 2,95 € al mes, 9,95 € al año o 59,95 € de por vida. Las compras muestran «Próximamente» y permanecen desactivadas. El catálogo, las plantillas comerciales, los premios y el reloj como producto separado se han retirado de la oferta pública. Los derechos anteriores y los datos existentes se conservan.
+
+Consultar primero:
+
+- [Punto de control 03](PUNTO_CONTROL_20261006_03.md): cierre más reciente, 152 pruebas, copias verificadas y bloqueos reales de publicación.
+- [Producto y dirección](docs/PRODUCTO_Y_DIRECCION.md): decisiones actuales, límites y condiciones para activar pagos.
+- [Validación Android](docs/ANDROID_VALIDACION_20261006.md): cambios nativos, empaquetado, pruebas realizadas y límites de la verificación.
+- [Validación del backend](docs/BACKEND_OFFLINE_VALIDATION.md): alcance del entorno de pruebas y límites frente a producción.
+- [Importación a la nube](docs/CLOUD_IMPORT.md): guardado explícito y protección de los datos existentes.
+- [Auditoría competitiva](docs/AUDITORIA_COMPETITIVA_20261006.md): diez referencias y mediciones externas con su alcance real.
+- [Identidad visual](docs/IDENTIDAD_VISUAL.md): paleta, logotipo y criterios de legibilidad.
+- [Validación web](docs/VALIDACION_WEB_20261006.md): versiones medidas, pruebas y capturas.
+
+Las anotaciones del 2 y 3 de octubre que siguen son historial: no autorizan a restaurar la antigua tienda ni sustituyen estas decisiones. Este documento no acredita por sí solo un despliegue, una APK firmada ni una instalación en un dispositivo real.
+
+### Comprobaciones reproducibles
+
+- `npm test`, `npm run test:database`, `npm run lint` y `npm run build` verifican el código, las migraciones en una base sintética y la generación web. Las pruebas de base de datos no se conectan a Supabase de producción.
+- Después de `node scripts/stage-site.mjs`, ejecutar `npm run test:notes-first` y las pruebas de edición, cifrado, importación y uso sin conexión del CI.
+- `npm run audit:quality` analiza accesibilidad en las pantallas de prueba. `npm run audit:quality -- --lighthouse` añade Lighthouse local; sus resultados no equivalen al rendimiento de producción ni a una auditoría manual completa.
+- Después de empaquetar Android, `POSTISPOP_TEST_ROOT=android/app/src/main/assets/www npm run test:android-auth` comprueba el retorno de autenticación sobre los recursos incluidos.
+- `python3 android/verify-archive.py <APK> <AAB>` contrasta el contenido físico de los archivos con el manifiesto auditado. No verifica la firma ni la instalación. El flujo de release comprueba además la firma existente antes de exportar; no genera una identidad de firma nueva.
+
 El código fuente debe permanecer legible, editable y versionado en este repositorio. Las protecciones de producción se aplican a artefactos de salida y nunca sustituyen los archivos fuente. Este requisito permite continuar el trabajo con otros asistentes y desarrolladores.
 
 - R8 optimiza y renombra el código nativo únicamente al compilar `release`. Los archivos Java y Gradle originales permanecen intactos y legibles.
@@ -12,7 +37,7 @@ El código fuente debe permanecer legible, editable y versionado en este reposit
 ## Módulos de esta ampliación
 
 - `design-catalog.js`: catálogo temático y por países, renderizado de vistas previas y papeles.
-- `atelier.html`, `atelier.css`, `atelier.js`: explorador visual de colecciones.
+- `atelier.html`, `atelier.css`, `atelier.js`: oferta Gratis/Premium y compatibilidad con la página antigua cacheada.
 - `design-tools.js`, `design-tools.css`: aplicación de estilos y herramientas de notas.
 - `database/designs.sql`: migración de permisos, recompensas y funciones privadas del propietario. Requiere revisión y aplicación en Supabase; crear el archivo no equivale a desplegarlo.
 - `supabase-bridge.js`: integración autenticada con las operaciones del servidor.

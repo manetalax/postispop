@@ -20,7 +20,7 @@ const deferred=()=>{let resolve;const promise=new Promise(done=>resolve=done);re
   const browser=await chromium.launch(browserOptions({args:['--no-sandbox','--disable-gpu','--disk-cache-size=1','--media-cache-size=1']}));
   const context=await browser.newContext({locale:'es-ES',viewport:{width:1000,height:800},serviceWorkers:'block'});
   const failures=[],pageErrors=[],requests=[],receipts=new Map();
-  const notes=Array.from({length:12},(_,position)=>({id:`33333333-3333-4333-8333-${String(position).padStart(12,'0')}`,board_id:BOARD,author_id:USER,position,paper:position%6,text:position===0?'Contenido anterior':'',marks:[],doodle:'',image_url:null,revision:1,created_ms:1,updated_ms:1,locked_until:null,editing:null}));
+  const notes=Array.from({length:6},(_,position)=>({id:`33333333-3333-4333-8333-${String(position).padStart(12,'0')}`,board_id:BOARD,author_id:USER,position,paper:position%6,text:position===0?'Contenido anterior':'',marks:[],doodle:'',image_url:null,revision:1,created_ms:1,updated_ms:1,locked_until:null,editing:null}));
   let ready=false,commits=0,holdNext=false,held=null,release=null;
   const session=JSON.stringify({access_token:'test-session-only',expires_at:Math.floor(Date.now()/1000)+3600,user:{id:USER,email:'fixture@example.test'}});
   await context.addInitScript(({key,value,board})=>{localStorage.setItem(key,value);localStorage.setItem('pp:last-board',board);},{key:SESSION,value:session,board:BOARD});
@@ -36,7 +36,8 @@ const deferred=()=>{let resolve;const promise=new Promise(done=>resolve=done);re
         if(url.pathname==='/auth/v1/user')return json({id:USER,email:'fixture@example.test'});
         if(url.pathname==='/rest/v1/boards'&&request.method()==='GET')return json([{id:BOARD,owner_id:USER,title:'Pizarra de prueba',revision:1}]);
         if(url.pathname==='/rest/v1/notes'&&request.method()==='GET')return json(notes);
-        if(['/rest/v1/board_members','/rest/v1/postispop_note_style'].includes(url.pathname)&&request.method()==='GET')return json([]);
+        if(url.pathname==='/rest/v1/board_members'&&request.method()==='GET')return json([]);
+        if(url.pathname==='/rest/v1/postispop_note_style'&&request.method()==='GET')return route.fulfill({status:200,headers:{...headers,'Content-Range':'*/0','Access-Control-Expose-Headers':'Content-Range'},contentType:'application/json',body:'[]'});
         if(url.pathname==='/rest/v1/rpc/postispop_import_board'&&request.method()==='POST'){
           const body=request.postDataJSON();requests.push(body);
           if(!ready)return json({code:'PGRST202',message:'Could not find function postispop_import_board'},404);
@@ -61,7 +62,7 @@ const deferred=()=>{let resolve;const promise=new Promise(done=>resolve=done);re
     });
     const openPage=async()=>{const page=await context.newPage();page.on('pageerror',error=>pageErrors.push(error.message));await page.goto(ORIGIN+'/cloud-import-fixture.html');await page.waitForSelector('.pp-board-options');return page;};
     const selectBackup=async(page,name,notes)=>{
-      await page.getByText('Opciones avanzadas',{exact:true}).click();
+      await page.getByLabel('Opciones avanzadas',{exact:true}).click();
       await page.getByRole('button',{name:'Restaurar una copia',exact:true}).click();
       const dialog=page.getByRole('dialog',{name:'Restaurar una copia de seguridad',exact:true});
       await dialog.locator('input[type=file]').setInputFiles({name,mimeType:'application/json',buffer:Buffer.from(JSON.stringify({format:'postispop',version:1,notes}))});

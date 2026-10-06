@@ -2,6 +2,7 @@ import {withNoteStorageLock,assertAttachmentWritable,protectedMarker} from './at
 const DB_NAME = 'postispop-note-attachments';
 const STORE = 'attachments';
 const MAX_FILE_BYTES = 25 * 1024 * 1024;
+const MAX_ATTACHMENTS = 100;
 const ACCEPT = [
   'image/*', 'audio/*', 'video/*', 'application/pdf',
   '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.zip'
@@ -16,7 +17,7 @@ let objectUrls = [];
 const labels = {
   title: 'Archivos adjuntos', add: 'Añadir archivos', link: 'Añadir enlace',
   voice: 'Grabar voz', stop: 'Detener', empty: 'Todavía no hay adjuntos.',
-  local: 'Se guardan de forma privada en este dispositivo.', remove: 'Eliminar adjunto',
+  local: 'Se guardan en este dispositivo y se incluyen al guardar una copia.', remove: 'Eliminar adjunto',
   invalid: 'Este tipo de archivo no es compatible.', tooLarge: 'El archivo supera el límite de 25 MB.',
   failed: 'No se pudo guardar el adjunto.', url: 'Pega una dirección web', save: 'Guardar enlace', cancel: 'Cancelar'
 };
@@ -109,11 +110,13 @@ async function saveFiles(files, noteId=activeNoteId) {
   if (!noteId) return;
   try { await withNoteStorageLock(noteId, async()=>{
     await assertAttachmentWritable(noteId);
+    let count=(await listForNote(noteId)).length;
     for (const file of files) {
+      if(count>=MAX_ATTACHMENTS){notify('Cada nota admite hasta 100 adjuntos.');break;}
       if (!supported(file)) { notify(labels.invalid); continue; }
       if (file.size > MAX_FILE_BYTES) { notify(`${file.name}: ${labels.tooLarge}`); continue; }
       const id=crypto.randomUUID(),item={key:`${noteId}::${id}`,id,noteId,kind:'file',name:file.name||`audio-${Date.now()}.webm`,type:file.type,size:file.size,created:Date.now(),blob:file};
-      await transaction('readwrite',store=>store.put(item));
+      await transaction('readwrite',store=>store.put(item));count++;
     }
   }); } catch(error) { notify(error.message==='NOTE_PROTECTED'?'La nota se ha protegido. Este adjunto no se ha guardado sin cifrar.':labels.failed); }
   if(activeNoteId===noteId)await renderList();
@@ -122,9 +125,11 @@ async function saveFiles(files, noteId=activeNoteId) {
 async function saveLink(raw, noteId=activeNoteId) {
   if (!noteId) return;
   let url;try{url=new URL(raw.trim());}catch{notify('Escribe un enlace válido.');return;}
+  if(raw.length>8192||url.username||url.password){notify('El enlace es demasiado largo o contiene credenciales.');return;}
   if(!['http:','https:'].includes(url.protocol)){notify('El enlace debe comenzar por http:// o https://');return;}
   try{await withNoteStorageLock(noteId,async()=>{
     await assertAttachmentWritable(noteId);
+    if((await listForNote(noteId)).length>=MAX_ATTACHMENTS){notify('Cada nota admite hasta 100 adjuntos.');return;}
     const id=crypto.randomUUID();const item={key:`${noteId}::${id}`,id,noteId,kind:'link',name:url.hostname,url:url.href,created:Date.now(),size:0,type:'text/uri-list'};
     await transaction('readwrite',store=>store.put(item));
   });}catch(error){notify(error.message==='NOTE_PROTECTED'?'La nota se ha protegido. El enlace no se ha guardado sin cifrar.':labels.failed);}

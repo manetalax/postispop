@@ -1,10 +1,22 @@
-const {test}=require('node:test'),assert=require('node:assert/strict');
-test('Only existing groups appear, with twelve-note overview at the end',async()=>{
- const {nextBoardView,boardViewNotes,boardViewLabel}=await import('../board-view-model.js');
- for(const count of [12,13,18,19,24,25,30,31,100]){
-  const pages=Math.ceil(count/6),notes=Array.from({length:count},(_,i)=>i+1);let view=1;
-  for(let p=1;p<=pages;p++){assert.equal(view,p);assert.deepEqual(boardViewNotes(notes,view),notes.slice((p-1)*6,p*6));view=nextBoardView(view,count);}
-  assert.equal(view,0);assert.deepEqual(boardViewNotes(notes,0),notes.slice(0,12));assert.equal(nextBoardView(0,count),1);
- }
- assert.equal(boardViewLabel(2,12),'Ver 12 notas · 1–12');assert.equal(boardViewLabel(2,13),'Ver las 6 siguientes · 13–18 →');assert.equal(boardViewLabel(3,18),'Ver 12 notas · 1–12');assert.equal(boardViewLabel(3,19),'Ver las 6 siguientes · 19–24 →');
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+test('Every note appears once, across bounded pages on phone and desktop', async () => {
+  const model = await import('../board-view-model.js');
+  for (const compact of [true, false]) for (const count of [0, 1, 6, 7, 12, 13, 24, 25, 100]) {
+    const size = model.boardPageSize(count, compact), notes = Array.from({length:count}, (_,i)=>({id:i}));
+    const pages = model.boardPageCount(count,size), seen = [];
+    for (let page=0;page<pages;page++) seen.push(...model.boardViewNotes(notes,page,size));
+    assert.deepEqual(seen,notes);
+    assert.equal(model.nextBoardView(pages-1,count,size),pages-1,'End does not wrap unexpectedly');
+    assert.equal(model.clampBoardView(-1,count,size),0);
+    assert.equal(model.clampBoardView(1000,count,size),pages-1);
+    assert.equal(size,compact||count<=6?6:12);
+  }
+});
+test('Search spans all pages and never exposes protected text',async()=>{
+  const {filterBoardNotes}=await import('../board-view-model.js');
+  const notes=[{text:'Lista #Viaje',paper:1},{text:'Viaje privado',protectedEnvelope:{},paper:1},{text:'compras',paper:0}];
+  assert.deepEqual(filterBoardNotes(notes,{query:'VIAJE'}),[notes[0]]);
+  assert.deepEqual(filterBoardNotes(notes,{color:'0'}),[notes[2]]);
+  assert.deepEqual(filterBoardNotes(notes,{query:'lista',color:'0'}),[]);
 });
