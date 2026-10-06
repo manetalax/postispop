@@ -26,6 +26,10 @@ jobs:
         env:
           POSTISPOP_TEST_ROOT: android/app/src/main/assets/www
         run: npm run test:backup
+      - name: Verify image and backup export controls in the Android payload
+        env:
+          POSTISPOP_SITE_ROOT: android/app/src/main/assets/www
+        run: npm run test:exports
       - name: Verify Android authentication survives WebView recreation
         env:
           POSTISPOP_TEST_ROOT: android/app/src/main/assets/www
