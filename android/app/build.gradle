@@ -4,12 +4,18 @@ android {
     namespace 'com.postispop.android'
     compileSdk 36
     buildToolsVersion '36.0.0'
+    androidResources {
+        // The default also excludes .* and <dir>_*: that silently drops the
+        // bundled _next and _astro JavaScript/CSS and leaves a broken offline
+        // app. package-mobile already audits every file against its manifest.
+        ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~'
+    }
     defaultConfig {
         applicationId 'com.postispop.android'
         minSdk 23
         targetSdk 36
-        versionCode 4
-        versionName '0.4.0'
+        versionCode 5
+        versionName '0.5.0'
         manifestPlaceholders = [appLabel: 'PostisPop']
     }
     def releaseStore = System.getenv('POSTISPOP_KEYSTORE')
