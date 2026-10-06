@@ -329,7 +329,14 @@ async function api(endpoint, init) {
     // Reuse the authorized board read. Never bypass the existing RLS policies.
     const response = await api('board/'+exportMatch[1], {method:'GET'});
     if(!response.ok) return response;
-    const board=await response.json();
+    const board=offline.project(user.id,await response.json());
+    const styles=await rest('postispop_note_style','?select=*');
+    if(!Array.isArray(styles))throw new Error('STYLES_UNAVAILABLE');
+    // Include unsynchronised local strokes just like the board toolbar does.
+    // RLS still authorizes the server rows; protected styles stay encrypted.
+    const byNote=new Map(styles.map(style=>[style.note_id,style]));
+    for(const op of offline.pending(user.id))if(op.kind==='style')byNote.set(op.noteId,op.after);
+    for(const note of board.notes)if(!note.protectedEnvelope)note.style=byNote.get(note.id)||null;
     const backup=await createBoardBackup(board);validateSession();return json(backup);
   }
 
@@ -492,8 +499,9 @@ window.fetch = async (input, init = {}) => {
     }
     if(response.ok&&active&&endpoint==='designs/styles'&&method==='GET'){
       const data=await response.clone().json(),noteId=new URLSearchParams(url.search).get('note_id');
+      if(!Array.isArray(data.styles))throw new Error('STYLES_UNAVAILABLE');
       if(noteId){const existing=offline.cached(active.id,'designs/styles')?.styles||[];offline.cacheStyles(active.id,[...existing.filter(s=>s.note_id!==noteId),...data.styles]);const style=offline.projectStyles(active.id).find(s=>s.note_id===noteId)||null;result=json({styles:style?[style]:[],style});}
-      else result=json({styles:offline.cacheStyles(active.id,data.styles)});
+      else {result=json({styles:offline.cacheStyles(active.id,data.styles)});offline.remember(active.id,'designs/styles-complete',{complete:true});}
     }
     if(mutation)announce('postispop:save',{state:response.ok?'saved':'error',mode,at:response.ok?Date.now():null});
     if(response.ok&&endpoint==='auth/signup')announce('postispop:activity',{name:'signup_completed'});
@@ -506,7 +514,13 @@ window.fetch = async (input, init = {}) => {
       if(endpoint==='designs/status') {const rights=await getOfflineRights(account.id);if(rights)return json({...rights,offline:true});return json({error:'OFFLINE_LICENSE_UNAVAILABLE'},503);}
       if(endpoint==='session')return json({actor:actorFor(account),offline:true});
       if(/^note\/[^/]+\/(lock|unlock)$/.test(endpoint)){const note=offline.findNote(account.id,endpoint.split('/')[1])?.note;if(note?.protectedEnvelope)return json({error:'PROTECTED_NOTE'},403);if(note)return json({note,lock:account.id,offline:true});}
-      if(method==='GET'&&endpoint==='designs/styles'){const styles=offline.projectStyles(account.id),noteId=new URLSearchParams(url.search).get('note_id');return json({styles:noteId?styles.filter(s=>s.note_id===noteId):styles,...(noteId?{style:styles.find(s=>s.note_id===noteId)||null}:{}),offline:true});}
+      if(method==='GET'&&endpoint==='designs/styles'){
+        const noteId=new URLSearchParams(url.search).get('note_id');
+        // An absent or partially populated cache cannot prove that a board has
+        // no drawings. Only a successful full read certifies an empty list.
+        if(!noteId&&(!offline.cached(account.id,'designs/styles-complete')?.complete||!Array.isArray(offline.cached(account.id,'designs/styles')?.styles)))return json({error:'OFFLINE_STYLES_NOT_CACHED'},503);
+        const styles=offline.projectStyles(account.id);return json({styles:noteId?styles.filter(s=>s.note_id===noteId):styles,...(noteId?{style:styles.find(s=>s.note_id===noteId)||null}:{}),offline:true});
+      }
       if(method==='GET'&&(endpoint==='me'||/^board\/[^/]+$/.test(endpoint))){const value=offline.cached(account.id,endpoint);if(value)return json({...value,offline:true});}
     }
     if(mutation)announce('postispop:save',{state:'error',mode});

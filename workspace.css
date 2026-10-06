@@ -113,6 +113,7 @@ button, summary, a { touch-action: manipulation; }
 .editor-dialog .pp-vault-note-action svg { display: block; width: 20px; height: 20px; margin: auto; }
 .editor-dialog .edit-paper { min-height: 220px; padding: 12px 4px; border: 0; background: transparent!important; box-shadow: none; }
 .editor-dialog textarea, .editor-dialog .rich-paper-mirror { font: 18px/1.65 system-ui; min-height: 260px; background: transparent; }
+.editor-dialog .rich-paper-input textarea::placeholder { color: #505b4c; opacity: 1; }
 .editor-dialog .editor-meta { font-size: 11px; opacity: 1; }
 .pp-vault-toolbar { margin: 8px 0!important; width: 100%; max-width: 100%; box-sizing: border-box; padding: 8px!important; }
 .pp-vault-toolbar label { font-size: 13px; }

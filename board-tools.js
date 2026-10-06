@@ -18,7 +18,13 @@ async function currentBoard() {
   const board=me.boards.find(b=>b.id===selected)||me.boards[0];
   if(!board)throw new Error('BOARD_NOT_FOUND');
   const data=await api('board/'+board.id);
-  if(data.id!=='guest-board'){try{const {styles}=await api('designs/styles');for(const note of data.notes){if(!note.protectedEnvelope)note.style=styles?.find(s=>s.note_id===note.id)||null;}}catch{}}
+  if(data.id!=='guest-board'){
+    // A missing style response is not an empty drawing. Exports must stop if
+    // the required read fails, instead of advertising a partial backup.
+    const styleData=await api('designs/styles'),{styles}=styleData;
+    if(!Array.isArray(styles)||(styleData.offline&&!data.offline))throw new Error('STYLES_UNAVAILABLE');
+    for(const note of data.notes){if(!note.protectedEnvelope)note.style=styles.find(s=>s.note_id===note.id)||null;}
+  }
   return data;
 }
 function message(value){const node=searchTools?.querySelector('[role=status]');if(node)node.textContent=value;}
