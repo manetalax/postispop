@@ -6,6 +6,7 @@ La dirección actual es una pizarra centrada en las notas, con seis notas gratui
 
 Consultar primero:
 
+- [Punto de control 03](PUNTO_CONTROL_20261006_03.md): cierre más reciente, 152 pruebas, copias verificadas y bloqueos reales de publicación.
 - [Producto y dirección](docs/PRODUCTO_Y_DIRECCION.md): decisiones actuales, límites y condiciones para activar pagos.
 - [Validación Android](docs/ANDROID_VALIDACION_20261006.md): cambios nativos, empaquetado, pruebas realizadas y límites de la verificación.
 - [Validación del backend](docs/BACKEND_OFFLINE_VALIDATION.md): alcance del entorno de pruebas y límites frente a producción.

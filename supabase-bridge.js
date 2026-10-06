@@ -42,16 +42,41 @@ const headers = () => {
 };
 
 const rawRest = async (table, query = "", options = {}) => {
+  const { metadata = false, ...requestOptions } = options;
   const response = await originalFetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
-    ...options,
+    ...requestOptions,
     headers: { ...headers(), ...(options.headers || {}) }
   });
   const text = await response.text();
   let body = null;
   try { body = text ? JSON.parse(text) : null; } catch { body = text; }
   if (!response.ok) throw Object.assign(new Error(body?.message || "SUPABASE_ERROR"), { status: body?.code === "40001" || body?.message === "CONFLICT" ? 409 : response.status, body });
-  return body;
+  return metadata ? { data:body, contentRange:response.headers.get('Content-Range') } : body;
 };
+
+// PostgREST may cap a response below our requested limit. Only its exact
+// Content-Range can prove that every authorized style has been collected.
+async function readStyleRows(rest,noteId) {
+  const styles=[],ids=new Set();let offset=0,total=null,previousId='';
+  do {
+    const result=await rest('postispop_note_style','?select=*&order=note_id.asc'+(noteId?'&note_id=eq.'+encodeURIComponent(noteId):'')+'&offset='+offset+'&limit=100',{headers:{Prefer:'count=exact'},metadata:true});
+    const rows=result.data,range=/^(?:(\d+)-(\d+)|\*)\/(\d+)$/.exec(result.contentRange||'');
+    if(!Array.isArray(rows)||!range)throw new Error('STYLES_INCOMPLETE');
+    const count=Number(range[3]);
+    if(!Number.isSafeInteger(count)||(total!==null&&total!==count))throw new Error('STYLES_INCOMPLETE');
+    total=count;
+    if(total===0){if(offset!==0||rows.length||range[1]!==undefined)throw new Error('STYLES_INCOMPLETE');return [];}
+    const first=Number(range[1]),last=Number(range[2]);
+    if(!Number.isSafeInteger(first)||!Number.isSafeInteger(last)||first!==offset||last<first||last>=total||rows.length!==last-first+1)throw new Error('STYLES_INCOMPLETE');
+    for(const row of rows){
+      if(!row||typeof row.note_id!=='string'||!row.note_id||ids.has(row.note_id)||(previousId&&row.note_id<=previousId)||(noteId&&row.note_id!==noteId))throw new Error('STYLES_INCOMPLETE');
+      ids.add(row.note_id);previousId=row.note_id;styles.push(row);
+    }
+    offset=last+1;
+  } while(offset<total);
+  if(styles.length!==total)throw new Error('STYLES_INCOMPLETE');
+  return styles;
+}
 
 const mapNote = (n) => n.protected_envelope ? ({id:n.id,paper:n.paper??0,text:"Nota protegida",marks:[],doodle:"",image:null,author:n.author_id||"",revision:n.revision||1,created:n.created_ms||Date.parse(n.created_at),updated:n.updated_ms||Date.parse(n.updated_at),lockedUntil:0,editing:"",protectedEnvelope:n.protected_envelope}) : ({
   id: n.id, doodle: n.doodle || "", paper: n.paper ?? 0, text: n.text || "",
@@ -168,7 +193,12 @@ async function api(endpoint, init) {
       if(endpoint==='designs/status'&&online()) {try {const response=await originalFetch(SUPABASE_URL+'/functions/v1/postispop-offline-license',{method:'POST',headers:headers(),body:'{}'});if(response.ok){const receipt=await response.json();await saveOfflineReceipt(user.id,receipt.token);}}catch{/* Offline Premium remains disabled until a valid signed receipt exists. */}}
       return json(status);}
     if(endpoint==='designs/styles') {
-      if(method==='GET') {const noteId=new URLSearchParams(init?.search||'').get('note_id');const styles=await rest('postispop_note_style','?select=*'+(noteId?'&note_id=eq.'+encodeURIComponent(noteId):''));return json({styles,...(noteId?{style:styles[0]||null}:{})});}
+      if(method==='GET') {
+        const noteId=new URLSearchParams(init?.search||'').get('note_id');
+        if(!noteId)offline.remember(user.id,'designs/styles-complete',{complete:false,version:2});
+        const styles=await readStyleRows(rest,noteId);
+        return json({styles,...(noteId?{style:styles[0]||null}:{stylesComplete:true})});
+      }
       const allowed=['note_id','font','size','italic','underline','ink','paper','drawing','revision'];
       const data=Object.fromEntries(allowed.filter(k=>payload?.[k]!==undefined).map(k=>[k,payload[k]]));
       const row=await rest('rpc/postispop_save_note_style','',{method:'POST',body:JSON.stringify({p_style:data})});
@@ -330,8 +360,7 @@ async function api(endpoint, init) {
     const response = await api('board/'+exportMatch[1], {method:'GET'});
     if(!response.ok) return response;
     const board=offline.project(user.id,await response.json());
-    const styles=await rest('postispop_note_style','?select=*');
-    if(!Array.isArray(styles))throw new Error('STYLES_UNAVAILABLE');
+    const styles=await readStyleRows(rest);
     // Include unsynchronised local strokes just like the board toolbar does.
     // RLS still authorizes the server rows; protected styles stay encrypted.
     const byNote=new Map(styles.map(style=>[style.note_id,style]));
@@ -501,7 +530,11 @@ window.fetch = async (input, init = {}) => {
       const data=await response.clone().json(),noteId=new URLSearchParams(url.search).get('note_id');
       if(!Array.isArray(data.styles))throw new Error('STYLES_UNAVAILABLE');
       if(noteId){const existing=offline.cached(active.id,'designs/styles')?.styles||[];offline.cacheStyles(active.id,[...existing.filter(s=>s.note_id!==noteId),...data.styles]);const style=offline.projectStyles(active.id).find(s=>s.note_id===noteId)||null;result=json({styles:style?[style]:[],style});}
-      else {result=json({styles:offline.cacheStyles(active.id,data.styles)});offline.remember(active.id,'designs/styles-complete',{complete:true});}
+      else {
+        if(data.stylesComplete!==true)throw new Error('STYLES_INCOMPLETE');
+        result=json({styles:offline.cacheStyles(active.id,data.styles)});
+        offline.remember(active.id,'designs/styles-complete',{complete:true,version:2,total:data.styles.length});
+      }
     }
     if(mutation)announce('postispop:save',{state:response.ok?'saved':'error',mode,at:response.ok?Date.now():null});
     if(response.ok&&endpoint==='auth/signup')announce('postispop:activity',{name:'signup_completed'});
@@ -518,7 +551,8 @@ window.fetch = async (input, init = {}) => {
         const noteId=new URLSearchParams(url.search).get('note_id');
         // An absent or partially populated cache cannot prove that a board has
         // no drawings. Only a successful full read certifies an empty list.
-        if(!noteId&&(!offline.cached(account.id,'designs/styles-complete')?.complete||!Array.isArray(offline.cached(account.id,'designs/styles')?.styles)))return json({error:'OFFLINE_STYLES_NOT_CACHED'},503);
+        const certificate=offline.cached(account.id,'designs/styles-complete');
+        if(!noteId&&(!certificate?.complete||certificate.version!==2||!Array.isArray(offline.cached(account.id,'designs/styles')?.styles)))return json({error:'OFFLINE_STYLES_NOT_CACHED'},503);
         const styles=offline.projectStyles(account.id);return json({styles:noteId?styles.filter(s=>s.note_id===noteId):styles,...(noteId?{style:styles.find(s=>s.note_id===noteId)||null}:{}),offline:true});
       }
       if(method==='GET'&&(endpoint==='me'||/^board\/[^/]+$/.test(endpoint))){const value=offline.cached(account.id,endpoint);if(value)return json({...value,offline:true});}
