@@ -1,5 +1,7 @@
 # Android 0.5.0 — validación de la continuación del 6 de octubre de 2026
 
+**Validación más reciente:** el bloque «Nueva validación: editor final, sólo web y Android» al final de este documento registra el bundle móvil `a6f5e807…3712a9a`. Los bloques iniciales conservan la validación anterior `33098cda…c1e1096` y no describen los candidatos actuales.
+
 Esta validación corresponde a la integración de esta continuación sobre el remoto `dfbbf13`, conservando su creación atómica de pizarras, los cambios de interfaz y los nuevos recursos de marca. Se ejecutó en la worktree aislada `/workspace/scratch/02c0d275caa6/postispop-integration`. Sustituye las huellas de la primera compilación de esta continuación. No modifica ni valida de nuevo los candidatos descritos en `ANDROID_VALIDACION_20261006.md`: los hashes siguientes identifican estos archivos nuevos.
 
 ## Compilación nativa
@@ -46,7 +48,7 @@ Se retiraron del entorno del proceso las cuatro variables `POSTISPOP_KEYSTORE`, 
 
 ## Evidencia local y alcance
 
-Los candidatos permanecen en `android/app/build/outputs/` y los informes lint en `android/app/build/reports/`. La evidencia adicional, excluida de Git, está en:
+Los candidatos y los informes de esta validación anterior se preservaron, antes de compilar la siguiente, en `android/build/validacion-33098cda/outputs/` y `android/build/validacion-33098cda/reports/`. La evidencia adicional también está preservada dentro de `android/build/validacion-33098cda/`, excluida de Git, con los siguientes nombres originales:
 
 - `android/build/continuacion-native-build.log` y `continuacion-native-build.json`.
 - `android/build/continuacion-archive-verification.json`.
@@ -54,3 +56,40 @@ Los candidatos permanecen en `android/app/build/outputs/` y los informes lint en
 - `android/build/continuacion-lint.json`.
 
 No se realizó instalación en dispositivo, prueba real de Google/Supabase, prueba de actualización ni publicación. Para distribuir siguen pendientes la clave original, la verificación de App Links para esa firma y las pruebas en Android real descritas en `ANDROID_VALIDACION_20261006.md`. Cualquier cambio posterior del bundle exige volver a compilar y verificar los APK/AAB finales; estos resultados sólo corresponden a la huella de contenido indicada.
+
+## Nueva validación: editor final, sólo web y Android
+
+Se recompiló el paquete móvil final ya preparado, sin reempaquetarlo, después de los ajustes de accesibilidad y presentación del editor en `design-tools.js` y `design-tools.css`. La fuente local fue `c0957486e854a708b8485adad628f6b354f9a937` más los cambios de interfaz presentes en la worktree. La evidencia de esta sección corresponde a una compilación local de esos recursos finales; no atribuye las mejoras nuevas a ejecuciones anteriores de GitHub Actions.
+
+La instrucción vigente del usuario limita el trabajo a **web y Android**. No se construyeron aplicaciones para otras plataformas.
+
+| Fuente del editor comprobada | SHA-256 |
+| --- | --- |
+| `design-tools.js` | `cfbbbdbf7d3add6c441ff0d55956a8544a1e825ac25c275993d6e09edd26ce5b` |
+| `design-tools.css` | `e17abec588ce4c5fb9cb72f50d4cdf1224aab545f7e6631defc7b322ba7aa350` |
+
+Se repitió el comando Gradle de este documento con las mismas herramientas, `--offline` y `-PunsignedBeta`, retirando las variables de firma. Resultado: **`BUILD SUCCESSFUL`, código 0, 28,68 segundos, 97 tareas: 44 ejecutadas y 53 actualizadas**. Se completaron `assembleDebug`, `assembleRelease`, `bundleRelease`, `lintDebug` y `lintRelease`.
+
+Los dos informes lint nuevos contienen cada uno **0 errores y 1 advertencia**, `SetJavaScriptEnabled`. Gradle mantiene su aviso de funciones obsoletas para una futura actualización a Gradle 9; la versión usada aquí fue 8.13.
+
+`android/verify-archive.py` verificó los tres archivos físicos nuevos: **198 de 198 recursos**, con rutas, tamaños y hashes coincidentes, incluidas las carpetas `_next` y `_astro`, sin recursos extra ni entradas ZIP duplicadas.
+
+**Huella móvil de esta nueva validación:** `a6f5e807d01bb5e314d7243149061529ef61b615533673e0d53ff8a173712a9a`.
+
+| Candidato interno actual | Bytes | SHA-256 |
+| --- | ---: | --- |
+| APK debug sin firma | 13.675.976 | `046bbc3aa81b4b7af4229d0c4f2c09f8959c609ff194685da0e0cc4fdc577700` |
+| APK release sin firma | 11.070.575 | `e7f948b8874372594654b73ec69614bcfa403e173e86492e64174cece99bee11` |
+| AAB release sin firma | 11.017.597 | `a54bc8656132a6a5f8afae0c950e1e16f6990b95565931c27c45c3dbdaced463` |
+
+La comprobación de firma también se repitió: `apksigner` devuelve código 1 y `DOES NOT VERIFY` para ambos APK, por ausencia de `META-INF/MANIFEST.MF`; `jarsigner` declara `jar is unsigned` para el AAB. No hay entradas JAR de firma en ninguno. El nombre de la tarea Gradle `signReleaseBundle` no acredita una firma; la inspección del AAB confirma que sigue sin firmar. No se creó ni sustituyó ninguna clave.
+
+Los archivos actuales permanecen en las rutas de salida indicadas en el comando de verificación. Se conservó además una copia de los tres candidatos, manifiesto, informes y evidencia en `android/build/validacion-a6f5e807/`. Sus registros diferenciados son:
+
+- `editor-final-native-build.log` y `editor-final-native-build.json`.
+- `editor-final-archive-verification.json`.
+- `editor-final-signature-checks.json`.
+- `editor-final-lint.json`.
+- `editor-final-source.json`, con el commit local y las huellas de los archivos fuente comprobados.
+
+La validación local acredita compilación y contenido empaquetado. **No acredita instalación en Android real, autenticación real, actualización con la firma original ni distribución.** No se realizaron instalaciones ni publicaciones como parte de esta prueba. Los hashes de esta sección son los del editor final y no se deben mezclar con los de la validación anterior.
