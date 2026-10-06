@@ -14,12 +14,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Bundle local UI and shop
-        run: npm ci && npm test && npm run lint && npm run build && node scripts/package-mobile.mjs
+      - name: Bundle local notes UI and public pages
+        run: npm ci --no-audit --no-fund && npm test && npm run lint && npm run build && node scripts/package-mobile.mjs
       - name: Install browser for local payload verification
         run: npx playwright install --with-deps chromium
       - name: Verify bundled resources, offline data and Android CSP
         run: node --test tests/packaging.test.cjs && npm run test:mobile
+      - name: Verify Android authentication survives WebView recreation
+        env:
+          POSTISPOP_TEST_ROOT: android/app/src/main/assets/www
+        run: npm run test:android-auth
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -34,6 +38,11 @@ jobs:
         run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
       - name: Validate unsigned build candidates (not distributable installers)
         run: gradle -p android --no-daemon assembleDebug bundleRelease lintDebug lintRelease -PunsignedBeta
+      - name: Verify resources inside the actual APK and AAB
+        run: >-
+          python3 android/verify-archive.py
+          android/app/build/outputs/apk/debug/*.apk
+          android/app/build/outputs/bundle/release/*.aab
       - uses: actions/upload-artifact@v4
         with:
           name: postispop-internal-build-validation-NOT-AN-INSTALLER
