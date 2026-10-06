@@ -45,7 +45,7 @@ Las pruebas siguientes se comunicaron aprobadas sobre el payload `691465d3`; su 
 | `tests/offline-shell-ui.cjs` | Aprobada; service worker real con el servidor HTTP local detenido |
 | Respaldo de adjuntos en navegador | Tres casos aprobados con IndexedDB real, offline, cuota y reintento; los ocho módulos superpuestos desde source coincidían byte a byte con el payload |
 
-La corrección posterior de `database/board-create.sql` y `supabase-bridge.js` cuenta con **14 pruebas de `offline-bridge.test.cjs` aprobadas** y una ejecución PostgreSQL local con PGlite que añade **24 comprobaciones** de rollback ante fallo del sembrado, RLS, seis notas gratuitas, doce iniciales para pago e idempotencia. Es evidencia local de la transacción: **no se ha aplicado ni probado ese cambio en Supabase de producción**. La suite PostgreSQL local completa también ha terminado correctamente. El artefacto posterior al RPC tiene el hash indicado en la tabla; queda actualizar el recuento integrado de `npm test`.
+La corrección posterior de `database/board-create.sql` y `supabase-bridge.js` cuenta con **14 pruebas de `offline-bridge.test.cjs` aprobadas** y una ejecución PostgreSQL local con PGlite que añade **24 comprobaciones** de rollback ante fallo del sembrado, RLS, seis notas gratuitas, doce iniciales para pago e idempotencia. Es evidencia local de la transacción: **no se ha aplicado ni probado ese cambio en Supabase de producción**. La suite PostgreSQL local completa también ha terminado correctamente. El artefacto posterior al RPC tiene el hash indicado en la tabla y la corrida integrada final de `npm test` pasa 139/139.
 
 ## Accesibilidad automática
 
