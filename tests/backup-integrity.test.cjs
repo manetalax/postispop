@@ -24,14 +24,18 @@ async function bridge({styles=[style()],styleResponse,envelope}={}){
   const navigator={onLine:true};
   const window={addEventListener(){},dispatchEvent(){},fetch:async(url,options={})=>{
     calls.push({url,options});
-    if(url.includes('/auth/v1/user'))return Response.json({id:USER});
+    if(url.includes('/auth/v1/user'))return Response.json({id:JSON.parse(storage.getItem(SESSION)).user.id});
     if(url.includes('/rest/v1/boards'))return Response.json([{id:BOARD,owner_id:USER,title:'Dibujos'}]);
     if(url.includes('/rest/v1/board_members'))return Response.json([]);
     if(url.includes('/rest/v1/notes'))return Response.json([
       {id:NOTE,board_id:BOARD,text:'',paper:2,revision:1},
       ...(envelope?[{id:PROTECTED,board_id:BOARD,protected_envelope:envelope,paper:4,revision:1}]:[])
     ]);
-    if(url.includes('/rest/v1/postispop_note_style'))return styleResponse?styleResponse(url):Response.json(styles);
+    if(url.includes('/rest/v1/postispop_note_style')){
+      if(styleResponse)return styleResponse(url,options,storage);
+      const params=new URL(url).searchParams,noteId=params.get('note_id')?.replace('eq.',''),all=styles.filter(row=>!noteId||row.note_id===noteId).sort((a,b)=>a.note_id.localeCompare(b.note_id)),offset=Number(params.get('offset')||0),rows=all.slice(offset,offset+Number(params.get('limit')||100));
+      return Response.json(rows,{headers:{'Content-Range':rows.length?`${offset}-${offset+rows.length-1}/${all.length}`:`*/${all.length}`}});
+    }
     throw Error('Unexpected request '+url);
   }};
   let offline;
@@ -178,4 +182,73 @@ test('Toolbar includes successfully loaded cloud styles and preserves local gues
     assert.deepEqual(app.downloads,['PostisPop-copia.json']);
     assert.deepEqual(app.events,['export']);
   }
+});
+
+const pagedStyles=({rows,cap=50,onPage}={})=>(url,options,storage)=>{
+  const params=new URL(url).searchParams,offset=Number(params.get('offset')||0);
+  assert.equal(options.headers.Prefer,'count=exact');assert.equal(options.metadata,undefined,'Internal metadata option must not reach fetch');
+  const override=onPage?.(offset,options,storage);if(override)return override;
+  const batch=rows.slice(offset,offset+Math.min(cap,Number(params.get('limit')||100)));
+  return Response.json(batch,{headers:{'Content-Range':batch.length?`${offset}-${offset+batch.length-1}/${rows.length}`:`*/${rows.length}`}});
+};
+const extraStyle=index=>({...style(),note_id:'00000000-0000-4000-8000-'+String(index).padStart(12,'0')});
+
+test('Exact Content-Range pagination handles over 1000 styles and a server cap below the requested page size',async()=>{
+  const rows=[...Array.from({length:1004},(_,index)=>extraStyle(index)),style()],offsets=[];
+  const app=await bridge({styleResponse:pagedStyles({rows,cap:50,onPage:offset=>{offsets.push(offset);}})});
+  const result=await app.request('designs/styles');assert.equal(result.status,200);assert.equal(result.data.styles.length,1005);
+  assert.deepEqual(offsets,Array.from({length:21},(_,index)=>index*50));
+  assert.equal(app.offline.cached(USER,'designs/styles-complete').complete,true);
+  assert.equal(app.offline.cached(USER,'designs/styles-complete').version,2);
+  assert.equal(app.offline.cached(USER,'designs/styles-complete').total,1005);
+  const exported=await app.request('board/'+BOARD+'/export');assert.equal(exported.status,200);
+  assert.deepEqual(exported.data.notes[0].style.drawing,drawing,'Legacy export must reach the drawing after the first 1000 rows');
+});
+
+test('A later-page HTTP or transport failure keeps old styles intact, invalidates completeness and never exports a partial drawing set',async()=>{
+  for(const transport of [false,true]){
+    const rows=[extraStyle(1),style()];
+    const app=await bridge({styleResponse:pagedStyles({rows,cap:1,onPage:offset=>{if(offset){if(transport)throw new TypeError('Connection lost on page two');return Response.json({message:'Style page unavailable'},{status:503});}}})});
+    app.offline.cacheStyles(USER,[style()]);app.offline.remember(USER,'designs/styles-complete',{complete:true,version:2,total:1});
+    const before=copy(app.offline.cached(USER,'designs/styles'));
+    const result=await app.request('designs/styles');assert.ok(result.status>=400);
+    assert.deepEqual(app.offline.cached(USER,'designs/styles'),before,'No page may replace the stored list before the whole read succeeds');
+    assert.equal(app.offline.cached(USER,'designs/styles-complete').complete,false);
+    const exported=await app.request('board/'+BOARD+'/export');assert.ok(exported.status>=400);assert.equal(app.backups.length,0);
+    app.navigator.onLine=false;assert.equal((await app.request('designs/styles')).data.error,'OFFLINE_STYLES_NOT_CACHED');
+  }
+});
+
+test('Missing, estimated, inconsistent and overlapping Content-Range results cannot certify a complete style cache',async()=>{
+  for(const response of [
+    ()=>Response.json([style()]),
+    ()=>Response.json([style()],{headers:{'Content-Range':'0-0/*'}}),
+    ()=>Response.json([style()],{headers:{'Content-Range':'0-1/2'}}),
+    url=>new URL(url).searchParams.get('offset')==='0'?Response.json([extraStyle(1)],{headers:{'Content-Range':'0-0/2'}}):Response.json([style()],{headers:{'Content-Range':'1-1/3'}}),
+    url=>Response.json([extraStyle(1)],{headers:{'Content-Range':new URL(url).searchParams.get('offset')==='0'?'0-0/2':'1-1/2'}}),
+    url=>new URL(url).searchParams.get('offset')==='0'?Response.json([extraStyle(1)],{headers:{'Content-Range':'0-0/2'}}):Response.json([],{headers:{'Content-Range':'*/2'}})
+  ]){
+    const app=await bridge({styleResponse:response}),result=await app.request('designs/styles');
+    assert.equal(result.data.error,'STYLES_INCOMPLETE');assert.equal(app.offline.cached(USER,'designs/styles-complete').complete,false);
+    assert.equal(app.offline.cached(USER,'designs/styles'),null);
+  }
+});
+
+test('Legacy completeness flags from unverified global reads never authorize offline full backups',async()=>{
+  const app=await bridge();await app.request('board/'+BOARD);
+  app.offline.cacheStyles(USER,[]);app.offline.remember(USER,'designs/styles-complete',{complete:true});app.navigator.onLine=false;
+  assert.equal((await app.request('designs/styles')).data.error,'OFFLINE_STYLES_NOT_CACHED');
+});
+
+test('Pagination and completeness certificates remain isolated across an account switch',async()=>{
+  const OTHER='55555555-5555-4555-8555-555555555555',rows=[extraStyle(1),style()];let change=false;
+  const app=await bridge({styleResponse:pagedStyles({rows,cap:1,onPage:(offset,options,storage)=>{
+    if(change&&offset===1)storage.setItem(SESSION,JSON.stringify({access_token:'other-token',user:{id:OTHER},expires_at:Math.floor(Date.now()/1000)+3600}));
+  }})});
+  const first=await app.request('designs/styles');assert.equal(first.status,200);const before=copy(app.offline.cached(USER,'designs/styles'));
+  change=true;const switched=await app.request('designs/styles');assert.equal(switched.status,401);assert.equal(switched.data.error,'SESSION_CHANGED');
+  assert.deepEqual(app.offline.cached(USER,'designs/styles'),before);assert.equal(app.offline.cached(USER,'designs/styles-complete').complete,false);
+  assert.equal(app.offline.cached(OTHER,'designs/styles'),null);assert.equal(app.offline.cached(OTHER,'designs/styles-complete'),null);
+  app.offline.rememberIdentity({id:OTHER});app.navigator.onLine=false;
+  assert.equal((await app.request('designs/styles')).data.error,'OFFLINE_STYLES_NOT_CACHED','The next account cannot use the previous account full cache');
 });

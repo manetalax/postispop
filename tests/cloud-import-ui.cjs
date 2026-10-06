@@ -36,7 +36,8 @@ const deferred=()=>{let resolve;const promise=new Promise(done=>resolve=done);re
         if(url.pathname==='/auth/v1/user')return json({id:USER,email:'fixture@example.test'});
         if(url.pathname==='/rest/v1/boards'&&request.method()==='GET')return json([{id:BOARD,owner_id:USER,title:'Pizarra de prueba',revision:1}]);
         if(url.pathname==='/rest/v1/notes'&&request.method()==='GET')return json(notes);
-        if(['/rest/v1/board_members','/rest/v1/postispop_note_style'].includes(url.pathname)&&request.method()==='GET')return json([]);
+        if(url.pathname==='/rest/v1/board_members'&&request.method()==='GET')return json([]);
+        if(url.pathname==='/rest/v1/postispop_note_style'&&request.method()==='GET')return route.fulfill({status:200,headers:{...headers,'Content-Range':'*/0','Access-Control-Expose-Headers':'Content-Range'},contentType:'application/json',body:'[]'});
         if(url.pathname==='/rest/v1/rpc/postispop_import_board'&&request.method()==='POST'){
           const body=request.postDataJSON();requests.push(body);
           if(!ready)return json({code:'PGRST202',message:'Could not find function postispop_import_board'},404);
