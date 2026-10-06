@@ -1,0 +1,102 @@
+{
+  "createdAt": "2026-10-06T08:55:42.745671+00:00",
+  "baseRemoteCommit": "4bbfe5b",
+  "scope": [
+    "web",
+    "android"
+  ],
+  "sourceSha256": {
+    "board-tools.js": "a8a76c50d8ac17dec5898b50f3de56953530eb9b231b64eb1984adba2c901995",
+    "experience.js": "0d5d5c15abe8f0b010d9ee273f28da57006b27385e858f8c327d503648d03201",
+    "mobile/mobile-entry.js": "47e358e3d3810f2a5f8e619d23cb59e85e548bba226ae778c1c19f3a664ed3cc",
+    "android/app/src/main/java/com/postispop/android/MainActivity.java": "e7ade1dad3ee0a90b4ff362f12062cd911162d8c57a2c19d9eb83b1dab6dccf2",
+    "tests/png-export-ui.cjs": "149038d143f427b7e57ab1bd0fe54496bd86c9f0f78eecc3d25452ec43d2b79a",
+    "tests/android-download.test.cjs": "67b0df93f00b050f81790dcc8bbf90c441c62bf22e5801fe9afdf454ff4d0a7a",
+    "tests/attachment-backup-ui.cjs": "3ce481503cfb0ed13e37c3387e8982eb65f7c0c0adab5809aa90f947c9c0b2e5"
+  },
+  "tests": {
+    "unit": {
+      "passed": 161,
+      "failed": 0
+    },
+    "pngExportWeb": {
+      "passed": 3,
+      "failed": 0
+    },
+    "pngExportAndroidPayload": {
+      "passed": 3,
+      "failed": 0,
+      "nativeTransport": "simulated; actual mobile-entry.js"
+    },
+    "backupRestoreWeb": {
+      "passed": 1,
+      "failed": 0
+    },
+    "backupRestoreAndroidPayload": {
+      "passed": 1,
+      "failed": 0,
+      "nativeTransport": "simulated; actual mobile-entry.js"
+    },
+    "experience": "passed staged web",
+    "androidAuth": "passed packaged payload with simulated provider"
+  },
+  "bundles": {
+    "web": "5cd527a790a206cd7d5b0e8cf07a63139cd3db33564d4e83b12c9c98212baa1d",
+    "android": "28d32159dd0ddf514ab0f0d39760a123bd8d264e3387e0a800dbc99213334751"
+  },
+  "native": {
+    "result": "BUILD SUCCESSFUL",
+    "durationSeconds": 35,
+    "tasks": 98,
+    "executed": 95,
+    "upToDate": 3,
+    "unsignedOption": true,
+    "archives": [
+      {
+        "archive": "android/app/build/outputs/apk/debug/app-debug-unsigned.apk",
+        "bytes": 13629123,
+        "sha256": "15bbf6f5d6caa3ea8e4aae34febd86bf2c971c345e9034c4e1e97956a489dc5e",
+        "bundledFiles": 198,
+        "contentHash": "28d32159dd0ddf514ab0f0d39760a123bd8d264e3387e0a800dbc99213334751",
+        "signatureChecked": false
+      },
+      {
+        "archive": "android/app/build/outputs/apk/release/app-release-unsigned.apk",
+        "bytes": 11086643,
+        "sha256": "57214801d2c260983c3b39ae8d10de3fc94b9374369aedfc32b511b47bf38d8e",
+        "bundledFiles": 198,
+        "contentHash": "28d32159dd0ddf514ab0f0d39760a123bd8d264e3387e0a800dbc99213334751",
+        "signatureChecked": false
+      },
+      {
+        "archive": "android/app/build/outputs/bundle/release/app-release.aab",
+        "bytes": 11021642,
+        "sha256": "50b30ed52aeb867c81af8079fd25242cd6fe8838c0f4010ef8d3b59feb6bf4b8",
+        "bundledFiles": 198,
+        "contentHash": "28d32159dd0ddf514ab0f0d39760a123bd8d264e3387e0a800dbc99213334751",
+        "signatureChecked": false
+      }
+    ],
+    "lint": {
+      "debug": [
+        {
+          "id": "SetJavaScriptEnabled",
+          "severity": "Warning"
+        }
+      ],
+      "release": [
+        {
+          "id": "SetJavaScriptEnabled",
+          "severity": "Warning"
+        }
+      ]
+    }
+  },
+  "limits": [
+    "Android export bridge: 10,000,000 bytes per PNG or JSON file. Web JSON backup: 50 MiB.",
+    "PNG overview supports up to 100 notes and summarizes text; attachments excluded, protected notes stay closed.",
+    "No physical-device installation, save picker, original release signature, or real Supabase synchronization verified.",
+    "Activity/process destruction while picker is open requires retry.",
+    "PR remains a draft; no production deployment, payments, database migrations, or other platform builds."
+  ]
+}
