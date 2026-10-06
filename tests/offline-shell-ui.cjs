@@ -76,11 +76,13 @@ const assert = require('node:assert/strict');
     await reopened.waitForSelector('.sticky-note:not([disabled])');
     assert.ok((await reopened.locator('.sticky-note').first().innerText()).includes(marker));
     await reopened.goto(origin+'/atelier.html');
-    await reopened.waitForSelector('#at-grid');
-    assert.ok(await reopened.locator('#at-grid').innerText());
+    await reopened.waitForSelector('.plans');
+    const offer=await reopened.locator('.plans').innerText();
+    for(const price of ['2,95','9,95','59,95'])assert.ok(offer.includes(price));
+    assert.equal(await reopened.locator('.payment-options button:disabled').count(),3,'Offline Premium shell must not activate checkout');
     await reopened.goto(origin+'/compartir.html');
     assert.ok((await reopened.locator('body').innerText()).includes('nota'));
-    console.log('PASS: real service-worker install, HTTP origin stopped, offline reload, local edit, tab close/reopen, collections and protected-share shell; no API response cached.');
+    console.log('PASS: real service-worker install, HTTP origin stopped, offline reload, local edit, tab close/reopen, Premium offer and protected-share shell; no API response cached.');
   } finally {
     try { await browser?.close(); }
     finally { await closeServer(); }

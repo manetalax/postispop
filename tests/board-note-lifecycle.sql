@@ -1,13 +1,15 @@
--- Isolated synthetic account. Every fixture and mutation is rolled back.
+-- Staging only, after simple-note-limits.sql. Isolated synthetic account.
+-- Every fixture, test license and mutation is rolled back.
 begin;
 do $$
-declare actor uuid:=gen_random_uuid();b uuid;n uuid;
+declare actor uuid:=gen_random_uuid();b uuid;n uuid;initial_count integer;
 begin
  insert into auth.users(id,email,created_at,updated_at,aud,role,raw_user_meta_data)values(actor,'postispop-lifecycle-test@example.invalid',now(),now(),'authenticated','authenticated','{}');
  select id into b from public.boards where owner_id=actor;
- insert into public.board_trials(user_id,expires_at)values(actor,now()+interval '1 day')on conflict(user_id)do update set expires_at=excluded.expires_at;
+ insert into public.postispop_licenses(user_id,subject,payment_reference,expires_at)values(actor,'premium','rollback-only-lifecycle-'||actor,now()+interval '1 day');
  perform set_config('request.jwt.claim.sub',actor::text,true);perform set_config('pp.test_actor',actor::text,true);perform set_config('pp.test_board',b::text,true);
- for i in 13..25 loop perform public.postispop_add_board_note(b);end loop;
+ select count(*)into initial_count from public.notes where board_id=b and position>=0;
+ for i in (initial_count+1)..25 loop perform public.postispop_add_board_note(b);end loop;
  select id into n from public.notes where board_id=b and position=24;
  update public.notes set text='Nota protegida',protected_envelope='{"v":1,"alg":"AES-256-GCM","kdf":"PBKDF2-SHA-256","iterations":600000,"salt":"AAAAAAAAAAAAAAAAAAAAAA","iv":"AAAAAAAAAAAAAAAA","id":"AAAAAAAAAAAAAAAAAAAAAA","ciphertext":"AAAAAAAAAAAAAAAAAAAAAA"}',paper=5 where id=n;
  insert into postispop_private.note_shares(note_id,created_by,token_hash)values(n,actor,encode(extensions.digest('postispop-archive-share-test','sha256'),'hex'));
@@ -47,14 +49,15 @@ begin
  if has_function_privilege('anon','public.postispop_remove_board_note(uuid,integer)','EXECUTE')or has_function_privilege('anon','public.postispop_restore_board_note(uuid)','EXECUTE')or has_function_privilege('anon','public.postispop_board_note_trash(uuid)','EXECUTE')then raise exception 'anonymous RPC enabled';end if;
 end $$;
 reset role;
-update public.board_trials set expires_at=now()-interval '1 day'where user_id=current_setting('pp.test_actor')::uuid;
+update public.postispop_licenses set expires_at=now()-interval '1 day'where user_id=current_setting('pp.test_actor')::uuid and subject='premium';
 set local role authenticated;
 do $$
 declare b uuid:=current_setting('pp.test_board')::uuid;denied boolean:=false;
 begin
- begin perform public.postispop_add_board_note(b);exception when sqlstate '42501'then denied:=true;end;
+ begin perform public.postispop_add_board_note(b);exception when sqlstate '23514'then denied:=true;end;
  if not denied then raise exception 'account limit bypassed';end if;
- if(select count(*)from public.notes where board_id=b)<>12 then raise exception 'expired account policy changed';end if;
+ if(select count(*)from public.notes where board_id=b)<>26 then raise exception 'downgrade hid existing notes';end if;
+ if(postispop_private.board_access(b)->>'max_notes')::integer<>6 then raise exception 'free allowance not six';end if;
 end $$;
 reset role;
 rollback;

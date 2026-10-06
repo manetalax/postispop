@@ -35,6 +35,13 @@ await db.exec(`update postispop_designs set default_paper='papyrus' where id='re
 r=await asUser('2',`select postispop_access() as s`);assert(r.rows[0].s.owner&&r.rows[0].s.clock_active&&r.rows[0].s.products.length===0,'owner gets free clock without fabricated purchases');
 r=await asUser('2',`select count(*) as n from notes`);assert(+r.rows[0].n===0,'owner dashboard privilege never grants raw note contents');
 await db.exec(sql);await db.exec(protectedSql);console.log('Both migrations can reapply together after encrypted records exist');
+// Explicit synthetic replacement for the deployed base helper, which is not
+// present in this checkout. It preserves fixture ownership; it is not a mock
+// entitlement or evidence about production RLS.
+await db.exec(`create function postispop_private.can_access_note(uuid,integer) returns boolean language sql stable security definer set search_path='' as $$ select $2>=0 and exists(select 1 from public.boards where id=$1 and owner_id=auth.uid()) $$; revoke all on function postispop_private.can_access_note(uuid,integer) from public,anon; grant execute on function postispop_private.can_access_note(uuid,integer) to authenticated;`);
+const freeToolsSql=fs.readFileSync(new URL('../database/free-editor-tools.sql',import.meta.url),'utf8');
+await db.exec(freeToolsSql);await db.exec(freeToolsSql);console.log('Included-editor-tools migration applied twice on synthetic schema');
+r=await asUser('1',`select postispop_can_paper('washi') as paper,postispop_has_license('premium') as premium`);assert(r.rows[0].paper&&!r.rows[0].premium,'included editor materials never fabricate Premium');
 const importSql=fs.readFileSync(new URL('../database/board-import.sql',import.meta.url),'utf8');
 await db.exec(importSql);await db.exec(importSql);console.log('Import migration applied twice successfully');
 const userId=n=>'00000000-0000-0000-0000-'+String(n).padStart(12,'0');
@@ -56,19 +63,19 @@ await db.query('update notes set image_url=$2 where id=$1',[slotId(1,1),'https:/
 await db.query('update notes set doodle=$2 where id=$1',[slotId(1,2),JSON.stringify('heart')]);
 const drawing={version:1,selectedInstrument:'ballpoint',strokes:[{instrument:'ballpoint',color:'#163b62',width:2,points:[{x:0.5,y:0.5,p:0.5}]}]};
 await db.query('insert into postispop_note_style(user_id,note_id,drawing) values($1,$2,$3::jsonb)',[userId(1),slotId(1,3),JSON.stringify(drawing)]);
-await db.query('update notes set marks=$2::jsonb where id=$1',[slotId(1,4),JSON.stringify([{start:0,end:0,ink:'blue'}])]);
-await asUser('1','select postispop_protect_note($1,1,$2::jsonb,0)',[slotId(1,5),JSON.stringify(envelope)]);
-await db.query('insert into postispop_note_style(user_id,note_id,size,revision) values($1,$2,18,4)',[userId(1),slotId(1,7)]);
-r=await importNotes(1,1,1,[{text:'Nueva 😀',paper:5,marks:[{start:6,end:8,ink:'blue'}],style:{size:22}}],[slotId(1,6)]);
-assert(r.rows[0].s.imported===1&&r.rows[0].s.noteIds[0]===slotId(1,7),'import uses one available unreserved slot and preserves UTF-16 mark offsets');
+await db.query('update notes set marks=$2::jsonb where id=$1',[slotId(1,0),JSON.stringify([{start:0,end:0,ink:'blue'}])]);
+await asUser('1','select postispop_protect_note($1,1,$2::jsonb,0)',[slotId(1,4),JSON.stringify(envelope)]);
+await db.query('insert into postispop_note_style(user_id,note_id,size,revision) values($1,$2,18,4)',[userId(1),slotId(1,6)]);
+r=await importNotes(1,1,1,[{text:'Nueva 😀',paper:5,marks:[{start:6,end:8,ink:'blue'}],style:{size:22}}],[slotId(1,5)]);
+assert(r.rows[0].s.imported===1&&r.rows[0].s.noteIds[0]===slotId(1,6),'import uses one available unreserved slot and preserves UTF-16 mark offsets');
 const successful=r.rows[0].s;
 r=await db.query('select text,revision from notes where id=$1',[slotId(1,0)]);assert(r.rows[0].text==='Conservar'&&r.rows[0].revision===1,'occupied text remains untouched');
-r=await db.query('select size from postispop_note_style where note_id=$1',[slotId(1,7)]);assert(r.rows[0].size===22,'import writes allowed free styling atomically');
-let staleImportStyle=false;try{await asUser('1','select postispop_save_note_style($1::jsonb)',[JSON.stringify({note_id:slotId(1,7),revision:4,size:18})])}catch(e){staleImportStyle=e.message==='CONFLICT'}assert(staleImportStyle,'import advances existing style version and rejects stale editor');
+r=await db.query('select size from postispop_note_style where note_id=$1',[slotId(1,6)]);assert(r.rows[0].size===22,'import writes allowed free styling atomically');
+let staleImportStyle=false;try{await asUser('1','select postispop_save_note_style($1::jsonb)',[JSON.stringify({note_id:slotId(1,6),revision:4,size:18})])}catch(e){staleImportStyle=e.message==='CONFLICT'}assert(staleImportStyle,'import advances existing style version and rejects stale editor');
 r=await importNotes(1,1,1,[{text:'Nueva 😀',paper:5,marks:[{start:6,end:8,ink:'blue'}],style:{size:22}}]);
 assert(r.rows[0].s.replayed&&r.rows[0].s.noteIds[0]===successful.noteIds[0],'lost response retry reuses original receipt regardless of changed exclusions');
 await rejectedImport(1,1,1,[{text:'Distinta'}],'IDEMPOTENCY_CONFLICT','request ID cannot be reused for another payload');
-await rejectedImport(1,1,2,[{text:'Octava'}],'BOARD_FULL','free account cannot import its eighth occupied note');
+await rejectedImport(1,1,2,[{text:'Séptima'}],'BOARD_FULL','free account cannot import its seventh occupied note');
 await rejectedImport(2,1,3,[{text:'Ajena'}],'OWNER_REQUIRED','app administrator cannot import to another user board');
 await rejectedImport(3,999,3,[{text:'Ajena'}],'OWNER_REQUIRED','missing and foreign boards disclose no contents');
 await seedBoard(2,1);
@@ -80,9 +87,9 @@ for(const [notes,message,label] of [
  [[{text:'x'.repeat(10001)}],'INVALID_BACKUP','oversized text rejected'],
  [[{text:'Texto',image:{url:'javascript:alert(1)'}}],'INVALID_BACKUP','unsafe image URLs rejected'],
  [[{text:'Texto',doodle:'<svg onload=alert(1)>'}],'INVALID_BACKUP','unrecognized doodles rejected'],
- [[{text:'Texto',style:{font:'hand'}}],'STYLE_LOCKED','backup cannot grant paid font'],
- [[{text:'Texto',style:{paper:'washi'}}],'STYLE_LOCKED','backup cannot grant paid material'],
- [[{text:'Texto',style:{drawing:{...drawing,selectedInstrument:'marker'}}}],'INVALID_STYLE','backup cannot grant paid pen'],
+ [[{text:'Texto',style:{font:'unknown'}}],'INVALID_STYLE','unknown fonts remain invalid'],
+ [[{text:'Texto',style:{paper:'javascript:paper'}}],'INVALID_STYLE','unknown papers remain invalid'],
+ [[{text:'Texto',style:{drawing:{...drawing,selectedInstrument:'unknown'}}}],'INVALID_STYLE','unknown drawing tools remain invalid'],
  [[{text:'Filtración',protectedEnvelope:envelope}],'PROTECTED_NOTE_REQUIRES_ENCRYPTION','ciphertext cannot accompany plaintext'],
  [[{protectedEnvelope:{...envelope,alg:'fake'}}],'INVALID_ENVELOPE','malformed ciphertext rejected'],
  [[null],'INVALID_BACKUP','null note rejected'],
@@ -97,7 +104,7 @@ await rejectedImport(1,2,11,[{text:'No robar lock'}],'BOARD_FULL','active edit l
 await db.query('update notes set locked_until=null where board_id=$1',[boardId(2)]);
 r=await importNotes(1,2,12,[{text:''},{protectedEnvelope:envelope,paper:2}]);assert(r.rows[0].s.imported===1,'blank placeholders are skipped and protected note imports intact');
 r=await db.query('select * from notes where id=$1',[slotId(2,0)]);assert(r.rows[0].text==='Nota protegida'&&r.rows[0].protected_envelope.ciphertext===envelope.ciphertext&&r.rows[0].doodle===null&&r.rows[0].image_url===null,'protected import persists ciphertext and safe metadata only');
-r=await importNotes(1,2,13,[{text:'Solo dibujo',style:{drawing}}]);assert(r.rows[0].s.imported===1,'free drawing is preserved');
+r=await importNotes(1,2,13,[{text:'Solo dibujo',style:{font:'hand',paper:'washi',ink:'#1144aa',drawing:{...drawing,selectedInstrument:'brush'}}}]);assert(r.rows[0].s.imported===1,'included fonts, material, ink and drawing survive import without Premium');
 await seedBoard(3,3,101);
 r=await importNotes(3,3,20,Array.from({length:100},(_,i)=>({text:'Premium '+i})));assert(r.rows[0].s.imported===100,'legacy Pro grants exactly 100 occupied slots through server entitlement');
 await rejectedImport(3,3,21,[{text:'101'}],'BOARD_FULL','Premium import cannot exceed 100 occupied slots');
@@ -106,9 +113,9 @@ r=await importNotes(2,4,22,[{text:'Owner',style:{font:'hand',paper:'washi'}}]);a
 await rejectedImport(2,4,23,[{text:'Sin sitio'}],'BOARD_FULL','Premium does not create new rows beyond existing slots');
 await db.exec(`insert into postispop_licenses(user_id,subject,expires_at,payment_reference) values('${userId(1)}','premium',now()-interval '1 day','test-expired')`);
 await seedBoard(5,1);
-await rejectedImport(1,5,24,Array.from({length:8},()=>({text:'Expired'})),'BOARD_FULL','expired license never raises the seven-note cap');
+await rejectedImport(1,5,24,Array.from({length:8},()=>({text:'Expired'})),'BOARD_FULL','expired license never raises the six-note cap');
 await db.exec(`update postispop_licenses set expires_at=now()+interval '1 day',revoked_at=now() where user_id='${userId(1)}'`);
-await rejectedImport(1,5,25,Array.from({length:8},()=>({text:'Revoked'})),'BOARD_FULL','revoked license never raises the seven-note cap');
+await rejectedImport(1,5,25,Array.from({length:8},()=>({text:'Revoked'})),'BOARD_FULL','revoked license never raises the six-note cap');
 await db.exec(`update postispop_licenses set revoked_at=null where user_id='${userId(1)}'`);
 r=await importNotes(1,5,26,Array.from({length:8},()=>({text:'Current Premium'})));assert(r.rows[0].s.imported===8,'current server Premium license raises the cap');
 await db.exec(importSql);
@@ -116,4 +123,70 @@ r=await importNotes(3,3,20,Array.from({length:100},(_,i)=>({text:'Premium '+i}))
 let receiptDenied=false;try{await asUser('1','select * from postispop_private.board_import_requests')}catch{receiptDenied=true}assert(receiptDenied,'private idempotency receipts are inaccessible via user SQL');
 await db.exec(`select set_config('request.jwt.claim.sub','',false);set role authenticated`);let anonymousDenied=false;try{await db.query('select postispop_import_board($1,$2,$3)',[boardId(2),requestId(99),'[]'])}catch(e){anonymousDenied=e.message==='SESSION_REQUIRED'}finally{await db.exec('reset role')};assert(anonymousDenied,'RPC fails closed without an authenticated subject');
 await db.exec('set role anon');let anonExecuteDenied=false;try{await db.query('select postispop_import_board($1,$2,$3)',[boardId(2),requestId(99),'[]'])}catch(e){anonExecuteDenied=e.code==='42501'}finally{await db.exec('reset role')};assert(anonExecuteDenied,'anonymous role cannot execute import RPC');
+// A deliberately synthetic base for the new note lifecycle: the actual
+// deployment's seed triggers, constraints and purge jobs must still be reviewed
+// on a restored staging database. No production requests are made by this test.
+await db.exec(`
+ alter table boards alter column id set default gen_random_uuid();
+ alter table notes alter column id set default gen_random_uuid();
+ alter table notes alter column editing type uuid using editing::uuid;
+ alter table notes add column updated_at timestamptz default now();
+ create table public.board_members(board_id uuid references boards,user_id uuid references auth.users,primary key(board_id,user_id));
+ create table public.board_trials(user_id uuid primary key references auth.users,expires_at timestamptz);
+ create table postispop_private.note_trash(id uuid primary key default gen_random_uuid(),note_id uuid references notes,board_id uuid references boards,snapshot jsonb,expires_at timestamptz default now()+interval '30 days');
+ create table postispop_private.note_shares(id uuid primary key default gen_random_uuid(),note_id uuid references notes,created_by uuid references auth.users,token_hash text,revoked_at timestamptz,expires_at timestamptz default now()+interval '30 days');
+ grant usage on schema postispop_private to authenticated;
+ grant insert on public.boards,public.notes to authenticated;
+ create policy own_boards_insert on public.boards for insert to authenticated with check(owner_id=auth.uid());
+ create policy own_notes_insert on public.notes for insert to authenticated with check(author_id=auth.uid() and exists(select 1 from public.boards b where b.id=board_id and b.owner_id=auth.uid()));
+ create unique index fixture_note_positions on public.notes(board_id,position);
+`);
+const lifecycleSql=fs.readFileSync(new URL('../database/board-note-lifecycle.sql',import.meta.url),'utf8');await db.exec(lifecycleSql);
+const simpleSql=fs.readFileSync(new URL('../database/simple-note-limits.sql',import.meta.url),'utf8');await db.exec(simpleSql);await db.exec(simpleSql);
+const swapSql=fs.readFileSync(new URL('../database/board-swap.sql',import.meta.url),'utf8');await db.exec(swapSql);await db.exec(swapSql);
+await db.exec(`
+ create function public.postispop_add_board_note(p_board uuid)returns jsonb language sql security invoker set search_path='' as $$select postispop_private.add_board_note(p_board)$$;
+ revoke all on function public.postispop_add_board_note(uuid),postispop_private.add_board_note(uuid),postispop_private.board_access(uuid)from public,anon;
+ grant execute on function public.postispop_add_board_note(uuid),postispop_private.add_board_note(uuid),postispop_private.board_access(uuid)to authenticated;
+ drop policy own_notes_read on public.notes;
+ create policy visible_board_notes on public.notes for select to authenticated using(postispop_private.can_access_note(board_id,position));
+`);
+console.log('New limits/lifecycle/swap migrations applied on explicit synthetic base, not production');
+const rejectQuery=async(user,query,params,expected,label)=>{let error;try{await asUser(user,query,params)}catch(e){error=e}assert(error?.message===expected,label+' ('+(error?.message||'unexpected success')+')')};
+await db.query('insert into auth.users(id,email,email_confirmed_at)values($1,$2,now())',[userId(4),'free-fixture@example.invalid']);
+r=await asUser('4','insert into boards(owner_id)values($1)returning id',[userId(4)]);const freeBoard=r.rows[0].id;
+const addFree=()=>asUser('4','select postispop_add_board_note($1) as n',[freeBoard]);
+const six=[];for(let i=0;i<6;i++)six.push((await addFree()).rows[0].n);
+assert(six.length===6&&new Set(six.map(n=>n.id)).size===6,'free board accepts exactly six unique note identities');
+await rejectQuery('4','select postispop_add_board_note($1)',[freeBoard],'BOARD_FULL','seventh free note rejected by server function');
+await rejectQuery('4','insert into notes(board_id,author_id,position)values($1,$2,6)',[freeBoard,userId(4)],'NOTE_LIMIT_REACHED','direct insert cannot bypass six-note admission');
+await rejectQuery('4','insert into boards(owner_id)values($1)',[userId(4)],'BOARD_LIMIT_REACHED','free account cannot create a second owned board');
+await rejectQuery('2','select postispop_add_board_note($1)',[freeBoard],'OWNER_REQUIRED','verified application owner cannot add to someone else board');
+r=await asUser('2','select count(*) as n from notes where board_id=$1',[freeBoard]);assert(+r.rows[0].n===0,'new limits never expose another account notes to application owner');
+await asUser('4','update notes set text=$2 where id=$1',[six[0].id,'Contenido estable']);
+r=await asUser('4','select revision from boards where id=$1',[freeBoard]);const boardRevision=r.rows[0].revision;
+await asUser('4','select postispop_swap_board_notes($1,$2,$3,$4)',[freeBoard,six[0].id,six[1].id,boardRevision]);
+r=await asUser('4','select id,position,text from notes where id=$1',[six[0].id]);assert(r.rows[0].position===1&&r.rows[0].text==='Contenido estable','swap preserves content and works with an immediate unique position index');
+await rejectQuery('4','select postispop_swap_board_notes($1,$2,$3,$4)',[freeBoard,six[0].id,six[1].id,boardRevision],'CONFLICT','stale reorder cannot move notes');
+await rejectQuery('2','select postispop_swap_board_notes($1,$2,$3,$4)',[freeBoard,six[0].id,six[1].id,boardRevision+1],'OWNER_REQUIRED','foreign reorder rejected before revealing note contents');
+r=await asUser('4','select postispop_remove_board_note($1,1) as s',[six[0].id]);const removedId=r.rows[0].s.trashId;
+r=await asUser('4','select count(*) as n from notes where board_id=$1',[freeBoard]);assert(+r.rows[0].n===5,'archived note disappears from ordinary authorized reads');
+const replacement=(await addFree()).rows[0].n;assert(replacement.id!==six[0].id,'adding a new note never reuses a trashed identity');
+await rejectQuery('4','select postispop_restore_board_note($1)',[removedId],'BOARD_FULL','restore cannot create a seventh post-migration free note');
+await asUser('4','select postispop_remove_board_note($1,1)',[replacement.id]);
+await asUser('4','select postispop_restore_board_note($1)',[removedId]);
+r=await asUser('4','select text from notes where id=$1',[six[0].id]);assert(r.rows[0].text==='Contenido estable','restore recovers the same content after capacity is available');
+await db.query('update postispop_licenses set revoked_at=now()where user_id=$1',[userId(1)]);
+r=await asUser('1','select count(*) as n from notes where board_id=$1',[boardId(1)]);assert(+r.rows[0].n===12,'existing legacy notes remain visible above the free allowance');
+r=await asUser('1','select revision from notes where id=$1',[slotId(1,4)]);const oldRevision=r.rows[0].revision;
+r=await asUser('1','select postispop_remove_board_note($1,$2)as s',[slotId(1,4),oldRevision]);const legacyTrash=r.rows[0].s.trashId;
+await asUser('1','select postispop_restore_board_note($1)',[legacyTrash]);
+r=await asUser('1','select protected_envelope from notes where id=$1',[slotId(1,4)]);assert(r.rows[0].protected_envelope.ciphertext===envelope.ciphertext,'grandfathered encrypted note restores above six without content loss');
+await db.query(`insert into postispop_licenses(user_id,subject,expires_at,payment_reference)values($1,$2,now()+interval '1 day',$3)`,[userId(4),'premium','fixture-premium-four']);
+for(let i=6;i<13;i++)await addFree();
+await db.query(`update postispop_licenses set expires_at=now()-interval '1 day'where user_id=$1`,[userId(4)]);
+r=await asUser('4','select count(*) as n from notes where board_id=$1',[freeBoard]);assert(+r.rows[0].n===13,'Premium expiry keeps all existing notes visible');
+await rejectQuery('4','select postispop_add_board_note($1)',[freeBoard],'BOARD_FULL','expired Premium cannot add extra notes');
+await db.exec(simpleSql);r=await db.query('select count(*) as n from postispop_private.grandfathered_notes where board_id=$1',[freeBoard]);assert(+r.rows[0].n===0,'migration reapply never grandfathers new notes to bypass the allowance');
+console.log('PASS synthetic database integration; deployment schema and production remain unmodified');
 await db.close();

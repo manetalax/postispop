@@ -1,97 +1,76 @@
-const {browserOptions}=require('./browser-options.cjs');
-const {chromium}=require('playwright');
-const assert=require('node:assert/strict'),fs=require('node:fs/promises'),path=require('node:path');
-const root=path.resolve(process.env.POSTISPOP_TEST_ROOT||'.');
-const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.ttf':'font/ttf','.woff':'font/woff','.woff2':'font/woff2','.ico':'image/x-icon'};
-(async()=>{
- const {designs,instruments}=await import('../design-catalog.js'); const developed=designs.filter(d=>d.edition==='crafted').length;
- const browser=await chromium.launch(browserOptions());
- const context=await browser.newContext({viewport:{width:1440,height:1000},locale:'es-ES',serviceWorkers:'block'});
- const errors=[],missing=[];
- await context.route('**/*',async route=>{const u=new URL(route.request().url());if(u.hostname!=='postispop.com')return route.abort('internetdisconnected');let name=decodeURIComponent(u.pathname);if(name.endsWith('/'))name+='index.html';const file=path.resolve(root,'.'+name);if(!file.startsWith(root+path.sep))return route.abort();try{await route.fulfill({status:200,contentType:types[path.extname(file)]||'application/json',body:await fs.readFile(file)});}catch{missing.push(name);await route.fulfill({status:404,body:'Missing source asset'});}});
- const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
- try{
-  await page.goto('https://postispop.com/atelier.html');await page.waitForSelector('#at-grid article');
-  if(await page.getByRole('button',{name:'Rechazar',exact:true}).isVisible())await page.getByRole('button',{name:'Rechazar',exact:true}).click();
-  assert.equal(await page.locator('#at-grid article').count(),18);
-  assert.match(await page.locator('#at-count').innerText(),/298 colecciones/);
-  assert.equal(await page.locator('#at-owner-link').isHidden(),true);
-  await page.locator('#at-access').selectOption('reward');assert.match(await page.locator('#at-count').innerText(),/50 colecciones/);
-  await page.getByRole('button',{name:'Limpiar filtros',exact:true}).click();
-  await page.locator('#at-pack').selectOption('music');assert.equal(await page.locator('#at-grid article').count(),10);
-  await page.getByRole('button',{name:'Limpiar filtros',exact:true}).click();
-  await page.locator('#at-edition').selectOption('crafted');assert.equal(await page.locator('#at-grid article').count(),Math.min(18,developed));assert.match(await page.locator('#at-count').innerText(),new RegExp('^'+developed+' colecciones'));
-  await page.getByRole('button',{name:'Limpiar filtros',exact:true}).click();
-  await page.locator('#at-search').fill('Japón y papel');assert.equal(await page.locator('#at-grid article').count(),1);
-  const preview=page.getByRole('button',{name:'Ver Japón y papel washi',exact:true});await preview.click();
-  await page.waitForSelector('.at-preview[open]');assert.equal(await page.locator('.at-preview .at-board-image img').evaluate(i=>i.complete&&i.naturalWidth>0),true);
-  await page.keyboard.press('Escape');await page.waitForSelector('.at-preview',{state:'detached'});assert.equal(await preview.evaluate(el=>el===document.activeElement),true);
-  await page.locator('#at-search').fill('Bomberos');await page.getByRole('button',{name:'Ver Bomberos · guardias y equipo',exact:true}).click();
-  assert.match(await page.locator('.at-preview').innerText(),/Los textos son ejemplos/);
-  await page.evaluate(()=>{navigator.clipboard.writeText=async text=>{window.atCopied=text;};});
-  await page.getByText('Ideas para organizar esta pizarra',{exact:true}).click();await page.getByRole('button',{name:'Copiar Mi guardia',exact:true}).click();assert.match(await page.evaluate(()=>window.atCopied),/Mi guardia\nFecha/);
-  assert.match(await page.locator('.at-preview').innerText(),/todavía no se realizan cobros/);
-  await page.keyboard.press('Escape');await page.getByRole('button',{name:'Limpiar filtros',exact:true}).click();
-  const checkedCountry=designs.find(d=>d.kind==='country'&&d.edition==='foundation')||designs.find(d=>d.kind==='country');
-  await page.locator('#at-search').fill(checkedCountry.title);await page.getByRole('button',{name:'Ver '+checkedCountry.title,exact:true}).click();
-  assert.match(await page.locator('.at-preview').innerText(),checkedCountry.edition==='foundation'?/Edición en desarrollo/:/Edición cultural/);
-  await page.keyboard.press('Escape');
-  await page.locator('.at-shop-nav a[href="#herramientas"]').click();
-  await page.getByRole('button',{name:'Explorar Tu trazo, tu estilo',exact:true}).click();assert.equal(await page.locator('.at-preview .at-stroke-sample').count(),0);assert.equal(await page.locator('.at-trial-surface canvas').count(),1);
-  assert.equal(await page.getByLabel('Texto de prueba',{exact:true}).isVisible(),false);
-  const trialCanvas=page.getByLabel('Dibujo de prueba',{exact:true});
-  const blank=await trialCanvas.evaluate(c=>c.toDataURL());
-  await trialCanvas.evaluate(c=>{const r=c.getBoundingClientRect();c.setPointerCapture=()=>{};c.hasPointerCapture=()=>true;c.releasePointerCapture=()=>{};for(const [type,x] of [['pointerdown',.2],['pointermove',.5],['pointerup',.6]])c.dispatchEvent(new PointerEvent(type,{pointerId:2,pointerType:'touch',button:0,clientX:r.left+r.width*x,clientY:r.top+r.height*.5,bubbles:true}));});
-  assert.notEqual(await trialCanvas.evaluate(c=>c.toDataURL()),blank);
-  await page.getByRole('button',{name:'Borrar prueba',exact:true}).click();assert.equal(await trialCanvas.evaluate(c=>c.toDataURL()),blank);
-  await page.setViewportSize({width:360,height:800});assert.equal(await page.locator('.at-preview').evaluate(el=>el.scrollWidth<=el.clientWidth+1),true);await page.screenshot({path:'test-results/atelier-trial-mobile.png'});await page.setViewportSize({width:1440,height:1000});
-  await page.keyboard.press('Escape');
-  await page.getByRole('button',{name:'Explorar Letras con personalidad',exact:true}).click();
-  const beforeTrial=await page.evaluate(()=>JSON.stringify({...localStorage}));
-  await page.getByLabel('Texto de prueba',{exact:true}).fill('PRUEBA QUE NO DEBE GUARDARSE');
-  await page.getByLabel('Instrumento de prueba',{exact:true}).selectOption('chalk');
-  await page.getByLabel('Papel de prueba',{exact:true}).selectOption('papyrus');
-  assert.equal(await page.evaluate(()=>JSON.stringify({...localStorage})),beforeTrial);
-  await page.getByRole('button',{name:'Cerrar y descartar prueba',exact:true}).click();
-  await page.getByRole('button',{name:'Explorar Letras con personalidad',exact:true}).click();
-  assert.equal(await page.getByLabel('Texto de prueba',{exact:true}).inputValue(),'');
-  await page.getByLabel('Letra de prueba',{exact:true}).selectOption('hand');await page.getByLabel('Texto de prueba',{exact:true}).fill('Prueba de letra');
-  await page.evaluate(()=>document.fonts.ready);assert.equal(await page.locator('.at-preview .at-font-sample').count(),0);
-  assert.equal(await page.evaluate(()=>document.fonts.check('16px "PP Manuscrita"')),true);await page.keyboard.press('Escape');
-  await page.locator('.at-shop-nav a[href="#colecciones"]').click();
-  await page.getByRole('button',{name:'Limpiar filtros',exact:true}).click();
-  await page.locator('.at-cart-add').first().click();
-  await page.locator('#at-cart-link').click();
-  assert.match(await page.locator('#at-cart-total').innerText(),/0,95/);
-  await page.locator('#colecciones').waitFor({state:'hidden'});
-  await page.locator('#at-cart-items button').click();
-  assert.match(await page.locator('#at-cart-total').innerText(),/0,00/);
-  await page.locator('.at-shop-nav a[href="#planes"]').click();
-  assert.match(await page.locator('#planes').innerText(),/2,95 € \/ mes/);
-  await page.locator('.at-shop-nav a[href="#colecciones"]').click();
-  await fs.mkdir('test-results',{recursive:true});
-  for(const width of [360,390,768,1440]){await page.setViewportSize({width,height:1000});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,'Root overflow at '+width);}
-  await page.screenshot({path:'test-results/atelier-verified-desktop.png',fullPage:false});
-  await page.locator('#at-search').fill('Consulta médica');await page.getByRole('button',{name:'Ver Consulta médica',exact:true}).click();
-  await page.setViewportSize({width:360,height:800});assert.equal(await page.locator('.at-preview').evaluate(el=>el.scrollWidth<=el.clientWidth+1),true);await page.screenshot({path:'test-results/atelier-verified-mobile.png'});
-  await page.keyboard.press('Escape');
-  await page.locator('.at-shop-nav a[href="/premios.html"]').click();
-  await page.locator('#at-prize-cards').waitFor({state:'visible'});
-  assert.equal(await page.locator('#at-roulette-spin').isDisabled(),true);
-  await page.waitForFunction(()=>document.querySelector('#at-roulette-status').textContent.includes('Inicia sesión'));
-  assert.match(page.url(),/premios\.html/);
-  assert.equal(await page.getByRole('link',{name:'Consultar condiciones de la ruleta'}).getAttribute('href'),'/terms.html');
-  assert.doesNotMatch(await page.locator('#at-roulette').innerText(),/1 entre/);
-  await page.waitForFunction(()=>[...document.querySelectorAll('.prize-logo')].every(i=>i.complete&&i.naturalWidth>0));
-  assert.equal(await page.locator('.prize-logo').count(),6);
-  await page.locator('#at-prize-cards').screenshot({path:'test-results/prize-brands.png'});
-  await page.setContent('<link rel="stylesheet" href="/commerce.css"><main>Mi pizarra</main>');
-  await page.addScriptTag({type:'module',url:'https://postispop.com/home-promo.js'});
-  await page.locator('.pp-launch-promo').waitFor();
-  await page.waitForFunction(()=>[...document.querySelectorAll('.pp-promo-brands img')].every(i=>i.complete&&i.naturalWidth>0));
-  for(const width of [360,768,1440]){await page.setViewportSize({width,height:900});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);}
-  await page.locator('.pp-launch-promo').screenshot({path:'test-results/home-promo.png'});
-  assert.deepEqual(errors,[]);assert.deepEqual([...new Set(missing)],[]);
-  console.log('PASS: 298 catalogue, 50 rewards, developed editions, pack/search filters, exact papers, dialog focus, shared finger drawing surface, selected local fonts, 4 responsive widths and truthful country/purchase status.');
- }finally{await browser.close();}
-})().catch(e=>{console.error(e);process.exit(1)});
+const { browserOptions } = require('./browser-options.cjs');
+const { chromium } = require('playwright');
+const assert = require('node:assert/strict');
+const fs = require('node:fs/promises');
+const path = require('node:path');
+
+const root = path.resolve(process.env.POSTISPOP_TEST_ROOT || '.');
+const types = {
+  '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css',
+  '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png',
+  '.webp': 'image/webp', '.ico': 'image/x-icon'
+};
+
+(async () => {
+  const browser = await chromium.launch(browserOptions());
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'es-ES', serviceWorkers: 'block' });
+  const errors = [];
+  const missing = [];
+  const paymentRequests = [];
+  await context.route('**/*', async route => {
+    const url = new URL(route.request().url());
+    if (/checkout|stripe|commerce\//.test(url.href)) paymentRequests.push(url.pathname);
+    if (url.hostname !== 'postispop.com') return route.abort('internetdisconnected');
+    let name = decodeURIComponent(url.pathname);
+    if (name.endsWith('/')) name += 'index.html';
+    const file = path.resolve(root, '.' + name);
+    if (!file.startsWith(root + path.sep)) return route.abort();
+    try {
+      await route.fulfill({ status: 200, contentType: types[path.extname(file)] || 'application/octet-stream', body: await fs.readFile(file) });
+    } catch {
+      missing.push(name);
+      await route.fulfill({ status: 404, body: 'Missing source asset' });
+    }
+  });
+  const page = await context.newPage();
+  page.on('pageerror', error => errors.push(error.message));
+  try {
+    await page.goto('https://postispop.com/atelier.html');
+    await page.waitForSelector('.payment-options');
+    assert.equal(await page.locator('h1').count(), 1);
+    assert.equal(await page.locator('.payment-option').count(), 3);
+    assert.equal(await page.locator('.payment-option button:disabled').count(), 3);
+    assert.deepEqual(await page.locator('.payment-option h3').allTextContents(), ['Mensual', 'Anual', 'De por vida']);
+    assert.deepEqual((await page.locator('.price').allTextContents()).map(value => value.trim()), ['2,95 €', '9,95 €', '59,95 €']);
+    assert.match(await page.locator('.free-plan').innerText(), /6 notas/);
+    assert.match(await page.locator('.purchase-status').innerText(), /No se realizará ningún cobro/);
+    assert.equal(await page.locator('#at-grid, #at-cart, #at-roulette, .pp-launch-promo').count(), 0);
+    assert.equal(await page.locator('.start-link').getAttribute('href'), '/');
+    await fs.mkdir('test-results', { recursive: true });
+    for (const width of [320, 360, 390, 768, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false, 'Overflow at ' + width);
+      assert.equal(await page.locator('.payment-option').evaluateAll(elements => elements.every(element => element.scrollWidth <= element.clientWidth + 1)), true, 'Price card overflow at ' + width);
+    }
+    await page.getByText('¿Hay diferentes niveles Premium?', { exact: true }).click();
+    assert.match(await page.locator('details[open]').innerText(), /mismo Premium/);
+    await page.getByText('¿Qué ocurre con mis compras anteriores?', { exact: true }).click();
+    assert.match(await page.locator('details[open]').last().innerText(), /se conservan/);
+    await page.screenshot({ path: 'test-results/premium-offer-desktop.png', fullPage: true });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.screenshot({ path: 'test-results/premium-offer-mobile.png', fullPage: true });
+    await page.reload();
+    assert.equal(await page.locator('.payment-option button:disabled').count(), 3);
+    // Old offline HTML must not revive the catalogue or loop through redirects.
+    await page.setContent('<main id="at-grid">Catálogo antiguo</main>');
+    await page.addScriptTag({ type: 'module', url: 'https://postispop.com/atelier.js' });
+    await page.waitForSelector('.payment-options');
+    assert.equal(await page.locator('#at-grid').count(), 0);
+    assert.equal(await page.locator('.payment-option button:disabled').count(), 3);
+    assert.match(await page.locator('body').innerText(), /6 notas gratis/);
+    assert.deepEqual(paymentRequests, [], 'Pricing must never contact a payment endpoint');
+    assert.deepEqual(errors, []);
+    assert.deepEqual(missing, []);
+    console.log('PASS: one Premium, exact EUR prices, six free notes, disabled purchases, useful links, six responsive widths and no payment requests.');
+  } finally { await browser.close(); }
+})().catch(error => { console.error(error); process.exitCode = 1; });

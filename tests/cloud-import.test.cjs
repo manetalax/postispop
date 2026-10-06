@@ -37,7 +37,7 @@ test('Old empty-array drawing styles and image-only notes survive backup normali
   const result=normalizeBackup({notes:[{text:'',image:{url:'https://example.org/photo.png'},style:{drawing:[]}},{text:' '}]});
   assert.equal(result.notes.length,2);assert.deepEqual(result.notes[0].style.drawing.strokes,[]);assert.equal(result.notes[1].text,' ');
 });
-async function setup({rpc,owner=USER,pending=0,slots}={}){
+async function setup({rpc,owner=USER,pending=0,slots,restoreAttachments}={}){
   const sync=await import('../offline-sync.js'),imports=await import('../backup-import.js'),storage=disk(),calls=[];
   storage.setItem(SESSION,JSON.stringify({access_token:'test',user:{id:USER},expires_at:Math.floor(Date.now()/1000)+3600}));
   const navigator={onLine:true},window={addEventListener:()=>{},dispatchEvent:()=>{},fetch:async(url,options={})=>{
@@ -49,7 +49,7 @@ async function setup({rpc,owner=USER,pending=0,slots}={}){
     throw Error('Unexpected request '+url);
   }};
   const context=vm.createContext({window,navigator,localStorage:storage,location:{origin:'https://postispop.com',href:'https://postispop.com/'},Response,URL,URLSearchParams,AbortController,TypeError,Date,JSON,crypto,encodeURIComponent,setTimeout,clearTimeout,console,
-    guestRequest:()=>null,readGuest:()=>({}),...sync,...imports,withImportSlots:async(ids,work)=>slots?slots(ids,work,storage):work([NOTE]),
+    guestRequest:()=>null,readGuest:()=>({}),...sync,...imports,withImportSlots:async(ids,work)=>slots?slots(ids,work,storage):work([NOTE]),restoreBackupAttachments:async(notes,noteIds,options)=>restoreAttachments?restoreAttachments(notes,noteIds,options,storage):imports.restoreBackupAttachments(notes,noteIds,options),
     createOfflineStore:s=>{const off=sync.createOfflineStore(s);return {...off,status:()=>({pending,conflicts:0})};},installOfflineUI:()=>{},getOfflineRights:async()=>null,saveOfflineReceipt:async()=>false});
   vm.runInContext(fs.readFileSync('supabase-bridge.js','utf8').replace(/^import .*\n/gm,''),context);
   const request=async(data=backup())=>{const r=await window.fetch('/api/board/'+BOARD+'/import',{method:'POST',body:JSON.stringify(data)});return{status:r.status,data:await r.json()};};
@@ -74,4 +74,47 @@ test('Wrong owner, pending sync, offline, malformed backup and missing migration
 test('Account switch while acquiring local locks prevents the cloud mutation',async()=>{
   const app=await setup({slots:async(ids,work,storage)=>{storage.setItem(SESSION,JSON.stringify({access_token:'other',user:{id:'other'}}));return work([]);}});
   assert.equal((await app.request()).data.error,'SESSION_CHANGED');assert.equal(app.calls.filter(c=>c.options.method==='POST').length,0);
+});
+
+const attachmentBackup=()=>({format:'postispop',version:2,notes:[{text:'',attachments:[{kind:'link',name:'Documento',url:'https://example.org/doc',created:1}]}]});
+test('Cloud backup keeps attachment data local and finishes only after it is restored',async()=>{
+  let sent,restored=false;
+  const app=await setup({rpc:payload=>{sent=payload;return Response.json({ok:true,noteIds:[NOTE]});},restoreAttachments:async(notes,ids,{validate},storage)=>{
+    await validate();assert.equal(notes[0].attachments[0].url,'https://example.org/doc');assert.deepEqual(Array.from(ids),[NOTE]);
+    assert.equal(JSON.parse([...storage.map].find(([key])=>key.startsWith('pp:import-request:'))[1]).finishedAt,undefined);
+    restored=true;return {rollback:async()=>assert.fail('Successful restore must not rollback')};
+  }});
+  assert.equal((await app.request(attachmentBackup())).status,200);assert.equal(restored,true);
+  assert.equal(sent.p_notes[0].text,'📎 Adjuntos');assert.equal(sent.p_notes[0].attachments,undefined);
+  assert.ok(!JSON.stringify(sent).includes('https://example.org/doc'));
+  assert.ok(JSON.parse([...app.storage.map].find(([key])=>key.startsWith('pp:import-request:'))[1]).finishedAt);
+});
+test('Cloud disk failure keeps the ticket pending and retries the same committed note mapping',async()=>{
+  const ids=[];let restores=0;
+  const app=await setup({rpc:payload=>{ids.push(payload.p_request_id);return Response.json({ok:true,replayed:ids.length>1,noteIds:[NOTE]});},restoreAttachments:async(notes,noteIds,{validate})=>{
+    await validate();assert.deepEqual(Array.from(noteIds),[NOTE]);if(++restores===1)throw Error('ATTACHMENT_RESTORE_FAILED');return {rollback:async()=>{}};
+  }});
+  assert.equal((await app.request(attachmentBackup())).data.error,'ATTACHMENT_RESTORE_FAILED');
+  assert.equal(JSON.parse([...app.storage.map].find(([key])=>key.startsWith('pp:import-request:'))[1]).finishedAt,undefined);
+  assert.equal((await app.request(attachmentBackup())).data.replayed,true);assert.equal(ids[0],ids[1]);
+});
+test('Account change during attachment restore rolls back only local rows and leaves cloud retry pending',async()=>{
+  let rolledBack=0;
+  const app=await setup({restoreAttachments:async(notes,ids,{validate},storage)=>{await validate();storage.setItem(SESSION,JSON.stringify({access_token:'other',user:{id:'other'}}));return {rollback:async()=>rolledBack++};}});
+  assert.equal((await app.request(attachmentBackup())).data.error,'SESSION_CHANGED');assert.equal(rolledBack,1);
+  assert.equal(JSON.parse([...app.storage.map].find(([key])=>key.startsWith('pp:import-request:'))[1]).finishedAt,undefined);
+  assert.equal(app.calls.filter(call=>call.options.method==='DELETE').length,0,'The already committed cloud notes must remain recoverable');
+});
+test('A server slot created after the lock snapshot requires a safe retry before local file writes',async()=>{
+  let restored=false;
+  const app=await setup({rpc:()=>Response.json({ok:true,noteIds:['44444444-4444-4444-8444-444444444444']}),restoreAttachments:async()=>{restored=true;return {rollback:async()=>{}};}});
+  assert.equal((await app.request(attachmentBackup())).data.error,'IMPORT_RETRY_REQUIRED');assert.equal(restored,false);
+  assert.equal(JSON.parse([...app.storage.map].find(([key])=>key.startsWith('pp:import-request:'))[1]).finishedAt,undefined);
+});
+
+test('A corrupted attachment digest is rejected before any cloud import mutation',async()=>{
+  const data={version:2,notes:[{text:'No importar',attachments:[{kind:'file',name:'prueba.txt',type:'text/plain',size:1,data:'YQ',sha256:'0'.repeat(64),created:1}]}]};
+  const app=await setup();assert.equal((await app.request(data)).data.error,'ATTACHMENT_INTEGRITY');
+  assert.equal(app.calls.filter(call=>call.options.method==='POST').length,0);
+  assert.equal([...app.storage.map.keys()].some(key=>key.startsWith('pp:import-request:')),false);
 });

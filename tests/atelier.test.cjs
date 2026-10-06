@@ -43,12 +43,38 @@ test('every country embeds its real flag and declares its current cultural editi
     if(d.edition==='crafted'){assert.ok(d.illustratedLandmark&&d.illustratedFood);assert.ok(d.landmark.verified&&d.food.verified);}
   }
 });
-test('store has no invented pricing or new payment endpoint',()=>{
+test('public offer has only Gratis and one Premium, with no payment activation',()=>{
+  const html=fs.readFileSync(new URL('../atelier.html',`file://${__filename}`),'utf8');
   const source=fs.readFileSync(new URL('../atelier.js',`file://${__filename}`),'utf8');
-  assert.ok(!/checkout|stripe|paypal|create-payment/.test(source));
-  assert.ok(source.includes('drawStrokes'),'Pen samples reuse the editor drawing engine');
-  assert.ok(source.includes('rights?.owner'),'Owner-only link is driven by server rights');
-  assert.ok(source.includes("action.disabled = signedIn"),'No purchase is faked');
+  assert.match(html,/<strong>6 notas\.<\/strong>/);
+  for(const amount of ['2,95','9,95','59,95']) assert.ok(html.includes(amount));
+  assert.equal((html.match(/<button\b/g)||[]).length,3);
+  assert.equal((html.match(/type="button" disabled/g)||[]).length,3);
+  assert.ok(!/checkout|stripe|paypal|create-payment|fetch\(/i.test(source));
+  assert.ok(!/<script\b|at-grid|at-cart|at-roulette/.test(html));
+  assert.ok(!/0,95|30 días|7 notas|100 notas ilimitadas/.test(html));
+});
+
+test('legacy commerce URLs retire their offers without breaking inbound links',()=>{
+  const redirect=fs.readFileSync('src/layouts/Layout.astro','utf8');
+  assert.match(redirect,/noindex, follow/);
+  assert.match(redirect,/http-equiv="refresh"/);
+  assert.match(redirect,/href=\{destination\}/);
+  assert.ok(!/schema.org\/InStock|checkoutUrl|wishlist/.test(redirect));
+  const rewards=fs.readFileSync('premios.html','utf8');
+  assert.match(rewards,/noindex, follow/);
+  assert.match(rewards,/content="0; url=\/"/);
+  assert.ok(!/roulette|ruleta|premio|<button|<script/.test(rewards));
+});
+
+test('current product rules preserve data and make every new payment unavailable',()=>{
+  const rules=JSON.parse(fs.readFileSync('product-rules.json','utf8'));
+  assert.equal(rules.notes.free_limit,6);
+  assert.equal(rules.notes.free_notes_expire,false);
+  assert.equal(rules.billing.checkout_enabled,false);
+  assert.equal(rules.billing.legacy_entitlements_preserved,true);
+  assert.deepEqual([rules.billing.monthly_cents,rules.billing.annual_cents,rules.billing.lifetime_cents],[295,995,5995]);
+  assert.equal(rules.public_catalogue.individual_tool_sales,false);
 });
 
 test('all 100 initial themes have their own developed compositions and six practical note templates',()=>{

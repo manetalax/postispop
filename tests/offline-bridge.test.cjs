@@ -12,6 +12,7 @@ async function setup({storage=disk(),before}={}){
   calls.push({url,options});if(!navigator.onLine)throw new TypeError('Network unreachable');if(before){const response=await before(url,options);if(response)return response;}
   if(url.includes('/auth/v1/user')){const id=options.headers.Authorization.slice(-1);return Response.json({id,email:id+'@example.test'});}
   if(url.includes('/auth/v1/logout'))return new Response(null,{status:204});
+  if(url.includes('/rpc/postispop_has_license'))return Response.json(false);
   if(url.includes('/rest/v1/boards'))return Response.json([{id:'board-a',owner_id:'A',title:'A private board',revision:1}]);
   if(url.includes('/rest/v1/board_members'))return Response.json([]);
   if(url.includes('/rest/v1/notes')){
@@ -43,4 +44,64 @@ test('Cached authenticated offline logout clears credentials and never exposes t
 test('A board response started in account A is discarded after account B replaces the session',async()=>{
  const started=deferred(),delayed=deferred();const app=await setup({before:async(url)=>{if(url.includes('/rest/v1/boards')){started.resolve();return delayed.promise;}}});
  const pending=app.request('board/board-a');await started.promise;app.storage.setItem(SESSION,JSON.stringify(saved('B')));delayed.resolve(Response.json([{id:'board-a',owner_id:'A',title:'Private A'}]));const response=await pending;assert.equal(response.status,401);assert.equal(response.data.error,'SESSION_CHANGED');assert.equal(app.storage.getItem('postispop:offline:v1:B:cache:board/board-a'),null);
+});
+
+test('Both storefront endpoints show only the three Premium choices with no checkout',async()=>{
+ const app=await setup();
+ for(const endpoint of ['commerce/catalog','store/products']){
+  const result=await app.request(endpoint);assert.equal(result.status,200);assert.equal(result.data.checkoutReady,false);
+  assert.deepEqual(result.data.products.map(p=>p.slug),['premium-monthly','premium-yearly','premium-lifetime']);
+  assert.deepEqual(result.data.products.map(p=>p.price_cents),[295,995,5995]);
+  assert.ok(result.data.products.every(p=>p.currency==='eur'&&p.stripe_payment_link===null));
+ }
+ for(const endpoint of ['commerce/checkout','commerce/portal','commerce/buy']){
+  const result=await app.request(endpoint,{product:'premium-lifetime'});assert.equal(result.status,503);assert.equal(result.data.error,'COMING_SOON');
+ }
+ assert.equal(app.calls.filter(c=>c.url.includes('/functions/v1/')).length,0);
+});
+
+test('Cloud board creation seeds exactly six notes',async()=>{
+ let inserted;
+ const app=await setup({before:async(url,options)=>{
+  if(url.includes('/rest/v1/boards?owner_id='))return Response.json([]);
+  if(url.includes('/rest/v1/notes')&&options.method==='POST'){inserted=JSON.parse(options.body);return new Response(null,{status:204});}
+ }});
+ assert.equal((await app.request('boards',{})).status,200);
+ assert.equal(inserted.length,6);assert.deepEqual(inserted.map(n=>n.position),[0,1,2,3,4,5]);
+});
+
+test('Cloud reordering uses one atomic RPC and fails closed when its migration is absent',async()=>{
+ let payload;
+ const app=await setup({before:async(url,options)=>{
+  if(url.includes('/rpc/postispop_swap_board_notes')){payload=JSON.parse(options.body);return Response.json({board_id:'board-a'});}
+ }});
+ assert.equal((await app.request('board/board-a/swap',{from:'note-a',to:'note-b',revision:1})).status,200);
+ assert.deepEqual(payload,{p_board:'board-a',p_from:'note-a',p_to:'note-b',p_revision:1});
+ assert.equal(app.calls.filter(c=>c.options.method==='POST').length,1);assert.equal(app.calls.filter(c=>c.options.method==='PATCH').length,0);
+ const missing=await setup({before:async url=>url.includes('/rpc/postispop_swap_board_notes')?Response.json({code:'PGRST202'},{status:404}):null});
+ const result=await missing.request('board/board-a/swap',{from:'note-a',to:'note-b',revision:1});assert.equal(result.status,503);assert.equal(result.data.error,'REORDER_UNAVAILABLE');
+ assert.equal(missing.calls.filter(c=>c.options.method==='PATCH').length,0);
+});
+
+
+test('Free accounts cannot multiply their allowance by creating more boards or faking local Premium',async()=>{
+ const app=await setup();app.storage.setItem('postispop-premium','true');
+ const result=await app.request('boards',{});assert.equal(result.status,409);assert.equal(result.data.error,'BOARD_LIMIT_REACHED');
+ assert.equal(app.calls.filter(c=>c.options.method==='POST'&&!c.url.includes('/rpc/postispop_has_license')).length,0);
+});
+
+test('Verified Premium can create another board with twelve initial notes',async()=>{
+ let inserted;
+ const app=await setup({before:async(url,options)=>{
+  if(url.includes('/rpc/postispop_has_license'))return Response.json(true);
+  if(url.includes('/rest/v1/notes')&&options.method==='POST'){inserted=JSON.parse(options.body);return new Response(null,{status:204});}
+ }});
+ assert.equal((await app.request('boards',{})).status,200);assert.equal(inserted.length,12);
+});
+
+
+test('An older cloud backend cannot add a seventh free note through the client',async()=>{
+ const app=await setup({before:async url=>url.includes('/rest/v1/notes')?Response.json(Array.from({length:6},(_,i)=>({id:'note-'+i}))):null});
+ const result=await app.request('board/board-a/notes',{});assert.equal(result.status,409);assert.equal(result.data.error,'BOARD_FULL');
+ assert.equal(app.calls.some(call=>call.url.includes('/rpc/postispop_add_board_note')),false);
 });

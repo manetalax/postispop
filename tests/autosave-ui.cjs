@@ -11,6 +11,7 @@ const fs=require('node:fs/promises'),path=require('node:path');
  const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));page.on('dialog',d=>{dialogs.push(d.type());d.dismiss();});
  try{
   await page.goto('https://postispop.com/');await page.waitForSelector('.sticky-note:not([disabled])');
+  assert.equal(await page.locator('.sticky-note').count(),6,'Free starts with six notes');
   for(const mode of ['Escape','outside','back']){
    await page.locator('.sticky-note').first().click();await page.waitForSelector('.pp-design-tools');
    assert.equal(await page.locator('.edit-paper .pen-tray').count(),1);
@@ -18,7 +19,7 @@ const fs=require('node:fs/promises'),path=require('node:path');
    assert.equal(await page.locator('.editor-actions').getByRole('button',{name:'Listo',exact:true}).count(),0);
    const text='Último cambio '+mode;
    await page.locator('.editor-dialog textarea').fill(text);
-   await page.getByText('Papeles, letras y trazos',{exact:true}).click();
+   await page.getByLabel('Más herramientas',{exact:true}).click();
    await page.getByRole('button',{name:'Cursiva',exact:true}).click();
    if(mode==='Escape')await page.keyboard.press('Escape');
    if(mode==='outside')await page.mouse.click(5,5);
