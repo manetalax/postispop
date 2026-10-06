@@ -5,6 +5,7 @@ import { dirname, resolve, relative } from 'node:path';
 // Required public features. A missing source fails packaging instead of silently
 // producing an APK with the previous version of the application.
 export const publicFiles = [
+  'seo-language.js',
   'editor-catalog.js', 'ui-ready.js', 'auth-pkce.js', 'workspace.css', 'index.html', 'instalar.html', 'install-page.js', 'manifest.json', 'manifest.webmanifest',
   'robots.txt', 'sitemap.xml', 'CNAME', 'favicon.svg', 'favicon.ico',
   'privacy.html', 'terms.html', 'legal.html', 'cookies.html',
