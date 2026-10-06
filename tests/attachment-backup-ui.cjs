@@ -20,7 +20,16 @@ test('Real guest UI downloads and restores attachments offline without replacing
     if(!file.startsWith(base+path.sep))return route.abort();
     try{await route.fulfill({body:await fs.readFile(file),contentType:types[path.extname(file)]||'application/octet-stream'});}catch{await route.fulfill({status:404,body:''});}
   });
-  await context.addInitScript(()=>localStorage.setItem('pp:analytics-consent-v2','no'));
+  await context.addInitScript(()=>{
+    localStorage.setItem('pp:analytics-consent-v2','no');
+    // Keep mobile-entry.js real when testing the Android package. Only the
+    // native file picker/transport is simulated in this Chromium test.
+    window.savedNativeDownloads=[];
+    window.PostisPopFiles={postMessage(value){
+      const payload=JSON.parse(value);window.savedNativeDownloads.push(payload);
+      queueMicrotask(()=>this.onmessage?.({data:JSON.stringify({id:payload.id,status:'saved'})}));
+    }};
+  });
   page.on('pageerror',error=>errors.push(error.message));
   try{
     const response=await page.goto('https://postispop.com/');assert.equal(response.status(),200,'the staged app must exist; run stage-site or package-mobile before this integration test');await page.waitForSelector('.sticky-note:not([disabled])');
@@ -29,7 +38,20 @@ test('Real guest UI downloads and restores attachments offline without replacing
     const fileBytes=Buffer.from([37,80,68,70,45,49,46,52,10,0,255,128,64]);
     await page.locator('.pp-file-action input').setInputFiles({name:'Archivo.pdf',mimeType:'application/pdf',buffer:fileBytes});
     await page.waitForSelector('.pp-attachment-card');await page.keyboard.press('Escape');await page.waitForSelector('.editor-dialog',{state:'detached'});
-    const ready=page.waitForEvent('download');await page.keyboard.press('Control+Shift+E');const exported=await ready,backupText=await fs.readFile(await exported.path(),'utf8');
+    let backupText;
+    if(await page.evaluate(()=>window.__postispopNative===true)){
+      const downloads=[],listener=download=>downloads.push(download);page.on('download',listener);
+      try{
+        await page.keyboard.press('Control+Shift+E');
+        await page.waitForFunction(()=>window.savedNativeDownloads.length===1&&document.querySelector('.pp-search-status')?.textContent.startsWith('Copia completa descargada:'));
+        const saved=await page.evaluate(()=>window.savedNativeDownloads[0]);
+        assert.equal(saved.filename,'PostisPop-copia.json');assert.match(saved.dataUrl,/^data:application\/json;base64,/);
+        assert.equal(downloads.length,0,'The packaged Android bridge must use native file saving');
+        backupText=Buffer.from(saved.dataUrl.slice(saved.dataUrl.indexOf(',')+1),'base64').toString('utf8');
+      }finally{page.off('download',listener);}
+    }else{
+      const ready=page.waitForEvent('download');await page.keyboard.press('Control+Shift+E');const exported=await ready;backupText=await fs.readFile(await exported.path(),'utf8');
+    }
     const backup=JSON.parse(backupText);assert.equal(backup.version,2);assert.equal(backup.notes[0].attachments[0].name,'Archivo.pdf');
     await page.evaluate(async()=>{
       localStorage.clear();localStorage.setItem('pp:analytics-consent-v2','no');
