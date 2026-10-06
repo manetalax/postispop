@@ -22,6 +22,9 @@ if (!sdk && !process.env.POSTISPOP_APKSIGNER) throw new Error('ANDROID_HOME or P
 const signer = process.env.POSTISPOP_APKSIGNER || resolve(sdk,'build-tools/36.0.0/apksigner');
 const apk = resolve(root,'android/app/build/outputs/apk/release/app-release.apk');
 await stat(apk);
+// Verify the physical archive before certificate checks and export. A successful
+// pre-build bundle audit cannot detect Android dropping underscore directories.
+run('python3', ['android/verify-archive.py', apk]);
 const verification = run(signer,['verify','--verbose','--print-certs',apk],true);
 const fingerprint = verification.match(/certificate SHA-256 digest:\s*([a-f0-9]+)/i)?.[1];
 if (!fingerprint) throw new Error('APK certificate not verified. No installer exported.');
@@ -29,14 +32,14 @@ const expected = process.env.POSTISPOP_CERT_SHA256?.replaceAll(':','').toLowerCa
 if (expected && fingerprint.toLowerCase() !== expected) throw new Error('APK certificate differs from the expected existing identity. No installer exported.');
 const target = resolve(root,'android/app/build/verified');
 await mkdir(target,{recursive:true});
-const name = 'PostisPop-0.4.0-release-signed.apk';
+const name = 'PostisPop-0.5.0-release-signed.apk';
 await cp(apk,resolve(target,name));
 const bytes = await readFile(apk);
 const bundle = JSON.parse(await readFile(resolve(root,'android/app/src/main/assets/www/bundle-manifest.json'),'utf8'));
 await writeFile(resolve(target,'verification.json'),JSON.stringify({
-  file:name,applicationId:'com.postispop.android',version:'0.4.0',versionCode:4,
+  file:name,applicationId:'com.postispop.android',version:'0.5.0',versionCode:5,
   bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex'),
   certificateSha256:fingerprint,bundledContentHash:bundle.contentHash,
-  signatureVerified:true,physicalInstallationTested:false,published:false,
+  bundledPayloadVerified:true,signatureVerified:true,physicalInstallationTested:false,published:false,
 },null,2)+'\n');
 console.log(`Verified signed APK exported to ${target}. Physical installation has not been tested.`);

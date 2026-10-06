@@ -5,13 +5,13 @@ import { dirname, resolve, relative } from 'node:path';
 // Required public features. A missing source fails packaging instead of silently
 // producing an APK with the previous version of the application.
 export const publicFiles = [
-  'index.html', 'instalar.html', 'install-page.js', 'manifest.json', 'manifest.webmanifest',
+  'editor-catalog.js', 'ui-ready.js', 'auth-pkce.js', 'workspace.css', 'index.html', 'instalar.html', 'install-page.js', 'manifest.json', 'manifest.webmanifest',
   'robots.txt', 'sitemap.xml', 'CNAME', 'favicon.svg', 'favicon.ico',
   'privacy.html', 'terms.html', 'legal.html', 'cookies.html',
-  'postispop-shop.js', 'commerce-ui.js', 'home-promo.js', 'commerce.css', 'supabase-bridge.js', 'supabase-config.js',
+  'postispop-shop.js', 'commerce-ui.js', 'commerce.css', 'supabase-bridge.js', 'supabase-config.js',
   'guest-board.js', 'guest-status.js', 'note-attachments.js', 'note-attachments.css',
   'board-layout.js', 'board-view-model.js', 'daily-quote-model.js', 'experience-content.js', 'experience.css', 'experience.js', 'usage-metrics.js', 'board-tools.js', 'backup-import.js',
-  'search.js', 'search-index.json', 'premios.html', 'site-metrics.js', 'atelier.html', 'atelier.js', 'atelier.css', 'design-catalog.js',
+  'search.js', 'search-index.json', 'premios.html', 'site-metrics.js', 'atelier.html', 'atelier.js', 'atelier.css',
   'design-tools.js', 'design-tools.css', 'style-model.js', 'fonts.css',
   'note-crypto.js', 'protected-notes.js', 'protected-notes.css', 'protected-share.js', 'compartir.html', 'attachment-lock.js',
   'offline-sync.js', 'offline-ui.js', 'offline-ui.css', 'offline-license.js', 'license-public-keys.json', 'propietario.html', 'owner-dashboard.js', 'owner-dashboard.css',
