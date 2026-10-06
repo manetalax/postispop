@@ -128,6 +128,7 @@ await db.exec('set role anon');let anonExecuteDenied=false;try{await db.query('s
 // on a restored staging database. No production requests are made by this test.
 await db.exec(`
  alter table boards alter column id set default gen_random_uuid();
+ alter table boards add column title text default 'Mi pizarra';
  alter table notes alter column id set default gen_random_uuid();
  alter table notes alter column editing type uuid using editing::uuid;
  alter table notes add column updated_at timestamptz default now();
@@ -188,5 +189,46 @@ await db.query(`update postispop_licenses set expires_at=now()-interval '1 day'w
 r=await asUser('4','select count(*) as n from notes where board_id=$1',[freeBoard]);assert(+r.rows[0].n===13,'Premium expiry keeps all existing notes visible');
 await rejectQuery('4','select postispop_add_board_note($1)',[freeBoard],'BOARD_FULL','expired Premium cannot add extra notes');
 await db.exec(simpleSql);r=await db.query('select count(*) as n from postispop_private.grandfathered_notes where board_id=$1',[freeBoard]);assert(+r.rows[0].n===0,'migration reapply never grandfathers new notes to bypass the allowance');
+// Atomic creation is tested against the explicit base fixture above. This
+// validates transaction/RLS behavior locally, never the uninspected live schema.
+const createSql=fs.readFileSync(new URL('../database/board-create.sql',import.meta.url),'utf8');await db.exec(createSql);await db.exec(createSql);
+for(const id of [5,6,7,8])await db.query('insert into auth.users(id,email,email_confirmed_at)values($1,$2,now())',[userId(id),'create-'+id+'@example.invalid']);
+const createBoard=(user,request)=>asUser(String(user),'select postispop_create_board($1)as b',[requestId(request)]);
+r=await createBoard(5,201);const createdFree=r.rows[0].b;
+assert(createdFree.owner_id===userId(5)&&createdFree.title==='Mi pizarra','atomic creation takes ownership only from authenticated subject');
+r=await asUser('5','select id,position,paper,text from notes where board_id=$1 order by position',[createdFree.id]);
+assert(r.rows.length===6&&r.rows.every((note,index)=>note.position===index&&note.paper===index&&note.text===''),'atomic free board includes six complete initial notes');
+r=await createBoard(5,201);assert(r.rows[0].b.id===createdFree.id,'lost-response retry returns the same seeded free board');
+await rejectQuery('5','select postispop_create_board($1)',[requestId(202)],'BOARD_LIMIT_REACHED','distinct requests cannot create a second free board');
+r=await db.query('select count(*)as n from boards where owner_id=$1',[userId(5)]);assert(+r.rows[0].n===1,'retries and rejected requests leave exactly one complete free board');
+await db.query(`insert into postispop_licenses(user_id,subject,expires_at,payment_reference)values($1,'premium',now()+interval '1 day','create-current')`,[userId(6)]);
+r=await createBoard(6,203);const createdPremium=r.rows[0].b;
+r=await asUser('6','select count(*)as n from notes where board_id=$1',[createdPremium.id]);assert(+r.rows[0].n===12,'current server Premium creates twelve notes in the same transaction');
+r=await createBoard(6,204);assert(r.rows[0].b.id!==createdPremium.id,'verified Premium may deliberately create another board');
+r=await asUser('5','select count(*)as n from notes where board_id=$1',[createdPremium.id]);assert(+r.rows[0].n===0,'atomic creation leaves cross-account note RLS intact');
+r=await asUser('2','select count(*)as n from notes where board_id=$1',[createdPremium.id]);assert(+r.rows[0].n===0,'application owner does not gain another account notes through creation');
+await db.query('update postispop_licenses set revoked_at=now()where user_id=$1',[userId(6)]);
+r=await createBoard(6,203);assert(r.rows[0].b.id===createdPremium.id,'revocation still permits replay of an already committed board');
+await rejectQuery('6','select postispop_create_board($1)',[requestId(205)],'BOARD_LIMIT_REACHED','revoked Premium cannot create more owned boards');
+await db.query(`insert into postispop_licenses(user_id,subject,expires_at,payment_reference)values($1,'premium',now()-interval '1 day','create-expired')`,[userId(7)]);
+r=await createBoard(7,206);const expiredFree=r.rows[0].b;
+r=await asUser('7','select count(*)as n from notes where board_id=$1',[expiredFree.id]);assert(+r.rows[0].n===6,'expired Premium seeds only six free notes');
+r=await createBoard(3,207);const createdLegacy=r.rows[0].b;
+r=await asUser('3','select count(*)as n from notes where board_id=$1',[createdLegacy.id]);assert(+r.rows[0].n===12,'historical Pro rights retain twelve-note initial creation');
+await db.exec(`create function public.fixture_reject_seed()returns trigger language plpgsql as $$begin if new.author_id='${userId(8)}' and new.position=3 then raise exception 'FIXTURE_SEED_FAILED';end if;return new;end$$;create trigger fixture_reject_seed before insert on public.notes for each row execute function public.fixture_reject_seed();`);
+await rejectQuery('8','select postispop_create_board($1)',[requestId(208)],'FIXTURE_SEED_FAILED','failure during initial note inserts rejects the whole creation');
+for(const [query,label] of [
+ ['select count(*)as n from boards where owner_id=$1','seed failure leaves no empty board'],
+ ['select count(*)as n from notes where author_id=$1','seed failure leaves no partially inserted notes'],
+ ['select count(*)as n from postispop_private.board_creation_requests where user_id=$1','seed failure never commits a retry receipt']
+]){r=await db.query(query,[userId(8)]);assert(+r.rows[0].n===0,label);}
+await db.exec('drop trigger fixture_reject_seed on public.notes;drop function public.fixture_reject_seed()');
+r=await createBoard(8,208);const retryBoard=r.rows[0].b;
+r=await asUser('8','select count(*)as n from notes where board_id=$1',[retryBoard.id]);assert(+r.rows[0].n===6,'same request can retry successfully after seed failure without cleanup');
+let creationReceiptDenied=false;try{await asUser('5','select * from postispop_private.board_creation_requests')}catch(error){creationReceiptDenied=error.code==='42501'}assert(creationReceiptDenied,'creation receipts are private and cannot be forged by authenticated users');
+await db.exec(`select set_config('request.jwt.claim.sub','',false);set role authenticated`);let noCreationSubject=false;try{await db.query('select postispop_create_board($1)',[requestId(209)])}catch(error){noCreationSubject=error.message==='SESSION_REQUIRED'}finally{await db.exec('reset role')};assert(noCreationSubject,'board creation fails without an authenticated subject');
+await db.exec('set role anon');let anonCreation=false;try{await db.query('select postispop_create_board($1)',[requestId(209)])}catch(error){anonCreation=error.code==='42501'}finally{await db.exec('reset role')};assert(anonCreation,'anonymous users cannot execute the creation RPC');
+await db.exec(createSql);r=await createBoard(5,201);assert(r.rows[0].b.id===createdFree.id,'migration reapply preserves creation retry receipts and existing notes');
+
 console.log('PASS synthetic database integration; deployment schema and production remain unmodified');
 await db.close();
