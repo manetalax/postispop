@@ -4,17 +4,20 @@ const fs=require('node:fs/promises'),path=require('node:path');
 const {browserOptions}=require('./browser-options.cjs');
 
 test('Real guest UI downloads and restores attachments offline without replacing a slot that already holds a local file',{timeout:30000},async()=>{
+  const base=path.resolve(process.env.POSTISPOP_TEST_ROOT||'_site');
+  await fs.access(path.join(base,'index.html'));
   const {chromium}=require('playwright'),browser=await chromium.launch(browserOptions());
   const context=await browser.newContext({viewport:{width:1280,height:900},serviceWorkers:'block'}),page=await context.newPage();
   // Exercise the actual distribution after staging, including its React-ready
   // bootstrap. Android runs this same flow against its packaged local payload.
-  const base=path.resolve(process.env.POSTISPOP_TEST_ROOT||'_site'),errors=[];
+  const errors=[];
   page.setDefaultTimeout(10000);
   const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.avif':'image/avif','.woff2':'font/woff2','.woff':'font/woff'};
   await context.route('**/*',async route=>{
     const url=new URL(route.request().url());if(url.hostname!=='postispop.com')return route.abort();
     const pathname=url.pathname==='/'?'/index.html':url.pathname;
     const file=path.resolve(base,'.'+pathname);
+    if(!file.startsWith(base+path.sep))return route.abort();
     try{await route.fulfill({body:await fs.readFile(file),contentType:types[path.extname(file)]||'application/octet-stream'});}catch{await route.fulfill({status:404,body:''});}
   });
   await context.addInitScript(()=>localStorage.setItem('pp:analytics-consent-v2','no'));
