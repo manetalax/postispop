@@ -2,6 +2,7 @@ import {track} from './usage-metrics.js';
 import {drawStrokes} from './style-model.js';
 import {normalizeBackup,LOCAL_BACKUP_BYTES,createBoardBackup,verifyBackupAttachments} from './backup-import.js?v=20261008a';
 import {readBoardLanguage} from './seo-language.js';
+import {shareFile} from './share-tools.js?v=20261009a';
 
 let tools=null, options=null, searchTools=null, lastFocus=null;
 let favoritesOnly=false;
@@ -40,12 +41,12 @@ async function currentBoard() {
   return data;
 }
 function message(value){const node=searchTools?.querySelector('[role=status]');if(node)node.textContent=value;}
-function dialog(title,returnFocus=document.activeElement) {
+function dialog(title,returnFocus=document.activeElement,closeText='Cerrar') {
   lastFocus=returnFocus;
   const el=document.createElement('dialog');el.className='pp-feature-dialog';
   el.setAttribute('aria-labelledby','pp-feature-title');
   const heading=text('h2',title);heading.id='pp-feature-title';el.append(heading);
-  const close=text('button','Cerrar');close.type='button';close.addEventListener('click',()=>el.close());el.append(close);
+  const close=text('button',closeText);close.type='button';close.addEventListener('click',()=>el.close());el.append(close);
   el.addEventListener('close',()=>{el.remove();lastFocus?.focus();},{once:true});document.body.append(el);el.showModal();return el;
 }
 const ordered=board=>board.order.map(id=>board.notes.find(n=>n.id===id)).filter(Boolean);
@@ -56,7 +57,7 @@ async function exportJson(){
   track('export');
   message('Copia completa descargada: notas, dibujos y adjuntos de este dispositivo. Las notas protegidas permanecen cifradas.');
 }
-async function exportPng() {
+async function exportPng({share=false}={}) {
   message('Preparando la imagen…');
   const board=await currentBoard(), notes=ordered(board);
   // Preserve every page at the same readable scale. The supported 100-note
@@ -79,9 +80,46 @@ async function exportPng() {
   ctx.font='16px sans-serif';ctx.fillText('PostisPop · Vista de texto resumida · Guarda una copia de seguridad para conservar todo el texto.',50,canvas.height-25);
   const blob=await new Promise((resolve,reject)=>canvas.toBlob(value=>value?resolve(value):reject(new Error('IMAGE_EXPORT_FAILED')),'image/png'));
   canvas.width=0;canvas.height=0;
-  if(!await download('PostisPop-pizarra.png',blob,'image/png')){message('Descarga cancelada. Tus notas se conservan.');return;}
-  track('export');message('PNG descargado: '+notes.length+' notas, con texto resumido, colores y trazos. Las notas protegidas siguen cerradas; no se incluyen adjuntos.');
+  let shareResult='downloaded';
+  if(share){
+    const file=new File([blob],'PostisPop-pizarra.png',{type:'image/png'});
+    let result='unsupported';try{result=await shareFile(file,{title:board.title||'PostisPop',text:'Copia visual de una pizarra PostisPop.'});}catch(error){if(error.message==='SHARE_FILE_TOO_LARGE')result='tooLarge';else throw error;}
+    if(result==='unsupported'){if(!await download(file.name,file,file.type))result='cancelled';else result='downloaded';}
+    shareResult=result;
+    if(!['cancelled','tooLarge'].includes(result)){track('share');message(result==='shared'?'Se abrió el menú para compartir la imagen.':'Imagen descargada; puedes adjuntarla en WhatsApp o en otra app.');}
+  }else{
+    if(!await download('PostisPop-pizarra.png',blob,'image/png')){message('Descarga cancelada. Tus notas se conservan.');return;}
+    track('export');message('PNG descargado: '+notes.length+' notas, con texto resumido, colores y trazos. Las notas protegidas siguen cerradas; no se incluyen adjuntos.');
+  }
+  return shareResult;
   } finally { canvas.width=0;canvas.height=0; }
+}
+
+const boardShareCopy={
+  es:{title:'Compartir pizarra',close:'Cerrar',intro:'Envía una copia a WhatsApp o a otra aplicación desde la hoja del dispositivo. Es una exportación; no crea una pizarra colaborativa en vivo.',backup:'Compartir copia completa',image:'Compartir imagen resumida',preparing:'Preparando el archivo…',shared:'Se abrió el menú para compartir. Elige WhatsApp u otra aplicación.',downloaded:'Archivo descargado. Puedes adjuntarlo desde WhatsApp u otra aplicación.',cancelled:'Compartir cancelado.',failed:'No se pudo preparar la copia. Tus notas se conservan.',tooLarge:'El archivo supera el límite de 10 MB para compartir desde la aplicación. Comparte los adjuntos por separado.',backupText:'Copia de seguridad de una pizarra PostisPop. Las notas protegidas siguen cifradas.'},
+  en:{title:'Share board',close:'Close',intro:'Send a copy to WhatsApp or another app using your device share sheet. This is an export; it does not create a live collaborative board.',backup:'Share full backup',image:'Share summary image',preparing:'Preparing file…',shared:'The share sheet opened. Choose WhatsApp or another app.',downloaded:'File downloaded. Attach it from WhatsApp or another app.',cancelled:'Sharing cancelled.',failed:'Could not prepare the copy. Your notes are safe.',tooLarge:'The file exceeds the 10 MB app sharing limit. Share attachments individually.',backupText:'Backup of a PostisPop board. Protected notes remain encrypted.'},
+  de:{title:'Pinnwand teilen',close:'Schließen',intro:'Sende über das Teilen-Menü deines Geräts eine Kopie an WhatsApp oder eine andere App. Das ist ein Export und erstellt keine gemeinsam bearbeitete Pinnwand.',backup:'Vollständige Sicherung teilen',image:'Zusammenfassendes Bild teilen',preparing:'Datei wird vorbereitet…',shared:'Das Teilen-Menü ist geöffnet. Wähle WhatsApp oder eine andere App.',downloaded:'Datei heruntergeladen. Du kannst sie in WhatsApp oder einer anderen App anhängen.',cancelled:'Teilen abgebrochen.',failed:'Die Kopie konnte nicht vorbereitet werden. Deine Notizen bleiben erhalten.',tooLarge:'Die Datei überschreitet das App-Teilenlimit von 10 MB. Teile Anhänge einzeln.',backupText:'Sicherung einer PostisPop-Pinnwand. Geschützte Notizen bleiben verschlüsselt.'},
+  fr:{title:'Partager le tableau',close:'Fermer',intro:'Envoyez une copie vers WhatsApp ou une autre application avec le menu de partage de l’appareil. C’est un export, pas un tableau collaboratif en direct.',backup:'Partager la sauvegarde complète',image:'Partager l’image résumée',preparing:'Préparation du fichier…',shared:'Le menu de partage est ouvert. Choisissez WhatsApp ou une autre application.',downloaded:'Fichier téléchargé. Vous pouvez le joindre dans WhatsApp ou une autre application.',cancelled:'Partage annulé.',failed:'Impossible de préparer la copie. Vos notes sont conservées.',tooLarge:'Le fichier dépasse la limite de partage de l’application de 10 Mo. Partagez les pièces jointes séparément.',backupText:'Sauvegarde d’un tableau PostisPop. Les notes protégées restent chiffrées.'},
+  pt:{title:'Partilhar quadro',close:'Fechar',intro:'Envie uma cópia para o WhatsApp ou outra aplicação através do menu de partilha do dispositivo. É uma exportação; não cria um quadro colaborativo em direto.',backup:'Partilhar cópia completa',image:'Partilhar imagem resumida',preparing:'A preparar o ficheiro…',shared:'O menu de partilha abriu. Escolha WhatsApp ou outra aplicação.',downloaded:'Ficheiro transferido. Pode anexá-lo no WhatsApp ou noutra aplicação.',cancelled:'Partilha cancelada.',failed:'Não foi possível preparar a cópia. As suas notas estão seguras.',tooLarge:'O ficheiro excede o limite de partilha de 10 MB da aplicação. Partilhe os anexos individualmente.',backupText:'Cópia de segurança de um quadro PostisPop. As notas protegidas continuam encriptadas.'},
+  it:{title:'Condividi bacheca',close:'Chiudi',intro:'Invia una copia a WhatsApp o a un’altra app dal menu di condivisione del dispositivo. È un’esportazione; non crea una bacheca collaborativa in tempo reale.',backup:'Condividi copia completa',image:'Condividi immagine riepilogativa',preparing:'Preparazione del file…',shared:'Il menu di condivisione è aperto. Scegli WhatsApp o un’altra app.',downloaded:'File scaricato. Puoi allegarlo da WhatsApp o da un’altra app.',cancelled:'Condivisione annullata.',failed:'Impossibile preparare la copia. Le note sono al sicuro.',tooLarge:'Il file supera il limite di condivisione dell’app di 10 MB. Condividi gli allegati singolarmente.',backupText:'Backup di una bacheca PostisPop. Le note protette restano cifrate.'},
+  ja:{title:'ボードを共有',close:'閉じる',intro:'端末の共有メニューからWhatsAppなどのアプリへコピーを送信します。これは書き出しであり、リアルタイム共同編集ボードは作成されません。',backup:'完全なバックアップを共有',image:'要約画像を共有',preparing:'ファイルを準備しています…',shared:'共有メニューが開きました。WhatsAppなどを選んでください。',downloaded:'ファイルをダウンロードしました。WhatsAppなどで添付できます。',cancelled:'共有をキャンセルしました。',failed:'コピーを準備できませんでした。メモは保持されています。',tooLarge:'ファイルがアプリ共有の上限10 MBを超えています。添付ファイルを個別に共有してください。',backupText:'PostisPopボードのバックアップです。保護されたメモは暗号化されたままです。'},
+  ko:{title:'보드 공유',close:'닫기',intro:'기기의 공유 메뉴를 통해 WhatsApp 또는 다른 앱으로 사본을 보냅니다. 내보내기이며 실시간 공동 편집 보드를 만들지는 않습니다.',backup:'전체 백업 공유',image:'요약 이미지 공유',preparing:'파일 준비 중…',shared:'공유 메뉴가 열렸습니다. WhatsApp 또는 다른 앱을 선택하세요.',downloaded:'파일을 다운로드했습니다. WhatsApp 등에서 첨부할 수 있습니다.',cancelled:'공유를 취소했습니다.',failed:'사본을 준비하지 못했습니다. 메모는 보존됩니다.',tooLarge:'파일이 앱 공유 한도인 10MB를 초과합니다. 첨부 파일을 각각 공유하세요.',backupText:'PostisPop 보드 백업입니다. 보호된 메모는 암호화 상태로 유지됩니다.'}
+};
+
+export function openShareDialog(trigger=document.activeElement){
+  const copy=boardShareCopy[readBoardLanguage()]||boardShareCopy.es;
+  const el=dialog(copy.title,trigger,copy.close),intro=text('p',copy.intro),status=text('p','');status.setAttribute('role','status');
+  const add=(label,action)=>{const button=text('button',label);button.type='button';button.addEventListener('click',async()=>{button.disabled=true;status.textContent=copy.preparing;try{await action();}catch{status.textContent=copy.failed;}finally{button.disabled=false;}});el.append(button);};
+  add(copy.backup,async()=>{
+    const board=await currentBoard(),backup=await createBoardBackup(board),file=new File([JSON.stringify(backup)],'PostisPop-copia.json',{type:'application/json'});
+    let result='unsupported';try{result=await shareFile(file,{title:board.title||copy.title,text:copy.backupText});}catch(error){if(error.message==='SHARE_FILE_TOO_LARGE')result='tooLarge';else throw error;}
+    if(result==='unsupported'){if(!await download(file.name,file,file.type))result='cancelled';else result='downloaded';}
+    if(result==='cancelled')status.textContent=copy.cancelled;
+    else if(result==='tooLarge')status.textContent=copy.tooLarge;
+    else{track('share');status.textContent=result==='shared'?copy.shared:copy.downloaded;}
+  });
+  add(copy.image,async()=>{const result=await exportPng({share:true});status.textContent=result==='cancelled'?copy.cancelled:result==='tooLarge'?copy.tooLarge:result==='downloaded'?copy.downloaded:copy.shared;});
+  el.prepend(intro);el.append(status);return el;
 }
 async function printPdf() {
   const board=await currentBoard();const frame=document.createElement('iframe');frame.title='Vista de impresión';frame.style.cssText='position:fixed;width:1px;height:1px;left:-9999px;border:0';document.body.append(frame);

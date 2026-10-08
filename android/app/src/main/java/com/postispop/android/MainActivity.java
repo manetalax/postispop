@@ -20,6 +20,7 @@ import androidx.webkit.WebViewAssetLoader;
 import androidx.webkit.WebViewCompat;
 import androidx.webkit.WebViewFeature;
 import androidx.webkit.JavaScriptReplyProxy;
+import androidx.core.content.FileProvider;
 import org.json.JSONObject;
 import android.util.Base64;
 import java.io.*;
@@ -32,6 +33,7 @@ public final class MainActivity extends ComponentActivity {
     private WebView web;
     private ValueCallback<Uri[]> fileResult;
     private static final int MAX_DOWNLOAD_BYTES = 10000000;
+    private static final int MAX_SHARE_BYTES = 10000000;
     private PendingDownload pendingDownload;
     private PermissionRequest pendingWebPermission;
 
@@ -151,6 +153,11 @@ public final class MainActivity extends ComponentActivity {
                     try { prepareDownload(message.getData(), reply); }
                     catch (Exception e) { replyDownload(reply, "", "error", "NATIVE_DOWNLOAD_INVALID"); }
                 });
+            WebViewCompat.addWebMessageListener(web, "PostisPopShare", Collections.singleton("https://" + HOST),
+                (view, message, origin, mainFrame, reply) -> {
+                    if (!mainFrame || !isLocal(origin)) return;
+                    new Thread(() -> prepareShare(message.getData(), reply)).start();
+                });
         }
         web.setDownloadListener((url, agent, disposition, type, size) -> {
             if (web != null && isLocal(Uri.parse(web.getUrl())) && (url.startsWith("blob:https://" + HOST + "/") || url.startsWith("data:image/png;base64,"))) {
@@ -215,6 +222,72 @@ public final class MainActivity extends ComponentActivity {
                 replyDownload(reply, id, "error", "NATIVE_DOWNLOAD_PICKER_UNAVAILABLE");
             }
         } catch (Exception e) { replyDownload(reply, id, "error", "NATIVE_DOWNLOAD_INVALID"); }
+    }
+
+    private void replyShare(JavaScriptReplyProxy reply, String id, String status, String error) {
+        try {
+            JSONObject result = new JSONObject().put("id", id).put("status", status);
+            if (error != null) result.put("error", error);
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) reply.postMessage(result.toString());
+        } catch (Exception ignored) { }
+    }
+
+    private void prepareShare(String raw, JavaScriptReplyProxy reply) {
+        String id = "";
+        try {
+            if (raw == null || raw.length() > 14000000) throw new IllegalArgumentException("NATIVE_SHARE_TOO_LARGE");
+            JSONObject request = new JSONObject(raw);
+            id = request.getString("id");
+            if (!id.matches("[A-Za-z0-9_-]{1,80}")) throw new IllegalArgumentException("NATIVE_SHARE_INVALID");
+            String filename = request.optString("filename", "").replaceAll("[^A-Za-z0-9._-]", "_");
+            if (filename.length() > 120) filename = filename.substring(filename.length() - 120);
+            String mime = request.optString("mimeType", "");
+            String text = request.optString("text", "");
+            String title = request.optString("title", "PostisPop");
+            if (text.length() > 4000 || title.length() > 120) throw new IllegalArgumentException("NATIVE_SHARE_INVALID");
+            String data = request.optString("dataUrl", "");
+            File sharedFile = null;
+            Uri contentUri = null;
+            if (!data.isEmpty()) {
+                if (filename.isEmpty() || !mime.matches("[A-Za-z0-9!#$&^_.+-]+/[A-Za-z0-9!#$&^_.+-]+") || !data.startsWith("data:" + mime + ";base64,"))
+                    throw new IllegalArgumentException("NATIVE_SHARE_TYPE");
+                byte[] bytes = Base64.decode(data.substring(data.indexOf(',') + 1), Base64.DEFAULT);
+                if (bytes.length == 0 || bytes.length > MAX_SHARE_BYTES) throw new IllegalArgumentException("NATIVE_SHARE_TOO_LARGE");
+                File directory = new File(getCacheDir(), "postispop-share");
+                if (!directory.exists() && !directory.mkdirs()) throw new IOException("SHARE_CACHE_UNAVAILABLE");
+                File[] old = directory.listFiles();
+                if (old != null) for (File item : old) if (System.currentTimeMillis() - item.lastModified() > 3600000L) item.delete();
+                sharedFile = new File(directory, UUID.randomUUID().toString() + "-" + filename);
+                try (FileOutputStream output = new FileOutputStream(sharedFile)) { output.write(bytes); }
+                contentUri = FileProvider.getUriForFile(this, getPackageName() + ".shareprovider", sharedFile);
+            } else if (text.trim().isEmpty()) throw new IllegalArgumentException("NATIVE_SHARE_INVALID");
+            final File file = sharedFile;
+            final Uri uri = contentUri;
+            final String requestId = id, shareText = text, shareTitle = title;
+            final String shareMime = file == null ? "text/plain" : mime;
+            runOnUiThread(() -> {
+                try {
+                    Intent send = new Intent(Intent.ACTION_SEND).setType(shareMime);
+                    if (!shareText.isEmpty()) send.putExtra(Intent.EXTRA_TEXT, shareText);
+                    if (uri != null) {
+                        send.putExtra(Intent.EXTRA_STREAM, uri);
+                        send.setClipData(android.content.ClipData.newUri(getContentResolver(), file.getName(), uri));
+                        send.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    }
+                    startActivity(Intent.createChooser(send, shareTitle));
+                    replyShare(reply, requestId, "opened", null);
+                } catch (Exception error) {
+                    if (file != null) file.delete();
+                    replyShare(reply, requestId, "error", "NATIVE_SHARE_UNAVAILABLE");
+                    Toast.makeText(this, R.string.no_link_app, Toast.LENGTH_LONG).show();
+                }
+            });
+        } catch (IllegalArgumentException error) {
+            String message = error.getMessage();
+            replyShare(reply, id, "error", message != null && message.startsWith("NATIVE_SHARE_") ? message : "NATIVE_SHARE_INVALID");
+        } catch (Exception error) {
+            replyShare(reply, id, "error", "NATIVE_SHARE_UNAVAILABLE");
+        }
     }
 
     private boolean isLocal(Uri uri) {

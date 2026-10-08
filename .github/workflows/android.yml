@@ -30,6 +30,10 @@ jobs:
         env:
           POSTISPOP_SITE_ROOT: android/app/src/main/assets/www
         run: node tests/camera-capture-ui.cjs
+      - name: Verify cross-app sharing in the Android payload
+        env:
+          POSTISPOP_SITE_ROOT: android/app/src/main/assets/www
+        run: node --test tests/android-download.test.cjs tests/share-ui.cjs
       - name: Verify local attachment backups in the Android payload
         env:
           POSTISPOP_TEST_ROOT: android/app/src/main/assets/www

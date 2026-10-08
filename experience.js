@@ -1,7 +1,7 @@
 import {whenReactReady} from './ui-ready.js';
 import './board-layout.js?v=20261008a';
 import {track, metricsEnabled, setMetricsEnabled, readMetrics, recordVisit} from './usage-metrics.js';
-import {initBoardTools, download} from './board-tools.js?v=20261008a';
+import {initBoardTools, download, openShareDialog} from './board-tools.js?v=20261009a';
 import {initBoardPreferences} from './board-preferences.js?v=20261008a';
 
 
@@ -19,6 +19,8 @@ function update() {
   initBoardPreferences();
   const hydrated=Boolean(document.querySelector('.board-frame:not(.is-loading) .sticky-note:not([disabled])[data-note-id]'));
   const header=hydrated?document.querySelector('.app-header'):null;
+
+  if(header)document.querySelectorAll('.header-share,.group-button').forEach(button=>{button.disabled=false;});
 
   if (header && !header.querySelector('.pp-menu-toggle')) {
     const button = document.createElement('button');
@@ -83,13 +85,10 @@ document.addEventListener('click',async event=>{
   }
   if(action==='install' && installPrompt){await installPrompt.prompt();installPrompt=null;button.hidden=true;}
 });
-// Sharing controls in the recovered UI call APIs that are not implemented.
-// Explain the real state instead of allowing a misleading success path.
 document.addEventListener('click',event=>{
-  if(event.target.closest('.group-button,.header-share')){
-    event.preventDefault();event.stopImmediatePropagation();
-    notice('Los enlaces y las invitaciones están en revisión. Puedes descargar una copia desde «Opciones avanzadas» para conservar o compartir tus notas.');
-  }
+  const button=event.target.closest('.group-button,.header-share');if(!button)return;
+  event.preventDefault();event.stopImmediatePropagation();
+  try{openShareDialog(button);}catch{notice('No se pudo abrir el menú para compartir. Tus notas se conservan.');}
 },true);
 let scheduled=false;
 whenReactReady(() => {

@@ -10,7 +10,7 @@ export const publicFiles = [
   'robots.txt', 'sitemap.xml', 'CNAME', 'favicon.svg', 'favicon.ico',
   'privacy.html', 'terms.html', 'legal.html', 'cookies.html',
   'postispop-shop.js', 'commerce-ui.js', 'commerce.css', 'supabase-bridge.js', 'supabase-config.js',
-  'guest-board.js', 'guest-status.js', 'note-attachments.js', 'note-attachments.css', 'brand-highlights.js',
+  'guest-board.js', 'guest-status.js', 'note-attachments.js', 'note-attachments.css', 'share-tools.js', 'brand-highlights.js',
   'board-layout.js', 'board-view-model.js', 'board-preferences.js', 'daily-quote-model.js', 'experience-content.js', 'experience.css', 'experience.js', 'usage-metrics.js', 'board-tools.js', 'backup-import.js',
   'search.js', 'search-index.json', 'premios.html', 'site-metrics.js', 'atelier.html', 'atelier.js', 'atelier-checkout.js', 'atelier.css',
   'design-tools.js', 'design-tools.css', 'style-model.js', 'fonts.css',

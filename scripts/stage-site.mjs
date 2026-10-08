@@ -79,8 +79,8 @@ if(file.href===new URL('index.html',out).href&&!html.includes('rel="preconnect"'
 if(!html.includes('/wpo-register.js'))html=html.replace('</body>','<script src="/wpo-register.js" defer></script></body>');
 if(!html.includes('/wpo-features.js'))html=html.replace('</body>','<script type="module" src="/wpo-features.js?v=20261002b"></script></body>');
 html=html.replace('</head>','<link rel="stylesheet" href="/workspace.css?v=20261008a"></head>');
-html=html.replace(/href=(["'])\.\/note-attachments\.css(?:\?[^"']*)?\1/g,'href="/note-attachments.css?v=20261008c"').replace(/src=(["'])\.\/note-attachments\.js(?:\?[^"']*)?\1/g,'src="/note-attachments.js?v=20261008c"');
-  html=html.replace(/src=(["'])\/experience\.js(?:\?[^"']*)?\1/g,'src="/experience.js?v=20261008a"').replace(/src=(["'])\/protected-notes\.js(?:\?[^"']*)?\1/g,'src="/protected-notes.js?v=20261008a"');
+html=html.replace(/href=(["'])\.\/note-attachments\.css(?:\?[^"']*)?\1/g,'href="/note-attachments.css?v=20261009a"').replace(/src=(["'])\.\/note-attachments\.js(?:\?[^"']*)?\1/g,'src="/note-attachments.js?v=20261009a"');
+  html=html.replace(/src=(["'])\/experience\.js(?:\?[^"']*)?\1/g,'src="/experience.js?v=20261009a"').replace(/src=(["'])\/protected-notes\.js(?:\?[^"']*)?\1/g,'src="/protected-notes.js?v=20261008a"');
 if(file.href===new URL('index.html',out).href&&!html.includes('/brand-highlights.js'))html=html.replace('</body>','<script type="module" src="/brand-highlights.js?v=20261008"></script></body>');
 if(file.href===new URL('index.html',out).href){
  html=html.replace(/<link\b[^>]*rel=["']preload["'][^>]*>/gi,tag=>/board-scene|cork-board|pen-/.test(tag)?'':tag);
@@ -105,5 +105,5 @@ console.log('Daily quote loading optimized:', await optimizeQuotes(out));
 await buildMultilingualSeo(fileURLToPath(out));
 await auditBundle(fileURLToPath(out));
 console.log('Offline public shell:',await writePublicServiceWorker(fileURLToPath(out)),'resources; API responses excluded.');
-const manifest=await writeBundleManifest(fileURLToPath(out),{target:'web',version:'0.5.0',includes:['atelier','design-tools','protected-notes','offline-sync','local-fonts','notes-first']});
+const manifest=await writeBundleManifest(fileURLToPath(out),{target:'web',version:'0.6.0',includes:['atelier','design-tools','protected-notes','offline-sync','local-fonts','notes-first']});
 console.log('Verified public bundle:',manifest.files,'files;',manifest.contentHash);
