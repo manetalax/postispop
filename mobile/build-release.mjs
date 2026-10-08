@@ -32,12 +32,12 @@ const expected = process.env.POSTISPOP_CERT_SHA256?.replaceAll(':','').toLowerCa
 if (expected && fingerprint.toLowerCase() !== expected) throw new Error('APK certificate differs from the expected existing identity. No installer exported.');
 const target = resolve(root,'android/app/build/verified');
 await mkdir(target,{recursive:true});
-const name = 'PostisPop-0.5.0-release-signed.apk';
+const name = 'PostisPop-0.6.0-release-signed.apk';
 await cp(apk,resolve(target,name));
 const bytes = await readFile(apk);
 const bundle = JSON.parse(await readFile(resolve(root,'android/app/src/main/assets/www/bundle-manifest.json'),'utf8'));
 await writeFile(resolve(target,'verification.json'),JSON.stringify({
-  file:name,applicationId:'com.postispop.android',version:'0.5.0',versionCode:5,
+  file:name,applicationId:'com.postispop.android',version:'0.6.0',versionCode:6,
   bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex'),
   certificateSha256:fingerprint,bundledContentHash:bundle.contentHash,
   bundledPayloadVerified:true,signatureVerified:true,physicalInstallationTested:false,published:false,

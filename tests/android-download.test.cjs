@@ -9,13 +9,18 @@ const vm = require('node:vm');
 const source = fs.readFileSync(path.join(__dirname, '../mobile/mobile-entry.js'), 'utf8')
   .replace(/^import '\.\/supabase-bridge\.js';\s*/, '');
 function harness(options = {}) {
-  const state = {reads:0, fetches:0, messages:[], blob:options.blob || new Blob(['{"notes":[]}'], {type:'application/json'})};
-  let nextMessage;
+  const state = {reads:0, fetches:0, messages:[], shareMessages:[], blob:options.blob || new Blob(['{"notes":[]}'], {type:'application/json'})};
+  let nextMessage,nextShareMessage;
   const previous = () => {};
   const bridge = {onmessage:previous, postMessage(raw) {
     if (options.postFailure) throw Error('bridge detached');
     const message = JSON.parse(raw); state.messages.push(message);
     if (nextMessage) { const resolve=nextMessage; nextMessage=null; resolve(message); }
+  }};
+  const shareBridge = {onmessage:previous, postMessage(raw) {
+    if(options.sharePostFailure)throw Error('share bridge detached');
+    const message=JSON.parse(raw);state.shareMessages.push(message);
+    if(nextShareMessage){const resolve=nextShareMessage;nextShareMessage=null;resolve(message);}
   }};
   class Reader {
     readAsDataURL(blob) {
@@ -31,15 +36,40 @@ function harness(options = {}) {
     state.fetches++;
     if (options.fetchFailure) throw Error('blob unavailable');
     return {blob:async()=>state.blob};
-  }, ...(options.missingBridge ? {} : {PostisPopFiles:bridge})};
-  const context = vm.createContext({window, FileReader:Reader, location:{origin:'https://postispop.com'}, navigator:{}, localStorage:{}});
+  }, ...(options.missingBridge ? {} : {PostisPopFiles:bridge,PostisPopShare:shareBridge})};
+  const context = vm.createContext({window, Blob, FileReader:Reader, location:{origin:'https://postispop.com'}, navigator:{}, localStorage:{}});
   vm.runInContext(source, context);
-  return {state, bridge, previous,
+  return {state, bridge, shareBridge, previous,
     save:(name='PostisPop-copia.json', url='blob:https://postispop.com/test')=>window.__postispopSaveDownload(url,name),
     posted:()=>state.messages.length ? Promise.resolve(state.messages.at(-1)) : new Promise(resolve=>{nextMessage=resolve;}),
-    reply:(message)=>bridge.onmessage({data:JSON.stringify(message)})
+    reply:(message)=>bridge.onmessage({data:JSON.stringify(message)}),
+    share:(title,text,file)=>window.__postispopNativeShare({title,text,file}),
+    sharePosted:()=>state.shareMessages.length?Promise.resolve(state.shareMessages.at(-1)):new Promise(resolve=>{nextShareMessage=resolve;}),
+    shareReply:(message)=>shareBridge.onmessage({data:JSON.stringify(message)})
   };
 }
+
+test('Android share sheet receives note text or a file and acknowledges opening',async()=>{
+  const h=harness();
+  const textShare=h.share('Nota PostisPop','Idea privada solo compartida tras pulsar');
+  const textRequest=await h.sharePosted();
+  assert.equal(textRequest.title,'Nota PostisPop');assert.equal(textRequest.text,'Idea privada solo compartida tras pulsar');assert.equal(textRequest.dataUrl,'');
+  h.shareReply({id:textRequest.id,status:'opened'});assert.equal(await textShare,true);
+  h.state.shareMessages.length=0;
+  const file=new Blob(['PDF de prueba'],{type:'application/pdf'});Object.defineProperty(file,'name',{value:'nota.pdf'});
+  const fileShare=h.share('Nota adjunta','Elige WhatsApp u otra app',file),fileRequest=await h.sharePosted();
+  assert.equal(fileRequest.filename,'nota.pdf');assert.equal(fileRequest.mimeType,'application/pdf');
+  assert.equal(fileRequest.dataUrl,'data:application/pdf;base64,'+Buffer.from('PDF de prueba').toString('base64'));
+  h.shareReply({id:fileRequest.id,status:'opened'});assert.equal(await fileShare,true);
+});
+
+test('Android share sheet refuses overlapping requests and reports bridge failures',async()=>{
+  const h=harness();const first=h.share('First','text'),request=await h.sharePosted();
+  await assert.rejects(h.share('Second','text'),{message:'NATIVE_SHARE_BUSY'});
+  h.shareReply({id:request.id,status:'opened'});assert.equal(await first,true);
+  const unavailable=harness({missingBridge:true});await assert.rejects(unavailable.share('x','text'),{message:'NATIVE_SHARE_UNAVAILABLE'});
+  const failed=harness({sharePostFailure:true});await assert.rejects(failed.share('x','text'),{message:'NATIVE_SHARE_UNAVAILABLE'});
+});
 
 test('Android JSON save waits for its matching successful native write', async () => {
   const h=harness(); let settled=false;

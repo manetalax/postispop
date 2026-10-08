@@ -36,6 +36,8 @@ jobs:
         run: npm run test:seo
       - name: Verify compact camera capture
         run: node tests/camera-capture-ui.cjs
+      - name: Verify sharing for boards, notes and attachments
+        run: node --test tests/android-download.test.cjs tests/share-ui.cjs
       - name: Verify note layout, editing, encryption, cloud import and offline use
         run: npm run test:backup && npm run test:notes-first && node tests/hydration-ui.cjs && npm run test:autosave && npm run test:experience && npm run test:premium && npm run test:atelier && npm run test:protected && npm run test:cloud-import && npm run test:offline-shell
       - name: Preserve UI verification screenshots

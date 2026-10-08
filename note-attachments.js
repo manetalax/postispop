@@ -1,11 +1,15 @@
+Warning: truncated output (original token count: 6048)
+Total output lines: 90
+
 import {withNoteStorageLock,assertAttachmentWritable,protectedMarker} from './attachment-lock.js';
 import {readBoardLanguage} from './seo-language.js';
+import {shareFile,shareText,openWhatsApp} from './share-tools.js?v=20261009a';
 const DB_NAME = 'postispop-note-attachments';
 const STORE = 'attachments';
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
 const CAMERA_PHOTO_BYTES = 128 * 1024;
-const CAMERA_VIDEO_BYTES = 5 * 1024 * 1024 - 1;
-const CAMERA_VIDEO_STOP_BYTES = Math.floor(4.5 * 1024 * 1024);
+const CAMERA_VIDEO_BYTES = 5_000_000 - 1;
+const CAMERA_VIDEO_STOP_BYTES = 4_500_000;
 const CAMERA_VIDEO_DURATION_MS = 5 * 60 * 1000;
 const CAMERA_VIDEO_BITRATE = 80000;
 const MAX_ATTACHMENTS = 100;
@@ -41,8 +45,7 @@ const translations={
 const notices={
   es:{locked:'Adjuntos cerrados: la nota está protegida o ya no está disponible.',protecting:'Esta nota se está protegiendo. Cierra el editor y ábrela con su contraseña.'},
   en:{locked:'Attachments are closed: the note is protected or unavailable.',protecting:'This note is being protected. Close the editor and reopen it with its password.'},
-  de:{locked:'Anhänge geschlossen: Die Notiz ist geschützt oder nicht verfügbar.',protecting:'Diese Notiz wird geschützt. Schließe den Editor und öffne sie mit ihrem Passwort erneut.'},
-  fr:{locked:'Pièces jointes fermées : la note est protégée ou indisponible.',protecting:'Cette note est en cours de protection. Fermez l’éditeur et rouvrez-la avec son mot de passe.'},
+  de:{locked:'Anhänge geschlossen: Die Notiz ist geschützt oder nicht verfügbar.',protecti…48 tokens truncated…g:'Cette note est en cours de protection. Fermez l’éditeur et rouvrez-la avec son mot de passe.'},
   pt:{locked:'Anexos fechados: a nota está protegida ou indisponível.',protecting:'Esta nota está a ser protegida. Feche o editor e volte a abri-la com a palavra-passe.'},
   it:{locked:'Allegati chiusi: la nota è protetta o non disponibile.',protecting:'La nota è in fase di protezione. Chiudi l’editor e riaprila con la password.'},
   ja:{locked:'添付ファイルは閉じています。ノートが保護されているか、利用できません。',protecting:'ノートを保護しています。エディターを閉じ、パスワードで再度開いてください。'},
@@ -59,8 +62,18 @@ const cameraCopy={
   ja:{open:'カメラ',photo:'写真を撮る',record:'動画を撮影',stop:'停止して保存',close:'カメラを閉じる',photoInfo:'WebP写真 · 最大128 KB',videoInfo:'360p/15 fps動画 · 最大5分 · 目標5 MB未満',permission:'続行するにはカメラへのアクセスを許可してください。',unavailable:'このブラウザーではカメラを利用できません。',unsupported:'このブラウザーでは小容量の動画を録画できません。',limit:'サイズ制限を守るため、約5 MBで録画を停止しました。',recording:'録画中',audioUnavailable:'音声なしで動画を録画します。',photoFailed:'128 KBの写真を作成できませんでした。明るくするか、被写体に近づいてください。'},
   ko:{open:'카메라',photo:'사진 찍기',record:'동영상 녹화',stop:'중지하고 저장',close:'카메라 닫기',photoInfo:'WebP 사진 · 최대 128KB',videoInfo:'360p/15fps 동영상 · 최대 5분 · 목표 5MB 미만',permission:'계속하려면 카메라 접근을 허용해 주세요.',unavailable:'이 브라우저에서 카메라를 사용할 수 없습니다.',unsupported:'이 브라우저는 작은 용량의 동영상을 녹화할 수 없습니다.',limit:'용량 제한을 지키기 위해 약 5MB에서 녹화를 중지했습니다.',recording:'녹화 중',audioUnavailable:'소리 없이 동영상을 녹화합니다.',photoFailed:'128KB 사진을 만들지 못했습니다. 더 밝은 곳에서 찍거나 가까이 이동해 주세요.'}
 };
+const shareLabels={
+  es:{shareNote:'Compartir nota',shareApp:'Otras apps',whatsapp:'WhatsApp',noteTitle:'Nota de PostisPop',emptyNote:'Esta nota no tiene texto para compartir.',shareOpened:'Se abrió el menú para compartir.',shareCopied:'Texto copiado. Pégalo en la aplicación que quieras.',shareSaved:'Archivo descargado; puedes adjuntarlo en WhatsApp u otra aplicación.',shareFailed:'No se pudo compartir este elemento.',shareProtected:'Esta nota está protegida. Compártela con su enlace cifrado en las opciones de contraseña.',attachmentShare:'Compartir archivo'},
+  en:{shareNote:'Share note',shareApp:'Other apps',whatsapp:'WhatsApp',noteTitle:'PostisPop note',emptyNote:'This note has no text to share.',shareOpened:'The share sheet opened.',shareCopied:'Text copied. Paste it into the app you want.',shareSaved:'File downloaded; attach it in WhatsApp or another app.',shareFailed:'Could not share this item.',shareProtected:'This note is protected. Share it using its encrypted link in the password options.',attachmentShare:'Share file'},
+  de:{shareNote:'Notiz teilen',shareApp:'Andere Apps',whatsapp:'WhatsApp',noteTitle:'PostisPop-Notiz',emptyNote:'Diese Notiz enthält keinen teilbaren Text.',shareOpened:'Das Teilen-Menü ist geöffnet.',shareCopied:'Text kopiert. Füge ihn in der gewünschten App ein.',shareSaved:'Datei heruntergeladen; du kannst sie in WhatsApp oder einer anderen App anhängen.',shareFailed:'Dieses Element konnte nicht geteilt werden.',shareProtected:'Diese Notiz ist geschützt. Teile sie über den verschlüsselten Link in den Passwortoptionen.',attachmentShare:'Datei teilen'},
+  fr:{shareNote:'Partager la note',shareApp:'Autres applications',whatsapp:'WhatsApp',noteTitle:'Note PostisPop',emptyNote:'Cette note ne contient aucun texte à partager.',shareOpened:'Le menu de partage est ouvert.',shareCopied:'Texte copié. Collez-le dans l’application de votre choix.',shareSaved:'Fichier téléchargé ; vous pouvez le joindre dans WhatsApp ou une autre application.',shareFailed:'Impossible de partager cet élément.',shareProtected:'Cette note est protégée. Partagez-la avec son lien chiffré dans les options de mot de passe.',attachmentShare:'Partager le fichier'},
+  pt:{shareNote:'Partilhar nota',shareApp:'Outras aplicações',whatsapp:'WhatsApp',noteTitle:'Nota PostisPop',emptyNote:'Esta nota não tem texto para partilhar.',shareOpened:'O menu de partilha abriu.',shareCopied:'Texto copiado. Cole-o na aplicação que preferir.',shareSaved:'Ficheiro transferido; pode anexá-lo no WhatsApp ou noutra aplicação.',shareFailed:'Não foi possível partilhar este elemento.',shareProtected:'Esta nota está protegida. Partilhe-a através da ligação encriptada nas opções da palavra-passe.',attachmentShare:'Partilhar ficheiro'},
+  it:{shareNote:'Condividi nota',shareApp:'Altre app',whatsapp:'WhatsApp',noteTitle:'Nota PostisPop',emptyNote:'Questa nota non contiene testo da condividere.',shareOpened:'Il menu di condivisione è aperto.',shareCopied:'Testo copiato. Incollalo nell’app che preferisci.',shareSaved:'File scaricato; puoi allegarlo da WhatsApp o da un’altra app.',shareFailed:'Impossibile condividere questo elemento.',shareProtected:'Questa nota è protetta. Condividila con il link cifrato nelle opzioni della password.',attachmentShare:'Condividi file'},
+  ja:{shareNote:'メモを共有',shareApp:'他のアプリ',whatsapp:'WhatsApp',noteTitle:'PostisPopのメモ',emptyNote:'共有できるテキストがありません。',shareOpened:'共有メニューが開きました。',shareCopied:'テキストをコピーしました。お好きなアプリに貼り付けてください。',shareSaved:'ファイルをダウンロードしました。WhatsAppなどで添付できます。',shareFailed:'この項目を共有できませんでした。',shareProtected:'このメモは保護されています。パスワード設定の暗号化リンクから共有してください。',attachmentShare:'ファイルを共有'},
+  ko:{shareNote:'메모 공유',shareApp:'다른 앱',whatsapp:'WhatsApp',noteTitle:'PostisPop 메모',emptyNote:'공유할 텍스트가 없습니다.',shareOpened:'공유 메뉴가 열렸습니다.',shareCopied:'텍스트를 복사했습니다. 원하는 앱에 붙여넣으세요.',shareSaved:'파일을 다운로드했습니다. WhatsApp 등에서 첨부할 수 있습니다.',shareFailed:'이 항목을 공유하지 못했습니다.',shareProtected:'이 메모는 보호되어 있습니다. 비밀번호 옵션에서 암호화 링크로 공유하세요.',attachmentShare:'파일 공유'}
+};
 let currentLanguage=readBoardLanguage();
-let labels={...(translations[currentLanguage]||translations.es),...(notices[currentLanguage]||notices.es),...(cameraCopy[currentLanguage]||cameraCopy.es),addVideo:addVideoLabels[currentLanguage]||addVideoLabels.es};
+let labels={...(translations[currentLanguage]||translations.es),...(notices[currentLanguage]||notices.es),...(cameraCopy[currentLanguage]||cameraCopy.es),...(shareLabels[currentLanguage]||shareLabels.es),addVideo:addVideoLabels[currentLanguage]||addVideoLabels.es};
 
 function openDb() {
   return new Promise((resolve, reject) => {
@@ -262,6 +275,47 @@ function humanSize(bytes = 0) {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
+function isLocallyProtected(noteId){try{return localStorage.getItem(protectedMarker(noteId))==='1';}catch{return true;}}
+function noteText(){
+  if(isLocallyProtected(activeNoteId))return null;
+  const editor=document.querySelector('.editor-dialog'),field=editor?.querySelector('textarea,[contenteditable="true"]');
+  return String(field?.value??field?.innerText??'').trim();
+}
+async function shareNoteWithApps(){
+  const content=noteText();if(content===null){notify(labels.shareProtected);return;}
+  if(!content){notify(labels.emptyNote);return;}
+  try{const result=await shareText(content,{title:labels.noteTitle});notify(result==='shared'?labels.shareOpened:result==='copied'?labels.shareCopied:labels.shareFailed);}
+  catch{notify(labels.shareFailed);}
+}
+function shareNoteOnWhatsApp(){
+  const content=noteText();if(content===null){notify(labels.shareProtected);return;}
+  if(!content){notify(labels.emptyNote);return;}
+  openWhatsApp(`${labels.noteTitle}\n\n${content}`);
+}
+function downloadSharedFile(file){
+  const url=URL.createObjectURL(file),link=document.createElement('a');link.href=url;link.download=file.name;link.click();setTimeout(()=>URL.revokeObjectURL(url),30000);
+}
+async function shareAttachment(item){
+  if(isLocallyProtected(activeNoteId)){notify(labels.shareProtected);return;}
+  try{
+    if(item.kind==='link'){
+      const result=await shareText(`${item.name}\n${item.url}`,{title:labels.attachmentShare});
+      if(result==='unsupported')openWhatsApp(`${item.name}\n${item.url}`);
+      else notify(result==='shared'?labels.shareOpened:labels.shareCopied);
+      return;
+    }
+    let blob=item.blob;
+    if(item.compression==='gzip'){
+      if(!window.DecompressionStream)throw Error('DECOMPRESSION_UNAVAILABLE');
+      blob=await new Response(blob.stream().pipeThrough(new DecompressionStream('gzip'))).blob();
+    }
+    const file=new File([blob],item.name,{type:item.originalType||item.type||'application/octet-stream'});
+    const result=await shareFile(file,{title:item.name,text:labels.attachmentShare});
+    if(result==='unsupported'){downloadSharedFile(file);notify(labels.shareSaved);}
+    else if(result==='shared')notify(labels.shareOpened);
+  }catch(error){if(error?.name!=='AbortError')notify(labels.shareFailed);}
+}
+
 function notify(message, duration=3200) {
   let toast = document.querySelector('.pp-attachment-toast');
   if (!toast) {
@@ -375,7 +429,8 @@ async function renderList() {
     const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'pp-attachment-remove';
     remove.setAttribute('aria-label', labels.remove); remove.title = labels.remove; remove.textContent = '×';
     remove.addEventListener('click', () => removeItem(item.key));
-    row.append(badge, details, remove); card.append(row); list.append(card);
+    const share=document.createElement('button');share.type='button';share.className='pp-attachment-share';share.setAttribute('aria-label',labels.attachmentShare);share.title=labels.attachmentShare;share.textContent='↗';share.addEventListener('click',()=>shareAttachment(item));
+    row.append(badge, details, share, remove); card.append(row); list.append(card);
   }
 }
 
@@ -511,6 +566,8 @@ function createPanel() {
       <label class="pp-attachment-action pp-video-action">🎬 <span>${labels.addVideo}</span><input type="file" accept="video/*" multiple></label>
       <button type="button" class="pp-attachment-action pp-camera-open">📷 <span>${labels.open}</span></button>
       <button type="button" class="pp-attachment-action pp-voice-action">🎙️ <span>${labels.voice}</span></button>
+      <button type="button" class="pp-attachment-action pp-note-share">↗ <span>${labels.shareNote}</span></button>
+      <button type="button" class="pp-attachment-action pp-note-whatsapp">💬 <span>${labels.whatsapp}</span></button>
       <button type="button" class="pp-attachment-action pp-link-action">🔗 <span>${labels.link}</span></button>
     </div>
     <div class="pp-camera-console" hidden>
@@ -533,6 +590,8 @@ function createPanel() {
     const input=event.currentTarget,noteId=activeNoteId;await saveFiles([...input.files],noteId);input.value='';
   });
   panel.querySelector('.pp-camera-open').addEventListener('click',()=>openCamera(panel));
+  panel.querySelector('.pp-note-share').addEventListener('click',shareNoteWithApps);
+  panel.querySelector('.pp-note-whatsapp').addEventListener('click',shareNoteOnWhatsApp);
   panel.querySelector('.pp-camera-photo').addEventListener('click',()=>takeCameraPhoto(panel));
   panel.querySelector('.pp-camera-record').addEventListener('click',()=>startCameraRecording(panel));
   panel.querySelector('.pp-camera-stop').addEventListener('click',()=>{if(cameraRecorder?.state==='recording')cameraRecorder.stop();});
@@ -580,7 +639,7 @@ enhanceEditor();
 
 function refreshAttachmentLanguage(){
   const language=readBoardLanguage();if(language===currentLanguage)return;
-  closeCamera();currentLanguage=language;labels={...(translations[language]||translations.es),...(notices[language]||notices.es),...(cameraCopy[language]||cameraCopy.es),addVideo:addVideoLabels[language]||addVideoLabels.es};
+  closeCamera();currentLanguage=language;labels={...(translations[language]||translations.es),...(notices[language]||notices.es),...(cameraCopy[language]||cameraCopy.es),...(shareLabels[language]||shareLabels.es),addVideo:addVideoLabels[language]||addVideoLabels.es};
   document.querySelector('.pp-attachments')?.remove();enhanceEditor();
 }
 new MutationObserver(refreshAttachmentLanguage).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
