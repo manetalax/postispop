@@ -1,7 +1,7 @@
 {
   "project": "PostisPop",
   "recorded_on": "2026-10-06",
-  "purpose": "Current product requirements. This document does not grant entitlements or activate payments.",
+  "purpose": "Current product requirements and configured Premium offer. Entitlements are granted only by verified server-side Stripe events.",
   "supersedes": "Previous catalogue, templates, individual upgrades, rewards, roulette and clock-sale proposals",
   "priority": [
     "Give readable note previews the largest practical share of the screen",

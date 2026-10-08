@@ -293,7 +293,10 @@ async function api(endpoint, init) {
     return json({ ok: true, serverRevoked, ...(serverRevoked ? {} : { warning: "REMOTE_LOGOUT_UNCONFIRMED" }) });
   }
   if (endpoint === "auth/settings") return json({ google: true, email: true });
-  if (endpoint === "store/products" && method === "GET") return json({products:premiumProducts(),checkoutReady:false});
+  if (endpoint === "store/products" && method === "GET") {
+    try { const status=await originalFetch(`${SUPABASE_URL}/functions/v1/postispop-commerce/status`,{cache:'no-store'}); const data=status.ok?await status.json():{}; return json({products:premiumProducts(),checkoutReady:data.checkoutReady===true}); }
+    catch { return json({products:premiumProducts(),checkoutReady:false}); }
+  }
   if (endpoint === "session" && method === "GET") return json({ actor: actorFor(await currentUser()) });
 
   const user = await currentUser();
