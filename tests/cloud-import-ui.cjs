@@ -37,6 +37,7 @@ const deferred=()=>{let resolve;const promise=new Promise(done=>resolve=done);re
         if(url.pathname==='/rest/v1/boards'&&request.method()==='GET')return json([{id:BOARD,owner_id:USER,title:'Pizarra de prueba',revision:1}]);
         if(url.pathname==='/rest/v1/notes'&&request.method()==='GET')return json(notes);
         if(url.pathname==='/rest/v1/board_members'&&request.method()==='GET')return json([]);
+        if(url.pathname==='/rest/v1/rpc/postispop_board_access'&&request.method()==='POST')return json({premium:false,trial_active:true,trial_expires_at:new Date(Date.now()+30*86400000).toISOString(),locked_positions:[],purge_at:null,server_now:new Date().toISOString()});
         if(url.pathname==='/rest/v1/postispop_note_style'&&request.method()==='GET')return route.fulfill({status:200,headers:{...headers,'Content-Range':'*/0','Access-Control-Expose-Headers':'Content-Range'},contentType:'application/json',body:'[]'});
         if(url.pathname==='/rest/v1/rpc/postispop_import_board'&&request.method()==='POST'){
           const body=request.postDataJSON();requests.push(body);
