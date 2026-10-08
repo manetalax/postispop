@@ -20,8 +20,8 @@ const KEY='postispop-guest-board-v1';
    await page.waitForFunction(KEY=>{const board=JSON.parse(localStorage.getItem(KEY));return board?.notes[0].text==='Creada desde el botón más';},KEY);
    assert.equal(await page.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).notes.length,KEY),6);
   });
-  await run('Six occupied free papers: plus preserves notes and explains coming soon',fixture(6),async page=>{
-   await page.getByRole('button',{name:'Añadir nota',exact:true}).click();await page.waitForFunction(()=>document.querySelector('.pp-note-action-status')?.textContent.includes('próximamente'));
+  await run('Six occupied free papers: plus preserves notes and explains the limit',fixture(6),async page=>{
+   await page.getByRole('button',{name:'Añadir nota',exact:true}).click();await page.waitForFunction(()=>document.querySelector('.pp-note-action-status')?.textContent.includes('6 notas'));
    assert.equal(await page.locator('.editor-dialog').count(),0);assert.equal(await page.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).notes.length,KEY),6);
   });
   const later=fixture(24);later.notes[17].text='';
