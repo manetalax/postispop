@@ -43,6 +43,8 @@ ESTADO DE GIT
 - Ruta: /Users/franciscomanuelmasagarcia/Documents/Codex/2026-10-08/qu-2/work/postispop
 - Rama: codex/postispop-today-20261008, basada en origin/main d8f7830.
 - Rama local y remota: codex/postispop-today-20261008; checkout local en la ruta indicada arriba.
-- PR de revisión y despliegue: https://github.com/manetalax/postispop/pull/22. El flujo CI detectó y corrigió tres problemas: iconos PNG completos, importación Node de preferencias, y espacio de pizarra/SEO. La última ejecución de CI debe finalizar antes de integrar en main.
+- PR #22: https://github.com/manetalax/postispop/pull/22, integrado mediante squash en main como 8e043827e7a1fe3264b963824605261e3dc47f6a.
+- CI de revisión y flujo Build and deploy PostisPop to GitHub Pages completados con éxito. Ejecución de Pages: https://github.com/manetalax/postispop/actions/runs/37839177938.
+- Sitio publicado: https://postispop.com/ respondió HTTP 200 y sirve brand-highlights.js?v=20261008. Los 171 tests unitarios, pruebas de base de datos, lint, build, SEO de 136 páginas y ocho idiomas, y 13 escenarios de pizarra/interfaz pasaron.
 - No reescribas ni borres historia remota ni stashes de recuperación existentes. Revisa git status antes de editar o sincronizar.
 - No reescribir ni borrar la historia remota ni los stashes de recuperación existentes.
