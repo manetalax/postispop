@@ -3,12 +3,29 @@ import {readBoardLanguage} from './seo-language.js';
 const DB_NAME = 'postispop-note-attachments';
 const STORE = 'attachments';
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
+const CAMERA_PHOTO_BYTES = 128 * 1024;
+const CAMERA_VIDEO_BYTES = 5 * 1024 * 1024 - 1;
+const CAMERA_VIDEO_STOP_BYTES = Math.floor(4.5 * 1024 * 1024);
+const CAMERA_VIDEO_DURATION_MS = 5 * 60 * 1000;
+const CAMERA_VIDEO_BITRATE = 80000;
 const MAX_ATTACHMENTS = 100;
 
 let activeNoteId = '';
 let recorder = null;
 let recordingStream = null;
 let recordedChunks = [];
+let cameraStream = null;
+let cameraRecorder = null;
+let cameraRecordStream = null;
+let cameraChunks = [];
+let cameraRecordBytes = 0;
+let cameraRecordStarted = 0;
+let cameraTimer = null;
+let cameraFrame = 0;
+let cameraPanel = null;
+let cameraNoteId = '';
+let cameraStopAtLimit = false;
+let cameraCloseAfterStop = false;
 let objectUrls = [];
 
 const translations={
@@ -32,8 +49,18 @@ const notices={
   ko:{locked:'첨부 파일이 닫혔습니다. 노트가 보호되어 있거나 사용할 수 없습니다.',protecting:'노트를 보호하는 중입니다. 편집기를 닫고 비밀번호로 다시 여세요.'}
 };
 const addVideoLabels={es:'Añadir vídeo',en:'Add video',de:'Video hinzufügen',fr:'Ajouter une vidéo',pt:'Adicionar vídeo',it:'Aggiungi video',ja:'動画を追加',ko:'동영상 추가'};
+const cameraCopy={
+  es:{open:'Cámara',photo:'Hacer foto',record:'Grabar vídeo',stop:'Detener y guardar',close:'Cerrar cámara',photoInfo:'Foto WebP · hasta 128 KB',videoInfo:'Vídeo 360p/15 fps · hasta 5 min · objetivo <5 MB',permission:'Permite el acceso a la cámara para continuar.',unavailable:'La cámara no está disponible en este navegador.',unsupported:'Este navegador no puede grabar vídeo con el tamaño reducido.',limit:'La grabación se detuvo cerca de 5 MB para respetar el límite.',recording:'Grabando',audioUnavailable:'Se grabará vídeo sin audio.',photoFailed:'No se pudo crear una foto de 128 KB. Prueba con más luz o acércate al sujeto.'},
+  en:{open:'Camera',photo:'Take photo',record:'Record video',stop:'Stop and save',close:'Close camera',photoInfo:'WebP photo · up to 128 KB',videoInfo:'360p/15 fps video · up to 5 min · target <5 MB',permission:'Allow camera access to continue.',unavailable:'The camera is unavailable in this browser.',unsupported:'This browser cannot record reduced-size video.',limit:'Recording stopped near 5 MB to respect the size limit.',recording:'Recording',audioUnavailable:'Video will be recorded without audio.',photoFailed:'Could not make a 128 KB photo. Try more light or move closer.'},
+  de:{open:'Kamera',photo:'Foto aufnehmen',record:'Video aufnehmen',stop:'Stoppen und speichern',close:'Kamera schließen',photoInfo:'WebP-Foto · bis 128 KB',videoInfo:'360p/15 fps · bis 5 Min. · Ziel <5 MB',permission:'Erlaube den Kamerazugriff, um fortzufahren.',unavailable:'Die Kamera ist in diesem Browser nicht verfügbar.',unsupported:'Dieser Browser kann kein verkleinertes Video aufnehmen.',limit:'Die Aufnahme wurde nahe 5 MB gestoppt, um das Limit einzuhalten.',recording:'Aufnahme',audioUnavailable:'Das Video wird ohne Ton aufgenommen.',photoFailed:'Ein Foto mit 128 KB war nicht möglich. Bitte mehr Licht oder näher herangehen.'},
+  fr:{open:'Caméra',photo:'Prendre une photo',record:'Filmer',stop:'Arrêter et enregistrer',close:'Fermer la caméra',photoInfo:'Photo WebP · jusqu’à 128 Ko',videoInfo:'Vidéo 360p/15 ips · jusqu’à 5 min · objectif <5 Mo',permission:'Autorisez l’accès à la caméra pour continuer.',unavailable:'La caméra est indisponible dans ce navigateur.',unsupported:'Ce navigateur ne peut pas enregistrer une vidéo réduite.',limit:'L’enregistrement s’est arrêté vers 5 Mo pour respecter la limite.',recording:'Enregistrement',audioUnavailable:'La vidéo sera enregistrée sans son.',photoFailed:'Impossible de créer une photo de 128 Ko. Essayez avec plus de lumière ou rapprochez-vous.'},
+  pt:{open:'Câmara',photo:'Tirar fotografia',record:'Gravar vídeo',stop:'Parar e guardar',close:'Fechar câmara',photoInfo:'Fotografia WebP · até 128 KB',videoInfo:'Vídeo 360p/15 fps · até 5 min · objetivo <5 MB',permission:'Permita o acesso à câmara para continuar.',unavailable:'A câmara não está disponível neste navegador.',unsupported:'Este navegador não consegue gravar vídeo reduzido.',limit:'A gravação parou perto dos 5 MB para respeitar o limite.',recording:'A gravar',audioUnavailable:'O vídeo será gravado sem áudio.',photoFailed:'Não foi possível criar uma fotografia de 128 KB. Tente mais luz ou aproxime-se.'},
+  it:{open:'Fotocamera',photo:'Scatta foto',record:'Registra video',stop:'Ferma e salva',close:'Chiudi fotocamera',photoInfo:'Foto WebP · fino a 128 KB',videoInfo:'Video 360p/15 fps · fino a 5 min · obiettivo <5 MB',permission:'Consenti l’accesso alla fotocamera per continuare.',unavailable:'Fotocamera non disponibile in questo browser.',unsupported:'Questo browser non può registrare video a dimensioni ridotte.',limit:'Registrazione interrotta vicino a 5 MB per rispettare il limite.',recording:'Registrazione',audioUnavailable:'Il video verrà registrato senza audio.',photoFailed:'Impossibile creare una foto da 128 KB. Prova con più luce o avvicinati.'},
+  ja:{open:'カメラ',photo:'写真を撮る',record:'動画を撮影',stop:'停止して保存',close:'カメラを閉じる',photoInfo:'WebP写真 · 最大128 KB',videoInfo:'360p/15 fps動画 · 最大5分 · 目標5 MB未満',permission:'続行するにはカメラへのアクセスを許可してください。',unavailable:'このブラウザーではカメラを利用できません。',unsupported:'このブラウザーでは小容量の動画を録画できません。',limit:'サイズ制限を守るため、約5 MBで録画を停止しました。',recording:'録画中',audioUnavailable:'音声なしで動画を録画します。',photoFailed:'128 KBの写真を作成できませんでした。明るくするか、被写体に近づいてください。'},
+  ko:{open:'카메라',photo:'사진 찍기',record:'동영상 녹화',stop:'중지하고 저장',close:'카메라 닫기',photoInfo:'WebP 사진 · 최대 128KB',videoInfo:'360p/15fps 동영상 · 최대 5분 · 목표 5MB 미만',permission:'계속하려면 카메라 접근을 허용해 주세요.',unavailable:'이 브라우저에서 카메라를 사용할 수 없습니다.',unsupported:'이 브라우저는 작은 용량의 동영상을 녹화할 수 없습니다.',limit:'용량 제한을 지키기 위해 약 5MB에서 녹화를 중지했습니다.',recording:'녹화 중',audioUnavailable:'소리 없이 동영상을 녹화합니다.',photoFailed:'128KB 사진을 만들지 못했습니다. 더 밝은 곳에서 찍거나 가까이 이동해 주세요.'}
+};
 let currentLanguage=readBoardLanguage();
-let labels={...(translations[currentLanguage]||translations.es),...(notices[currentLanguage]||notices.es),addVideo:addVideoLabels[currentLanguage]||addVideoLabels.es};
+let labels={...(translations[currentLanguage]||translations.es),...(notices[currentLanguage]||notices.es),...(cameraCopy[currentLanguage]||cameraCopy.es),addVideo:addVideoLabels[currentLanguage]||addVideoLabels.es};
 
 function openDb() {
   return new Promise((resolve, reject) => {
@@ -81,6 +108,22 @@ function supported(file) {
 function fileFromBlob(blob,name,type=blob.type){return new File([blob],name,{type:type||'application/octet-stream',lastModified:Date.now()});}
 function replaceExtension(name,extensionName){return `${name.replace(/\.[^.]+$/,'')}.${extensionName}`;}
 function toBlob(canvas,type,quality){return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('ENCODE_FAILED')),type,quality));}
+
+async function encodeCameraPhoto(sourceCanvas){
+  const canvas=document.createElement('canvas'),context=canvas.getContext('2d');if(!context)return null;
+  let scale=Math.min(1,1600/Math.max(sourceCanvas.width,sourceCanvas.height));
+  for(let pass=0;pass<9;pass++){
+    canvas.width=Math.max(1,Math.round(sourceCanvas.width*scale));canvas.height=Math.max(1,Math.round(sourceCanvas.height*scale));
+    context.drawImage(sourceCanvas,0,0,canvas.width,canvas.height);
+    for(const quality of [.82,.72,.62,.52,.42,.32]){
+      let blob=await toBlob(canvas,'image/webp',quality);
+      if(blob.type!=='image/webp')blob=await toBlob(canvas,'image/jpeg',quality);
+      if(blob.size<=CAMERA_PHOTO_BYTES)return blob;
+    }
+    scale*=.82;
+  }
+  return null;
+}
 
 async function compressImage(file){
   if(!window.createImageBitmap)return null;
@@ -365,6 +408,100 @@ async function toggleRecording(button) {
   } catch { notify(labels.microphone); }
 }
 
+function cameraStatus(text=''){
+  const status=cameraPanel?.querySelector('.pp-camera-status');if(status)status.textContent=text;
+}
+
+function releaseCamera(){
+  clearInterval(cameraTimer);cameraTimer=null;clearInterval(cameraFrame);cameraFrame=0;
+  cameraRecordStream?.getTracks().forEach(track=>track.stop());cameraRecordStream=null;
+  cameraStream?.getTracks().forEach(track=>track.stop());cameraStream=null;
+  const preview=cameraPanel?.querySelector('.pp-camera-preview');if(preview){preview.pause();preview.srcObject=null;}
+  const consolePanel=cameraPanel?.querySelector('.pp-camera-console');if(consolePanel)consolePanel.hidden=true;
+  cameraPanel=null;cameraNoteId='';cameraCloseAfterStop=false;
+}
+
+function closeCamera(){
+  if(cameraRecorder?.state==='recording'){cameraCloseAfterStop=true;cameraRecorder.stop();return;}
+  releaseCamera();
+}
+
+async function openCamera(panel){
+  if(!navigator.mediaDevices?.getUserMedia){notify(labels.unavailable);return;}
+  const noteId=activeNoteId;try{await assertAttachmentWritable(noteId);}catch{notify(labels.locked);return;}
+  try{
+    cameraPanel=panel;cameraNoteId=noteId;
+    try{cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720},frameRate:{ideal:24,max:30}},audio:{echoCancellation:true,noiseSuppression:true}});}
+    catch{cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720},frameRate:{ideal:24,max:30}},audio:false});cameraStatus(labels.audioUnavailable);}
+    const consolePanel=panel.querySelector('.pp-camera-console'),preview=panel.querySelector('.pp-camera-preview');
+    consolePanel.hidden=false;preview.srcObject=cameraStream;await new Promise(resolve=>{if(preview.readyState>=1)resolve();else preview.onloadedmetadata=resolve;});
+    await preview.play();
+    panel.querySelector('.pp-camera-open').hidden=true;
+    panel.querySelector('.pp-camera-photo').disabled=false;
+    panel.querySelector('.pp-camera-record').disabled=false;
+    if(cameraStream.getAudioTracks().length)cameraStatus(labels.videoInfo);else cameraStatus(`${labels.videoInfo} · ${labels.audioUnavailable}`);
+  }catch{notify(labels.permission);releaseCamera();}
+}
+
+async function takeCameraPhoto(panel){
+  const preview=panel.querySelector('.pp-camera-preview');if(!preview.videoWidth||!preview.videoHeight){notify(labels.unavailable);return;}
+  try{
+    await assertAttachmentWritable(cameraNoteId);
+    const source=document.createElement('canvas'),scale=Math.min(1,1920/Math.max(preview.videoWidth,preview.videoHeight));
+    source.width=Math.max(1,Math.round(preview.videoWidth*scale));source.height=Math.max(1,Math.round(preview.videoHeight*scale));
+    const context=source.getContext('2d');if(!context)throw new Error('CAMERA_CANVAS_FAILED');
+    context.drawImage(preview,0,0,source.width,source.height);
+    const blob=await encodeCameraPhoto(source);if(!blob)throw new Error('CAMERA_PHOTO_LIMIT');
+    const ext=blob.type==='image/webp'?'webp':'jpg',stamp=new Date().toISOString().replace(/[:.]/g,'-');
+    await saveFiles([fileFromBlob(blob,`PostisPop-foto-${stamp}.${ext}`,blob.type)],cameraNoteId);
+    cameraStatus(`${labels.photoInfo} · ${humanSize(blob.size)}`);
+  }catch{notify(labels.photoFailed);}
+}
+
+function startCameraRecording(panel){
+  if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){notify(labels.unsupported);return;}
+  const preview=panel.querySelector('.pp-camera-preview');if(!preview.videoWidth||!preview.videoHeight){notify(labels.unavailable);return;}
+  const canvas=document.createElement('canvas'),scale=Math.min(1,640/Math.max(preview.videoWidth,preview.videoHeight));
+  canvas.width=Math.max(2,Math.round(preview.videoWidth*scale/2)*2);canvas.height=Math.max(2,Math.round(preview.videoHeight*scale/2)*2);
+  const context=canvas.getContext('2d');if(!context){notify(labels.unsupported);return;}
+  const videoOnly=canvas.captureStream(15),tracks=[...videoOnly.getVideoTracks(),...cameraStream.getAudioTracks()];
+  cameraRecordStream=new MediaStream(tracks);
+  const type=['video/webm;codecs=vp8,opus','video/webm;codecs=vp9,opus','video/mp4;codecs=h264,aac','video/mp4'].find(mime=>MediaRecorder.isTypeSupported(mime));
+  try{cameraRecorder=new MediaRecorder(cameraRecordStream,{...(type?{mimeType:type}:{}),videoBitsPerSecond:64000,audioBitsPerSecond:16000,bitsPerSecond:CAMERA_VIDEO_BITRATE});}
+  catch{cameraRecordStream.getTracks().forEach(track=>track.stop());cameraRecordStream=null;notify(labels.unsupported);return;}
+  cameraChunks=[];cameraRecordBytes=0;cameraRecordStarted=Date.now();cameraStopAtLimit=false;cameraCloseAfterStop=false;
+  const recordButton=panel.querySelector('.pp-camera-record'),stopButton=panel.querySelector('.pp-camera-stop');
+  recordButton.hidden=true;stopButton.hidden=false;panel.querySelector('.pp-camera-photo').disabled=true;
+  const draw=()=>{if(cameraRecorder?.state!=='recording')return;context.drawImage(preview,0,0,canvas.width,canvas.height);};draw();cameraFrame=setInterval(draw,1000/15);
+  cameraRecorder.ondataavailable=event=>{
+    if(!event.data.size)return;cameraRecordBytes+=event.data.size;cameraChunks.push(event.data);
+    if(cameraRecordBytes>=CAMERA_VIDEO_STOP_BYTES){cameraStopAtLimit=true;cameraStatus(labels.limit);cameraRecorder?.stop();}
+  };
+  cameraRecorder.onerror=()=>{cameraStatus(labels.unsupported);};
+  cameraRecorder.onstop=async()=>{
+    clearInterval(cameraTimer);cameraTimer=null;clearInterval(cameraFrame);cameraFrame=0;
+    const type=cameraRecorder?.mimeType||cameraChunks[0]?.type||'video/webm';
+    const blob=new Blob(cameraChunks,{type});cameraRecorder=null;
+    cameraRecordStream?.getTracks().forEach(track=>track.stop());cameraRecordStream=null;
+    const closeWhenSaved=cameraCloseAfterStop,wasStoppedForLimit=cameraStopAtLimit;
+    cameraChunks=[];
+    if(blob.size&&blob.size<CAMERA_VIDEO_BYTES+1){
+      const ext=type.includes('mp4')?'mp4':'webm',stamp=new Date().toISOString().replace(/[:.]/g,'-');
+      await saveFiles([fileFromBlob(blob,`PostisPop-video-${stamp}.${ext}`,type)],cameraNoteId);
+      if(wasStoppedForLimit)notify(labels.limit);
+    }else notify(labels.tooLarge);
+    recordButton.hidden=false;stopButton.hidden=true;panel.querySelector('.pp-camera-photo').disabled=false;
+    if(closeWhenSaved)releaseCamera();else cameraStatus(labels.videoInfo);
+  };
+  cameraRecorder.start(1000);
+  cameraTimer=setInterval(()=>{
+    const elapsed=Date.now()-cameraRecordStarted,seconds=Math.min(300,Math.floor(elapsed/1000));
+    const time=`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
+    cameraStatus(`${labels.recording} ${time} / 05:00 · ${humanSize(cameraRecordBytes)}`);
+    if(elapsed>=CAMERA_VIDEO_DURATION_MS&&cameraRecorder?.state==='recording')cameraRecorder.stop();
+  },500);
+}
+
 function createPanel() {
   const panel = document.createElement('section'); panel.className = 'pp-attachments'; panel.setAttribute('aria-label', labels.title);
   panel.innerHTML = `
@@ -372,8 +509,20 @@ function createPanel() {
     <div class="pp-attachment-actions">
       <label class="pp-attachment-action pp-file-action">📎 <span>${labels.add}</span><input type="file" multiple></label>
       <label class="pp-attachment-action pp-video-action">🎬 <span>${labels.addVideo}</span><input type="file" accept="video/*" multiple></label>
+      <button type="button" class="pp-attachment-action pp-camera-open">📷 <span>${labels.open}</span></button>
       <button type="button" class="pp-attachment-action pp-voice-action">🎙️ <span>${labels.voice}</span></button>
       <button type="button" class="pp-attachment-action pp-link-action">🔗 <span>${labels.link}</span></button>
+    </div>
+    <div class="pp-camera-console" hidden>
+      <video class="pp-camera-preview" autoplay playsinline muted aria-label="${labels.open}"></video>
+      <div class="pp-camera-info"><small>${labels.photoInfo}</small><small>${labels.videoInfo}</small></div>
+      <div class="pp-camera-controls">
+        <button type="button" class="pp-attachment-action pp-camera-photo">📸 <span>${labels.photo}</span></button>
+        <button type="button" class="pp-attachment-action pp-camera-record">⏺ <span>${labels.record}</span></button>
+        <button type="button" class="pp-attachment-action pp-camera-stop" hidden>⏹ <span>${labels.stop}</span></button>
+        <button type="button" class="pp-attachment-action pp-camera-close">✕ <span>${labels.close}</span></button>
+      </div>
+      <small class="pp-camera-status" role="status">${labels.permission}</small>
     </div>
     <form class="pp-link-form" hidden><input type="url" inputmode="url" placeholder="${labels.url}" aria-label="${labels.url}"><button type="submit">${labels.save}</button><button type="button" class="pp-link-cancel">${labels.cancel}</button></form>
     <div class="pp-attachments-list" aria-live="polite"></div>`;
@@ -383,6 +532,11 @@ function createPanel() {
   panel.querySelector('.pp-video-action input').addEventListener('change',async event=>{
     const input=event.currentTarget,noteId=activeNoteId;await saveFiles([...input.files],noteId);input.value='';
   });
+  panel.querySelector('.pp-camera-open').addEventListener('click',()=>openCamera(panel));
+  panel.querySelector('.pp-camera-photo').addEventListener('click',()=>takeCameraPhoto(panel));
+  panel.querySelector('.pp-camera-record').addEventListener('click',()=>startCameraRecording(panel));
+  panel.querySelector('.pp-camera-stop').addEventListener('click',()=>{if(cameraRecorder?.state==='recording')cameraRecorder.stop();});
+  panel.querySelector('.pp-camera-close').addEventListener('click',closeCamera);
   panel.querySelector('.pp-voice-action').addEventListener('click', event => toggleRecording(event.currentTarget));
   panel.querySelector('.pp-link-action').addEventListener('click', () => toggleLinkForm(panel, true));
   panel.querySelector('.pp-link-cancel').addEventListener('click', () => toggleLinkForm(panel, false));
@@ -420,13 +574,13 @@ document.addEventListener('click', event => {
   if (note) activeNoteId = note.dataset.noteId;
 }, true);
 
-const observer = new MutationObserver(() => enhanceEditor());
+const observer = new MutationObserver(() => {if(cameraPanel&&!cameraPanel.isConnected)closeCamera();enhanceEditor();});
 observer.observe(document.documentElement, { childList: true, subtree: true });
 enhanceEditor();
 
 function refreshAttachmentLanguage(){
   const language=readBoardLanguage();if(language===currentLanguage)return;
-  currentLanguage=language;labels={...(translations[language]||translations.es),...(notices[language]||notices.es),addVideo:addVideoLabels[language]||addVideoLabels.es};
+  closeCamera();currentLanguage=language;labels={...(translations[language]||translations.es),...(notices[language]||notices.es),...(cameraCopy[language]||cameraCopy.es),addVideo:addVideoLabels[language]||addVideoLabels.es};
   document.querySelector('.pp-attachments')?.remove();enhanceEditor();
 }
 new MutationObserver(refreshAttachmentLanguage).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
