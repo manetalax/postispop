@@ -45,7 +45,7 @@ const types = {
     assert.match(await page.locator('.free-plan').innerText(), /6 notas/);
     assert.match(await page.locator('.purchase-status').innerText(), /Pagos temporalmente no disponibles/);
     assert.equal(await page.locator('#at-grid, #at-cart, #at-roulette, .pp-launch-promo').count(), 0);
-    assert.equal(await page.locator('.start-link').getAttribute('href'), '/');
+    assert.equal(await page.locator('.start-link').getAttribute('href'), '/?lang=es');
     await fs.mkdir('test-results', { recursive: true });
     for (const width of [320, 360, 390, 768, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });
