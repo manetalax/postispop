@@ -1,7 +1,8 @@
 import {whenReactReady} from './ui-ready.js';
-import './board-layout.js';
+import './board-layout.js?v=20261008a';
 import {track, metricsEnabled, setMetricsEnabled, readMetrics, recordVisit} from './usage-metrics.js';
-import {initBoardTools, download} from './board-tools.js?v=2';
+import {initBoardTools, download} from './board-tools.js?v=20261008a';
+import {initBoardPreferences} from './board-preferences.js?v=20261008a';
 
 
 const SEO_TITLE='Bloc de notas online gratis y pizarra | PostisPop';
@@ -15,6 +16,7 @@ function update() {
   // Save/resize events can arrive during the first React commit. Cache their
   // state, but do not insert tools or rewrite any React-owned DOM until ready.
   if(!reactReady)return;
+  initBoardPreferences();
   const hydrated=Boolean(document.querySelector('.board-frame:not(.is-loading) .sticky-note:not([disabled])[data-note-id]'));
   const header=hydrated?document.querySelector('.app-header'):null;
 

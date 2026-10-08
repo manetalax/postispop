@@ -78,8 +78,10 @@ if(!html.includes('/wpo-features.css'))html=html.replace('</head>','<link rel="s
 if(file.href===new URL('index.html',out).href&&!html.includes('rel="preconnect"'))html=html.replace('</head>','<link rel="preconnect" href="https://htfyjefmviwlgmfqrwue.supabase.co" crossorigin></head>');
 if(!html.includes('/wpo-register.js'))html=html.replace('</body>','<script src="/wpo-register.js" defer></script></body>');
 if(!html.includes('/wpo-features.js'))html=html.replace('</body>','<script type="module" src="/wpo-features.js?v=20261002b"></script></body>');
-html=html.replace('</head>','<link rel="stylesheet" href="/workspace.css?v=20261008"></head>');
-  html=html.replace(/src=(["'])\/experience\.js(?:\?[^"']*)?\1/g,'src="/experience.js?v=p0-20261004"').replace(/src=(["'])\/protected-notes\.js(?:\?[^"']*)?\1/g,'src="/protected-notes.js?v=arcade-20261003"');
+html=html.replace('</head>','<link rel="stylesheet" href="/workspace.css?v=20261008a"></head>');
+html=html.replace(/href=(["'])\.\/note-attachments\.css(?:\?[^"']*)?\1/g,'href="/note-attachments.css?v=20261008a"').replace(/src=(["'])\.\/note-attachments\.js(?:\?[^"']*)?\1/g,'src="/note-attachments.js?v=20261008a"');
+  html=html.replace(/src=(["'])\/experience\.js(?:\?[^"']*)?\1/g,'src="/experience.js?v=20261008a"').replace(/src=(["'])\/protected-notes\.js(?:\?[^"']*)?\1/g,'src="/protected-notes.js?v=20261008a"');
+if(file.href===new URL('index.html',out).href&&!html.includes('/brand-highlights.js'))html=html.replace('</body>','<script type="module" src="/brand-highlights.js?v=20261008"></script></body>');
 if(file.href===new URL('index.html',out).href){
  html=html.replace(/<link\b[^>]*rel=["']preload["'][^>]*>/gi,tag=>/board-scene|cork-board|pen-/.test(tag)?'':tag);
  html=html.replace(/<link\b[^>]*rel=["']stylesheet["'][^>]*>/gi,tag=>{
@@ -92,7 +94,7 @@ if(file.href===new URL('index.html',out).href){
  const workspaceLink='<link rel="stylesheet" href="/'+workspaceStyles+'" precedence="vite-rsc/importer-resources" data-rsc-css-href="/'+workspaceStyles+'">';
  html=html.replace(/(<meta\b[^>]*charset[^>]*>)/i,'$1<link rel="preload" as="style" href="/'+workspaceStyles+'">');
  html=html.replace('</head>',workspaceLink+'</head>');
- html=html.replace('</head>','<link rel="modulepreload" href="/board-tools.js?v=2"><link rel="modulepreload" href="/board-layout.js"><link rel="modulepreload" href="/ui-ready.js"></head>');
+ html=html.replace('</head>','<link rel="modulepreload" href="/board-tools.js?v=20261008a"><link rel="modulepreload" href="/board-layout.js?v=20261008a"><link rel="modulepreload" href="/board-preferences.js?v=20261008a"><link rel="modulepreload" href="/ui-ready.js"></head>');
 }
 html=html.replace(/<meta name="theme-color" content="[^"]*"\s*\/?\s*>/g,'<meta name="theme-color" content="'+themeColor+'">');await writeFile(file,html);}
 console.log('Staged WPO/PWA, public search and accessible tools. Captured API data excluded.');

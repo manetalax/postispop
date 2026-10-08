@@ -1,4 +1,4 @@
-import { boardPageSize, boardPageCount, boardViewLabel, clampBoardView } from './board-view-model.js';
+import { boardPageSize, boardPageCount, boardViewLabel, clampBoardView } from './board-view-model.js?v=20261008a';
 import { whenReactReady } from './ui-ready.js';
 import { attachmentNoteIds } from './backup-import.js';
 import { readBoardLanguage } from './seo-language.js';
@@ -189,6 +189,10 @@ function update() {
   add.title = total >= 6 ? 'Añadir nota · sujeto al límite de tu cuenta' : 'Añadir nota';
   let empty = frame.querySelector('.pp-empty-search');
   if (!empty) { empty = element('p', 'pp-empty-search', 'No hay notas que coincidan. Prueba otro texto o color.'); frame.append(empty); }
+  if(data.dataset.favoritesOnly==='true'){
+    const favoritesEmpty={es:'Aún no tienes notas favoritas.',en:'You do not have any favourite notes yet.',de:'Du hast noch keine Favoriten.',fr:'Vous n’avez pas encore de notes favorites.',pt:'Ainda não tens notas favoritas.',it:'Non hai ancora note preferite.',ja:'お気に入りのノートはまだありません。',ko:'아직 즐겨찾는 메모가 없습니다.'};
+    empty.textContent=favoritesEmpty[language]||favoritesEmpty.es;
+  }else empty.textContent='No hay notas que coincidan. Prueba otro texto o color.';
   empty.hidden = count !== 0;
   for (const note of frame.querySelectorAll('.sticky-note[data-note-id]')) {
     const text = note.querySelector('.note-text')?.textContent.trim();

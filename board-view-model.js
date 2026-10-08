@@ -1,4 +1,5 @@
 /** Paging is zero based; every note belongs to exactly one page. */
+import { readBoardPreferences } from './board-preferences.js?v=20261008a';
 export const mobileBoardQuery = '(max-width:700px), (max-width:1000px) and (max-height:500px) and (orientation:landscape)';
 export function boardPageSize(count, compact = typeof matchMedia === 'function' && matchMedia(mobileBoardQuery).matches) {
   return compact || count <= 6 ? 6 : 12;
@@ -19,7 +20,8 @@ export function boardViewNotes(notes, view, size = boardPageSize(notes.length)) 
 export function boardViewLabel(view, count, size = boardPageSize(count)) {
   return `Página ${clampBoardView(view, count, size) + 1} de ${boardPageCount(count, size)}`;
 }
-export function filterBoardNotes(notes, { query = '', color = '' } = {}) {
+export function filterBoardNotes(notes, { query = '', color = '', favoritesOnly = false, boardId = '' } = {}) {
   const normalized = String(query).trim().toLocaleLowerCase();
-  return notes.filter(note => (!normalized || (!note.protectedEnvelope && String(note.text || '').toLocaleLowerCase().includes(normalized))) && (color === '' || String(note.paper) === String(color)));
+  const favorites=favoritesOnly?new Set(readBoardPreferences(boardId).favorites):null;
+  return notes.filter(note => (!normalized || (!note.protectedEnvelope && String(note.text || '').toLocaleLowerCase().includes(normalized))) && (color === '' || String(note.paper) === String(color)) && (!favorites || favorites.has(note.id)));
 }

@@ -82,7 +82,7 @@
 @media(prefers-reduced-motion:reduce){.pp-design-tools *{animation:none!important;transition:none!important}}
 /* Disclosure controls the original React-owned secondary sections without
    reparenting them. Any existing picture remains visible in the note. */
-.editor-dialog .edit-paper[data-pp-secondary=closed] :is(.note-customization,.pen-tray,.pp-attachments),
+.editor-dialog .edit-paper[data-pp-secondary=closed] :is(.note-customization,.pen-tray),
 .editor-dialog .edit-paper[data-pp-secondary=closed] .capture-editor:not(:has(.capture-preview)),
 .editor-dialog .edit-paper[data-pp-secondary=closed] .capture-actions{display:none!important}
 .editor-dialog .edit-paper .editor-actions button{display:inline-flex;align-items:center;justify-content:center;min-width:42px;width:42px;height:42px;min-height:42px;padding:9px;font-size:0;gap:0;border:0;border-radius:10px;background:transparent}
