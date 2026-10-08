@@ -1,17 +1,19 @@
-# Activación de pagos
+# Activación de pagos de PostisPop
 
 Configurar en Supabase Edge Function Secrets (nunca en archivos públicos):
 
-- STRIPE_SECRET_KEY: clave del entorno elegido, con permiso para crear/leer Checkout Sessions.
-- STRIPE_WEBHOOK_SECRET: secreto del endpoint Stripe correspondiente al mismo entorno.
+- STRIPE_PAYMENTS_ENABLED=true para activar los cobros reales.
+- STRIPE_SECRET_KEY: clave restringida Live (`rk_live_`) con Checkout Sessions (lectura y escritura), Customer Portal (escritura), Prices (lectura) y Subscriptions (lectura).
+- STRIPE_WEBHOOK_SECRET: secreto de firma del endpoint Stripe Live de abajo.
+- SUPABASE_SERVICE_ROLE_KEY debe estar disponible para la función; nunca se envía al navegador.
 
 Endpoint del webhook:
 https://htfyjefmviwlgmfqrwue.supabase.co/functions/v1/postispop-commerce/webhook
 
-Eventos: checkout.session.completed y checkout.session.async_payment_succeeded.
+Eventos: `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `invoice.paid` y `customer.subscription.deleted`.
 
-La función comprueba firma, fecha de firma, sesión pagada, modo de Stripe, cuenta, artículo, importe y moneda; los reintentos no duplican la concesión. La vuelta desde Stripe consulta nuevamente al proveedor; nunca desbloquea basándose solo en la URL. Las tablas impiden a los usuarios concederse artículos o ampliar su prueba.
+El catálogo habilita Checkout solo si las cuatro tarifas Live están activas y sus ID, importe, moneda, periodicidad y modo coinciden. La función comprueba firma, fecha de firma, sesión pagada, modo de Stripe, cuenta, artículo, importe y moneda; los reintentos no duplican la concesión. La vuelta desde Stripe reconcilia con el proveedor; nunca desbloquea basándose solo en la URL.
 
-Antes de activar cobros reales, probar en Stripe test: pago correcto, cancelación, pago pendiente, webhook repetido, recuperación en otro dispositivo y cuenta equivocada. Revisar también devoluciones: esta primera integración no revoca automáticamente permisos por reembolso. Las compras históricas de los enlaces anteriores sin identificación de cuenta requieren conciliación independiente.
+La suscripción mensual cuesta 2,95 €, la trimestral 5,95 € cada tres meses y la anual 19,95 €; la tarifa vitalicia es un único pago de 59,95 €. Premium se concede solo tras un pago confirmado. Las suscripciones conservan acceso hasta el fin del periodo pagado y el portal permite administrarlas.
 
-El endpoint `/status` solo devuelve si están configurados los dos secretos; no devuelve sus valores. `checkoutReady` no constituye una prueba de pago extremo a extremo.
+El endpoint `/status` no devuelve credenciales. `checkoutReady` comprueba configuración y precios Live; por sí solo no demuestra un pago extremo a extremo.

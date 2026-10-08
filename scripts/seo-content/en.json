@@ -141,7 +141,7 @@
     "¿PostisPop decide cuál es la mejor idea?": "Does PostisPop decide which idea is best?",
     "No. Te permite ver y comparar tus propuestas. Tú eliges los criterios y decides qué experimento realizar.": "No. It lets you see and compare your proposals. You choose the criteria and decide which experiment to run.",
     "Gratis o Premium · PostisPop": "Free or Premium · PostisPop",
-    "Empieza con 6 notas gratis. Un único Premium: 2,95 € al mes, 9,95 € al año o 59,95 € de por vida. Compras próximamente.": "Start with 6 free notes. One Premium plan: €2.95 per month, €9.95 per year or €59.95 for life. Purchases coming soon.",
+    "Empieza con 6 notas gratis. Un único Premium: 2,95 € al mes, 19,95 € al año o 59,95 € de por vida. Compras próximamente.": "Start with 6 free notes. One Premium plan: €2.95 per month, €19.95 per year or €59.95 for life. Purchases coming soon.",
     "Saltar al contenido": "Skip to content",
     "PostisPop, volver a mis notas": "PostisPop, back to my notes",
     "Mis notas": "My notes",
@@ -177,7 +177,7 @@
     "Premium mensual, 2,95 euros al mes. Próximamente": "Monthly Premium, €2.95 per month. Coming soon",
     "Anual": "Yearly",
     "al año": "per year",
-    "Premium anual, 9,95 euros al año. Próximamente": "Yearly Premium, €9.95 per year. Coming soon",
+    "Premium anual, 19,95 euros al año. Próximamente": "Yearly Premium, €19.95 per year. Coming soon",
     "De por vida": "Lifetime",
     "pago único": "one-time payment",
     "Premium de por vida, 59,95 euros. Próximamente": "Lifetime Premium, €59.95. Coming soon",
@@ -236,7 +236,7 @@
     "Sin cuenta, notas y adjuntos permanecen en este dispositivo. Guarda una copia antes de borrar datos del navegador. La conexión y la cuenta son necesarias para sincronizar o compartir; comprueba siempre el estado de guardado.": "Without an account, notes and attachments stay on this device. Save a backup before clearing browser data. A connection and an account are needed to sync or share; always check the save status.",
     "Proteger una nota": "Protecting a note",
     "El candado de la nota permite cifrar texto, dibujo y adjuntos locales con contraseña. Guárdala aparte: no existe recuperación de contraseña.": "The note's padlock lets you encrypt text, drawings and local attachments with a password. Keep it separately: there is no password recovery.",
-    "Gratis incluye seis notas. Premium estará disponible por 2,95 €/mes, 9,95 €/año o 59,95 € de por vida. Las compras todavía no están activadas.": "Free includes six notes. Premium will be available for €2.95/month, €9.95/year or €59.95 for life. Purchases are not enabled yet.",
+    "Gratis incluye seis notas. Premium estará disponible por 2,95 €/mes, 19,95 €/año o 59,95 € de por vida. Las compras todavía no están activadas.": "Free includes six notes. Premium will be available for €2.95/month, €19.95/year or €59.95 for life. Purchases are not enabled yet.",
     "Descargas · PostisPop": "Downloads · PostisPop",
     "Instala PostisPop y consulta las descargas para Android, iPhone, iPad, Windows, macOS y Linux.": "Install PostisPop and check downloads for Android, iPhone, iPad, Windows, macOS and Linux.",
     "Guía de instalación": "Installation guide",
@@ -399,7 +399,28 @@
     "5. Contacto": "5. Contact",
     "Para dudas sobre estas tecnologías escribe a": "For questions about these technologies, write to",
     ". Puedes consultar también nuestra": ". You can also read our",
-    "La ruleta no forma parte de la oferta actual de PostisPop. El texto de esta sección se conserva como referencia de las condiciones de esa función. Su publicación no habilita nuevas participaciones ni modifica las condiciones aplicables a las participaciones ya realizadas.": "The roulette is not part of the current PostisPop offering. The text of this section is retained as a reference to the terms of that feature. Its publication does not enable new participation or change the terms applicable to participation that has already taken place."
+    "La ruleta no forma parte de la oferta actual de PostisPop. El texto de esta sección se conserva como referencia de las condiciones de esa función. Su publicación no habilita nuevas participaciones ni modifica las condiciones aplicables a las participaciones ya realizadas.": "The roulette is not part of the current PostisPop offering. The text of this section is retained as a reference to the terms of that feature. Its publication does not enable new participation or change the terms applicable to participation that has already taken place.",
+    "Trimestral": "Quarterly",
+    "cada 3 meses": "every 3 months",
+    "Premium trimestral, 5,95 euros cada 3 meses. Próximamente": "Quarterly Premium, €5.95 every 3 months. Coming soon",
+    "Empieza con 6 notas gratis. Un único Premium: 2,95 € al mes, 5,95 € cada tres meses, 19,95 € al año o 59,95 € de por vida.": "Start with 6 free notes. One Premium plan: €2.95 per month, €5.95 every 3 months, €19.95 per year or €59.95 for life.",
+    "6 notas gratis. Premium: 2,95 € al mes, 5,95 € cada 3 meses, 19,95 € al año o 59,95 € de por vida.": "6 free notes. Premium: €2.95 per month, €5.95 every 3 months, €19.95 per year or €59.95 for life.",
+    "No. Mensual, trimestral, anual y de por vida dan acceso al mismo Premium. Solo cambia la forma de pago.": "No. Monthly, quarterly, yearly and lifetime options give access to the same Premium plan. Only the payment option changes.",
+    "Conectar con Stripe…": "Connect to Stripe…",
+    "Gratis incluye seis notas. Premium está previsto por 2,95 € al mes, 5,95 € cada 3 meses, 19,95 € al año o 59,95 € de por vida. Las nuevas compras todavía no están activadas.": "Free includes six notes. Premium is planned at €2.95 per month, €5.95 every 3 months, €19.95 per year or €59.95 for life. New purchases are not enabled yet.",
+    "Gratis incluye seis notas. Premium estará disponible por 2,95 €/mes, 5,95 € cada 3 meses, 19,95 €/año o 59,95 € de por vida. Las compras todavía no están activadas.": "Free includes six notes. Premium will be available for €2.95/month, €5.95 every 3 months, €19.95/year or €59.95 for life. Purchases are not enabled yet.",
+    "Todo a la vista. Así de simple.": "Everything in view. Simple as that.",
+    "Empieza con 6 notas. Grandes, claras y siempre a mano.": "Start with 6 notes. Clear, spacious and always close at hand.",
+    "Comprobando disponibilidad…": "Checking availability…",
+    "Más notas. La misma sencillez.": "More notes. Same simplicity.",
+    "30 días para usar todas las notas. Después, Premium mantiene accesibles las notas 7 en adelante.": "Use all your notes for 30 days. After that, Premium keeps notes 7 and beyond available.",
+    "Sin Premium, esas notas quedan bloqueadas durante 30 días y luego se eliminan.": "Without Premium, those notes are locked for 30 days and then deleted.",
+    "Los planes mensual, trimestral y anual se renuevan automáticamente hasta que los canceles. Puedes administrar o cancelar la suscripción desde Stripe. El plan de por vida es un único pago.": "Monthly, quarterly and yearly plans renew automatically until cancelled. You can manage or cancel your subscription through Stripe. Lifetime is a one-time payment.",
+    "Comprobando si los pagos están configurados.": "Checking whether payments are configured.",
+    "Administrar mi suscripción": "Manage my subscription",
+    "¿Qué pasa con mis notas después de 30 días?": "What happens to my notes after 30 days?",
+    "Después de la prueba, puedes seguir leyendo las notas 1 a 6 gratis. Las demás se bloquean durante 30 días y muestran el tiempo restante antes de eliminarse. Premium las desbloquea y las conserva.": "After the trial, you can keep reading notes 1 to 6 for free. The rest are locked for 30 days and show the time left before deletion. Premium unlocks and keeps them.",
+    "Al registrarte, tienes 30 días para usar todas las notas. Después, las notas 1–6 siguen siendo gratuitas. Las demás se bloquean durante 30 días y muestran cuánto falta para borrarse; Premium las desbloquea y las conserva. Los precios son 2,95 €/mes, 5,95 € cada 3 meses, 19,95 €/año o 59,95 € de por vida. Las suscripciones se renuevan automáticamente hasta cancelarlas.": "When you register, you get 30 days to use all your notes. Afterwards, notes 1–6 remain free to read. The rest are locked for 30 days and show how long remains before deletion; Premium unlocks and keeps them. Prices are €2.95/month, €5.95 every 3 months, €19.95/year or €59.95 for lifetime access. Subscriptions renew automatically until cancelled."
   },
   "home": {
     "title": "Free online sticky notes and idea board | PostisPop",
@@ -433,7 +454,7 @@
         "heading": "Share with clear expectations.",
         "paragraphs": [
           "Editable links and invitations are under review. You can prepare a board and share an export yourself, but that copy does not update when you change the notes.",
-          "Free includes six notes. Premium is planned at €2.95 per month, €9.95 per year or €59.95 for life. New purchases are not enabled yet."
+          "Free includes six notes. Premium is planned at €2.95 per month, €5.95 every 3 months, €19.95 per year or €59.95 for life. New purchases are not enabled yet."
         ]
       },
       {

@@ -141,7 +141,7 @@
     "¿PostisPop decide cuál es la mejor idea?": "O PostisPop decide qual é a melhor ideia?",
     "No. Te permite ver y comparar tus propuestas. Tú eliges los criterios y decides qué experimento realizar.": "Não. Ele permite visualizar e comparar suas propostas. Você escolhe os critérios e decide qual experimento realizar.",
     "Gratis o Premium · PostisPop": "Grátis ou Premium · PostisPop",
-    "Empieza con 6 notas gratis. Un único Premium: 2,95 € al mes, 9,95 € al año o 59,95 € de por vida. Compras próximamente.": "Comece com 6 notas grátis. Um único Premium: 2,95 € por mês, 9,95 € por ano ou 59,95 € vitalício. Compras em breve.",
+    "Empieza con 6 notas gratis. Un único Premium: 2,95 € al mes, 19,95 € al año o 59,95 € de por vida. Compras próximamente.": "Comece com 6 notas grátis. Um único Premium: 2,95 € por mês, 19,95 € por ano ou 59,95 € vitalício. Compras em breve.",
     "Saltar al contenido": "Pular para o conteúdo",
     "PostisPop, volver a mis notas": "PostisPop, voltar às minhas notas",
     "Mis notas": "Minhas notas",
@@ -177,7 +177,7 @@
     "Premium mensual, 2,95 euros al mes. Próximamente": "Premium mensal, 2,95 euros por mês. Em breve",
     "Anual": "Anual",
     "al año": "por ano",
-    "Premium anual, 9,95 euros al año. Próximamente": "Premium anual, 9,95 euros por ano. Em breve",
+    "Premium anual, 19,95 euros al año. Próximamente": "Premium anual, 19,95 euros por ano. Em breve",
     "De por vida": "Vitalício",
     "pago único": "pagamento único",
     "Premium de por vida, 59,95 euros. Próximamente": "Premium vitalício, 59,95 euros. Em breve",
@@ -236,7 +236,7 @@
     "Sin cuenta, notas y adjuntos permanecen en este dispositivo. Guarda una copia antes de borrar datos del navegador. La conexión y la cuenta son necesarias para sincronizar o compartir; comprueba siempre el estado de guardado.": "Sem conta, as notas e os anexos permanecem neste dispositivo. Salve uma cópia antes de apagar os dados do navegador. Conexão e conta são necessárias para sincronizar ou compartilhar; confira sempre o status do salvamento.",
     "Proteger una nota": "Proteger uma nota",
     "El candado de la nota permite cifrar texto, dibujo y adjuntos locales con contraseña. Guárdala aparte: no existe recuperación de contraseña.": "O cadeado da nota permite criptografar texto, desenho e anexos locais com uma senha. Guarde-a separadamente: não há recuperação de senha.",
-    "Gratis incluye seis notas. Premium estará disponible por 2,95 €/mes, 9,95 €/año o 59,95 € de por vida. Las compras todavía no están activadas.": "Grátis inclui seis notas. O Premium estará disponível por 2,95 €/mês, 9,95 €/ano ou 59,95 € vitalício. As compras ainda não estão ativadas.",
+    "Gratis incluye seis notas. Premium estará disponible por 2,95 €/mes, 19,95 €/año o 59,95 € de por vida. Las compras todavía no están activadas.": "Grátis inclui seis notas. O Premium estará disponível por 2,95 €/mês, 19,95 €/ano ou 59,95 € vitalício. As compras ainda não estão ativadas.",
     "Descargas · PostisPop": "Downloads · PostisPop",
     "Instala PostisPop y consulta las descargas para Android, iPhone, iPad, Windows, macOS y Linux.": "Instale o PostisPop e consulte os downloads para Android, iPhone, iPad, Windows, macOS e Linux.",
     "Guía de instalación": "Guia de instalação",
@@ -399,7 +399,28 @@
     "5. Contacto": "5. Contato",
     "Para dudas sobre estas tecnologías escribe a": "Para dúvidas sobre essas tecnologias, escreva para",
     ". Puedes consultar también nuestra": ". Você também pode consultar nossa",
-    "La ruleta no forma parte de la oferta actual de PostisPop. El texto de esta sección se conserva como referencia de las condiciones de esa función. Su publicación no habilita nuevas participaciones ni modifica las condiciones aplicables a las participaciones ya realizadas.": "A roleta não faz parte da oferta atual do PostisPop. O texto desta seção é mantido como referência às condições dessa função. Sua publicação não permite novas participações nem altera as condições aplicáveis às participações já realizadas."
+    "La ruleta no forma parte de la oferta actual de PostisPop. El texto de esta sección se conserva como referencia de las condiciones de esa función. Su publicación no habilita nuevas participaciones ni modifica las condiciones aplicables a las participaciones ya realizadas.": "A roleta não faz parte da oferta atual do PostisPop. O texto desta seção é mantido como referência às condições dessa função. Sua publicação não permite novas participações nem altera as condições aplicáveis às participações já realizadas.",
+    "Trimestral": "Trimestral",
+    "cada 3 meses": "a cada 3 meses",
+    "Premium trimestral, 5,95 euros cada 3 meses. Próximamente": "Premium trimestral, 5,95 € a cada 3 meses. Em breve",
+    "Empieza con 6 notas gratis. Un único Premium: 2,95 € al mes, 5,95 € cada tres meses, 19,95 € al año o 59,95 € de por vida.": "Comece com 6 notas grátis. Um único Premium: 2,95 € por mês, 5,95 € a cada 3 meses, 19,95 € por ano ou 59,95 € vitalício.",
+    "6 notas gratis. Premium: 2,95 € al mes, 5,95 € cada 3 meses, 19,95 € al año o 59,95 € de por vida.": "6 notas grátis. Premium: 2,95 € por mês, 5,95 € a cada 3 meses, 19,95 € por ano ou 59,95 € vitalício.",
+    "No. Mensual, trimestral, anual y de por vida dan acceso al mismo Premium. Solo cambia la forma de pago.": "Não. As opções mensal, trimestral, anual e vitalícia dão acesso ao mesmo Premium. Só muda a forma de pagamento.",
+    "Conectar con Stripe…": "Conectar ao Stripe…",
+    "Gratis incluye seis notas. Premium está previsto por 2,95 € al mes, 5,95 € cada 3 meses, 19,95 € al año o 59,95 € de por vida. Las nuevas compras todavía no están activadas.": "Grátis inclui seis notas. O Premium está previsto por 2,95 € por mês, 5,95 € a cada 3 meses, 19,95 € por ano ou 59,95 € vitalício. As novas compras ainda não estão ativadas.",
+    "Gratis incluye seis notas. Premium estará disponible por 2,95 €/mes, 5,95 € cada 3 meses, 19,95 €/año o 59,95 € de por vida. Las compras todavía no están activadas.": "Grátis inclui seis notas. O Premium estará disponível por 2,95 €/mês, 5,95 € a cada 3 meses, 19,95 €/ano ou 59,95 € vitalício. As compras ainda não estão ativadas.",
+    "Todo a la vista. Así de simple.": "Tudo à vista. Simples assim.",
+    "Empieza con 6 notas. Grandes, claras y siempre a mano.": "Começa com 6 notas. Claras, espaçosas e sempre à mão.",
+    "Comprobando disponibilidad…": "A verificar disponibilidade…",
+    "Más notas. La misma sencillez.": "Mais notas. A mesma simplicidade.",
+    "30 días para usar todas las notas. Después, Premium mantiene accesibles las notas 7 en adelante.": "Usa todas as notas durante 30 dias. Depois, o Premium mantém acessíveis as notas 7 em diante.",
+    "Sin Premium, esas notas quedan bloqueadas durante 30 días y luego se eliminan.": "Sem Premium, essas notas ficam bloqueadas durante 30 dias e depois são eliminadas.",
+    "Los planes mensual, trimestral y anual se renuevan automáticamente hasta que los canceles. Puedes administrar o cancelar la suscripción desde Stripe. El plan de por vida es un único pago.": "Os planos mensal, trimestral e anual renovam-se automaticamente até serem cancelados. Podes gerir ou cancelar a subscrição através do Stripe. O acesso vitalício é um pagamento único.",
+    "Comprobando si los pagos están configurados.": "A verificar se os pagamentos estão configurados.",
+    "Administrar mi suscripción": "Gerir a minha subscrição",
+    "¿Qué pasa con mis notas después de 30 días?": "O que acontece às minhas notas após 30 dias?",
+    "Después de la prueba, puedes seguir leyendo las notas 1 a 6 gratis. Las demás se bloquean durante 30 días y muestran el tiempo restante antes de eliminarse. Premium las desbloquea y las conserva.": "Depois do período experimental, podes continuar a ler gratuitamente as notas 1 a 6. As restantes ficam bloqueadas durante 30 dias e mostram o tempo que falta para serem eliminadas. O Premium desbloqueia-as e conserva-as.",
+    "Al registrarte, tienes 30 días para usar todas las notas. Después, las notas 1–6 siguen siendo gratuitas. Las demás se bloquean durante 30 días y muestran cuánto falta para borrarse; Premium las desbloquea y las conserva. Los precios son 2,95 €/mes, 5,95 € cada 3 meses, 19,95 €/año o 59,95 € de por vida. Las suscripciones se renuevan automáticamente hasta cancelarlas.": "Ao registares-te, tens 30 dias para usar todas as notas. Depois, as notas 1–6 continuam gratuitas para ler. As restantes ficam bloqueadas durante 30 dias e mostram quanto falta para serem eliminadas; o Premium desbloqueia-as e conserva-as. Preços: 2,95 €/mês, 5,95 € a cada 3 meses, 19,95 €/ano ou 59,95 € vitalícios. As subscrições renovam-se automaticamente até serem canceladas."
   },
   "home": {
     "title": "Notas adesivas online grátis e quadro de ideias | PostisPop",
@@ -433,7 +454,7 @@
         "heading": "Compartilhe com expectativas claras.",
         "paragraphs": [
           "Os links editáveis e os convites estão em revisão. Você pode preparar um quadro e compartilhar uma exportação pelos seus próprios meios, mas essa cópia não é atualizada quando as notas mudam.",
-          "Grátis inclui seis notas. O Premium está previsto por 2,95 € por mês, 9,95 € por ano ou 59,95 € vitalício. As novas compras ainda não estão ativadas."
+          "Grátis inclui seis notas. O Premium está previsto por 2,95 € por mês, 5,95 € a cada 3 meses, 19,95 € por ano ou 59,95 € vitalício. As novas compras ainda não estão ativadas."
         ]
       },
       {

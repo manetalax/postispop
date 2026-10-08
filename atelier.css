@@ -50,14 +50,19 @@ h2 { font-size: 20px; letter-spacing: -.4px; margin: 0; }
 .premium-benefits { list-style: none; padding: 0; margin: 22px 0 28px; font-size: 13px; line-height: 1.6; }
 .premium-benefits li { padding-left: 22px; position: relative; margin: 9px 0; }
 .premium-benefits li::before { content: "✓"; position: absolute; left: 0; color: #55704e; }
-.payment-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.payment-options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 .payment-option { min-width: 0; padding: 18px 12px 12px; border: 1px solid #d5dece; border-radius: 15px; background: #ffffff85; }
 .payment-option h3 { font-size: 13px; font-weight: 650; margin: 0 0 18px; }
 .price { font-size: clamp(23px, 2.6vw, 32px); white-space: nowrap; letter-spacing: -1.2px; margin: 0; font-weight: 650; }
 .price span { font-size: .6em; font-weight: 500; }
 .period { font-size: 11px; color: #697769; margin: 5px 0 20px; }
+.payment-disclosure { margin: 16px 0 0; color: #58665d; font-size: 12px; line-height: 1.65; }
 .payment-option button { min-height: 42px; width: 100%; padding: 10px 3px; border: 1px solid #d2dccb; border-radius: 8px; background: #e6ecdf; color: #55694e; font-size: 11px; font-weight: 650; cursor: not-allowed; opacity: 1; }
+.payment-option button[data-ready="true"] { color: white; border-color: #315c50; background: #315c50; cursor: pointer; }
+.payment-option button[data-ready="true"]:hover { background: #264d42; }
+.payment-option button:disabled { cursor: not-allowed; }
 .purchase-status { margin: 16px 0 0; color: #697769; font-size: 11px; line-height: 1.6; }
+.subscription-manage { min-height: 44px; margin-top: 10px; border: 1px solid #bfcdbc; border-radius: 9px; padding: 9px 14px; background: #fff; color: #315c50; font-size: 12px; font-weight: 650; cursor: pointer; }
 .pricing-questions { max-width: 730px; margin: 48px auto 0; }
 details { border-bottom: 1px solid #dde3d9; padding: 4px 0; }
 summary { min-height: 52px; padding: 16px 2px; font-size: 14px; font-weight: 550; cursor: pointer; }
