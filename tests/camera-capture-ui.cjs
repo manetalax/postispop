@@ -33,7 +33,7 @@ test('Camera captures a photo under 128 KB and records a five-minute-budget vide
       const db=await new Promise((resolve,reject)=>{const r=indexedDB.open('postispop-note-attachments',1);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});
       const rows=await new Promise((resolve,reject)=>{const tx=db.transaction('attachments','readonly'),r=tx.objectStore('attachments').getAll();r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});db.close();return rows.find(row=>row.type?.startsWith('video/'));
     });
-    assert.ok(video,'camera video is saved to the note');assert.ok(video.size<5*1024*1024,'camera video remains under 5 MB');
+    assert.ok(video,'camera video is saved to the note');assert.ok(video.size<5_000_000,'camera video remains under 5 decimal MB');
     assert.deepEqual(errors,[],'camera flow has no uncaught browser errors');
     await page.locator('.pp-camera-close').click();
   }finally{await browser.close();}
