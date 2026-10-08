@@ -1,8 +1,12 @@
 import {track} from './usage-metrics.js';
 import {drawStrokes} from './style-model.js';
-import {normalizeBackup,LOCAL_BACKUP_BYTES,createBoardBackup,verifyBackupAttachments} from './backup-import.js';
+import {normalizeBackup,LOCAL_BACKUP_BYTES,createBoardBackup,verifyBackupAttachments} from './backup-import.js?v=20261008a';
+import {readBoardLanguage} from './seo-language.js';
 
 let tools=null, options=null, searchTools=null, lastFocus=null;
+let favoritesOnly=false;
+const favoriteLabels={es:'Favoritos',en:'Favoritos',de:'Favoriten',fr:'Favoris',pt:'Favoritos',it:'Preferiti',ja:'お気に入り',ko:'즐겨찾기'};
+const favoriteStatus={es:'Mostrando tus favoritos.',en:'Showing your favourites.',de:'Deine Favoriten werden angezeigt.',fr:'Affichage de vos favoris.',pt:'A mostrar os teus favoritos.',it:'Visualizzazione dei preferiti.',ja:'お気に入りを表示しています。',ko:'즐겨찾기를 표시합니다.'};
 export async function download(name,body,type='application/json') {
   const url=URL.createObjectURL(body instanceof Blob?body:new Blob([body],{type}));
   if(window.__postispopNative){
@@ -157,8 +161,8 @@ window.addEventListener('postispop:import-legacy',event=>{showImport(event.detai
 function filter(){
   const query=searchTools.querySelector('[type=search]').value.trim();
   const color=searchTools.querySelector('select').value;
-  window.dispatchEvent(new CustomEvent('postispop:filter',{detail:{query,color}}));
-  message(query||color?'Búsqueda en todas tus notas. Las notas protegidas no exponen su texto.':'');
+  window.dispatchEvent(new CustomEvent('postispop:filter',{detail:{query,color,favoritesOnly}}));
+  message(favoritesOnly?(favoriteStatus[readBoardLanguage()]||favoriteStatus.es):query||color?'Búsqueda en todas tus notas. Las notas protegidas no exponen su texto.':'');
 }
 export function initBoardTools(){
   const board=document.querySelector('.board-frame:not(.is-loading)');if(!board)return;
@@ -170,8 +174,11 @@ export function initBoardTools(){
   searchTools=document.createElement('section');searchTools.className='pp-tools pp-note-search';searchTools.setAttribute('aria-label','Buscar en tus notas');board.before(searchTools);
   const search=document.createElement('input');search.type='search';search.placeholder='Buscar notas o #etiqueta';search.setAttribute('aria-label','Buscar notas o etiquetas');searchTools.append(search);
   const colors=document.createElement('select');colors.setAttribute('aria-label','Filtrar por color');['Todos los colores','Amarillo','Rosa','Azul','Crema','Verde','Violeta'].forEach((label,i)=>{const opt=text('option',label);opt.value=i===0?'':String(i-1);colors.append(opt);});searchTools.append(colors);
+  const favorite=text('button','☆');favorite.type='button';favorite.className='pp-favorites-filter';favorite.setAttribute('aria-pressed','false');favorite.setAttribute('aria-label',favoriteLabels[readBoardLanguage()]||favoriteLabels.es);favorite.title=favorite.getAttribute('aria-label');searchTools.append(favorite);
+  favoritesOnly=false;
+  favorite.addEventListener('click',()=>{favoritesOnly=!favoritesOnly;favorite.textContent=favoritesOnly?'★':'☆';favorite.setAttribute('aria-pressed',String(favoritesOnly));searchTools.classList.toggle('showing-favorites',favoritesOnly);filter();});
   let timer;search.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(filter,180);});colors.addEventListener('change',filter);
-  window.addEventListener('postispop:clear-filter',()=>{if(!searchTools?.contains(search))return;clearTimeout(timer);search.value='';colors.value='';filter();});
+  window.addEventListener('postispop:clear-filter',()=>{if(!searchTools?.contains(search))return;clearTimeout(timer);search.value='';colors.value='';favoritesOnly=false;favorite.textContent='☆';favorite.setAttribute('aria-pressed','false');searchTools.classList.remove('showing-favorites');filter();});
   const operations=[['Guardar una copia',exportJson],['Restaurar una copia',trigger=>showImport(undefined,trigger)],['Descargar imagen',exportPng],['Imprimir',printPdf]];
   operations.forEach(([name,fn])=>{const button=text('button',name);button.type='button';button.addEventListener('click',async()=>{button.disabled=true;try{await fn(button);}catch(error){message(exportError(error));}finally{button.disabled=false;}});tools.append(button);});
   const installHelp=text('a','Descargas e instalación');installHelp.href='/descargas/';tools.append(installHelp);

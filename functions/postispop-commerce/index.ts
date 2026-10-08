@@ -110,6 +110,11 @@ Deno.serve(async(req:Request)=>{
         const invoice=event.data.object,subscriptionId=invoice.parent?.subscription_details?.subscription||invoice.subscription;
         if(subscriptionId)await syncSubscription(typeof subscriptionId==='string'?subscriptionId:subscriptionId.id,'invoice.paid');
       }
+      if(event.type==='invoice.payment_failed') {
+        const invoice=event.data.object,subscriptionId=invoice.parent?.subscription_details?.subscription||invoice.subscription;
+        if(subscriptionId)await syncSubscription(typeof subscriptionId==='string'?subscriptionId:subscriptionId.id,'invoice.payment_failed');
+      }
+      if(event.type==='customer.subscription.updated')await syncSubscription(event.data.object.id,'customer.subscription.updated');
       if(event.type==='customer.subscription.deleted')await syncSubscription(event.data.object.id,'customer.subscription.deleted');
       return reply({received:true});
     }

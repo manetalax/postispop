@@ -17,7 +17,7 @@ async function collectPayload(note){
   for(const key of Object.keys(localStorage))if(key.startsWith('pp:draft:')&&key.endsWith(':'+note.id))throw Error('UNFINISHED_DRAFT');
   if(!note.id.startsWith('guest-')){const pending=await protectedApi('offline/note/'+note.id);if(pending.pending||pending.conflicts)throw Error('PENDING_CHANGES');}
   const files=await attachmentsFor(note.id);if(files.reduce((sum,f)=>sum+(f.blob?.size||0),0)>MAX_ATTACHMENT_BYTES)throw Error('ATTACHMENTS_TOO_LARGE');
-  const attachments=await Promise.all(files.map(async f=>f.kind==='link'?{kind:'link',name:f.name,url:f.url}:{kind:'file',name:f.name,type:f.type||'application/octet-stream',data:bytesToBase64(new Uint8Array(await f.blob.arrayBuffer()))}));
+  const attachments=await Promise.all(files.map(async f=>f.kind==='link'?{kind:'link',name:f.name,url:f.url}:{kind:'file',name:f.name,type:f.type||'application/octet-stream',...(f.compression?{compression:f.compression}:{}),...(f.compression==='gzip'?{originalType:f.originalType||'application/octet-stream'}:{}),data:bytesToBase64(new Uint8Array(await f.blob.arrayBuffer()))}));
   let style=note.style||null;
   if(!note.id.startsWith('guest-')){const data=await protectedApi('designs/styles?note_id='+encodeURIComponent(note.id));style=data.style||data.styles?.find(s=>s.note_id===note.id)||null;note.styleRevision=style?.revision||0;}
   return {text:note.text||'',marks:note.marks||[],paper:note.paper,doodle:note.doodle||'',image:null,style,attachments};
@@ -66,7 +66,7 @@ export function renderProtectedPayload(container,payload,urls=[]){
 }
 function renderAttachments(container,attachments,urls){
   if(!attachments.length)return;const list=node('ul',undefined,'pp-vault-files');
-  attachments.forEach(item=>{const li=node('li'),a=node('a',item.name);if(item.kind==='link'){a.href=item.url;a.target='_blank';a.rel='noopener noreferrer';}else{const url=URL.createObjectURL(new Blob([base64ToBytes(item.data)],{type:'application/octet-stream'}));urls.push(url);a.href=url;a.download=item.name;}li.append(a);list.append(li);});container.append(list);
+  attachments.forEach(item=>{const shownName=item.compression==='gzip'?item.name.replace(/\.gz$/,''):item.name,li=node('li'),a=node('a',shownName);if(item.kind==='link'){a.href=item.url;a.target='_blank';a.rel='noopener noreferrer';}else if(item.compression==='gzip'&&window.DecompressionStream){a.href='#';a.addEventListener('click',async event=>{event.preventDefault();try{const blob=new Blob([base64ToBytes(item.data)],{type:'application/gzip'}),bytes=await new Response(blob.stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer(),url=URL.createObjectURL(new Blob([bytes],{type:item.originalType||item.type||'application/octet-stream'})),download=node('a');urls.push(url);download.href=url;download.download=shownName;download.click();}catch{const url=URL.createObjectURL(new Blob([base64ToBytes(item.data)],{type:'application/gzip'}));urls.push(url);const download=node('a');download.href=url;download.download=`${item.name}.gz`;download.click();}});}else{const url=URL.createObjectURL(new Blob([base64ToBytes(item.data)],{type:item.type||'application/octet-stream'}));urls.push(url);a.href=url;a.download=item.name;}li.append(a);list.append(li);});container.append(list);
 }
 async function shareControls(el,note,status){
   if(note.id.startsWith('guest-')){el.append(node('p','Las notas de invitado permanecen en este dispositivo. Para compartir por WhatsApp se necesita una nota de una cuenta y conexión.','pp-vault-help'));return;}

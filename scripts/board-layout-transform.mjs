@@ -7,22 +7,24 @@ export function transformBoardLayout(source){
  replace('return n(`es`),i(Pd(`store-theme`,`neutral`)),Rt()', 'return n(ppBoardLanguage()),ppConsumeBoardLanguage(),i(Pd(`store-theme`,`neutral`)),Rt()');
  replace('Object.entries($u).filter(([e])=>e===`es`).map', 'Object.entries($u).map');
  replace('./assets/postispop-logo.png','./assets/postispop-logo.svg');
- source='import {mobileBoardQuery as ppBoardMedia,nextBoardView as ppBoardNext,boardViewNotes as ppBoardSlice,clampBoardView as ppBoardClamp,filterBoardNotes as ppBoardFilter} from "../../../board-view-model.js";'+source;
+ source='import {mobileBoardQuery as ppBoardMedia,nextBoardView as ppBoardNext,boardViewNotes as ppBoardSlice,clampBoardView as ppBoardClamp,filterBoardNotes as ppBoardFilter} from "../../../board-view-model.js?v=20261008a";import {sortBoardNotes as ppSortBoardNotes} from "../../../board-preferences.js?v=20261008a";'+source;
  replace('function Nd(e,t){return t===1?e.slice(0,6):t===2?e.slice(6,12):e.slice(0,12)}','function Nd(e,t){return ppBoardSlice(e,t)}');
  replace('onClick:()=>A((O+1)%3)','onClick:()=>A(ppBoardNext(O,xn.length))');
  replace('[O,A]=(0,u.useState)(0)','[O,A]=(0,u.useState)(0),[ppSearch,ppSetSearch]=(0,u.useState)({query:``,color:``})');
- replace('Sn=Nd(xn,O);return',`ppMatches=ppBoardFilter(xn,ppSearch),Sn=Nd(ppMatches,O);
+ replace('Sn=Nd(xn,O);return',`ppMatches=ppBoardFilter(ppSortBoardNotes(xn,a?.id),{...ppSearch,boardId:a?.id}),Sn=Nd(ppMatches,O);
  (0,u.useEffect)(()=>{
    const mq=matchMedia(ppBoardMedia);
    const change=()=>A(current=>ppBoardClamp(current,G.current.data?.order?.length||0));
    const refresh=async event=>{if(event.detail?.boardId!==G.current.data?.id)return;try{await It(event.detail.boardId);if(Number.isFinite(event.detail.view))A(event.detail.view)}catch(error){jt(error)}};
    const page=event=>A(Number.isFinite(event.detail?.page)?event.detail.page:0);
    const filter=event=>{ppSetSearch(event.detail||{});A(0)};
+   const preferences=event=>{if(event.detail?.boardId===G.current.data?.id)ppSetSearch(current=>({...current,refresh:Date.now()}))};
    window.addEventListener('postispop:board-reload',refresh);
    window.addEventListener('postispop:page',page);
    window.addEventListener('postispop:filter',filter);
+   window.addEventListener('postispop:note-preferences',preferences);
    mq.addEventListener('change',change);
-   return()=>{window.removeEventListener('postispop:board-reload',refresh);window.removeEventListener('postispop:page',page);window.removeEventListener('postispop:filter',filter);mq.removeEventListener('change',change)};
+   return()=>{window.removeEventListener('postispop:board-reload',refresh);window.removeEventListener('postispop:page',page);window.removeEventListener('postispop:filter',filter);window.removeEventListener('postispop:note-preferences',preferences);mq.removeEventListener('change',change)};
  },[]);
  (0,u.useEffect)(()=>{if(a){A(current=>ppBoardClamp(current,ppMatches.length));document.documentElement.dataset.ppReady='true';window.dispatchEvent(new Event('postispop:ui-ready'))}},[a?.id,ppMatches.length]);return`);
  replace('xn.indexOf(e)===11&&hd(e)?(0,V.jsx)(_d,{lang:t},e.id):','');

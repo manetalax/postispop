@@ -41,10 +41,14 @@ button, summary, a { touch-action: manipulation; }
 .postispop > #pp-learn:empty,
 .postispop > .workspace-foot { display: none!important; }
 .postispop > .workspace-seo-title { display: block!important; position: absolute; width: 1px; height: 1px; margin: 0!important; padding: 0!important; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.postispop .app-header { position: relative; z-index: 20; display: grid!important; grid-template-columns: 156px minmax(0, 1fr) 44px; align-items: center; height: 48px!important; min-height: 48px!important; gap: 16px; margin: 0 0 2px; padding: 0!important; border: 0!important; border-radius: 0!important; background: transparent!important; box-shadow: none!important; }
-.postispop .app-header .brand { grid-column: 1; grid-row: 1; display: inline-flex; align-items: center; width: 148px; min-width: 0; height: 44px; padding: 0; }
-.postispop .brand-logo { display: block; width: 148px!important; height: 37px!important; object-fit: contain; filter: none!important; border-radius: 0; box-shadow: none; }
+.postispop .app-header { position: relative; z-index: 20; display: grid!important; grid-template-columns: 164px minmax(0, 1fr) 44px; align-items: center; height: 76px!important; min-height: 76px!important; gap: 16px; margin: 0 0 2px; padding: 0!important; border: 0!important; border-radius: 0!important; background: transparent!important; box-shadow: none!important; }
+.postispop .app-header .brand { grid-column: 1; grid-row: 1; display: inline-flex; align-items: center; width: 156px; min-width: 0; height: 74px; padding: 0; }
+.postispop .brand-logo { display: block; width: 156px!important; height: 74px!important; object-fit: contain; filter: none!important; border-radius: 0; box-shadow: none; }
 :root[data-color-scheme=dark] .brand-logo { content: url('/assets/postispop-logo-light.svg'); }
+.pp-brand-highlights { box-sizing:border-box; width:min(760px,100%); margin:4px auto 10px; padding:9px 12px; border:1px solid var(--pp-border); border-radius:12px; background:var(--pp-surface); color:var(--pp-text); text-align:center; font:13px/1.45 system-ui,sans-serif; }
+.pp-brand-highlights strong { display:block; font-weight:650; }
+.pp-brand-highlights small { display:block; margin-top:3px; color:var(--pp-muted); font:11px/1.4 system-ui,sans-serif; }
+.editor-dialog .edit-paper[data-pp-secondary=closed] .pp-attachments { display:block!important; }
 .postispop .app-header .header-title { grid-column: 2; grid-row: 1; justify-self: center; min-height: 44px; max-width: min(100%, 500px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0; padding: 6px 10px; border: 0!important; border-radius: 0!important; color: var(--pp-text)!important; background: transparent!important; box-shadow: none!important; font: 600 16px/1.35 ui-sans-serif, system-ui, sans-serif!important; letter-spacing: -.3px; }
 .postispop .app-header .header-title:hover { color: var(--pp-accent)!important; }
 .pp-menu-toggle { grid-column: 3; grid-row: 1; }
@@ -64,6 +68,13 @@ button, summary, a { touch-action: manipulation; }
 .pp-tools.pp-note-search { position: relative; z-index: 10; display: flex; flex-wrap: nowrap; width: min(760px, 100%); max-width: none; box-sizing: border-box; margin: 0 auto 8px; padding: 0; gap: 8px; }
 .pp-note-search input { min-width: 0; width: 100%; flex: 1; height: 42px; border: 1px solid var(--pp-border); border-radius: var(--pp-radius); background: var(--pp-surface); color: var(--pp-text); padding: 8px 14px; font: 14px system-ui; box-shadow: none; }
 .pp-note-search input::placeholder { color: var(--pp-muted); opacity: 1; }
+.pp-note-search > .pp-favorites-filter { width: 44px; min-width: 44px; min-height: 42px; padding: 0; border: 1px solid var(--pp-border); border-radius: var(--pp-radius); background: var(--pp-surface); color: var(--pp-text); font: 24px/1 system-ui; cursor: pointer; }
+.pp-note-search > .pp-favorites-filter[aria-pressed="true"] { background: var(--pp-accent-soft); color: var(--pp-accent-strong,var(--pp-text)); border-color: var(--pp-accent); }
+.pp-note-preferences { position: absolute; z-index: 9; top: 5px; right: 5px; display: flex; gap: 3px; padding: 3px; border: 1px solid #233c3218; border-radius: 999px; background: color-mix(in srgb,var(--pp-surface) 88%,transparent); box-shadow: 0 2px 7px #152a201a; }
+.pp-note-preference { display: grid; place-items: center; width: 30px; height: 30px; min-width: 30px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--pp-text); font: 17px/1 system-ui; cursor: pointer; }
+.pp-note-preference:hover,.pp-note-preference:focus-visible { background: var(--pp-accent-soft); outline: 2px solid var(--pp-focus); outline-offset: 1px; }
+.pp-note-favorite[aria-pressed="true"] { color: #b27a00; }
+.pp-note-pin[aria-pressed="true"] { background: var(--pp-accent-soft); }
 .pp-note-search > select { width: 44px; min-width: 44px; max-width: 44px; min-height: 42px; padding: 0 8px; border: 1px solid var(--pp-border); border-radius: var(--pp-radius); background-color: var(--pp-surface); color: var(--pp-text); font-size: 0; appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23315c50' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a9 9 0 1 0 0 18h1.4a2 2 0 0 0 1.4-3.4 1.2 1.2 0 0 1 .9-2.1H17a4 4 0 0 0 4-4C21 6.8 17 3 12 3Z'/%3E%3Ccircle cx='7.5' cy='10' r='.7'/%3E%3Ccircle cx='11' cy='7' r='.7'/%3E%3Ccircle cx='15.5' cy='8' r='.7'/%3E%3Ccircle cx='7.5' cy='15' r='.7'/%3E%3C/svg%3E"); background-position: center; background-size: 22px; background-repeat: no-repeat; }
 :root[data-color-scheme=dark] .pp-note-search > select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c0d8c8' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a9 9 0 1 0 0 18h1.4a2 2 0 0 0 1.4-3.4 1.2 1.2 0 0 1 .9-2.1H17a4 4 0 0 0 4-4C21 6.8 17 3 12 3Z'/%3E%3Ccircle cx='7.5' cy='10' r='.7'/%3E%3Ccircle cx='11' cy='7' r='.7'/%3E%3Ccircle cx='15.5' cy='8' r='.7'/%3E%3Ccircle cx='7.5' cy='15' r='.7'/%3E%3C/svg%3E"); }
 .pp-note-search > select option { font-size: 14px; }
@@ -130,15 +141,15 @@ button, summary, a { touch-action: manipulation; }
 
 @media (max-width: 700px) {
   .postispop { padding: 6px 8px; }
-  .postispop .app-header { grid-template-columns: 120px minmax(0, 1fr) 44px; height: 44px!important; min-height: 44px!important; gap: 6px; }
-  .postispop .app-header .brand { width: 118px; }
-  .postispop .brand-logo { width: 118px!important; height: 29px!important; }
+  .postispop .app-header { grid-template-columns: 132px minmax(0, 1fr) 44px; height: 64px!important; min-height: 64px!important; gap: 6px; }
+  .postispop .app-header .brand { width: 126px; height: 62px; }
+  .postispop .brand-logo { width: 126px!important; height: 62px!important; }
   .postispop .app-header .header-title { font-size: 14px!important; padding: 4px; }
   .workspace-caption { min-height: 18px; }
   .pp-tools.pp-note-search { gap: 6px; margin: 2px auto 6px; }
   .pp-note-search input { font-size: 16px; }
-  .postispop .board-frame { --pp-columns: 2; --pp-gap: 10px; --pp-note-size: max(128px, min(calc((100vw - 34px)/2), calc((100vh - 220px)/3))); padding: 4px 4px 0; }
-  @supports (height: 100svh) { .postispop .board-frame { --pp-note-size: max(128px, min(calc((100vw - 34px)/2), calc((100svh - 220px)/3))); } }
+  .postispop .board-frame { --pp-columns: 2; --pp-gap: 10px; --pp-note-size: max(128px, min(calc((100vw - 34px)/2), calc((100vh - 280px)/3))); padding: 4px 4px 0; }
+  @supports (height: 100svh) { .postispop .board-frame { --pp-note-size: max(128px, min(calc((100vw - 34px)/2), calc((100svh - 280px)/3))); } }
   .postispop .board-frame .sticky-note { padding: 14px 12px 22px!important; }
   .postispop .note-number { right: 11px; bottom: 9px; font-size: 9px; }
   .editor-dialog { width: calc(100vw - 12px)!important; max-width: calc(100vw - 12px)!important; max-height: calc(100dvh - 12px)!important; padding: 12px!important; }

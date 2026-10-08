@@ -110,8 +110,12 @@ function normalizeBackupAttachments(items=[]){
     // An imported HTML document must never acquire an executable blob URL.
     // Unrecognised document MIME types are downloaded as opaque binary data.
     const documentTypes=['application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.presentationml.presentation','application/zip','application/x-zip-compressed','application/octet-stream'];
-    const type=/^(image|audio|video)\//i.test(item.type)||documentTypes.includes(item.type)?item.type:'application/octet-stream';
-    return {kind:'file',name:item.name,type,size:item.size,created,data:item.data,sha256:item.sha256};
+    const compression=item.compression??'';
+    if(!['','image-webp','audio-transcode','video-transcode','gzip'].includes(compression))fail('INVALID_ATTACHMENT');
+    const originalType=item.originalType??'application/octet-stream';
+    if(typeof originalType!=='string'||originalType.length>150||/[\x00-\x20<>]/.test(originalType))fail('INVALID_ATTACHMENT');
+    const type=compression==='gzip'?'application/gzip':(/^(image|audio|video)\//i.test(item.type)||documentTypes.includes(item.type)?item.type:'application/octet-stream');
+    return {kind:'file',name:item.name,type,size:item.size,created,data:item.data,sha256:item.sha256,...(compression?{compression}:{}),...(compression==='gzip'?{originalType}:{})};
   });
 }
 const digest=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),byte=>byte.toString(16).padStart(2,'0')).join('');
@@ -144,7 +148,7 @@ export async function exportNoteAttachments(noteId){
     if(row.kind==='link'){items.push({kind:'link',name:row.name,url:row.url,created:row.created||0});continue;}
     if(!(row.blob instanceof Blob)||row.blob.size>MAX_BACKUP_FILE_BYTES)fail('INVALID_ATTACHMENT');
     const bytes=new Uint8Array(await row.blob.arrayBuffer());
-    items.push({kind:'file',name:row.name,type:row.type||row.blob.type||'application/octet-stream',size:bytes.length,created:row.created||0,data:bytesToBase64(bytes),sha256:await digest(bytes)});
+    items.push({kind:'file',name:row.name,type:row.type||row.blob.type||'application/octet-stream',size:bytes.length,created:row.created||0,data:bytesToBase64(bytes),sha256:await digest(bytes),...(row.compression?{compression:row.compression}:{}),...(row.compression==='gzip'?{originalType:row.originalType||'application/octet-stream'}:{})});
   }
   if(localStorage.getItem(protectedMarker(noteId)))throw Error('NOTE_PROTECTED');
   return normalizeBackupAttachments(items);
