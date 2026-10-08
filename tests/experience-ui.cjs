@@ -150,14 +150,14 @@ let observedErrors=[];
   assert.equal(await page.locator('[data-platform]').count(),7);
   assert.equal(await page.getByRole('link',{name:'Ver cómo instalar',exact:true}).getAttribute('href'),'/instalar.html');
   await page.goto('https://postispop.com/tienda/');await page.waitForURL('**/atelier.html');await page.waitForSelector('.payment-options');
-  for(const price of ['2,95','9,95','59,95'])assert.ok((await page.locator('.plans').innerText()).includes(price));
-  assert.equal(await page.locator('.payment-options button:disabled').count(),3,'All billing choices are coming soon');
+  for(const price of ['2,95','5,95','19,95','59,95'])assert.ok((await page.locator('.plans').innerText()).includes(price));
+  assert.equal(await page.locator('.payment-options button:disabled').count(),4,'Checkout choices stay disabled while Stripe status is unavailable');
   assert.equal(await page.locator('a[href*="checkout"],a[href*="stripe"]').count(),0,'No payment destination is linked');
   for(const name of ['bloc-de-notas-online','pizarra-virtual','notas-adhesivas-online','pizarra-colaborativa','organizador-visual-de-tareas','notas-para-estudiar','pizarra-para-reuniones','lluvia-de-ideas-online']){
     await page.goto(`https://postispop.com/${name}.html`);assert.equal(await page.locator('h1').count(),1);await page.setViewportSize({width:360,height:800});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,name);
   }
   assert.deepEqual(missing,[]);assert.deepEqual(errors,[]);
   assert.equal(metricsRequests.length,0,'Rejected measurement remains silent across saves, imports and navigation');
-  console.log('PASS: Spanish default, truthful save status, guest offline save and reload, first-note CTA instead of onboarding card, search/color filters, JSON and PNG export, safe non-destructive import, focus restoration, 4 viewports, installation/downloads, coming-soon Premium and 8 guides.');
+  console.log('PASS: Spanish default, truthful save status, guest offline save and reload, first-note CTA instead of onboarding card, search/color filters, JSON and PNG export, safe non-destructive import, focus restoration, 4 viewports, installation/downloads, four offline-disabled Premium prices and 8 guides.');
   await browser.close();
 })().catch(async e=>{console.error('Browser errors:',observedErrors);if(reviewPage){try{console.error('Failure state:',await reviewPage.evaluate(()=>({url:location.href,body:document.body.innerText.slice(0,2200),notes:[...document.querySelectorAll('.sticky-note')].map(n=>({id:n.dataset.noteId,disabled:n.disabled})),dialogs:[...document.querySelectorAll('[role=dialog],dialog')].map(n=>n.className)})));}catch(error){console.error('Failure state unavailable:',error.message);}try{await reviewPage.screenshot({path:path.join(results,'failure.png'),fullPage:true});}catch(error){console.error('Failure screenshot unavailable:',error.message);}}console.error(e);process.exit(1)});
