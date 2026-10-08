@@ -41,7 +41,7 @@ const types = {
     assert.equal(await page.locator('.payment-option').count(), 4);
     assert.equal(await page.locator('.payment-option button:disabled').count(), 4);
     assert.deepEqual(await page.locator('.payment-option h3').allTextContents(), ['Mensual', 'Trimestral', 'Anual', 'De por vida']);
-    assert.deepEqual((await page.locator('.price').allTextContents()).map(value => value.trim()), ['2,95 €', '5,95 €', '19,95 €', '59,95 €']);
+    assert.deepEqual((await page.locator('.price').allTextContents()).map(value => value.trim().replace(/\u00a0/g, ' ')), ['2,95 €', '5,95 €', '19,95 €', '59,95 €']);
     assert.match(await page.locator('.free-plan').innerText(), /6 notas/);
     assert.match(await page.locator('.purchase-status').innerText(), /Pagos temporalmente no disponibles/);
     assert.equal(await page.locator('#at-grid, #at-cart, #at-roulette, .pp-launch-promo').count(), 0);
