@@ -77,7 +77,7 @@ button, summary, a { touch-action: manipulation; }
 
 /* Square paper is the dominant shape. Saved paper codes and marked ink remain
    unchanged; only the unstyled paper's presentation receives a softer tint. */
-.postispop .board-frame { --pp-note-size: max(160px, min(calc((100vw - 104px)/3), calc((100dvh - 234px)/2))); --pp-columns: 3; --pp-gap: 16px; --pp-note-font: 17px; display: flex!important; flex-direction: column; align-items: center; box-sizing: border-box; width: 100%; max-width: none; height: auto!important; max-height: none!important; min-height: 0!important; margin: 0; padding: 8px 12px 0; border: 0; border-radius: 0; background: none!important; box-shadow: none; overflow: visible; }
+.postispop .board-frame { --pp-note-size: max(160px, min(calc((100vw - 104px)/3), calc((100vh - 234px)/2))); --pp-note-size: max(160px, min(calc((100vw - 104px)/3), calc((100svh - 234px)/2))); --pp-columns: 3; --pp-gap: 16px; --pp-note-font: 17px; display: flex!important; flex-direction: column; align-items: center; box-sizing: border-box; width: 100%; max-width: none; height: auto!important; max-height: none!important; min-height: 0!important; margin: 0; padding: 8px 12px 0; border: 0; border-radius: 0; background: none!important; box-shadow: none; overflow: visible; }
 .postispop .board-frame .board-grid { display: grid!important; grid-template-columns: repeat(var(--pp-columns), var(--pp-note-size))!important; grid-template-rows: none!important; grid-auto-rows: var(--pp-note-size)!important; justify-content: center; gap: var(--pp-gap)!important; width: auto; min-width: 0; max-width: 100%; padding: 0; border: 0; background: none; flex: none; }
 .postispop .board-frame .note-cell { display: block; width: var(--pp-note-size)!important; height: var(--pp-note-size)!important; aspect-ratio: 1; min-height: 0; position: relative; }
 .postispop .board-frame .sticky-note { display: flex; align-items: flex-start; justify-content: flex-start; box-sizing: border-box; width: 100%!important; height: 100%!important; min-height: 0; max-height: none; aspect-ratio: 1; padding: 22px 20px 27px!important; overflow: hidden; transform: none!important; border: 1px solid #2936280b; border-radius: 3px 3px 15px 3px; box-shadow: 0 2px 3px #26312607, 0 7px 14px #26312608; transition: box-shadow .15s ease, border-color .15s ease; text-align: left; }
@@ -130,7 +130,7 @@ button, summary, a { touch-action: manipulation; }
   .workspace-caption { min-height: 18px; }
   .pp-tools.pp-note-search { gap: 6px; margin: 2px auto 6px; }
   .pp-note-search input { font-size: 16px; }
-  .postispop .board-frame { --pp-columns: 2; --pp-gap: 10px; --pp-note-size: max(128px, min(calc((100vw - 34px)/2), calc((100dvh - 220px)/3))); padding: 4px 4px 0; }
+  .postispop .board-frame { --pp-columns: 2; --pp-gap: 10px; --pp-note-size: max(128px, min(calc((100vw - 34px)/2), calc((100vh - 220px)/3))); --pp-note-size: max(128px, min(calc((100vw - 34px)/2), calc((100svh - 220px)/3))); padding: 4px 4px 0; }
   .postispop .board-frame .sticky-note { padding: 14px 12px 22px!important; }
   .postispop .note-number { right: 11px; bottom: 9px; font-size: 9px; }
   .editor-dialog { width: calc(100vw - 12px)!important; max-width: calc(100vw - 12px)!important; max-height: calc(100dvh - 12px)!important; padding: 12px!important; }
