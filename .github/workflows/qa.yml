@@ -18,6 +18,7 @@ jobs:
       - run: npm test && npm run test:database && npm run lint && npm run build
       - run: node scripts/stage-site.mjs
       - run: npm run test:seo
+      - run: node tests/camera-capture-ui.cjs
       - run: npm run test:backup && npm run test:exports && npm run test:notes-first && node tests/hydration-ui.cjs && npm run test:autosave && npm run test:experience && npm run test:premium && npm run test:atelier && npm run test:protected && npm run test:cloud-import && npm run test:offline-shell
       - uses: actions/upload-artifact@v6.0.0
         if: always()

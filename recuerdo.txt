@@ -1,10 +1,10 @@
 POSTISPOP — TRABAJO DEL 8 DE OCTUBRE DE 2026
 
 OBJETIVO
-Este archivo delimita únicamente los cambios propuestos hoy y el estado resultante. No autoriza rescatar propuestas de días anteriores. Repositorio: https://github.com/manetalax/postispop
+Este archivo resume el estado aplicado y delimita el alcance funcional descrito aquí. No autoriza rescatar propuestas antiguas que se excluyen al final. Repositorio: https://github.com/manetalax/postispop
 
 PROMPT PARA CONTINUAR
-Abre el checkout /Users/franciscomanuelmasagarcia/Documents/Codex/2026-10-08/qu-2/work/postispop y lee este recuerdo.txt. La rama de trabajo parte de origin/main en d8f7830 y se llama codex/postispop-today-20261008. Conserva todo cambio local. Implementa solo los elementos que aparecen en «Alcance de hoy». No recuperes el backlog antiguo que se excluye al final. No edites bundles compilados a mano: la pizarra se prepara con scripts/board-layout-transform.mjs y se publica con scripts/stage-site.mjs. Distingue vista previa, producción y cambios de base de datos.
+Abre el checkout /Users/franciscomanuelmasagarcia/Documents/Codex/2026-10-08/qu-2/work/postispop y lee este recuerdo.txt. La rama de cámara parte de main 9f9365009703085a135750d93866ddf757d5a86d y se llama codex/postispop-camera-capture. Conserva todo cambio local. Implementa solo los elementos que aparecen en «Alcance de hoy». No recuperes el backlog antiguo que se excluye al final. No edites bundles compilados a mano: la pizarra se prepara con scripts/board-layout-transform.mjs y se publica con scripts/stage-site.mjs. Distingue vista previa, producción y cambios de base de datos.
 
 ALCANCE DE HOY
 1. Identidad visual PostIsPop con el logo original de la nota amarilla tras barrotes, paleta marfil/verde/salvia/amarillo y el nombre PostIsPop. Mostrar una presentación breve: escritura, dibujo, audio, capturas, vídeo y adjuntos.
@@ -12,12 +12,13 @@ ALCANCE DE HOY
 3. Marcar notas favoritas con una estrella y mostrar la categoría Favoritos. Añadir control de chincheta y ordenar las fijadas primero en la pizarra, resultados y Favoritos. Mantener el número original de cada nota. Las preferencias actuales se guardan localmente por pizarra y dispositivo; no afirmar que se sincronizan entre dispositivos.
 4. Precios Premium confirmados: 2,95 €/mes, 5,95 €/trimestre, 19,95 €/año y 59,95 € de por vida. Mismas funciones Premium para los cuatro planes. El 30+30 de notas: durante 30 días se pueden crear y leer todas; después, 1–6 siguen gratis y las demás se bloquean otros 30 días con aviso y cuenta atrás, luego se eliminan. Premium mantiene accesibles las notas adicionales; máximo Premium configurado: 100.
 5. Los textos visibles nuevos deben estar traducidos a español, inglés, alemán, francés, portugués, italiano, japonés y coreano.
+6. Cámara integrada en el editor de cada nota: tomar fotos WebP/JPEG de hasta 128 KiB y grabar vídeo a 360p/15 fps con objetivo menor de 5 MB por 5 minutos. El grabador detiene la captura alrededor de 4,5 MiB y guarda como máximo 5 MiB; según el navegador puede terminar antes de cinco minutos. Requiere permiso de cámara y, si el permiso de micrófono está denegado, graba sin audio. Los textos de cámara están traducidos a los ocho idiomas. Los adjuntos siguen guardándose localmente en el dispositivo y dentro de las copias de seguridad; esta cámara no sube medios al servidor.
 
 CAMBIOS LOCALES Y RUTAS
 - Marca/iconos: assets/postispop-logo.svg, assets/postispop-logo-light.svg, assets/postispop-app-icon.svg, favicon.svg, assets/icon-192.png, assets/icon-512.png, assets/icon-maskable-512.png, assets/apple-touch-icon.png.
 - Presentación: brand-highlights.js, workspace.css.
 - Favoritos/chinchetas locales: board-preferences.js, board-tools.js, board-view-model.js, board-layout.js, experience.js y scripts/board-layout-transform.mjs. Integración Android: mobile/bundle-tools.mjs.
-- Adjuntos, selector de vídeo y compresión: note-attachments.js, note-attachments.css, backup-import.js, protected-notes.js y scripts/stage-site.mjs.
+- Adjuntos, selector de vídeo, cámara y compresión: note-attachments.js, note-attachments.css, backup-import.js, protected-notes.js y scripts/stage-site.mjs. Prueba de cámara simulada: tests/camera-capture-ui.cjs (se ejecuta después de preparar el bundle de pruebas).
 - Precios/checkout: product-rules.json, atelier.html, atelier-checkout.js, functions/postispop-commerce/index.ts y su README.
 - Retención Premium: database/note-trial-retention.sql, database/premium-billing.sql y database/note-retention-purge-on-access.sql.
 
@@ -32,8 +33,10 @@ ESTADO DE PRODUCCIÓN OBSERVADO EL 8-OCT-2026
 
 VISTA PREVIA Y VALIDACIÓN
 - Preparar web: node scripts/stage-site.mjs
+- Cámara verificada en Chromium con dispositivo simulado: foto WebP ≤128 KiB y vídeo <5 MiB.
+- Lint, 172 pruebas, pruebas de base de datos, Astro build, SEO 136 URL/8 idiomas, 13 escenarios de pizarra y experiencia: pasaron antes de este cambio de cámara; CI debe repetir el chequeo tras abrir PR.
 - Vista previa local: http://127.0.0.1:8766/
-- El staging más reciente generó 136 URL SEO traducidas y un paquete público de 323 archivos. No se ejecutaron suites de pruebas en esta sesión.
+- El staging más reciente generó 136 URL SEO traducidas y un paquete público de 323 archivos. Lint, 172 pruebas unitarias, integración de base de datos, Astro build, SEO (136 URL/ocho idiomas), cámara simulada, 13 escenarios de pizarra y experiencia pasaron localmente en la rama de cámara.
 - No afirmar que la vista previa local se haya publicado en postispop.com.
 
 NO INCLUIR EN ESTE ALCANCE
@@ -41,10 +44,11 @@ No implementar búsqueda nueva o rediseñada, criterios «Ordenar por» (audio, 
 
 ESTADO DE GIT
 - Ruta: /Users/franciscomanuelmasagarcia/Documents/Codex/2026-10-08/qu-2/work/postispop
-- Rama: codex/postispop-today-20261008, basada en origin/main d8f7830.
-- Rama local y remota: codex/postispop-today-20261008; checkout local en la ruta indicada arriba.
+- Rama anterior del trabajo de hoy: codex/postispop-today-20261008, ya integrada en main.
+- Rama actual de cámara: codex/postispop-camera-capture, basada en main 9f9365009703085a135750d93866ddf757d5a86d. El checkout local está en la ruta indicada arriba.
 - PR #22: https://github.com/manetalax/postispop/pull/22, integrado mediante squash en main como 8e043827e7a1fe3264b963824605261e3dc47f6a.
+- La rama actual de cámara parte de main 9f9365009703085a135750d93866ddf757d5a86d; se publica en PR separado. No afirmar el despliegue hasta que Actions y el dominio confirmen la publicación.
 - CI de revisión y flujo Build and deploy PostisPop to GitHub Pages completados con éxito. Ejecución de Pages: https://github.com/manetalax/postispop/actions/runs/37839177938.
-- Sitio publicado: https://postispop.com/ respondió HTTP 200 y sirve brand-highlights.js?v=20261008. Los 171 tests unitarios, pruebas de base de datos, lint, build, SEO de 136 páginas y ocho idiomas, y 13 escenarios de pizarra/interfaz pasaron.
+- Sitio publicado: https://postispop.com/ respondió HTTP 200 y sirve brand-highlights.js?v=20261008. Los 171 tests unitarios, pruebas de base de datos, lint, build, SEO de 136 páginas y ocho idiomas, y 13 escenarios de pizarra/interfaz pasaron para el despliegue anterior.
 - No reescribas ni borres historia remota ni stashes de recuperación existentes. Revisa git status antes de editar o sincronizar.
 - No reescribir ni borrar la historia remota ni los stashes de recuperación existentes.

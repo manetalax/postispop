@@ -2,14 +2,14 @@ import {readBoardLanguage} from './seo-language.js';
 import {whenReactReady} from './ui-ready.js';
 
 const copy={
-  es:['Escribe, dibuja, graba audio, guarda capturas, añade vídeo y adjunta cualquier tipo de archivo.','Intentamos reducir todos los adjuntos para ahorrar espacio. Límite final: 5 MB por archivo. Priorizamos la calidad de imagen, audio y vídeo.'],
-  en:['Write, draw, record audio, save screenshots, add video and attach any file type.','We try to shrink every attachment to save space. Final limit: 5 MB per file. We prioritize image, audio and video quality.'],
-  de:['Schreibe, zeichne, nimm Audio auf, speichere Screenshots, füge Videos hinzu und hänge Dateien aller Art an.','Wir versuchen, alle Anhänge zu verkleinern. Endgültiges Limit: 5 MB pro Datei. Bild-, Audio- und Videoqualität hat Vorrang.'],
-  fr:['Écrivez, dessinez, enregistrez de l’audio, gardez des captures d’écran, ajoutez des vidéos et joignez tout type de fichier.','Nous essayons de réduire toutes les pièces jointes pour économiser de l’espace. Limite finale : 5 Mo par fichier. La qualité des images, du son et des vidéos reste prioritaire.'],
-  pt:['Escreva, desenhe, grave áudio, guarde capturas de ecrã, adicione vídeos e anexe qualquer tipo de ficheiro.','Tentamos reduzir todos os anexos para poupar espaço. Limite final: 5 MB por ficheiro. A qualidade de imagem, áudio e vídeo é prioritária.'],
-  it:['Scrivi, disegna, registra audio, salva screenshot, aggiungi video e allega file di qualsiasi tipo.','Proviamo a ridurre tutti gli allegati per risparmiare spazio. Limite finale: 5 MB per file. La qualità di immagini, audio e video è prioritaria.'],
-  ja:['書く、描く、音声を録音する、スクリーンショットを保存する、動画を追加する、あらゆる種類のファイルを添付する。','容量を節約するため、すべての添付ファイルの圧縮を試みます。最終上限は1ファイル5 MBです。画像、音声、動画の品質を優先します。'],
-  ko:['글을 쓰고, 그림을 그리고, 오디오를 녹음하고, 스크린샷을 저장하고, 동영상을 추가하고, 모든 종류의 파일을 첨부하세요.','공간 절약을 위해 모든 첨부 파일의 압축을 시도합니다. 파일당 최종 용량은 5MB이며, 이미지·오디오·동영상 품질을 우선합니다.']
+  es:['Escribe, dibuja, graba audio, haz fotos, guarda capturas, graba vídeo y adjunta cualquier archivo.','La cámara comprime las fotos hasta 128 KB y graba vídeo a 360p/15 fps, con un objetivo de menos de 5 MB por 5 minutos.'],
+  en:['Write, draw, record audio, take photos, save screenshots, record video and attach any file.','The camera compresses photos to 128 KB and records 360p/15 fps video, targeting under 5 MB per 5 minutes.'],
+  de:['Schreibe, zeichne, nimm Audio auf, mache Fotos, speichere Screenshots, filme und füge Dateien an.','Die Kamera komprimiert Fotos auf 128 KB und nimmt Videos mit 360p/15 fps auf; Ziel sind weniger als 5 MB pro 5 Minuten.'],
+  fr:['Écrivez, dessinez, enregistrez de l’audio, prenez des photos, gardez des captures, filmez et joignez tout fichier.','La caméra compresse les photos à 128 Ko et filme en 360p/15 ips, avec un objectif inférieur à 5 Mo pour 5 minutes.'],
+  pt:['Escreva, desenhe, grave áudio, tire fotografias, guarde capturas, grave vídeos e anexe qualquer ficheiro.','A câmara comprime fotografias para 128 KB e grava vídeo a 360p/15 fps, com objetivo inferior a 5 MB por 5 minutos.'],
+  it:['Scrivi, disegna, registra audio, scatta foto, salva screenshot, registra video e allega qualsiasi file.','La fotocamera comprime le foto a 128 KB e registra video a 360p/15 fps, con l’obiettivo di restare sotto 5 MB per 5 minuti.'],
+  ja:['書く、描く、音声を録音する、写真を撮る、スクリーンショットを保存する、動画を撮影する、ファイルを添付する。','写真は128 KBに圧縮し、動画は360p/15 fpsで撮影します。5分あたり5 MB未満を目標とします。'],
+  ko:['글쓰기, 그리기, 오디오 녹음, 사진 촬영, 스크린샷 저장, 동영상 촬영, 모든 파일 첨부를 지원합니다.','사진은 128KB로 압축하고 동영상은 360p/15fps로 녹화하며, 5분당 5MB 미만을 목표로 합니다.']
 };
 
 function render(){
