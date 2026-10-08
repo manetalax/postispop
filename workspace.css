@@ -57,6 +57,7 @@ button, summary, a { touch-action: manipulation; }
 .app-header.pp-menu-open .top-controls button { min-height: 44px; }
 .pp-menu-open .pp-app-links { display: flex; justify-content: space-around; position: absolute; z-index: 23; top: 160px; right: 14px; width: 260px; gap: 8px; font-size: 13px; }
 .pp-app-links a { color: var(--pp-accent); min-height: 44px; display: flex; align-items: center; }
+.pp-app-links .pp-share-board-link { color: var(--pp-accent); min-height: 44px; padding: 8px 10px; border: 1px solid currentColor; border-radius: 10px; background: transparent; font: inherit; cursor: pointer; }
 .pp-icon { display: inline-flex; justify-content: center; align-items: center; flex: none; width: 44px; min-width: 44px; height: 44px; padding: 0; border: 1px solid var(--pp-border); border-radius: var(--pp-radius); background: var(--pp-surface); color: var(--pp-text); font: 24px/1 system-ui; cursor: pointer; box-shadow: none; }
 .pp-icon:disabled { opacity: .4; cursor: default; }
 .pp-icon:hover:not(:disabled) { background: var(--pp-accent-soft); border-color: color-mix(in srgb, var(--pp-accent) 35%, var(--pp-border)); }

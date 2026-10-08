@@ -3,6 +3,7 @@ import './board-layout.js?v=20261008a';
 import {track, metricsEnabled, setMetricsEnabled, readMetrics, recordVisit} from './usage-metrics.js';
 import {initBoardTools, download, openShareDialog} from './board-tools.js?v=20261009a';
 import {initBoardPreferences} from './board-preferences.js?v=20261008a';
+import {readBoardLanguage} from './seo-language.js';
 
 
 const SEO_TITLE='Bloc de notas online gratis y pizarra | PostisPop';
@@ -31,6 +32,8 @@ function update() {
     header.append(button);
     const nav = document.createElement('nav'); nav.className = 'pp-app-links'; nav.setAttribute('aria-label', 'Aplicación');
     for (const [label,href] of [['Premium','/atelier.html'],['Descargas','/descargas/'],['Ayuda','/ayuda.html']]) { const link=document.createElement('a'); link.textContent=label;link.href=href;nav.append(link); }
+    const shareLabels={es:'Compartir pizarra',en:'Share board',de:'Pinnwand teilen',fr:'Partager le tableau',pt:'Partilhar quadro',it:'Condividi bacheca',ja:'ボードを共有',ko:'보드 공유'};
+    const shareButton=document.createElement('button');shareButton.className='pp-share-board-link';shareButton.type='button';shareButton.textContent=shareLabels[readBoardLanguage()]||shareLabels.es;shareButton.setAttribute('aria-label',shareButton.textContent);nav.prepend(shareButton);
     header.append(nav);
   }
   // The mobile layout hides the text inside this icon button.
@@ -86,7 +89,7 @@ document.addEventListener('click',async event=>{
   if(action==='install' && installPrompt){await installPrompt.prompt();installPrompt=null;button.hidden=true;}
 });
 document.addEventListener('click',event=>{
-  const button=event.target.closest('.group-button,.header-share');if(!button)return;
+  const button=event.target.closest('.group-button,.header-share,.pp-share-board-link');if(!button)return;
   event.preventDefault();event.stopImmediatePropagation();
   try{openShareDialog(button);}catch{notice('No se pudo abrir el menú para compartir. Tus notas se conservan.');}
 },true);
