@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 6048)
-Total output lines: 90
-
 import {withNoteStorageLock,assertAttachmentWritable,protectedMarker} from './attachment-lock.js';
 import {readBoardLanguage} from './seo-language.js';
 import {shareFile,shareText,openWhatsApp} from './share-tools.js?v=20261009a';
@@ -45,7 +42,8 @@ const translations={
 const notices={
   es:{locked:'Adjuntos cerrados: la nota está protegida o ya no está disponible.',protecting:'Esta nota se está protegiendo. Cierra el editor y ábrela con su contraseña.'},
   en:{locked:'Attachments are closed: the note is protected or unavailable.',protecting:'This note is being protected. Close the editor and reopen it with its password.'},
-  de:{locked:'Anhänge geschlossen: Die Notiz ist geschützt oder nicht verfügbar.',protecti…48 tokens truncated…g:'Cette note est en cours de protection. Fermez l’éditeur et rouvrez-la avec son mot de passe.'},
+  de:{locked:'Anhänge geschlossen: Die Notiz ist geschützt oder nicht verfügbar.',protecting:'Diese Notiz wird geschützt. Schließe den Editor und öffne sie mit ihrem Passwort erneut.'},
+  fr:{locked:'Pièces jointes fermées : la note est protégée ou indisponible.',protecting:'Cette note est en cours de protection. Fermez l’éditeur et rouvrez-la avec son mot de passe.'},
   pt:{locked:'Anexos fechados: a nota está protegida ou indisponível.',protecting:'Esta nota está a ser protegida. Feche o editor e volte a abri-la com a palavra-passe.'},
   it:{locked:'Allegati chiusi: la nota è protetta o non disponibile.',protecting:'La nota è in fase di protezione. Chiudi l’editor e riaprila con la password.'},
   ja:{locked:'添付ファイルは閉じています。ノートが保護されているか、利用できません。',protecting:'ノートを保護しています。エディターを閉じ、パスワードで再度開いてください。'},
