@@ -30,14 +30,14 @@ let cameraCloseAfterStop = false;
 let objectUrls = [];
 
 const translations={
-  es:{title:'Archivos adjuntos',add:'Añadir archivos',link:'Añadir enlace',voice:'Grabar voz',stop:'Detener',empty:'Todavía no hay adjuntos.',local:'Se guardan en este dispositivo y se incluyen al guardar una copia.',remove:'Eliminar adjunto',tooLarge:'No se pudo reducir a 5 MB. Prueba con una versión más pequeña.',compressing:'Comprimiendo el archivo…',failed:'No se pudo guardar el adjunto.',url:'Pega una dirección web',save:'Guardar enlace',cancel:'Cancelar',limit:'Cada nota admite hasta 100 adjuntos.',protected:'La nota se ha protegido. Este adjunto no se ha guardado sin cifrar.',protectedLink:'La nota se ha protegido. El enlace no se ha guardado sin cifrar.',validUrl:'Escribe un enlace válido.',longUrl:'El enlace es demasiado largo o contiene credenciales.',protocol:'El enlace debe comenzar por http:// o https://',removeError:'No se pudo modificar el adjunto. La nota puede estar protegida.',locked:'Adjuntos cerrados: la nota está protegida o ya no está disponible.',protecting:'Esta nota se está protegiendo. Cierra el editor y ábrela con su contraseña.',microphone:'No se ha podido acceder al micrófono.',recordUnavailable:'La grabación de voz no está disponible.'},
-  en:{title:'Attachments',add:'Add files',link:'Add link',voice:'Record audio',stop:'Stop',empty:'No attachments yet.',local:'Saved on this device and included when you save a backup.',remove:'Remove attachment',tooLarge:'Could not reduce this file to 5 MB. Try a smaller version.',compressing:'Compressing file…',failed:'Could not save the attachment.',url:'Paste a web address',save:'Save link',cancel:'Cancel',limit:'Each note can have up to 100 attachments.',protected:'This note is protected. The attachment was not saved unencrypted.',protectedLink:'This note is protected. The link was not saved unencrypted.',validUrl:'Enter a valid link.',longUrl:'The link is too long or contains credentials.',protocol:'The link must start with http:// or https://',removeError:'Could not change the attachment. The note may be protected.',locked:'Attachments are closed: the note is protected or unavailable.',protecting:'This note is being protected. Close the editor and reopen it with its password.',microphone:'Could not access the microphone.',recordUnavailable:'Audio recording is unavailable.'},
-  de:{title:'Anhänge',add:'Dateien hinzufügen',link:'Link hinzufügen',voice:'Audio aufnehmen',stop:'Stopp',empty:'Noch keine Anhänge.',local:'Auf diesem Gerät gespeichert und in einer Sicherung enthalten.',remove:'Anhang entfernen',tooLarge:'Die Datei ließ sich nicht auf 5 MB verkleinern. Bitte eine kleinere Version verwenden.',compressing:'Datei wird komprimiert…',failed:'Der Anhang konnte nicht gespeichert werden.',url:'Webadresse einfügen',save:'Link speichern',cancel:'Abbrechen',limit:'Pro Notiz sind bis zu 100 Anhänge möglich.',protected:'Diese Notiz ist geschützt. Der Anhang wurde nicht unverschlüsselt gespeichert.',protectedLink:'Diese Notiz ist geschützt. Der Link wurde nicht unverschlüsselt gespeichert.',validUrl:'Bitte einen gültigen Link eingeben.',longUrl:'Der Link ist zu lang oder enthält Zugangsdaten.',protocol:'Der Link muss mit http:// oder https:// beginnen.',removeError:'Der Anhang konnte nicht geändert werden. Die Notiz ist möglicherweise geschützt.',locked:'Anhänge geschlossen: Die Notiz ist geschützt oder nicht verfügbar.',protecting:'Diese Notiz wird geschützt. Schließe den Editor und öffne sie mit ihrem Passwort erneut.',microphone:'Zugriff auf das Mikrofon nicht möglich.',recordUnavailable:'Audioaufnahme ist nicht verfügbar.'},
-  fr:{title:'Pièces jointes',add:'Ajouter des fichiers',link:'Ajouter un lien',voice:'Enregistrer un audio',stop:'Arrêter',empty:'Aucune pièce jointe pour le moment.',local:'Enregistrées sur cet appareil et incluses dans une sauvegarde.',remove:'Supprimer la pièce jointe',tooLarge:'Impossible de réduire ce fichier à 5 Mo. Essayez une version plus petite.',compressing:'Compression du fichier…',failed:'Impossible d’enregistrer la pièce jointe.',url:'Collez une adresse web',save:'Enregistrer le lien',cancel:'Annuler',limit:'Chaque note accepte jusqu’à 100 pièces jointes.',protected:'Cette note est protégée. La pièce jointe n’a pas été enregistrée sans chiffrement.',protectedLink:'Cette note est protégée. Le lien n’a pas été enregistré sans chiffrement.',validUrl:'Saisissez un lien valide.',longUrl:'Le lien est trop long ou contient des identifiants.',protocol:'Le lien doit commencer par http:// ou https://',removeError:'Impossible de modifier la pièce jointe. La note est peut-être protégée.',locked:'Pièces jointes fermées : la note est protégée ou indisponible.',protecting:'Cette note est en cours de protection. Fermez l’éditeur et rouvrez-la avec son mot de passe.',microphone:'Impossible d’accéder au microphone.',recordUnavailable:'L’enregistrement audio est indisponible.'},
-  pt:{title:'Anexos',add:'Adicionar ficheiros',link:'Adicionar ligação',voice:'Gravar áudio',stop:'Parar',empty:'Ainda não há anexos.',local:'Guardados neste dispositivo e incluídos numa cópia de segurança.',remove:'Remover anexo',tooLarge:'Não foi possível reduzir este ficheiro para 5 MB. Tente uma versão menor.',compressing:'A comprimir o ficheiro…',failed:'Não foi possível guardar o anexo.',url:'Cole um endereço web',save:'Guardar ligação',cancel:'Cancelar',limit:'Cada nota aceita até 100 anexos.',protected:'Esta nota está protegida. O anexo não foi guardado sem encriptação.',protectedLink:'Esta nota está protegida. A ligação não foi guardada sem encriptação.',validUrl:'Introduza uma ligação válida.',longUrl:'A ligação é demasiado longa ou contém credenciais.',protocol:'A ligação deve começar por http:// ou https://',removeError:'Não foi possível alterar o anexo. A nota pode estar protegida.',locked:'Anexos fechados: a nota está protegida ou indisponível.',protecting:'Esta nota está a ser protegida. Feche o editor e volte a abri-la com a palavra-passe.',microphone:'Não foi possível aceder ao microfone.',recordUnavailable:'A gravação de áudio não está disponível.'},
-  it:{title:'Allegati',add:'Aggiungi file',link:'Aggiungi link',voice:'Registra audio',stop:'Ferma',empty:'Nessun allegato.',local:'Salvati su questo dispositivo e inclusi in una copia di backup.',remove:'Rimuovi allegato',tooLarge:'Impossibile ridurre il file a 5 MB. Prova con una versione più piccola.',compressing:'Compressione del file…',failed:'Impossibile salvare l’allegato.',url:'Incolla un indirizzo web',save:'Salva link',cancel:'Annulla',limit:'Ogni nota può contenere fino a 100 allegati.',protected:'La nota è protetta. L’allegato non è stato salvato senza cifratura.',protectedLink:'La nota è protetta. Il link non è stato salvato senza cifratura.',validUrl:'Inserisci un link valido.',longUrl:'Il link è troppo lungo o contiene credenziali.',protocol:'Il link deve iniziare con http:// o https://',removeError:'Impossibile modificare l’allegato. La nota potrebbe essere protetta.',locked:'Allegati chiusi: la nota è protetta o non disponibile.',protecting:'La nota è in fase di protezione. Chiudi l’editor e riaprila con la password.',microphone:'Impossibile accedere al microfono.',recordUnavailable:'La registrazione audio non è disponibile.'},
-  ja:{title:'添付ファイル',add:'ファイルを追加',link:'リンクを追加',voice:'音声を録音',stop:'停止',empty:'添付ファイルはありません。',local:'この端末に保存され、バックアップにも含まれます。',remove:'添付ファイルを削除',tooLarge:'5 MB以下に圧縮できませんでした。小さいファイルをお試しください。',compressing:'ファイルを圧縮中…',failed:'添付ファイルを保存できませんでした。',url:'ウェブアドレスを貼り付け',save:'リンクを保存',cancel:'キャンセル',limit:'1つのノートに最大100個の添付ファイルを追加できます。',protected:'このノートは保護されています。添付ファイルは暗号化せずに保存されませんでした。',protectedLink:'このノートは保護されています。リンクは暗号化せずに保存されませんでした。',validUrl:'有効なリンクを入力してください。',longUrl:'リンクが長すぎるか、認証情報が含まれています。',protocol:'リンクは http:// または https:// で始めてください。',removeError:'添付ファイルを変更できません。ノートが保護されている可能性があります。',locked:'添付ファイルは閉じています。ノートが保護されているか、利用できません。',protecting:'ノートを保護しています。エディターを閉じ、パスワードで再度開いてください。',microphone:'マイクにアクセスできませんでした。',recordUnavailable:'音声録音を利用できません。'},
-  ko:{title:'첨부 파일',add:'파일 추가',link:'링크 추가',voice:'오디오 녹음',stop:'중지',empty:'아직 첨부 파일이 없습니다.',local:'이 기기에 저장되며 백업에도 포함됩니다.',remove:'첨부 파일 삭제',tooLarge:'파일을 5MB 이하로 줄일 수 없습니다. 더 작은 파일을 사용해 보세요.',compressing:'파일 압축 중…',failed:'첨부 파일을 저장하지 못했습니다.',url:'웹 주소 붙여넣기',save:'링크 저장',cancel:'취소',limit:'노트 하나에 최대 100개의 파일을 첨부할 수 있습니다.',protected:'노트가 보호되어 있습니다. 첨부 파일은 암호화되지 않은 상태로 저장되지 않았습니다.',protectedLink:'노트가 보호되어 있습니다. 링크는 암호화되지 않은 상태로 저장되지 않았습니다.',validUrl:'올바른 링크를 입력하세요.',longUrl:'링크가 너무 길거나 인증 정보가 포함되어 있습니다.',protocol:'링크는 http:// 또는 https://로 시작해야 합니다.',removeError:'첨부 파일을 변경하지 못했습니다. 노트가 보호된 상태일 수 있습니다.',locked:'첨부 파일이 닫혔습니다. 노트가 보호되어 있거나 사용할 수 없습니다.',protecting:'노트를 보호하는 중입니다. 편집기를 닫고 비밀번호로 다시 여세요.',microphone:'마이크에 접근할 수 없습니다.',recordUnavailable:'오디오 녹음을 사용할 수 없습니다.'}
+  es:{title:'Archivos adjuntos',add:'Añadir archivos',link:'Añadir enlace',voice:'Grabar voz',stop:'Detener',empty:'Todavía no hay adjuntos.',local:'Se guardan en este dispositivo y se incluyen al guardar una copia.',remove:'Eliminar adjunto',tooLarge:'No se pudo reducir a 5 MB. Prueba con una versión más pequeña.',compressing:'Comprimiendo el archivo…',failed:'No se pudo guardar el adjunto.',url:'Pega una dirección web',save:'Guardar enlace',cancel:'Cancelar',limit:'Cada nota admite hasta 100 adjuntos.',protected:'La nota se ha protegido. Este adjunto no se ha guardado sin cifrar.',protectedLink:'La nota se ha protegido. El enlace no se ha guardado sin cifrar.',validUrl:'Escribe un enlace válido.',longUrl:'El enlace es demasiado largo o contiene credenciales.',protocol:'El enlace debe comenzar por http:// o https://',removeError:'No se pudo modificar el adjunto. La nota puede estar protegida.',locked:'Adjuntos cerrados: la nota está protegida o ya no está disponible.',protecting:'Esta nota se está protegiendo. Cierra el editor y ábrela con su contraseña.',microphone:'No se ha podido acceder al micrófono.',recordUnavailable:'La grabación de voz no está disponible.',progress:'Preparando',compressingProgress:'Comprimiendo',savingProgress:'Guardando en este dispositivo',complete:'Adjunto guardado correctamente.',progressFile:'Archivo',cameraPermission:'Permite el acceso a la cámara y al micrófono para grabar vídeo.',videoPermission:'Permite el acceso al micrófono para grabar audio.',cameraDenied:'No se concedió el permiso de cámara o micrófono. Puedes activarlo en los ajustes de la app.',uploading:'Enviando',uploadComplete:'Archivo subido correctamente.'},
+  en:{title:'Attachments',add:'Add files',link:'Add link',voice:'Record audio',stop:'Stop',empty:'No attachments yet.',local:'Saved on this device and included when you save a backup.',remove:'Remove attachment',tooLarge:'Could not reduce this file to 5 MB. Try a smaller version.',compressing:'Compressing file…',failed:'Could not save the attachment.',url:'Paste a web address',save:'Save link',cancel:'Cancel',limit:'Each note can have up to 100 attachments.',protected:'This note is protected. The attachment was not saved unencrypted.',protectedLink:'This note is protected. The link was not saved unencrypted.',validUrl:'Enter a valid link.',longUrl:'The link is too long or contains credentials.',protocol:'The link must start with http:// or https://',removeError:'Could not change the attachment. The note may be protected.',locked:'Attachments are closed: the note is protected or unavailable.',protecting:'This note is being protected. Close the editor and reopen it with its password.',microphone:'Could not access the microphone.',recordUnavailable:'Audio recording is unavailable.',progress:'Preparing',compressingProgress:'Compressing',savingProgress:'Saving on this device',complete:'Attachment saved successfully.',progressFile:'File',cameraPermission:'Allow camera and microphone access to record video.',videoPermission:'Allow microphone access to record audio.',cameraDenied:'Camera or microphone permission was denied. You can enable it in the app settings.',uploading:'Uploading',uploadComplete:'File uploaded successfully.'},
+  de:{title:'Anhänge',add:'Dateien hinzufügen',link:'Link hinzufügen',voice:'Audio aufnehmen',stop:'Stopp',empty:'Noch keine Anhänge.',local:'Auf diesem Gerät gespeichert und in einer Sicherung enthalten.',remove:'Anhang entfernen',tooLarge:'Die Datei ließ sich nicht auf 5 MB verkleinern. Bitte eine kleinere Version verwenden.',compressing:'Datei wird komprimiert…',failed:'Der Anhang konnte nicht gespeichert werden.',url:'Webadresse einfügen',save:'Link speichern',cancel:'Abbrechen',limit:'Pro Notiz sind bis zu 100 Anhänge möglich.',protected:'Diese Notiz ist geschützt. Der Anhang wurde nicht unverschlüsselt gespeichert.',protectedLink:'Diese Notiz ist geschützt. Der Link wurde nicht unverschlüsselt gespeichert.',validUrl:'Bitte einen gültigen Link eingeben.',longUrl:'Der Link ist zu lang oder enthält Zugangsdaten.',protocol:'Der Link muss mit http:// oder https:// beginnen.',removeError:'Der Anhang konnte nicht geändert werden. Die Notiz ist möglicherweise geschützt.',locked:'Anhänge geschlossen: Die Notiz ist geschützt oder nicht verfügbar.',protecting:'Diese Notiz wird geschützt. Schließe den Editor und öffne sie mit ihrem Passwort erneut.',microphone:'Zugriff auf das Mikrofon nicht möglich.',recordUnavailable:'Audioaufnahme ist nicht verfügbar.',progress:'Vorbereitung',compressingProgress:'Komprimierung',savingProgress:'Speichern auf diesem Gerät',complete:'Anhang erfolgreich gespeichert.',progressFile:'Datei',cameraPermission:'Erlaube Kamera und Mikrofon, um Videos aufzunehmen.',videoPermission:'Erlaube den Mikrofonzugriff, um Audio aufzunehmen.',cameraDenied:'Kamera- oder Mikrofonzugriff verweigert. Du kannst ihn in den App-Einstellungen erlauben.',uploading:'Wird hochgeladen',uploadComplete:'Datei erfolgreich hochgeladen.'},
+  fr:{title:'Pièces jointes',add:'Ajouter des fichiers',link:'Ajouter un lien',voice:'Enregistrer un audio',stop:'Arrêter',empty:'Aucune pièce jointe pour le moment.',local:'Enregistrées sur cet appareil et incluses dans une sauvegarde.',remove:'Supprimer la pièce jointe',tooLarge:'Impossible de réduire ce fichier à 5 Mo. Essayez une version plus petite.',compressing:'Compression du fichier…',failed:'Impossible d’enregistrer la pièce jointe.',url:'Collez une adresse web',save:'Enregistrer le lien',cancel:'Annuler',limit:'Chaque note accepte jusqu’à 100 pièces jointes.',protected:'Cette note est protégée. La pièce jointe n’a pas été enregistrée sans chiffrement.',protectedLink:'Cette note est protégée. Le lien n’a pas été enregistré sans chiffrement.',validUrl:'Saisissez un lien valide.',longUrl:'Le lien est trop long ou contient des identifiants.',protocol:'Le lien doit commencer par http:// ou https://',removeError:'Impossible de modifier la pièce jointe. La note est peut-être protégée.',locked:'Pièces jointes fermées : la note est protégée ou indisponible.',protecting:'Cette note est en cours de protection. Fermez l’éditeur et rouvrez-la avec son mot de passe.',microphone:'Impossible d’accéder au microphone.',recordUnavailable:'L’enregistrement audio est indisponible.',progress:'Préparation',compressingProgress:'Compression',savingProgress:'Enregistrement sur cet appareil',complete:'Pièce jointe enregistrée.',progressFile:'Fichier',cameraPermission:'Autorisez l’accès à la caméra et au microphone pour filmer.',videoPermission:'Autorisez l’accès au microphone pour enregistrer un audio.',cameraDenied:'L’accès à la caméra ou au microphone a été refusé. Autorisez-le dans les réglages de l’application.',uploading:'Envoi',uploadComplete:'Fichier envoyé.'},
+  pt:{title:'Anexos',add:'Adicionar ficheiros',link:'Adicionar ligação',voice:'Gravar áudio',stop:'Parar',empty:'Ainda não há anexos.',local:'Guardados neste dispositivo e incluídos numa cópia de segurança.',remove:'Remover anexo',tooLarge:'Não foi possível reduzir este ficheiro para 5 MB. Tente uma versão menor.',compressing:'A comprimir o ficheiro…',failed:'Não foi possível guardar o anexo.',url:'Cole um endereço web',save:'Guardar ligação',cancel:'Cancelar',limit:'Cada nota aceita até 100 anexos.',protected:'Esta nota está protegida. O anexo não foi guardado sem encriptação.',protectedLink:'Esta nota está protegida. A ligação não foi guardada sem encriptação.',validUrl:'Introduza uma ligação válida.',longUrl:'A ligação é demasiado longa ou contém credenciais.',protocol:'A ligação deve começar por http:// ou https://',removeError:'Não foi possível alterar o anexo. A nota pode estar protegida.',locked:'Anexos fechados: a nota está protegida ou indisponível.',protecting:'Esta nota está a ser protegida. Feche o editor e volte a abri-la com a palavra-passe.',microphone:'Não foi possível aceder ao microfone.',recordUnavailable:'A gravação de áudio não está disponível.',progress:'A preparar',compressingProgress:'A comprimir',savingProgress:'A guardar neste dispositivo',complete:'Anexo guardado com sucesso.',progressFile:'Ficheiro',cameraPermission:'Permita o acesso à câmara e ao microfone para gravar vídeo.',videoPermission:'Permita o acesso ao microfone para gravar áudio.',cameraDenied:'A permissão da câmara ou do microfone foi recusada. Pode ativá-la nas definições da app.',uploading:'A enviar',uploadComplete:'Ficheiro enviado com sucesso.'},
+  it:{title:'Allegati',add:'Aggiungi file',link:'Aggiungi link',voice:'Registra audio',stop:'Ferma',empty:'Nessun allegato.',local:'Salvati su questo dispositivo e inclusi in una copia di backup.',remove:'Rimuovi allegato',tooLarge:'Impossibile ridurre il file a 5 MB. Prova con una versione più piccola.',compressing:'Compressione del file…',failed:'Impossibile salvare l’allegato.',url:'Incolla un indirizzo web',save:'Salva link',cancel:'Annulla',limit:'Ogni nota può contenere fino a 100 allegati.',protected:'La nota è protetta. L’allegato non è stato salvato senza cifratura.',protectedLink:'La nota è protetta. Il link non è stato salvato senza cifratura.',validUrl:'Inserisci un link valido.',longUrl:'Il link è troppo lungo o contiene credenziali.',protocol:'Il link deve iniziare con http:// o https://',removeError:'Impossibile modificare l’allegato. La nota potrebbe essere protetta.',locked:'Allegati chiusi: la nota è protetta o non disponibile.',protecting:'La nota è in fase di protezione. Chiudi l’editor e riaprila con la password.',microphone:'Impossibile accedere al microfono.',recordUnavailable:'La registrazione audio non è disponibile.',progress:'Preparazione',compressingProgress:'Compressione',savingProgress:'Salvataggio su questo dispositivo',complete:'Allegato salvato correttamente.',progressFile:'File',cameraPermission:'Consenti l’accesso a fotocamera e microfono per registrare video.',videoPermission:'Consenti l’accesso al microfono per registrare audio.',cameraDenied:'Permesso per fotocamera o microfono negato. Puoi abilitarlo nelle impostazioni dell’app.',uploading:'Caricamento',uploadComplete:'File caricato correttamente.'},
+  ja:{title:'添付ファイル',add:'ファイルを追加',link:'リンクを追加',voice:'音声を録音',stop:'停止',empty:'添付ファイルはありません。',local:'この端末に保存され、バックアップにも含まれます。',remove:'添付ファイルを削除',tooLarge:'5 MB以下に圧縮できませんでした。小さいファイルをお試しください。',compressing:'ファイルを圧縮中…',failed:'添付ファイルを保存できませんでした。',url:'ウェブアドレスを貼り付け',save:'リンクを保存',cancel:'キャンセル',limit:'1つのノートに最大100個の添付ファイルを追加できます。',protected:'このノートは保護されています。添付ファイルは暗号化せずに保存されませんでした。',protectedLink:'このノートは保護されています。リンクは暗号化せずに保存されませんでした。',validUrl:'有効なリンクを入力してください。',longUrl:'リンクが長すぎるか、認証情報が含まれています。',protocol:'リンクは http:// または https:// で始めてください。',removeError:'添付ファイルを変更できません。ノートが保護されている可能性があります。',locked:'添付ファイルは閉じています。ノートが保護されているか、利用できません。',protecting:'ノートを保護しています。エディターを閉じ、パスワードで再度開いてください。',microphone:'マイクにアクセスできませんでした。',recordUnavailable:'音声録音を利用できません。',progress:'準備中',compressingProgress:'圧縮中',savingProgress:'この端末に保存中',complete:'添付ファイルを保存しました。',progressFile:'ファイル',cameraPermission:'動画を撮影するにはカメラとマイクへのアクセスを許可してください。',videoPermission:'音声録音にはマイクへのアクセスを許可してください。',cameraDenied:'カメラまたはマイクの権限が拒否されました。アプリの設定で許可できます。',uploading:'アップロード中',uploadComplete:'ファイルをアップロードしました。'},
+  ko:{title:'첨부 파일',add:'파일 추가',link:'링크 추가',voice:'오디오 녹음',stop:'중지',empty:'아직 첨부 파일이 없습니다.',local:'이 기기에 저장되며 백업에도 포함됩니다.',remove:'첨부 파일 삭제',tooLarge:'파일을 5MB 이하로 줄일 수 없습니다. 더 작은 파일을 사용해 보세요.',compressing:'파일 압축 중…',failed:'첨부 파일을 저장하지 못했습니다.',url:'웹 주소 붙여넣기',save:'링크 저장',cancel:'취소',limit:'노트 하나에 최대 100개의 파일을 첨부할 수 있습니다.',protected:'노트가 보호되어 있습니다. 첨부 파일은 암호화되지 않은 상태로 저장되지 않았습니다.',protectedLink:'노트가 보호되어 있습니다. 링크는 암호화되지 않은 상태로 저장되지 않았습니다.',validUrl:'올바른 링크를 입력하세요.',longUrl:'링크가 너무 길거나 인증 정보가 포함되어 있습니다.',protocol:'링크는 http:// 또는 https://로 시작해야 합니다.',removeError:'첨부 파일을 변경하지 못했습니다. 노트가 보호된 상태일 수 있습니다.',locked:'첨부 파일이 닫혔습니다. 노트가 보호되어 있거나 사용할 수 없습니다.',protecting:'노트를 보호하는 중입니다. 편집기를 닫고 비밀번호로 다시 여세요.',microphone:'마이크에 접근할 수 없습니다.',recordUnavailable:'오디오 녹음을 사용할 수 없습니다.',progress:'준비 중',compressingProgress:'압축 중',savingProgress:'이 기기에 저장 중',complete:'첨부 파일이 저장되었습니다.',progressFile:'파일',cameraPermission:'동영상을 녹화하려면 카메라와 마이크 접근을 허용해 주세요.',videoPermission:'오디오를 녹음하려면 마이크 접근을 허용해 주세요.',cameraDenied:'카메라 또는 마이크 권한이 거부되었습니다. 앱 설정에서 허용할 수 있습니다.',uploading:'업로드 중',uploadComplete:'파일이 업로드되었습니다.'}
 };
 const notices={
   es:{locked:'Adjuntos cerrados: la nota está protegida o ya no está disponible.',protecting:'Esta nota se está protegiendo. Cierra el editor y ábrela con su contraseña.'},
@@ -136,17 +136,19 @@ async function encodeCameraPhoto(sourceCanvas){
   return null;
 }
 
-async function compressImage(file){
+async function compressImage(file,onProgress=()=>{}){
   if(!window.createImageBitmap)return null;
   const bitmap=await createImageBitmap(file,{imageOrientation:'from-image'});
   try{
     const canvas=document.createElement('canvas');let scale=Math.min(1,2400/Math.max(bitmap.width,bitmap.height));
+    const attempts=7*5;let attempt=0;
     for(let dimensionPass=0;dimensionPass<7;dimensionPass++){
       canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
       const context=canvas.getContext('2d',{alpha:true});if(!context)return null;
       context.drawImage(bitmap,0,0,canvas.width,canvas.height);
       for(const quality of [.9,.84,.78,.72,.66]){
         const blob=await toBlob(canvas,'image/webp',quality);
+        onProgress(++attempt/attempts);
         if(blob.size<=MAX_FILE_BYTES)return {file:fileFromBlob(blob,replaceExtension(file.name,'webp'),'image/webp'),compression:'image-webp'};
       }
       scale*=.82;
@@ -155,7 +157,7 @@ async function compressImage(file){
   }finally{bitmap.close?.();}
 }
 
-async function compressAudio(file){
+async function compressAudio(file,onProgress=()=>{}){
   const AudioContextType=window.AudioContext||window.webkitAudioContext;
   if(!AudioContextType||!window.MediaRecorder)return null;
   const context=new AudioContextType();
@@ -171,8 +173,8 @@ async function compressAudio(file){
       recorder.onerror=()=>reject(new Error('AUDIO_COMPRESS_FAILED'));
       recorder.onstop=()=>{const blob=new Blob(chunks,{type:recorder.mimeType||'audio/webm'});resolve(blob);};
     });
-    await context.resume();recorder.start();source.start();
-    await new Promise((resolve,reject)=>{source.onended=resolve;source.onerror=()=>reject(new Error('AUDIO_COMPRESS_FAILED'));});
+    await context.resume();recorder.start();const startedAt=context.currentTime;source.start();
+    await new Promise((resolve,reject)=>{const timer=setInterval(()=>{if(recorder.state==='recording')recorder.requestData();onProgress(Math.min(.98,(context.currentTime-startedAt)/buffer.duration));},1000);source.onended=()=>{clearInterval(timer);onProgress(1);resolve();};source.onerror=()=>{clearInterval(timer);reject(new Error('AUDIO_COMPRESS_FAILED'));};});
     if(recorder.state!=='inactive')recorder.stop();
     const blob=await result;
     if(blob.size>MAX_FILE_BYTES)return null;
@@ -181,7 +183,7 @@ async function compressAudio(file){
   }finally{await context.close().catch(()=>{});}
 }
 
-async function compressVideo(file){
+async function compressVideo(file,onProgress=()=>{}){
   if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream)return null;
   const mediaUrl=URL.createObjectURL(file),video=document.createElement('video'),canvas=document.createElement('canvas');
   video.preload='auto';video.playsInline=true;video.src=mediaUrl;
@@ -206,16 +208,16 @@ async function compressVideo(file){
     if(!mime)return null;
     const recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:videoBits,audioBitsPerSecond:audioBits});
     const chunks=[],result=new Promise((resolve,reject)=>{
-      recorder.ondataavailable=event=>{if(event.data.size)chunks.push(event.data);};
+      recorder.ondataavailable=event=>{if(event.data.size)chunks.push(event.data);onProgress(Math.min(.98,video.currentTime/video.duration));};
       recorder.onerror=()=>reject(new Error('VIDEO_ENCODE_FAILED'));
       recorder.onstop=()=>resolve(new Blob(chunks,{type:recorder.mimeType||mime}));
     });
     let frame=0;
     const draw=()=>{if(video.paused||video.ended)return;context.drawImage(video,0,0,canvas.width,canvas.height);frame=requestAnimationFrame(draw);};
     const ended=new Promise((resolve,reject)=>{video.onended=resolve;video.onerror=()=>reject(new Error('VIDEO_DECODE_FAILED'));});
-    await video.play();context.drawImage(video,0,0,canvas.width,canvas.height);recorder.start();draw();await ended;
+    await video.play();context.drawImage(video,0,0,canvas.width,canvas.height);recorder.start(1000);draw();await ended;
     cancelAnimationFrame(frame);if(recorder.state!=='inactive')recorder.stop();
-    const blob=await result;
+    const blob=await result;onProgress(1);
     if(blob.size>MAX_FILE_BYTES)return null;
     const ext=blob.type.includes('mp4')?'mp4':'webm';
     return {file:fileFromBlob(blob,replaceExtension(file.name,ext),blob.type),compression:'video-transcode'};
@@ -234,18 +236,19 @@ async function compressGeneric(file){
   }catch{return null;}
 }
 
-async function prepareFile(file){
-  notify(labels.compressing,0);
+async function prepareFile(file,onProgress=()=>{}){
+  onProgress(0);
   try{
     let result=null;
-    if(file.type.startsWith('image/'))result=await compressImage(file);
-    else if(file.type.startsWith('audio/'))result=await compressAudio(file);
-    else if(file.type.startsWith('video/'))result=await compressVideo(file);
-    if(result&&result.file.size<file.size)return result;
+    if(file.type.startsWith('image/'))result=await compressImage(file,onProgress);
+    else if(file.type.startsWith('audio/'))result=await compressAudio(file,onProgress);
+    else if(file.type.startsWith('video/'))result=await compressVideo(file,onProgress);
+    if(result&&result.file.size<file.size){onProgress(1);return result;}
+    onProgress(.8);
     const generic=await compressGeneric(file);
-    if(generic&&generic.file.size<file.size)return generic;
-    return file.size<=MAX_FILE_BYTES?{file,compression:''}:null;
-  }catch{return file.size<=MAX_FILE_BYTES?{file,compression:''}:null;}
+    if(generic&&generic.file.size<file.size){onProgress(1);return generic;}
+    onProgress(1);return file.size<=MAX_FILE_BYTES?{file,compression:''}:null;
+  }catch{onProgress(1);return file.size<=MAX_FILE_BYTES?{file,compression:''}:null;}
 }
 
 function category(item) {
@@ -329,27 +332,44 @@ function notify(message, duration=3200) {
 }
 function dismissNotify(){clearTimeout(notify.timer);document.querySelector('.pp-attachment-toast')?.classList.remove('is-visible');}
 
+function progressStatus(phase,percent,fileName=''){
+  const toast=document.querySelector('.pp-attachment-toast');if(!toast)return;
+  const clamped=Math.max(0,Math.min(100,Math.round(percent)));
+  const label=phase==='compress'?labels.compressingProgress:phase==='save'?labels.savingProgress:labels.progress;
+  toast.replaceChildren();
+  const text=document.createElement('span');text.className='pp-progress-label';text.textContent=`${fileName?`${labels.progressFile} ${fileName} · `:''}${label} ${clamped}%`;
+  const progress=document.createElement('progress');progress.className='pp-progress-bar';progress.max=100;progress.value=clamped;progress.setAttribute('aria-label',label);progress.setAttribute('aria-valuetext',`${clamped}%`);
+  toast.append(text,progress);toast.classList.add('is-visible');clearTimeout(notify.timer);
+}
+
 async function saveFiles(files, noteId=activeNoteId) {
   if (!noteId) return;
   const ready=[],failures=[];
-  for(const source of files){
+  const accepted=files.filter(supported),totalBytes=accepted.reduce((sum,file)=>sum+file.size,0)||1;let processedBytes=0;
+  for(const source of accepted){
     if(!supported(source))continue;
-    const prepared=await prepareFile(source);
+    progressStatus('prepare',processedBytes/totalBytes*100,source.name);
+    const prepared=await prepareFile(source,ratio=>progressStatus('compress',(processedBytes+source.size*ratio)/totalBytes*100,source.name));
+    processedBytes+=source.size;
     if(!prepared||prepared.file.size>MAX_FILE_BYTES){failures.push(`${source.name}: ${labels.tooLarge}`);continue;}
     ready.push({source,...prepared});
+    progressStatus('compress',processedBytes/totalBytes*100,source.name);
   }
-  dismissNotify();
+  let storedBytes=0;const saveTotal=ready.reduce((sum,item)=>sum+item.file.size,0)||1;
   try { await withNoteStorageLock(noteId, async()=>{
     await assertAttachmentWritable(noteId);
     let count=(await listForNote(noteId)).length;
     for (const {source,file,compression} of ready) {
-      if(count>=MAX_ATTACHMENTS){notify(labels.limit);break;}
+      if(count>=MAX_ATTACHMENTS){failures.push(labels.limit);break;}
+      progressStatus('save',storedBytes/saveTotal*100,source.name);
       const id=crypto.randomUUID(),item={key:`${noteId}::${id}`,id,noteId,kind:'file',name:compression==='gzip'?source.name:(file.name||`audio-${Date.now()}.webm`),type:compression==='gzip'?(source.type||'application/octet-stream'):(file.type||'application/octet-stream'),...(compression==='gzip'?{originalType:source.type||'application/octet-stream'}:{}),size:file.size,originalSize:source.size,compression,created:Date.now(),blob:file};
-      await transaction('readwrite',store=>store.put(item));count++;
+      await transaction('readwrite',store=>store.put(item));count++;storedBytes+=file.size;progressStatus('save',storedBytes/saveTotal*100,source.name);
     }
   }); } catch(error) { notify(error.message==='NOTE_PROTECTED'?labels.protected:labels.failed);return; }
-  if(failures.length)notify(failures.join(' · '));
   if(activeNoteId===noteId)await renderList();
+  if(failures.length)notify(failures.join(' · '),0);
+  else if(ready.length)notify(labels.complete);
+  else dismissNotify();
 }
 
 async function saveLink(raw, noteId=activeNoteId) {
@@ -458,7 +478,7 @@ async function toggleRecording(button) {
       button.classList.remove('is-recording'); button.querySelector('span').textContent = labels.voice;
     };
     recorder.start(); button.classList.add('is-recording'); button.querySelector('span').textContent = labels.stop;
-  } catch { notify(labels.microphone); }
+  } catch(error) { notify(error?.name==='NotAllowedError'||error?.name==='PermissionDeniedError'?labels.cameraDenied:labels.microphone); }
 }
 
 function cameraStatus(text=''){
@@ -493,7 +513,7 @@ async function openCamera(panel){
     panel.querySelector('.pp-camera-photo').disabled=false;
     panel.querySelector('.pp-camera-record').disabled=false;
     if(cameraStream.getAudioTracks().length)cameraStatus(labels.videoInfo);else cameraStatus(`${labels.videoInfo} · ${labels.audioUnavailable}`);
-  }catch{notify(labels.permission);releaseCamera();}
+  }catch(error){notify(error?.name==='NotAllowedError'||error?.name==='PermissionDeniedError'?labels.cameraDenied:labels.unavailable);releaseCamera();}
 }
 
 async function takeCameraPhoto(panel){
@@ -577,7 +597,7 @@ function createPanel() {
         <button type="button" class="pp-attachment-action pp-camera-stop" hidden>⏹ <span>${labels.stop}</span></button>
         <button type="button" class="pp-attachment-action pp-camera-close">✕ <span>${labels.close}</span></button>
       </div>
-      <small class="pp-camera-status" role="status">${labels.permission}</small>
+      <small class="pp-camera-status" role="status">${labels.cameraPermission}</small>
     </div>
     <form class="pp-link-form" hidden><input type="url" inputmode="url" placeholder="${labels.url}" aria-label="${labels.url}"><button type="submit">${labels.save}</button><button type="button" class="pp-link-cancel">${labels.cancel}</button></form>
     <div class="pp-attachments-list" aria-live="polite"></div>`;
