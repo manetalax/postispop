@@ -91,6 +91,8 @@ footer a { display: inline-flex; align-items: center; min-height: 44px; }
 }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
 @media (max-width: 480px) {
+  .plan-heading { align-items: flex-start; }
+  .plan-heading .plan-tag { max-width: 62%; white-space: normal; text-align: right; line-height: 1.35; }
   .payment-options { grid-template-columns: 1fr; }
   .payment-option { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; padding: 14px; align-items: center; }
   .payment-option h3 { margin: 0; }
