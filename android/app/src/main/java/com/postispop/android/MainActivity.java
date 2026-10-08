@@ -36,6 +36,7 @@ public final class MainActivity extends ComponentActivity {
     private static final int MAX_SHARE_BYTES = 10000000;
     private PendingDownload pendingDownload;
     private PermissionRequest pendingWebPermission;
+    private String[] pendingWebResources = new String[0];
 
     private static final class PendingDownload {
         final String id;
@@ -98,6 +99,7 @@ public final class MainActivity extends ComponentActivity {
                 if (fileResult != null) { fileResult.onReceiveValue(null); fileResult = null; }
                 pendingDownload = null;
                 pendingWebPermission = null;
+                pendingWebResources = new String[0];
                 root.removeView(view);
                 view.destroy();
                 web = null;
@@ -131,19 +133,30 @@ public final class MainActivity extends ComponentActivity {
             }
             @Override public void onPermissionRequest(PermissionRequest request) {
                 runOnUiThread(() -> {
-                    if (!isLocal(request.getOrigin()) || !Arrays.asList(request.getResources()).contains(PermissionRequest.RESOURCE_AUDIO_CAPTURE)) {
-                        request.deny(); return;
+                    if (!isLocal(request.getOrigin()) || pendingWebPermission != null) { request.deny(); return; }
+                    List<String> androidPermissions = new ArrayList<>(), webResources = new ArrayList<>();
+                    for (String resource : request.getResources()) {
+                        if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(resource)) {
+                            androidPermissions.add(Manifest.permission.RECORD_AUDIO); webResources.add(resource);
+                        } else if (PermissionRequest.RESOURCE_VIDEO_CAPTURE.equals(resource)) {
+                            androidPermissions.add(Manifest.permission.CAMERA); webResources.add(resource);
+                        }
                     }
-                    if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-                        request.grant(new String[]{PermissionRequest.RESOURCE_AUDIO_CAPTURE});
-                    } else {
-                        pendingWebPermission = request;
-                        requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 12);
+                    if (webResources.isEmpty()) { request.deny(); return; }
+                    List<String> missing = new ArrayList<>(), allowed = new ArrayList<>();
+                    for (int i = 0; i < androidPermissions.size(); i++) {
+                        String permission = androidPermissions.get(i);
+                        if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) allowed.add(webResources.get(i));
+                        else if (!missing.contains(permission)) missing.add(permission);
                     }
+                    if (missing.isEmpty()) { request.grant(allowed.toArray(new String[0])); return; }
+                    pendingWebPermission = request;
+                    pendingWebResources = webResources.toArray(new String[0]);
+                    requestPermissions(missing.toArray(new String[0]), 12);
                 });
             }
             @Override public void onPermissionRequestCanceled(PermissionRequest request) {
-                if (pendingWebPermission == request) pendingWebPermission = null;
+                if (pendingWebPermission == request) { pendingWebPermission = null; pendingWebResources = new String[0]; }
             }
         });
         if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
@@ -372,9 +385,14 @@ public final class MainActivity extends ComponentActivity {
         super.onRequestPermissionsResult(requestCode, permissions, results);
         if (requestCode == 12 && pendingWebPermission != null) {
             PermissionRequest request = pendingWebPermission; pendingWebPermission = null;
-            if (results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED)
-                request.grant(new String[]{PermissionRequest.RESOURCE_AUDIO_CAPTURE});
-            else request.deny();
+            List<String> granted = new ArrayList<>();
+            for (String resource : pendingWebResources) {
+                String permission = PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(resource)
+                    ? Manifest.permission.RECORD_AUDIO : Manifest.permission.CAMERA;
+                if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) granted.add(resource);
+            }
+            pendingWebResources = new String[0];
+            if (granted.isEmpty()) request.deny(); else request.grant(granted.toArray(new String[0]));
         }
     }
     @Override protected void onPause() {
