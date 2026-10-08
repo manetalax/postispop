@@ -8,19 +8,19 @@ test('Board, note text, WhatsApp and individual attachments use explicit share a
   const browser=await chromium.launch(browserOptions());
   try{
     const {context,blocked,missing}=await isolatedContext(browser,{width:390,height:844},fixture(6));
-    await context.addInitScript(()=>{
+    const page=await context.newPage(),errors=[];page.on('pageerror',error=>errors.push(error.message));
+    await page.goto('https://postispop.com/');await ready(page);
+    await page.getByRole('button',{name:'Menú'}).click();
+    const shareButton=page.locator('.pp-share-board-link:visible');
+    await shareButton.waitFor();assert.equal(await shareButton.isEnabled(),true);
+    await page.evaluate(()=>{
       window.__shared=[];window.__whatsapp='';
       Object.defineProperty(window,'__postispopNativeShare',{configurable:false,get:()=>undefined,set:()=>{}});
       Object.defineProperty(navigator,'canShare',{configurable:true,value:()=>true});
       Object.defineProperty(navigator,'share',{configurable:true,value:async data=>window.__shared.push({title:data.title,text:data.text,files:(data.files||[]).map(file=>({name:file.name,type:file.type,size:file.size}))})});
       window.open=url=>{window.__whatsapp=String(url);return {};};
     });
-    const page=await context.newPage(),errors=[];page.on('pageerror',error=>errors.push(error.message));
-    await page.goto('https://postispop.com/');await ready(page);
-    await page.getByRole('button',{name:'Menú'}).click();
-    const shareButton=page.locator('.group-button,.header-share').first();
-    await shareButton.waitFor({state:'attached'});assert.equal(await shareButton.isEnabled(),true);
-    await shareButton.evaluate(button=>button.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true})));
+    await shareButton.click();
     await page.getByRole('dialog').waitFor();
     await page.getByRole('button',{name:'Compartir copia completa'}).click();
     await page.waitForFunction(()=>window.__shared.some(item=>item.files?.[0]?.name==='PostisPop-copia.json'));
