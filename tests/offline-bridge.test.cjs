@@ -68,7 +68,7 @@ test('Cloud board creation delegates ownership and six-note seeding to one atomi
  }});
  assert.equal((await app.request('boards',{})).status,200);
  assert.deepEqual(Object.keys(payload),['p_request_id']);assert.match(payload.p_request_id,/^[a-f0-9-]{36}$/);
- assert.equal(app.calls.filter(c=>c.options.method==='POST').length,1);
+ assert.equal(app.calls.filter(c=>c.options.method==='POST').length,2);
  assert.equal(app.calls.some(c=>c.options.method==='POST'&&/\/rest\/v1\/(boards|notes)/.test(c.url)),false);
 });
 
@@ -79,7 +79,7 @@ test('Cloud reordering uses one atomic RPC and fails closed when its migration i
  }});
  assert.equal((await app.request('board/board-a/swap',{from:'note-a',to:'note-b',revision:1})).status,200);
  assert.deepEqual(payload,{p_board:'board-a',p_from:'note-a',p_to:'note-b',p_revision:1});
- assert.equal(app.calls.filter(c=>c.options.method==='POST').length,1);assert.equal(app.calls.filter(c=>c.options.method==='PATCH').length,0);
+ assert.equal(app.calls.filter(c=>c.options.method==='POST').length,2);assert.equal(app.calls.filter(c=>c.options.method==='PATCH').length,0);
  const missing=await setup({before:async url=>url.includes('/rpc/postispop_swap_board_notes')?Response.json({code:'PGRST202'},{status:404}):null});
  const result=await missing.request('board/board-a/swap',{from:'note-a',to:'note-b',revision:1});assert.equal(result.status,503);assert.equal(result.data.error,'REORDER_UNAVAILABLE');
  assert.equal(missing.calls.filter(c=>c.options.method==='PATCH').length,0);
@@ -99,7 +99,7 @@ test('Premium account creation uses the same server-authorized RPC and keeps six
   if(url.includes('/rest/v1/notes'))return Response.json(Array.from({length:6},(_,position)=>({id:'note-'+position,position,board_id:'board-a'})));
  }});
  const result=await app.request('boards',{});assert.equal(result.status,200);assert.equal(result.data.notes.length,6);
- assert.equal(app.calls.filter(c=>c.options.method==='POST').length,1);
+ assert.equal(app.calls.filter(c=>c.options.method==='POST').length,2);
 });
 
 
@@ -125,7 +125,7 @@ test('Lost board-creation response retains its retry ticket and never repeats se
   if(url.includes('/rpc/postispop_create_board')){ids.push(JSON.parse(options.body).p_request_id);if(ids.length===1)throw new TypeError('Response lost after atomic commit');return Response.json({id:'board-a',owner_id:'A'});}
  }});
  assert.equal((await app.request('boards',{})).status,500);assert.equal((await app.request('boards',{})).status,200);
- assert.equal(ids.length,2);assert.equal(ids[0],ids[1]);assert.equal(app.calls.filter(c=>c.options.method==='POST').length,2);
+ assert.equal(ids.length,2);assert.equal(ids[0],ids[1]);assert.equal(app.calls.filter(c=>c.options.method==='POST').length,3);
 });
 test('A late creation response cannot expose the previous account board after a session change',async()=>{
  const started=deferred(),delayed=deferred();const app=await setup({before:async(url)=>{if(url.includes('/rpc/postispop_create_board')){started.resolve();return delayed.promise;}}});

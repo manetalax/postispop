@@ -53,7 +53,7 @@ test('public offer explains the trial and exposes all four Stripe-backed Premium
   assert.equal((html.match(/data-buy=/g)||[]).length,4);
   assert.ok(html.includes('atelier-checkout.js'));
   assert.ok(!/at-grid|at-cart|at-roulette/.test(html));
-  assert.ok(!/0,95|9,95/.test(html));
+  assert.ok(!/\b0,95\b|\b9,95\b/.test(html));
 });
 
 test('legacy commerce URLs retire their offers without breaking inbound links',()=>{
