@@ -42,5 +42,7 @@ No implementar búsqueda nueva o rediseñada, criterios «Ordenar por» (audio, 
 ESTADO DE GIT
 - Ruta: /Users/franciscomanuelmasagarcia/Documents/Codex/2026-10-08/qu-2/work/postispop
 - Rama: codex/postispop-today-20261008, basada en origin/main d8f7830.
-- Los cambios del día están en el árbol de trabajo. Revisar git status antes de editar, crear commit o sincronizar.
+- Commit local: 30002116d8636d25d57c32f9e69b5ce19eadfa4b. Commit sincronizado en GitHub: 43f59f44628dd71a4364faed687bf2b497f5d3dd.
+- Rama GitHub: https://github.com/manetalax/postispop/tree/codex/postispop-today-20261008. No se abrió PR ni se desplegó la web; la publicación requiere el flujo de pruebas del repositorio.
+- Para continuar, revisa git status antes de editar o sincronizar. No reescribas ni borres la historia remota ni los stashes de recuperación existentes.
 - No reescribir ni borrar la historia remota ni los stashes de recuperación existentes.
