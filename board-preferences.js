@@ -72,4 +72,4 @@ export function initBoardPreferences() {
   if(frame!==activeFrame||boardId!==activeBoardId){observer?.disconnect();activeFrame=frame;activeBoardId=boardId;observer=new MutationObserver(()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;if(activeFrame?.isConnected)refreshControls(activeFrame,activeBoardId);});});observer.observe(frame,{childList:true,subtree:true});}
   refreshControls(frame,boardId);
 }
-window.addEventListener('storage',event=>{if(event.key?.startsWith('postispop:board-preferences:'))window.dispatchEvent(new CustomEvent('postispop:note-preferences',{detail:{boardId:event.key.slice('postispop:board-preferences:'.length)}}));});
+if (typeof window !== 'undefined') window.addEventListener('storage',event=>{if(event.key?.startsWith('postispop:board-preferences:'))window.dispatchEvent(new CustomEvent('postispop:note-preferences',{detail:{boardId:event.key.slice('postispop:board-preferences:'.length)}}));});
