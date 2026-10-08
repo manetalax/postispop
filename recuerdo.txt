@@ -18,7 +18,7 @@ CAMBIOS LOCALES Y RUTAS
 - Marca/iconos: assets/postispop-logo.svg, assets/postispop-logo-light.svg, assets/postispop-app-icon.svg, favicon.svg, assets/icon-192.png, assets/icon-512.png, assets/icon-maskable-512.png, assets/apple-touch-icon.png.
 - Presentación: brand-highlights.js, workspace.css.
 - Favoritos/chinchetas locales: board-preferences.js, board-tools.js, board-view-model.js, board-layout.js, experience.js y scripts/board-layout-transform.mjs. Integración Android: mobile/bundle-tools.mjs.
-- Adjuntos, selector de vídeo, cámara y compresión: note-attachments.js, note-attachments.css, backup-import.js, protected-notes.js y scripts/stage-site.mjs. Prueba de cámara simulada: tests/camera-capture.test.cjs.
+- Adjuntos, selector de vídeo, cámara y compresión: note-attachments.js, note-attachments.css, backup-import.js, protected-notes.js y scripts/stage-site.mjs. Prueba de cámara simulada: tests/camera-capture-ui.cjs (se ejecuta después de preparar el bundle de pruebas).
 - Precios/checkout: product-rules.json, atelier.html, atelier-checkout.js, functions/postispop-commerce/index.ts y su README.
 - Retención Premium: database/note-trial-retention.sql, database/premium-billing.sql y database/note-retention-purge-on-access.sql.
 
@@ -36,7 +36,7 @@ VISTA PREVIA Y VALIDACIÓN
 - Cámara verificada en Chromium con dispositivo simulado: foto WebP ≤128 KiB y vídeo <5 MiB.
 - Lint, 172 pruebas, pruebas de base de datos, Astro build, SEO 136 URL/8 idiomas, 13 escenarios de pizarra y experiencia: pasaron antes de este cambio de cámara; CI debe repetir el chequeo tras abrir PR.
 - Vista previa local: http://127.0.0.1:8766/
-- El staging más reciente generó 136 URL SEO traducidas y un paquete público de 323 archivos. Lint, 172 pruebas unitarias, integración de base de datos, Astro build, SEO (136 URL/ocho idiomas), 13 escenarios de pizarra y experiencia pasaron en la rama de cámara.
+- El staging más reciente generó 136 URL SEO traducidas y un paquete público de 323 archivos. Lint, 172 pruebas unitarias, integración de base de datos, Astro build, SEO (136 URL/ocho idiomas), cámara simulada, 13 escenarios de pizarra y experiencia pasaron localmente en la rama de cámara.
 - No afirmar que la vista previa local se haya publicado en postispop.com.
 
 NO INCLUIR EN ESTE ALCANCE
