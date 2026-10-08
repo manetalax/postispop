@@ -60,12 +60,17 @@ function mapLink(href, locale, publicPaths) {
     url.searchParams.set('lang', locale);
     return '/' + url.search + url.hash;
   }
+  if(url.pathname==='/atelier.html'){
+    url.searchParams.set('lang',locale);
+    return url.pathname+url.search+url.hash;
+  }
   const path = publicPaths.has(url.pathname) ? url.pathname : publicPaths.has(url.pathname + '.html') ? url.pathname + '.html' : url.pathname;
   return (publicPaths.has(path) ? localizedPath(path, locale) : path) + url.search + url.hash;
 }
 
-function translateBody(body, catalog, source, publicPaths) {
-  body = body.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
+function translateBody(body, catalog, source, publicPaths, preserveExternalScripts = false) {
+  body = body.replace(/<script\b(?=[^>]*\bsrc=)[^>]*>[\s\S]*?<\/script>/gi, match => preserveExternalScripts ? match : '');
+  body = body.replace(/<script\b(?![^>]*\bsrc=)[^>]*>[\s\S]*?<\/script>/gi, '');
   return tokenizeHtml(body).map(token => {
     if (token.type === 'text') {
       const key = normalizeSeoText(token.value);
@@ -179,7 +184,7 @@ export async function buildMultilingualSeo(output, {catalogDirectory=sourceDirec
       } else {
         title=translate(titleFrom(original),catalog,source); description=translate(descriptionFrom(original),catalog,source);
         if (!title || !description) throw Error(`Missing SEO metadata: ${path}`);
-        body=translateBody(original.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i)?.[1] || '',catalog,source,publicPaths)+languageNav(path,catalog,catalogs);
+        body=translateBody(original.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i)?.[1] || '',catalog,source,publicPaths,path==='/atelier.html')+languageNav(path,catalog,catalogs);
         styles=stylesFrom(original);
         if(path==='/instalar.html'){
           styles+='<link rel="manifest" href="/manifest.webmanifest">';

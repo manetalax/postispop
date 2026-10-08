@@ -43,16 +43,17 @@ test('every country embeds its real flag and declares its current cultural editi
     if(d.edition==='crafted'){assert.ok(d.illustratedLandmark&&d.illustratedFood);assert.ok(d.landmark.verified&&d.food.verified);}
   }
 });
-test('public offer has only Gratis and one Premium, with no payment activation',()=>{
+test('public offer explains the trial and exposes all four Stripe-backed Premium choices',()=>{
   const html=fs.readFileSync(new URL('../atelier.html',`file://${__filename}`),'utf8');
-  const source=fs.readFileSync(new URL('../atelier.js',`file://${__filename}`),'utf8');
-  assert.match(html,/<strong>6 notas\.<\/strong>/);
-  for(const amount of ['2,95','9,95','59,95']) assert.ok(html.includes(amount));
-  assert.equal((html.match(/<button\b/g)||[]).length,3);
-  assert.equal((html.match(/type="button" disabled/g)||[]).length,3);
-  assert.ok(!/checkout|stripe|paypal|create-payment|fetch\(/i.test(source));
-  assert.ok(!/<script\b|at-grid|at-cart|at-roulette/.test(html));
-  assert.ok(!/0,95|30 días|7 notas|100 notas ilimitadas/.test(html));
+  assert.match(html,/Empieza con 6 notas/);
+  assert.match(html,/30 días para usar todas las notas/);
+  assert.match(html,/bloqueadas durante 30 días y luego se eliminan/);
+  for(const amount of ['2,95','5,95','19,95','59,95']) assert.ok(html.includes(amount));
+  assert.deepEqual([...html.matchAll(/data-buy="(premium-[^"]+)"/g)].map(m=>m[1]),['premium-monthly','premium-quarterly','premium-yearly','premium-lifetime']);
+  assert.equal((html.match(/data-buy=/g)||[]).length,4);
+  assert.ok(html.includes('atelier-checkout.js'));
+  assert.ok(!/at-grid|at-cart|at-roulette/.test(html));
+  assert.ok(!/\b0,95\b|\b9,95\b/.test(html));
 });
 
 test('legacy commerce URLs retire their offers without breaking inbound links',()=>{
@@ -67,13 +68,15 @@ test('legacy commerce URLs retire their offers without breaking inbound links',(
   assert.ok(!/roulette|ruleta|premio|<button|<script/.test(rewards));
 });
 
-test('current product rules preserve data and make every new payment unavailable',()=>{
+test('current product rules configure the trial, protected retention and one Premium entitlement',()=>{
   const rules=JSON.parse(fs.readFileSync('product-rules.json','utf8'));
   assert.equal(rules.notes.free_limit,6);
-  assert.equal(rules.notes.free_notes_expire,false);
-  assert.equal(rules.billing.checkout_enabled,false);
+  assert.equal(rules.notes.free_trial_days,30);
+  assert.equal(rules.notes.free_trial_note_limit,null);
+  assert.equal(rules.notes.free_notes_expire,true);
+  assert.equal(rules.billing.checkout_enabled,true);
   assert.equal(rules.billing.legacy_entitlements_preserved,true);
-  assert.deepEqual([rules.billing.monthly_cents,rules.billing.annual_cents,rules.billing.lifetime_cents],[295,995,5995]);
+  assert.deepEqual([rules.billing.monthly_cents,rules.billing.quarterly_cents,rules.billing.annual_cents,rules.billing.lifetime_cents],[295,595,1995,5995]);
   assert.equal(rules.public_catalogue.individual_tool_sales,false);
 });
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Gratis o Premium · PostisPop</title>
-  <meta name="description" content="Empieza con 6 notas gratis. Un único Premium: 2,95 € al mes, 9,95 € al año o 59,95 € de por vida. Compras próximamente.">
+  <meta name="description" content="Empieza con 6 notas gratis. Un único Premium: 2,95 € al mes, 5,95 € cada tres meses, 19,95 € al año o 59,95 € de por vida.">
   <meta name="theme-color" content="#F6F5F1">
   <link rel="canonical" href="https://postispop.com/atelier.html">
   <link rel="icon" href="/favicon.svg">
@@ -13,7 +13,7 @@
   <meta property="og:locale" content="es_ES">
   <meta property="og:site_name" content="PostisPop">
   <meta property="og:title" content="Tus ideas a la vista · PostisPop Premium">
-  <meta property="og:description" content="6 notas gratis. Un único Premium, con tres formas de pago. Próximamente.">
+  <meta property="og:description" content="6 notas gratis. Premium: 2,95 € al mes, 5,95 € cada 3 meses, 19,95 € al año o 59,95 € de por vida.">
   <meta property="og:url" content="https://postispop.com/atelier.html">
   <meta property="og:image" content="https://postispop.com/assets/postispop-og.webp">
   <meta name="twitter:card" content="summary_large_image">
@@ -21,60 +21,68 @@
 <body>
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
   <header class="pricing-header">
-    <a class="brand" href="/" aria-label="PostisPop, volver a mis notas"><img src="/assets/postispop-logo.svg" alt="PostisPop" width="261" height="64"></a>
-    <a class="back-link" href="/"><span aria-hidden="true">←</span> Mis notas</a>
+    <a class="brand" href="/" aria-label="PostisPop, volver a mis notas" data-label="brand"><img src="/assets/postispop-logo.svg" alt="PostisPop" width="261" height="64"></a>
+    <a class="back-link" href="/" data-copy="back"><span aria-hidden="true">←</span> Mis notas</a>
   </header>
   <main id="contenido">
     <section class="pricing-intro" aria-labelledby="pricing-title">
-      <p class="eyebrow">MENOS RUIDO. MÁS IDEAS.</p>
-      <h1 id="pricing-title">Todo a la vista.<br>Así de simple.</h1>
-      <p>Tus notas son las protagonistas. Empieza gratis y elige Premium cuando necesites más espacio para tus ideas.</p>
+      <p class="eyebrow" data-copy="eyebrow">MENOS RUIDO. MÁS IDEAS.</p>
+      <h1 id="pricing-title" data-copy="headline">Todo a la vista. Así de simple.</h1>
+      <p data-copy="intro">Tus notas son las protagonistas. Empieza gratis y elige Premium cuando necesites más espacio para tus ideas.</p>
     </section>
     <section class="plans" aria-label="Gratis y Premium">
       <article class="free-plan">
-        <div class="plan-heading"><h2>Gratis</h2><span class="plan-tag">Para empezar</span></div>
+        <div class="plan-heading"><h2 data-copy="free">Gratis</h2><span class="plan-tag" data-copy="start">Para empezar</span></div>
         <p class="free-price">0 <span>€</span></p>
-        <p class="plan-summary"><strong>6 notas.</strong> Grandes, claras y siempre a mano.</p>
+        <p class="plan-summary" data-copy="freeSummary">Empieza con 6 notas. Grandes, claras y siempre a mano.</p>
         <div class="note-preview" aria-hidden="true">
           <span>Ideas de hoy<i></i><i></i><i></i></span><span>Por hacer<i></i><i></i></span><span>Recordar<i></i><i></i><i></i></span>
           <span>Mi semana<i></i><i></i></span><span>Un dibujo<svg viewBox="0 0 60 30"><path d="M3 25Q12 2 22 20T40 12T57 8"/></svg></span><span>Para después<i></i><i></i><i></i></span>
         </div>
-        <p class="plan-detail">Escribe y dibuja en la misma nota.</p>
-        <a class="start-link" href="/">Abrir mis notas <span aria-hidden="true">↗</span></a>
-        <p class="plan-footnote">Sin tarjeta.</p>
+        <p class="plan-detail" data-copy="freeDetail">Escribe y dibuja en la misma nota.</p>
+        <a class="start-link" href="/" data-copy="openNotes">Abrir mis notas <span aria-hidden="true">↗</span></a>
+        <p class="plan-footnote" data-copy="noCard">Sin tarjeta.</p>
       </article>
       <article class="premium-plan" id="planes">
-        <div class="plan-heading"><h2>Premium</h2><span class="plan-tag">Próximamente</span></div>
-        <p class="premium-lead">Más notas.<br>La misma sencillez.</p>
-        <p class="plan-summary">Un único Premium. Elige cuánto tiempo quieres disfrutarlo.</p>
+        <div class="plan-heading"><h2 data-copy="premium">Premium</h2><span class="plan-tag" data-premium-state>Comprobando disponibilidad…</span></div>
+        <p class="premium-lead" data-copy="lead">Más notas. La misma sencillez.</p>
+        <p class="plan-summary" data-copy="planSummary">Un único Premium. Elige cuánto tiempo quieres disfrutarlo.</p>
         <ul class="premium-benefits">
-          <li>Más de 6 notas, organizadas por páginas.</li>
-          <li>Una vista amplia para reconocer tus ideas de un vistazo.</li>
-          <li>Las herramientas de tus notas, sin compras por separado.</li>
+          <li data-copy="benefit1">30 días para usar todas las notas. Después, Premium mantiene accesibles las notas 7 en adelante.</li>
+          <li data-copy="benefit2">Sin Premium, esas notas quedan bloqueadas durante 30 días y luego se eliminan.</li>
+          <li data-copy="benefit3">Más de 6 notas, organizadas por páginas.</li>
         </ul>
         <div class="payment-options" aria-label="Formas de pago del mismo Premium">
           <section class="payment-option">
-            <h3>Mensual</h3><p class="price">2,95 <span>€</span></p><p class="period">al mes</p>
-            <button type="button" disabled aria-label="Premium mensual, 2,95 euros al mes. Próximamente">Próximamente</button>
+            <h3 data-i18n="monthly">Mensual</h3><p class="price" data-price-cents="295">2,95 €</p><p class="period" data-i18n="perMonth">al mes</p>
+            <button type="button" data-buy="premium-monthly" data-i18n="connecting" disabled>Conectar con Stripe…</button>
           </section>
           <section class="payment-option">
-            <h3>Anual</h3><p class="price">9,95 <span>€</span></p><p class="period">al año</p>
-            <button type="button" disabled aria-label="Premium anual, 9,95 euros al año. Próximamente">Próximamente</button>
+            <h3 data-i18n="quarterly">Trimestral</h3><p class="price" data-price-cents="595">5,95 €</p><p class="period" data-i18n="perQuarter">cada 3 meses</p>
+            <button type="button" data-buy="premium-quarterly" data-i18n="connecting" disabled>Conectar con Stripe…</button>
           </section>
           <section class="payment-option">
-            <h3>De por vida</h3><p class="price">59,95 <span>€</span></p><p class="period">pago único</p>
-            <button type="button" disabled aria-label="Premium de por vida, 59,95 euros. Próximamente">Próximamente</button>
+            <h3 data-i18n="yearly">Anual</h3><p class="price" data-price-cents="1995">19,95 €</p><p class="period" data-i18n="perYear">al año</p>
+            <button type="button" data-buy="premium-yearly" data-i18n="connecting" disabled>Conectar con Stripe…</button>
+          </section>
+          <section class="payment-option">
+            <h3 data-i18n="lifetime">De por vida</h3><p class="price" data-price-cents="5995">59,95 €</p><p class="period" data-i18n="oneTime">pago único</p>
+            <button type="button" data-buy="premium-lifetime" data-i18n="connecting" disabled>Conectar con Stripe…</button>
           </section>
         </div>
-        <p class="purchase-status" role="status">Las compras aún no están disponibles. No se realizará ningún cobro.</p>
+        <p class="payment-disclosure" data-copy="paymentDisclosure">Los planes mensual, trimestral y anual se renuevan automáticamente hasta que los canceles. Puedes administrar o cancelar la suscripción desde Stripe. El plan de por vida es un único pago.</p>
+        <p class="purchase-status" role="status" data-purchase-status>Comprobando si los pagos están configurados.</p>
+        <button class="subscription-manage" type="button" data-portal hidden>Administrar mi suscripción</button>
       </article>
     </section>
-    <section class="pricing-questions" aria-label="Preguntas frecuentes">
-      <details><summary>¿Hay diferentes niveles Premium?</summary><p>No. Mensual, anual y de por vida dan acceso al mismo Premium. Solo cambia la forma de pago.</p></details>
-      <details><summary>¿Puedo seguir usando PostisPop gratis?</summary><p>Sí. Dispones de 6 notas gratis para escribir y dibujar. No necesitas una tarjeta para empezar.</p></details>
-      <details><summary>¿Qué ocurre con mis compras anteriores?</summary><p>Los derechos que ya tengas se conservan. La nueva oferta no exige volver a comprar lo que ya es tuyo.</p></details>
+    <section class="pricing-questions" aria-label="Preguntas frecuentes" data-label="faq">
+      <details><summary data-copy="faq1q">¿Qué pasa con mis notas después de 30 días?</summary><p data-copy="faq1a">Después de la prueba, puedes seguir leyendo las notas 1 a 6 gratis. Las demás se bloquean durante 30 días y muestran el tiempo restante antes de eliminarse. Premium las desbloquea y las conserva.</p></details>
+      <details><summary data-copy="faq2q">¿Hay diferentes niveles Premium?</summary><p data-copy="faq2a">No. Mensual, trimestral, anual y de por vida dan acceso al mismo Premium. Solo cambia la forma de pago.</p></details>
+      <details><summary data-copy="faq3q">¿Qué ocurre con mis compras anteriores?</summary><p data-copy="faq3a">Los derechos que ya tengas se conservan. La nueva oferta no exige volver a comprar lo que ya es tuyo.</p></details>
     </section>
   </main>
-  <footer><p>PostisPop · Tus ideas a la vista.</p><nav aria-label="Información legal"><a href="/privacy.html">Privacidad</a><a href="/terms.html">Condiciones</a><a href="/legal.html">Aviso legal</a></nav></footer>
+  <footer><p data-copy="footer">PostisPop · Tus ideas a la vista.</p><nav aria-label="Información legal" data-label="legal"><a href="/privacy.html" data-copy="privacy">Privacidad</a><a href="/terms.html" data-copy="terms">Condiciones</a><a href="/legal.html" data-copy="legalNotice">Aviso legal</a></nav></footer>
+<script type="module" src="/supabase-bridge.js?v=8"></script>
+<script type="module" src="/atelier-checkout.js?v=2"></script>
 </body>
 </html>

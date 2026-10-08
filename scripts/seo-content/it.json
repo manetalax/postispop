@@ -47,7 +47,7 @@
         "heading": "Condividi con aspettative chiare.",
         "paragraphs": [
           "I link modificabili e gli inviti sono in fase di revisione. Puoi preparare una lavagna e condividere un’esportazione con i tuoi mezzi, ma questa copia non si aggiorna quando modifichi le note.",
-          "L’offerta gratuita include sei note. Premium è previsto a 2,95 € al mese, 9,95 € all’anno o 59,95 € a vita. I nuovi acquisti non sono ancora attivi."
+          "L’offerta gratuita include sei note. Premium è previsto a 2,95 € al mese, 5,95 € ogni 3 mesi, 19,95 € all’anno o 59,95 € a vita. I nuovi acquisti non sono ancora attivi."
         ]
       },
       {
@@ -186,7 +186,7 @@
     "¿PostisPop decide cuál es la mejor idea?": "PostisPop decide qual è l’idea migliore?",
     "No. Te permite ver y comparar tus propuestas. Tú eliges los criterios y decides qué experimento realizar.": "No. Ti permette di vedere e confrontare le tue proposte. Scegli tu i criteri e decidi quale esperimento fare.",
     "Gratis o Premium · PostisPop": "Gratis o Premium · PostisPop",
-    "Empieza con 6 notas gratis. Un único Premium: 2,95 € al mes, 9,95 € al año o 59,95 € de por vida. Compras próximamente.": "Inizia con 6 note gratuite. Un solo Premium: 2,95 € al mese, 9,95 € all’anno o 59,95 € a vita. Acquisti disponibili prossimamente.",
+    "Empieza con 6 notas gratis. Un único Premium: 2,95 € al mes, 19,95 € al año o 59,95 € de por vida. Compras próximamente.": "Inizia con 6 note gratuite. Un solo Premium: 2,95 € al mese, 19,95 € all’anno o 59,95 € a vita. Acquisti disponibili prossimamente.",
     "Saltar al contenido": "Vai al contenuto",
     "PostisPop, volver a mis notas": "PostisPop, torna alle mie note",
     "Mis notas": "Le mie note",
@@ -222,7 +222,7 @@
     "Premium mensual, 2,95 euros al mes. Próximamente": "Premium mensile, 2,95 euro al mese. Prossimamente",
     "Anual": "Annuale",
     "al año": "all’anno",
-    "Premium anual, 9,95 euros al año. Próximamente": "Premium annuale, 9,95 euro all’anno. Prossimamente",
+    "Premium anual, 19,95 euros al año. Próximamente": "Premium annuale, 19,95 euro all’anno. Prossimamente",
     "De por vida": "A vita",
     "pago único": "pagamento unico",
     "Premium de por vida, 59,95 euros. Próximamente": "Premium a vita, 59,95 euro. Prossimamente",
@@ -281,7 +281,7 @@
     "Sin cuenta, notas y adjuntos permanecen en este dispositivo. Guarda una copia antes de borrar datos del navegador. La conexión y la cuenta son necesarias para sincronizar o compartir; comprueba siempre el estado de guardado.": "Senza account, note e allegati rimangono su questo dispositivo. Salva una copia prima di cancellare i dati del browser. La connessione e l’account sono necessari per sincronizzare o condividere; controlla sempre lo stato del salvataggio.",
     "Proteger una nota": "Proteggere una nota",
     "El candado de la nota permite cifrar texto, dibujo y adjuntos locales con contraseña. Guárdala aparte: no existe recuperación de contraseña.": "Il lucchetto della nota permette di cifrare testo, disegno e allegati locali con una password. Conservala separatamente: non è possibile recuperare la password.",
-    "Gratis incluye seis notas. Premium estará disponible por 2,95 €/mes, 9,95 €/año o 59,95 € de por vida. Las compras todavía no están activadas.": "L’offerta gratuita include sei note. Premium sarà disponibile a 2,95 €/mese, 9,95 €/anno o 59,95 € a vita. Gli acquisti non sono ancora attivi.",
+    "Gratis incluye seis notas. Premium estará disponible por 2,95 €/mes, 19,95 €/año o 59,95 € de por vida. Las compras todavía no están activadas.": "L’offerta gratuita include sei note. Premium sarà disponibile a 2,95 €/mese, 19,95 €/anno o 59,95 € a vita. Gli acquisti non sono ancora attivi.",
     "Descargas · PostisPop": "Download · PostisPop",
     "Instala PostisPop y consulta las descargas para Android, iPhone, iPad, Windows, macOS y Linux.": "Installa PostisPop e consulta i download per Android, iPhone, iPad, Windows, macOS e Linux.",
     "Guía de instalación": "Guida all’installazione",
@@ -444,6 +444,27 @@
     "5. Contacto": "5. Contatti",
     "Para dudas sobre estas tecnologías escribe a": "Per domande su queste tecnologie scrivi a",
     ". Puedes consultar también nuestra": ". Puoi consultare anche la nostra",
-    "La ruleta no forma parte de la oferta actual de PostisPop. El texto de esta sección se conserva como referencia de las condiciones de esa función. Su publicación no habilita nuevas participaciones ni modifica las condiciones aplicables a las participaciones ya realizadas.": "La ruota non fa parte dell’offerta attuale di PostisPop. Il testo di questa sezione viene conservato come riferimento delle condizioni di questa funzione. La sua pubblicazione non abilita nuove partecipazioni né modifica le condizioni applicabili alle partecipazioni già effettuate."
+    "La ruleta no forma parte de la oferta actual de PostisPop. El texto de esta sección se conserva como referencia de las condiciones de esa función. Su publicación no habilita nuevas participaciones ni modifica las condiciones aplicables a las participaciones ya realizadas.": "La ruota non fa parte dell’offerta attuale di PostisPop. Il testo di questa sezione viene conservato come riferimento delle condizioni di questa funzione. La sua pubblicazione non abilita nuove partecipazioni né modifica le condizioni applicabili alle partecipazioni già effettuate.",
+    "Trimestral": "Trimestrale",
+    "cada 3 meses": "ogni 3 mesi",
+    "Premium trimestral, 5,95 euros cada 3 meses. Próximamente": "Premium trimestrale, 5,95 € ogni 3 mesi. Prossimamente",
+    "Empieza con 6 notas gratis. Un único Premium: 2,95 € al mes, 5,95 € cada tres meses, 19,95 € al año o 59,95 € de por vida.": "Inizia con 6 note gratuite. Un solo Premium: 2,95 € al mese, 5,95 € ogni 3 mesi, 19,95 € all’anno o 59,95 € a vita.",
+    "6 notas gratis. Premium: 2,95 € al mes, 5,95 € cada 3 meses, 19,95 € al año o 59,95 € de por vida.": "6 note gratuite. Premium: 2,95 € al mese, 5,95 € ogni 3 mesi, 19,95 € all’anno o 59,95 € a vita.",
+    "No. Mensual, trimestral, anual y de por vida dan acceso al mismo Premium. Solo cambia la forma de pago.": "No. Le opzioni mensile, trimestrale, annuale e a vita danno accesso allo stesso Premium. Cambia solo la modalità di pagamento.",
+    "Conectar con Stripe…": "Connessione a Stripe…",
+    "Gratis incluye seis notas. Premium está previsto por 2,95 € al mes, 5,95 € cada 3 meses, 19,95 € al año o 59,95 € de por vida. Las nuevas compras todavía no están activadas.": "L’offerta gratuita include sei note. Premium è previsto a 2,95 € al mese, 5,95 € ogni 3 mesi, 19,95 € all’anno o 59,95 € a vita. I nuovi acquisti non sono ancora attivi.",
+    "Gratis incluye seis notas. Premium estará disponible por 2,95 €/mes, 5,95 € cada 3 meses, 19,95 €/año o 59,95 € de por vida. Las compras todavía no están activadas.": "L’offerta gratuita include sei note. Premium sarà disponibile a 2,95 €/mese, 5,95 € ogni 3 mesi, 19,95 €/anno o 59,95 € a vita. Gli acquisti non sono ancora attivi.",
+    "Todo a la vista. Así de simple.": "Tutto in vista. Semplice così.",
+    "Empieza con 6 notas. Grandes, claras y siempre a mano.": "Inizia con 6 note. Chiare, ampie e sempre a portata di mano.",
+    "Comprobando disponibilidad…": "Verifica disponibilità…",
+    "Más notas. La misma sencillez.": "Più note. La stessa semplicità.",
+    "30 días para usar todas las notas. Después, Premium mantiene accesibles las notas 7 en adelante.": "Usa tutte le note per 30 giorni. Poi Premium mantiene accessibili le note dalla 7 in poi.",
+    "Sin Premium, esas notas quedan bloqueadas durante 30 días y luego se eliminan.": "Senza Premium, queste note restano bloccate per 30 giorni e poi vengono eliminate.",
+    "Los planes mensual, trimestral y anual se renuevan automáticamente hasta que los canceles. Puedes administrar o cancelar la suscripción desde Stripe. El plan de por vida es un único pago.": "I piani mensile, trimestrale e annuale si rinnovano automaticamente finché non li annulli. Puoi gestire o annullare l’abbonamento tramite Stripe. Il piano a vita prevede un pagamento unico.",
+    "Comprobando si los pagos están configurados.": "Verifica della configurazione dei pagamenti.",
+    "Administrar mi suscripción": "Gestisci il mio abbonamento",
+    "¿Qué pasa con mis notas después de 30 días?": "Cosa succede alle mie note dopo 30 giorni?",
+    "Después de la prueba, puedes seguir leyendo las notas 1 a 6 gratis. Las demás se bloquean durante 30 días y muestran el tiempo restante antes de eliminarse. Premium las desbloquea y las conserva.": "Dopo la prova puoi continuare a leggere gratis le note da 1 a 6. Le altre restano bloccate per 30 giorni e mostrano il tempo che manca all’eliminazione. Premium le sblocca e le conserva.",
+    "Al registrarte, tienes 30 días para usar todas las notas. Después, las notas 1–6 siguen siendo gratuitas. Las demás se bloquean durante 30 días y muestran cuánto falta para borrarse; Premium las desbloquea y las conserva. Los precios son 2,95 €/mes, 5,95 € cada 3 meses, 19,95 €/año o 59,95 € de por vida. Las suscripciones se renuevan automáticamente hasta cancelarlas.": "Dopo la registrazione hai 30 giorni per usare tutte le note. In seguito, le note da 1 a 6 restano gratuite da leggere. Le altre vengono bloccate per 30 giorni e mostrano il tempo che manca all’eliminazione; Premium le sblocca e le conserva. Prezzi: 2,95 €/mese, 5,95 € ogni 3 mesi, 19,95 €/anno o 59,95 € per l’accesso a vita. Gli abbonamenti si rinnovano automaticamente fino all’annullamento."
   }
 }

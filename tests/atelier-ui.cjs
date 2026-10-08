@@ -19,7 +19,7 @@ const types = {
   const paymentRequests = [];
   await context.route('**/*', async route => {
     const url = new URL(route.request().url());
-    if (/checkout|stripe|commerce\//.test(url.href)) paymentRequests.push(url.pathname);
+    if (/\/api\/commerce\/(checkout|portal)(?:[/?]|$)|stripe\.com/.test(url.href)) paymentRequests.push(url.pathname);
     if (url.hostname !== 'postispop.com') return route.abort('internetdisconnected');
     let name = decodeURIComponent(url.pathname);
     if (name.endsWith('/')) name += 'index.html';
@@ -38,14 +38,14 @@ const types = {
     await page.goto('https://postispop.com/atelier.html');
     await page.waitForSelector('.payment-options');
     assert.equal(await page.locator('h1').count(), 1);
-    assert.equal(await page.locator('.payment-option').count(), 3);
-    assert.equal(await page.locator('.payment-option button:disabled').count(), 3);
-    assert.deepEqual(await page.locator('.payment-option h3').allTextContents(), ['Mensual', 'Anual', 'De por vida']);
-    assert.deepEqual((await page.locator('.price').allTextContents()).map(value => value.trim()), ['2,95 €', '9,95 €', '59,95 €']);
+    assert.equal(await page.locator('.payment-option').count(), 4);
+    assert.equal(await page.locator('.payment-option button:disabled').count(), 4);
+    assert.deepEqual(await page.locator('.payment-option h3').allTextContents(), ['Mensual', 'Trimestral', 'Anual', 'De por vida']);
+    assert.deepEqual((await page.locator('.price').allTextContents()).map(value => value.trim().replace(/\u00a0/g, ' ')), ['2,95 €', '5,95 €', '19,95 €', '59,95 €']);
     assert.match(await page.locator('.free-plan').innerText(), /6 notas/);
-    assert.match(await page.locator('.purchase-status').innerText(), /No se realizará ningún cobro/);
+    assert.match(await page.locator('.purchase-status').innerText(), /Pagos temporalmente no disponibles/);
     assert.equal(await page.locator('#at-grid, #at-cart, #at-roulette, .pp-launch-promo').count(), 0);
-    assert.equal(await page.locator('.start-link').getAttribute('href'), '/');
+    assert.equal(await page.locator('.start-link').getAttribute('href'), '/?lang=es');
     await fs.mkdir('test-results', { recursive: true });
     for (const width of [320, 360, 390, 768, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });
@@ -60,17 +60,17 @@ const types = {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.screenshot({ path: 'test-results/premium-offer-mobile.png', fullPage: true });
     await page.reload();
-    assert.equal(await page.locator('.payment-option button:disabled').count(), 3);
+    assert.equal(await page.locator('.payment-option button:disabled').count(), 4);
     // Old offline HTML must not revive the catalogue or loop through redirects.
     await page.setContent('<main id="at-grid">Catálogo antiguo</main>');
     await page.addScriptTag({ type: 'module', url: 'https://postispop.com/atelier.js' });
     await page.waitForSelector('.payment-options');
     assert.equal(await page.locator('#at-grid').count(), 0);
-    assert.equal(await page.locator('.payment-option button:disabled').count(), 3);
+    assert.equal(await page.locator('.payment-option button:disabled').count(), 4);
     assert.match(await page.locator('body').innerText(), /6 notas gratis/);
     assert.deepEqual(paymentRequests, [], 'Pricing must never contact a payment endpoint');
     assert.deepEqual(errors, []);
     assert.deepEqual(missing, []);
-    console.log('PASS: one Premium, exact EUR prices, six free notes, disabled purchases, useful links, six responsive widths and no payment requests.');
+    console.log('PASS: one Premium, four exact EUR prices, six free notes, offline-disabled purchases, useful links, six responsive widths and no checkout requests.');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

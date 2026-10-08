@@ -16,6 +16,17 @@ export function createOfflineStore(storage, now=()=>Date.now(), uuid=()=>crypto.
   const project=(user,board)=>{
     const result=copy(board);
     for(const op of pending(user)) if(op.boardId===board.id){const note=result.notes.find(n=>n.id===op.noteId);if(note&&op.kind!=='style'&&(!note.protectedEnvelope||op.after.protectedEnvelope))Object.assign(note,copy(op.after));}
+    // Best-effort local display redaction once the server-reported trial has
+    // elapsed. Server RLS remains authoritative whenever the device reconnects.
+    const access=result.noteAccess;
+    if(access&&!access.premium&&Number.isFinite(access.trialExpiresAt)&&access.trialExpiresAt<=now()){
+      const slotById=new Map((result.order||[]).map((id,index)=>[id,index]));
+      result.notes=result.notes.map(note=>{
+        const position=Number.isInteger(note.position)?note.position:slotById.get(note.id);
+        if(position<6)return note;
+        return {id:note.id,position,trialLocked:true,purgeAt:access.purgeAt||null,paper:note.paper??0,text:'',marks:[],doodle:'',image:null,author:'',revision:note.revision||1,created:note.created||0,updated:note.updated||0,lockedUntil:0,editing:''};
+      });
+    }
     return result;
   };
   const cached=(user,endpoint)=>{const value=read(key(user,'cache:'+endpoint));return value&&/^board\/[^/]+$/.test(endpoint)?project(user,value):value;};
@@ -27,6 +38,7 @@ export function createOfflineStore(storage, now=()=>Date.now(), uuid=()=>crypto.
     const style=endpoint==='designs/styles', match=endpoint.match(/^note\/([^/]+)(?:\/(.+))?$/),id=style?payload.note_id:match[1];
     const found=findNote(user,id);if(!found)throw fail('OFFLINE_NOTE_NOT_CACHED',503);
     const kind=style?'style':match[2]||'text', note=found.note;
+    if(note.trialLocked)throw fail('PREMIUM_REQUIRED',403);
     if(note.protectedEnvelope&&kind!=='protected-save')throw fail('PROTECTED_NOTE',403);
     if(kind==='protected-save'&&!note.protectedEnvelope)throw fail('PROTECT_REQUIRES_CONNECTION',503);
     let after=copy(note), body=copy(payload);

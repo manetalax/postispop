@@ -1,6 +1,26 @@
 import { boardPageSize, boardPageCount, boardViewLabel, clampBoardView } from './board-view-model.js';
 import { whenReactReady } from './ui-ready.js';
 import { attachmentNoteIds } from './backup-import.js';
+import { readBoardLanguage } from './seo-language.js';
+
+const lockedCopy={
+ es:{title:'Nota bloqueada',body:n=>`Hazte Premium para seguir leyéndola. Se eliminará en ${n} ${n===1?'día':'días'} si no activas Premium.`,cta:'Ver Premium'},
+ en:{title:'Note locked',body:n=>`Get Premium to keep reading. It will be deleted in ${n} ${n===1?'day':'days'} unless you activate Premium.`,cta:'See Premium'},
+ de:{title:'Notiz gesperrt',body:n=>`Mit Premium kannst du sie weiterlesen. Ohne Premium wird sie in ${n} ${n===1?'Tag':'Tagen'} gelöscht.`,cta:'Premium ansehen'},
+ fr:{title:'Note verrouillée',body:n=>`Passez à Premium pour continuer à la lire. Sans Premium, elle sera supprimée dans ${n} jour${n===1?'':'s'}.`,cta:'Voir Premium'},
+ pt:{title:'Nota bloqueada',body:n=>`Ativa o Premium para continuar a ler. Sem Premium, será eliminada dentro de ${n} ${n===1?'dia':'dias'}.`,cta:'Ver Premium'},
+ it:{title:'Nota bloccata',body:n=>`Attiva Premium per continuare a leggerla. Senza Premium, verrà eliminata tra ${n} ${n===1?'giorno':'giorni'}.`,cta:'Scopri Premium'},
+ ja:{title:'ロックされたノート',body:n=>`読み続けるにはPremiumをご利用ください。Premiumにしない場合、${n}日後に削除されます。`,cta:'Premiumを見る'},
+ ko:{title:'잠긴 메모',body:n=>`계속 읽으려면 Premium을 이용하세요. 가입하지 않으면 ${n}일 후 삭제됩니다.`,cta:'Premium 보기'}
+};
+function installLockedNote(cell,purgeAt,lang){
+  let panel=cell.querySelector(':scope > .pp-note-locked');
+  const strings=lockedCopy[lang]||lockedCopy.es,days=Math.max(1,Math.ceil((purgeAt-Date.now())/86400000));
+  if(!panel){panel=document.createElement('div');panel.className='pp-note-locked';panel.setAttribute('role','group');panel.addEventListener('click',event=>event.stopPropagation());panel.addEventListener('pointerdown',event=>event.stopPropagation());}
+  const title=element('strong','pp-note-locked-title',strings.title),body=element('span','pp-note-locked-body',strings.body(days)),link=element('a','pp-note-locked-link',strings.cta);
+  link.href='/atelier.html?lang='+encodeURIComponent(lang)+'#planes';link.addEventListener('click',event=>event.stopPropagation());
+  panel.replaceChildren(title,body,link);cell.append(panel);
+}
 
 const element = (tag, className, text = '') => {
   const node = document.createElement(tag);
@@ -95,7 +115,8 @@ function installPager(frame) {
       await openBoardNote(board,target.id);
       status.textContent='';
     } catch (error) {
-      status.textContent = /BOARD_FULL|PREMIUM_REQUIRED/.test(error.message) ? 'Gratis incluye 6 notas. Premium estará disponible próximamente.' : 'No se pudo crear la nota. Tus notas se conservan.';
+      const language=readBoardLanguage(),messages={es:'Gratis: 6 notas después de la prueba. Activa Premium para añadir más.',en:'Free: 6 notes after the trial. Get Premium to add more.',de:'Kostenlos: 6 Notizen nach der Testphase. Mit Premium kannst du weitere hinzufügen.',fr:'Gratuit : 6 notes après l’essai. Passez à Premium pour en ajouter.',pt:'Grátis: 6 notas após o período experimental. Ativa o Premium para adicionar mais.',it:'Gratis: 6 note dopo la prova. Attiva Premium per aggiungerne altre.',ja:'無料期間後は無料で6件までです。追加するにはPremiumをご利用ください。',ko:'체험 기간 후 무료 메모는 6개입니다. 더 추가하려면 Premium을 이용하세요.'};
+      status.textContent = /BOARD_FULL|PREMIUM_REQUIRED/.test(error.message) ? (messages[language]||messages.es) : ({es:'No se pudo crear la nota. Tus notas se conservan.',en:'Could not create the note. Your notes are saved.',de:'Die Notiz konnte nicht erstellt werden. Deine Notizen bleiben erhalten.',fr:'Impossible de créer la note. Vos notes sont conservées.',pt:'Não foi possível criar a nota. As tuas notas estão guardadas.',it:'Impossibile creare la nota. Le tue note sono conservate.',ja:'ノートを作成できませんでした。ノートは保存されています。',ko:'메모를 만들지 못했습니다. 메모는 저장되어 있습니다.'}[language]||'No se pudo crear la nota. Tus notas se conservan.');
     } finally { add.disabled = false; }
   };
   const status = element('span', 'pp-note-action-status');
@@ -176,6 +197,13 @@ function update() {
     // from speech input and assistive technology.
     if (text && !note.classList.contains('pp-vault-locked')) note.removeAttribute('aria-label');
     else if (blank) note.setAttribute('aria-label', blank + '. Nota ' + note.dataset.ppSlot);
+  }
+  const slots=new Set(String(data.dataset.lockedSlots||'').split(',').map(Number).filter(Number.isFinite));
+  const purgeAt=Number(data.dataset.purgeAt),language=readBoardLanguage();
+  for(const cell of frame.querySelectorAll('.note-cell[data-pp-slot]')){
+    const slot=Number(cell.dataset.ppSlot);
+    if(slots.has(slot)&&purgeAt>0)installLockedNote(cell,purgeAt,language);
+    else cell.querySelector(':scope > .pp-note-locked')?.remove();
   }
   resizePapers(state);
 }

@@ -141,7 +141,7 @@
     "¿PostisPop decide cuál es la mejor idea?": "PostisPopが最適なアイデアを決めてくれますか？",
     "No. Te permite ver y comparar tus propuestas. Tú eliges los criterios y decides qué experimento realizar.": "いいえ。提案を並べて比較できるツールです。基準を選び、何を試すか決めるのはあなたです。",
     "Gratis o Premium · PostisPop": "無料版とPremium · PostisPop",
-    "Empieza con 6 notas gratis. Un único Premium: 2,95 € al mes, 9,95 € al año o 59,95 € de por vida. Compras próximamente.": "無料のメモ6枚で始めましょう。Premiumは一つのプランで、月額2,95 €、年額9,95 €、または買い切り59,95 €。購入は近日対応予定です。",
+    "Empieza con 6 notas gratis. Un único Premium: 2,95 € al mes, 19,95 € al año o 59,95 € de por vida. Compras próximamente.": "無料のメモ6枚で始めましょう。Premiumは一つのプランで、月額2,95 €、年額19,95 €、または買い切り59,95 €。購入は近日対応予定です。",
     "Saltar al contenido": "本文へ移動",
     "PostisPop, volver a mis notas": "PostisPop、自分のメモに戻る",
     "Mis notas": "自分のメモ",
@@ -177,7 +177,7 @@
     "Premium mensual, 2,95 euros al mes. Próximamente": "月払いPremium、月額2,95ユーロ。近日対応予定",
     "Anual": "年払い",
     "al año": "年額",
-    "Premium anual, 9,95 euros al año. Próximamente": "年払いPremium、年額9,95ユーロ。近日対応予定",
+    "Premium anual, 19,95 euros al año. Próximamente": "年払いPremium、年額19,95ユーロ。近日対応予定",
     "De por vida": "買い切り",
     "pago único": "一度のみの支払い",
     "Premium de por vida, 59,95 euros. Próximamente": "買い切りPremium、59,95ユーロ。近日対応予定",
@@ -236,7 +236,7 @@
     "Sin cuenta, notas y adjuntos permanecen en este dispositivo. Guarda una copia antes de borrar datos del navegador. La conexión y la cuenta son necesarias para sincronizar o compartir; comprueba siempre el estado de guardado.": "アカウントを使わない場合、メモと添付ファイルはこの端末に残ります。ブラウザのデータを削除する前にバックアップを保存してください。同期や共有には接続とアカウントが必要です。保存状態を必ず確認しましょう。",
     "Proteger una nota": "メモを保護する",
     "El candado de la nota permite cifrar texto, dibujo y adjuntos locales con contraseña. Guárdala aparte: no existe recuperación de contraseña.": "メモの鍵アイコンから、テキスト、描画、ローカルの添付ファイルをパスワードで暗号化できます。パスワードは別に保管してください。パスワードの復旧機能はありません。",
-    "Gratis incluye seis notas. Premium estará disponible por 2,95 €/mes, 9,95 €/año o 59,95 € de por vida. Las compras todavía no están activadas.": "無料版にはメモ6枚が含まれます。Premiumは月額2,95 €、年額9,95 €、または買い切り59,95 €で提供予定です。購入機能はまだ有効になっていません。",
+    "Gratis incluye seis notas. Premium estará disponible por 2,95 €/mes, 19,95 €/año o 59,95 € de por vida. Las compras todavía no están activadas.": "無料版にはメモ6枚が含まれます。Premiumは月額2,95 €、年額19,95 €、または買い切り59,95 €で提供予定です。購入機能はまだ有効になっていません。",
     "Descargas · PostisPop": "ダウンロード · PostisPop",
     "Instala PostisPop y consulta las descargas para Android, iPhone, iPad, Windows, macOS y Linux.": "PostisPopをインストールし、Android、iPhone、iPad、Windows、macOS、Linux向けのダウンロードをご確認ください。",
     "Guía de instalación": "インストールガイド",
@@ -399,7 +399,28 @@
     "5. Contacto": "5. 連絡先",
     "Para dudas sobre estas tecnologías escribe a": "これらの技術に関するお問い合わせは、次のメールアドレスへお送りください：",
     ". Puedes consultar también nuestra": "。あわせて、次のポリシーもご確認ください：",
-    "La ruleta no forma parte de la oferta actual de PostisPop. El texto de esta sección se conserva como referencia de las condiciones de esa función. Su publicación no habilita nuevas participaciones ni modifica las condiciones aplicables a las participaciones ya realizadas.": "ルーレットは、PostisPopの現在の提供内容には含まれていません。この節の文章は、この機能の条件を参照できるように保存されています。掲載によって新たな参加が可能になったり、すでに行われた参加に適用される条件が変更されたりすることはありません。"
+    "La ruleta no forma parte de la oferta actual de PostisPop. El texto de esta sección se conserva como referencia de las condiciones de esa función. Su publicación no habilita nuevas participaciones ni modifica las condiciones aplicables a las participaciones ya realizadas.": "ルーレットは、PostisPopの現在の提供内容には含まれていません。この節の文章は、この機能の条件を参照できるように保存されています。掲載によって新たな参加が可能になったり、すでに行われた参加に適用される条件が変更されたりすることはありません。",
+    "Trimestral": "3か月ごと",
+    "cada 3 meses": "3か月ごと",
+    "Premium trimestral, 5,95 euros cada 3 meses. Próximamente": "3か月ごとのPremium、5,95 €。近日対応予定",
+    "Empieza con 6 notas gratis. Un único Premium: 2,95 € al mes, 5,95 € cada tres meses, 19,95 € al año o 59,95 € de por vida.": "無料メモ6個で始めましょう。Premiumは月額2,95 €、3か月ごと5,95 €、年額19,95 €、または買い切り59,95 €の1プランです。",
+    "6 notas gratis. Premium: 2,95 € al mes, 5,95 € cada 3 meses, 19,95 € al año o 59,95 € de por vida.": "無料メモ6個。Premiumは月額2,95 €、3か月ごと5,95 €、年額19,95 €、または買い切り59,95 €です。",
+    "No. Mensual, trimestral, anual y de por vida dan acceso al mismo Premium. Solo cambia la forma de pago.": "いいえ。月額、3か月ごと、年額、買い切りのいずれも同じPremiumをご利用いただけます。支払い方法のみ異なります。",
+    "Conectar con Stripe…": "Stripeに接続中…",
+    "Gratis incluye seis notas. Premium está previsto por 2,95 € al mes, 5,95 € cada 3 meses, 19,95 € al año o 59,95 € de por vida. Las nuevas compras todavía no están activadas.": "無料版にはメモ6枚が含まれます。Premiumは月額2,95 €、3か月ごと5,95 €、年額19,95 €、または買い切り59,95 €を予定しています。新規購入はまだ有効になっていません。",
+    "Gratis incluye seis notas. Premium estará disponible por 2,95 €/mes, 5,95 € cada 3 meses, 19,95 €/año o 59,95 € de por vida. Las compras todavía no están activadas.": "無料版にはメモ6枚が含まれます。Premiumは月額2,95 €、3か月ごと5,95 €、年額19,95 €、または買い切り59,95 €で提供予定です。購入機能はまだ有効になっていません。",
+    "Todo a la vista. Así de simple.": "すべて見渡せる。シンプルに。",
+    "Empieza con 6 notas. Grandes, claras y siempre a mano.": "6件のノートから始めましょう。見やすく、いつでもすぐ手元に。",
+    "Comprobando disponibilidad…": "利用状況を確認中…",
+    "Más notas. La misma sencillez.": "ノートをもっと。使い方はシンプル。",
+    "30 días para usar todas las notas. Después, Premium mantiene accesibles las notas 7 en adelante.": "30日間はすべてのノートを利用できます。その後もPremiumなら7件目以降を読めます。",
+    "Sin Premium, esas notas quedan bloqueadas durante 30 días y luego se eliminan.": "Premiumに加入しない場合、対象のノートは30日間ロックされた後に削除されます。",
+    "Los planes mensual, trimestral y anual se renuevan automáticamente hasta que los canceles. Puedes administrar o cancelar la suscripción desde Stripe. El plan de por vida es un único pago.": "月額・3か月・年額プランは、解約するまで自動更新されます。Stripeからサブスクリプションの管理や解約ができます。買い切りは一回払いです。",
+    "Comprobando si los pagos están configurados.": "お支払いの設定を確認しています。",
+    "Administrar mi suscripción": "サブスクリプションを管理",
+    "¿Qué pasa con mis notas después de 30 días?": "30日後、ノートはどうなりますか？",
+    "Después de la prueba, puedes seguir leyendo las notas 1 a 6 gratis. Las demás se bloquean durante 30 días y muestran el tiempo restante antes de eliminarse. Premium las desbloquea y las conserva.": "体験期間後も、1〜6件目は無料で読み続けられます。それ以外は30日間ロックされ、削除までの日数が表示されます。Premiumにするとロックが解除され、ノートは保持されます。",
+    "Al registrarte, tienes 30 días para usar todas las notas. Después, las notas 1–6 siguen siendo gratuitas. Las demás se bloquean durante 30 días y muestran cuánto falta para borrarse; Premium las desbloquea y las conserva. Los precios son 2,95 €/mes, 5,95 € cada 3 meses, 19,95 €/año o 59,95 € de por vida. Las suscripciones se renuevan automáticamente hasta cancelarlas.": "登録後30日間は、すべてのノートを利用できます。その後も1〜6件目は無料で読めます。それ以外は30日間ロックされ、削除までの残り日数が表示されます。Premiumに加入するとロックが解除され、ノートは保持されます。料金は月額2.95ユーロ、3か月ごとに5.95ユーロ、年額19.95ユーロ、買い切り59.95ユーロです。サブスクリプションは解約するまで自動更新されます。"
   },
   "home": {
     "title": "無料のオンライン付箋とアイデアボード | PostisPop",
@@ -433,7 +454,7 @@
         "heading": "できることを確認して共有する。",
         "paragraphs": [
           "編集可能なリンクと招待は見直し中です。ボードを準備してエクスポートしたファイルを任意の方法で共有できますが、そのコピーはメモを変更しても更新されません。",
-          "無料版にはメモ6枚が含まれます。Premiumは月額2,95 €、年額9,95 €、または買い切り59,95 €を予定しています。新規購入はまだ有効になっていません。"
+          "無料版にはメモ6枚が含まれます。Premiumは月額2,95 €、3か月ごと5,95 €、年額19,95 €、または買い切り59,95 €を予定しています。新規購入はまだ有効になっていません。"
         ]
       },
       {

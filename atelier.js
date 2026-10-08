@@ -14,11 +14,12 @@ if (document.querySelector('#at-grid')) {
         <h2>Más espacio para tus ideas</h2>
         <p>Las tres opciones incluyen el mismo Premium.</p>
         <div class="payment-options">
-          <section class="payment-option"><h3>Mensual</h3><p class="price">2,95 <span>€</span></p><p class="period">al mes</p><button type="button" disabled>Próximamente</button></section>
-          <section class="payment-option"><h3>Anual</h3><p class="price">9,95 <span>€</span></p><p class="period">al año</p><button type="button" disabled>Próximamente</button></section>
-          <section class="payment-option"><h3>De por vida</h3><p class="price">59,95 <span>€</span></p><p class="period">pago único</p><button type="button" disabled>Próximamente</button></section>
+          <section class="payment-option"><h3>Mensual</h3><p class="price">2,95 <span>€</span></p><p class="period">al mes</p><button type="button" disabled>Elige tu plan</button></section>
+          <section class="payment-option"><h3>Trimestral</h3><p class="price">5,95 <span>€</span></p><p class="period">cada 3 meses</p><button type="button" disabled>Elige tu plan</button></section>
+          <section class="payment-option"><h3>Anual</h3><p class="price">19,95 <span>€</span></p><p class="period">al año</p><button type="button" disabled>Elige tu plan</button></section>
+          <section class="payment-option"><h3>De por vida</h3><p class="price">59,95 <span>€</span></p><p class="period">pago único</p><button type="button" disabled>Elige tu plan</button></section>
         </div>
-        <p class="purchase-status">Las compras aún no están disponibles. No se realizará ningún cobro.</p>
+        <p class="purchase-status">Los pagos se completan de forma segura en Stripe.</p>
       </section>
       <p><a class="start-link" href="/">Volver a mis notas</a></p>
     </main>`;

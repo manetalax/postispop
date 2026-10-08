@@ -291,7 +291,7 @@ const searchIndex = [
   {
     title: "Gratis y Premium",
     description:
-      "6 notas gratis. Un único Premium: 2,95 € al mes, 9,95 € al año o 59,95 € de por vida. Próximamente.",
+      "6 notas gratis. Un Premium: 2,95 € al mes, 5,95 € cada 3 meses, 19,95 € al año o 59,95 € de por vida.",
     url: "/atelier.html",
   },
   {

@@ -9,11 +9,12 @@ const originalFetch = window.fetch.bind(window);
 const sessionKey = "postispop-supabase-session";
 const offline = createOfflineStore(localStorage);
 const online = () => typeof navigator === "undefined" || navigator.onLine !== false;
-// One Premium offer, three billing choices. Checkout stays disconnected.
+// One Premium entitlement, four Stripe-backed prices.
 const premiumProducts = () => [
-  {slug:'premium-monthly',title:'Premium mensual',description:'2,95 € al mes · Próximamente',price_cents:295,currency:'eur',stripe_payment_link:null},
-  {slug:'premium-yearly',title:'Premium anual',description:'9,95 € al año · Próximamente',price_cents:995,currency:'eur',stripe_payment_link:null},
-  {slug:'premium-lifetime',title:'Premium de por vida',description:'59,95 € · Un único pago · Próximamente',price_cents:5995,currency:'eur',stripe_payment_link:null}
+  {slug:'premium-monthly',title:'Premium mensual',description:'2,95 € al mes',price_cents:295,currency:'eur'},
+  {slug:'premium-quarterly',title:'Premium trimestral',description:'5,95 € cada 3 meses',price_cents:595,currency:'eur'},
+  {slug:'premium-yearly',title:'Premium anual',description:'19,95 € al año',price_cents:1995,currency:'eur'},
+  {slug:'premium-lifetime',title:'Premium de por vida',description:'59,95 € · Un único pago',price_cents:5995,currency:'eur'}
 ];
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
@@ -78,20 +79,22 @@ async function readStyleRows(rest,noteId) {
   return styles;
 }
 
-const mapNote = (n) => n.protected_envelope ? ({id:n.id,paper:n.paper??0,text:"Nota protegida",marks:[],doodle:"",image:null,author:n.author_id||"",revision:n.revision||1,created:n.created_ms||Date.parse(n.created_at),updated:n.updated_ms||Date.parse(n.updated_at),lockedUntil:0,editing:"",protectedEnvelope:n.protected_envelope}) : ({
-  id: n.id, doodle: n.doodle || "", paper: n.paper ?? 0, text: n.text || "",
+const mapNote = (n) => n.trialLocked ? ({id:n.id,position:n.position,trialLocked:true,purgeAt:n.purgeAt,paper:n.paper??0,text:"",marks:[],doodle:"",image:null,author:"",revision:1,created:0,updated:0,lockedUntil:0,editing:""}) : n.protected_envelope ? ({id:n.id,position:n.position,paper:n.paper??0,text:"Nota protegida",marks:[],doodle:"",image:null,author:n.author_id||"",revision:n.revision||1,created:n.created_ms||Date.parse(n.created_at),updated:n.updated_ms||Date.parse(n.updated_at),lockedUntil:0,editing:"",protectedEnvelope:n.protected_envelope}) : ({
+  id: n.id, position:n.position, doodle: n.doodle || "", paper: n.paper ?? 0, text: n.text || "",
   marks: n.marks || [], author: n.author_id || "", revision: n.revision || 1,
   created: n.created_ms || Date.parse(n.created_at), image: n.image_url ? { url: n.image_url } : null,
   updated: n.updated_ms || Date.parse(n.updated_at), lockedUntil: n.locked_until ? Date.parse(n.locked_until) : 0,
   editing: n.editing || ""
 });
 
-const mapBoard = (b, notes, members = []) => ({
-  id: b.id, title: b.title || "", revision: b.revision || 1,
-  order: notes.map(n => n.id), expires: b.expires_at ? Date.parse(b.expires_at) : null,
-  role: b.owner_id === session()?.user?.id ? "owner" : "member", owner: b.owner_id,
-  notes: notes.map(mapNote), members
-});
+const mapBoard = (b, notes, members = [], access = {}) => {
+  const locked=new Set(Array.isArray(access.locked_positions)?access.locked_positions.map(Number):[]),all=[...notes];
+  for(const position of locked)if(!notes.some(note=>note.position===position))all.push({id:`pp-locked-${b.id}-${position}`,position,trialLocked:true,purgeAt:access.purge_at});
+  all.sort((left,right)=>left.position-right.position);
+  return {id:b.id,title:b.title||"",revision:b.revision||1,order:all.map(n=>n.id),expires:b.expires_at?Date.parse(b.expires_at):null,
+    role:b.owner_id===session()?.user?.id?"owner":"member",owner:b.owner_id,notes:all.map(mapNote),members,
+    noteAccess:{premium:access.premium===true,trialActive:access.trial_active===true,trialExpiresAt:access.trial_expires_at?Date.parse(access.trial_expires_at):null,purgeAt:access.purge_at?Date.parse(access.purge_at):null,serverNow:access.server_now?Date.parse(access.server_now):Date.now()}};
+};
 
 async function createBoard(user, rest, startedAt) {
   // The server owns the account, allowance and initial six/twelve notes. One
@@ -211,14 +214,17 @@ async function api(endpoint, init) {
     const user=await currentUser();
     if(!user&&endpoint!=='commerce/catalog') return json({error:'SESSION_REQUIRED'},401);
     if(endpoint==='commerce/status') return json(await rest('rpc/postispop_access','',{method:'POST',body:'{}'}));
-    if(endpoint==='commerce/catalog') return json({products:premiumProducts(),checkoutReady:false});
+    if(endpoint==='commerce/catalog') {
+      try { const status=await originalFetch(`${SUPABASE_URL}/functions/v1/postispop-commerce/status`,{cache:'no-store'}); const data=status.ok?await status.json():{}; return json({products:premiumProducts(),checkoutReady:data.checkoutReady===true}); }
+      catch { return json({products:premiumProducts(),checkoutReady:false}); }
+    }
     if(endpoint==='commerce/alarms') {
       if(method==='GET') return json({alarms:await rest('note_alarms','?select=*&order=due_at.asc')});
       if(payload.action==='delete') {await rest('note_alarms',`?id=eq.${encodeURIComponent(payload.id)}&user_id=eq.${user.id}`,{method:'DELETE'});return json({ok:true});}
       if(payload.action==='ack') {const rows=await rest('note_alarms',`?id=eq.${encodeURIComponent(payload.id)}&user_id=eq.${user.id}&delivered_at=is.null`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({delivered_at:new Date().toISOString()})});return json({claimed:rows.length>0});}
       const rows=await rest('note_alarms','',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({user_id:user.id,note_id:payload.note_id,label:String(payload.label||'Recordatorio').slice(0,200),due_at:payload.due_at})});return json({alarm:rows[0]});
     }
-    if(endpoint!=='commerce/reconcile')return json({error:'COMING_SOON',checkoutReady:false},503);
+    if(!['commerce/reconcile','commerce/checkout','commerce/portal','commerce/portal-status'].includes(endpoint))return json({error:'NOT_FOUND'},404);
     return originalFetch(`${SUPABASE_URL}/functions/v1/postispop-commerce/${endpoint.slice(9)}`,{method,headers:headers(),body:method==='GET'?undefined:JSON.stringify(payload)});
   }
 
@@ -287,7 +293,10 @@ async function api(endpoint, init) {
     return json({ ok: true, serverRevoked, ...(serverRevoked ? {} : { warning: "REMOTE_LOGOUT_UNCONFIRMED" }) });
   }
   if (endpoint === "auth/settings") return json({ google: true, email: true });
-  if (endpoint === "store/products" && method === "GET") return json({products:premiumProducts(),checkoutReady:false});
+  if (endpoint === "store/products" && method === "GET") {
+    try { const status=await originalFetch(`${SUPABASE_URL}/functions/v1/postispop-commerce/status`,{cache:'no-store'}); const data=status.ok?await status.json():{}; return json({products:premiumProducts(),checkoutReady:data.checkoutReady===true}); }
+    catch { return json({products:premiumProducts(),checkoutReady:false}); }
+  }
   if (endpoint === "session" && method === "GET") return json({ actor: actorFor(await currentUser()) });
 
   const user = await currentUser();
@@ -371,13 +380,6 @@ async function api(endpoint, init) {
 
   const addMatch=endpoint.match(/^board\/([^/]+)\/notes$/);
   if(addMatch&&method==='POST'){
-    // Keep the six-note client contract while older servers are being migrated.
-    // The server admission trigger remains authoritative for concurrent requests.
-    const existing=await rest('notes','?board_id=eq.'+encodeURIComponent(addMatch[1])+'&select=id');
-    if(existing.length>=6){
-      const premium=await rest('rpc/postispop_has_license','',{method:'POST',body:JSON.stringify({subject_id:'premium'})});
-      if(premium!==true||existing.length>=100)return json({error:'BOARD_FULL'},409);
-    }
     await rest('rpc/postispop_add_board_note','',{method:'POST',body:JSON.stringify({p_board:addMatch[1]})});return api('board/'+addMatch[1],{method:'GET'});
   }
   const trashMatch=endpoint.match(/^note\/([^/]+)\/trash$/);
@@ -398,9 +400,10 @@ async function api(endpoint, init) {
     if (id === "guest-board") return json(readGuest());
     const boards = await rest("boards", `?id=eq.${id}&select=*`);
     if (!boards.length) return json({ error: "NOT_FOUND" }, 404);
+    const access=await rest('rpc/postispop_board_access','',{method:'POST',body:JSON.stringify({p_board:id})});
     const notes = await rest("notes", `?board_id=eq.${id}&select=*&order=position.asc`);
     const members = await rest("board_members", `?board_id=eq.${id}&select=*`);
-    return json(mapBoard(boards[0], notes, members));
+    return json(mapBoard(boards[0], notes, members,access));
   }
 
   const swapMatch=endpoint.match(/^board\/([^/]+)\/swap$/);

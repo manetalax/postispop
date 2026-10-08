@@ -25,6 +25,8 @@ async function bridge({styles=[style()],styleResponse,envelope}={}){
   const window={addEventListener(){},dispatchEvent(){},fetch:async(url,options={})=>{
     calls.push({url,options});
     if(url.includes('/auth/v1/user'))return Response.json({id:JSON.parse(storage.getItem(SESSION)).user.id});
+    if(url.includes('/rpc/postispop_board_access'))return Response.json({premium:false,trial_active:true,trial_expires_at:new Date(Date.now()+86400000).toISOString(),purge_at:new Date(Date.now()+31*86400000).toISOString(),locked_positions:[],max_notes:2147483647,note_count:6,owner:true,server_now:new Date().toISOString()});
+    if(url.includes('/functions/v1/postispop-commerce/status'))return Response.json({checkoutReady:true});
     if(url.includes('/rest/v1/boards'))return Response.json([{id:BOARD,owner_id:USER,title:'Dibujos'}]);
     if(url.includes('/rest/v1/board_members'))return Response.json([]);
     if(url.includes('/rest/v1/notes'))return Response.json([
