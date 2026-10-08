@@ -14,10 +14,12 @@ const copy={
 
 function render(){
   const header=document.querySelector('.postispop .app-header');
-  if(!header)return;
+  const board=document.querySelector('.postispop .board-frame');
+  if(!header||!board)return;
   const [feature,limit]=copy[readBoardLanguage()]||copy.es;
   let card=document.querySelector('.pp-brand-highlights');
-  if(!card){card=document.createElement('aside');card.className='pp-brand-highlights';card.setAttribute('aria-label','PostIsPop');header.after(card);}
+  if(!card){card=document.createElement('aside');card.className='pp-brand-highlights';card.setAttribute('aria-label','PostIsPop');}
+  if(card.previousElementSibling!==board)board.after(card);
   if(card.textContent===feature+limit)return;
   card.replaceChildren();
   const title=document.createElement('strong');title.textContent=feature;
