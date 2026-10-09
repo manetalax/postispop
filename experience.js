@@ -24,7 +24,6 @@ function syncHeaderAccountActions(header) {
   if (!header) return;
   const sources = {
     login: header.querySelector('.header-auth-login'),
-    signup: header.querySelector('.header-auth-signup'),
     logout: document.querySelector('.workspace-caption .session-identity .session-logout')
   };
   let strip = header.querySelector('.pp-account-strip');
@@ -36,6 +35,7 @@ function syncHeaderAccountActions(header) {
     header.classList.add('pp-has-account-strip');
   }
   if (!strip) return;
+  strip.querySelector('[data-pp-auth-proxy="signup"]')?.remove();
   strip.setAttribute('aria-label', ACCOUNT_LABELS[readBoardLanguage()]||ACCOUNT_LABELS.es);
   for (const [action, source] of Object.entries(sources)) {
     let proxy = strip.querySelector(`[data-pp-auth-proxy="${action}"]`);
@@ -48,9 +48,17 @@ function syncHeaderAccountActions(header) {
       strip.append(proxy);
     }
     if (proxy.innerHTML !== source.innerHTML) proxy.innerHTML = source.innerHTML;
+    if(action==='login'){
+      const labels={es:'Entrar o registrarse',en:'Sign in or sign up',de:'Anmelden oder registrieren',fr:'Se connecter ou s’inscrire',pt:'Entrar ou registar-se',it:'Accedi o registrati',ja:'ログイン・新規登録',ko:'로그인 또는 가입'};
+      const label=labels[readBoardLanguage()]||labels.es;
+      const span=proxy.querySelector('span');
+      if(span)span.textContent=label;
+      proxy.setAttribute('aria-label',label);
+    }
     proxy.disabled = source.disabled;
     for (const attribute of ['aria-label', 'aria-haspopup', 'aria-expanded']) {
       const value = source.getAttribute(attribute);
+      if(action==='login'&&attribute==='aria-label')continue;
       if (value === null) proxy.removeAttribute(attribute); else proxy.setAttribute(attribute, value);
     }
   }
