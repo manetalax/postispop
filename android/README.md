@@ -1,10 +1,10 @@
-# PostisPop Android 0.6.1 — recursos incluidos
+# PostisPop Android 0.6.2 — recursos incluidos
 
 La aplicación ejecuta archivos del APK con WebViewAssetLoader bajo el origen lógico `https://postispop.com`. No descarga la página pública como sustitución cuando falta un recurso. La pizarra, las fuentes, las herramientas y los módulos de cifrado/offline forman parte del manifiesto obligatorio del empaquetado. Una dependencia local ausente o un CDN de código, imagen o fuente hace fallar la verificación.
 
 ## Identidad y estado real
 
-- Release: `com.postispop.android`, versión `0.6.1`, código `7`. Android 6+ con WebView actualizado.
+- Release: `com.postispop.android`, versión `0.6.2`, código `8`. Android 6+ con WebView actualizado.
 - Debug/beta: `com.postispop.android.beta`, identidad separada. Instalar release no migra ni reemplaza automáticamente los datos privados de la beta o del navegador.
 - Se mantiene R8, reducción de recursos, depuración de WebView desactivada y bloqueo de tráfico HTTP. Los mapas privados no se incluyen en web ni APK; el JavaScript fuente permanece legible.
 - El empaquetado de archivos no equivale a compilar, firmar, publicar ni instalar. La validación de código puede utilizar un SDK/JDK/Gradle temporal; la clave original sigue siendo necesaria para un instalador de distribución. No se entrega un binario antiguo o sin firmar como instalador final.
