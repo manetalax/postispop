@@ -47,12 +47,12 @@ function syncHeaderAccountActions(header) {
       proxy.removeAttribute('title');
       strip.append(proxy);
     }
-    if (proxy.innerHTML !== source.innerHTML) proxy.innerHTML = source.innerHTML;
+    if (action!=='login' && proxy.innerHTML !== source.innerHTML) proxy.innerHTML = source.innerHTML;
     if(action==='login'){
       const labels={es:'Entrar o registrarse',en:'Sign in or sign up',de:'Anmelden oder registrieren',fr:'Se connecter ou s’inscrire',pt:'Entrar ou registar-se',it:'Accedi o registrati',ja:'ログイン・新規登録',ko:'로그인 또는 가입'};
       const label=labels[readBoardLanguage()]||labels.es;
       const span=proxy.querySelector('span');
-      if(span)span.textContent=label;
+      if(span&&span.textContent!==label)span.textContent=label;
       proxy.setAttribute('aria-label',label);
     }
     proxy.disabled = source.disabled;
