@@ -2,34 +2,54 @@ import {readBoardLanguage} from './seo-language.js';
 import {whenReactReady} from './ui-ready.js';
 
 const copy={
-  es:['Escribe, dibuja, graba audio, haz fotos, guarda capturas, graba vídeo y adjunta cualquier archivo.','La cámara comprime las fotos hasta 128 KB y graba vídeo a 360p/15 fps, con un objetivo de menos de 5 MB por 5 minutos.'],
-  en:['Write, draw, record audio, take photos, save screenshots, record video and attach any file.','The camera compresses photos to 128 KB and records 360p/15 fps video, targeting under 5 MB per 5 minutes.'],
-  de:['Schreibe, zeichne, nimm Audio auf, mache Fotos, speichere Screenshots, filme und füge Dateien an.','Die Kamera komprimiert Fotos auf 128 KB und nimmt Videos mit 360p/15 fps auf; Ziel sind weniger als 5 MB pro 5 Minuten.'],
-  fr:['Écrivez, dessinez, enregistrez de l’audio, prenez des photos, gardez des captures, filmez et joignez tout fichier.','La caméra compresse les photos à 128 Ko et filme en 360p/15 ips, avec un objectif inférieur à 5 Mo pour 5 minutes.'],
-  pt:['Escreva, desenhe, grave áudio, tire fotografias, guarde capturas, grave vídeos e anexe qualquer ficheiro.','A câmara comprime fotografias para 128 KB e grava vídeo a 360p/15 fps, com objetivo inferior a 5 MB por 5 minutos.'],
-  it:['Scrivi, disegna, registra audio, scatta foto, salva screenshot, registra video e allega qualsiasi file.','La fotocamera comprime le foto a 128 KB e registra video a 360p/15 fps, con l’obiettivo di restare sotto 5 MB per 5 minuti.'],
-  ja:['書く、描く、音声を録音する、写真を撮る、スクリーンショットを保存する、動画を撮影する、ファイルを添付する。','写真は128 KBに圧縮し、動画は360p/15 fpsで撮影します。5分あたり5 MB未満を目標とします。'],
-  ko:['글쓰기, 그리기, 오디오 녹음, 사진 촬영, 스크린샷 저장, 동영상 촬영, 모든 파일 첨부를 지원합니다.','사진은 128KB로 압축하고 동영상은 360p/15fps로 녹화하며, 5분당 5MB 미만을 목표로 합니다.']
+  es:{summary:'Tus ideas a la vista',feature:'Escribe, dibuja, graba audio, haz fotos, guarda capturas, graba vídeo y adjunta cualquier archivo.',donation:'Usa pocos megas, ya que el precio de la suscripción apenas nos ayuda a pagar los servidores. Si te gusta y quieres hacer una donación, envíala por PayPal a muchisimoamorparati@gmail.com o por Bizum al +34 692 225 392 (España).',label:'Información sobre PostisPop'},
+  en:{summary:'Your ideas, in view',feature:'Write, draw, record audio, take photos, save screenshots, record video, and attach any file.',donation:'Please use data sparingly, as subscription prices barely cover our server costs. If you enjoy the app and would like to donate, send your donation via PayPal to muchisimoamorparati@gmail.com or by Bizum to +34 692 225 392 (Spain).',label:'About PostisPop'},
+  de:{summary:'Alle Ideen im Blick',feature:'Schreibe, zeichne, nimm Audio auf, mache Fotos, speichere Screenshots, filme und füge beliebige Dateien an.',donation:'Bitte gehe sparsam mit Daten um, da die Abo-Preise kaum zur Deckung der Serverkosten beitragen. Wenn dir die App gefällt und du spenden möchtest, sende deine Spende per PayPal an muchisimoamorparati@gmail.com oder per Bizum an +34 692 225 392 (Spanien).',label:'Über PostisPop'},
+  fr:{summary:'Toutes vos idées en un coup d’œil',feature:'Écrivez, dessinez, enregistrez de l’audio, prenez des photos, gardez des captures d’écran, filmez et joignez tout type de fichier.',donation:'Merci de limiter votre consommation de données : le prix de l’abonnement couvre à peine nos frais de serveurs. Si l’application vous plaît et que vous souhaitez faire un don, vous pouvez l’envoyer par PayPal à muchisimoamorparati@gmail.com ou par Bizum au +34 692 225 392 (Espagne).',label:'À propos de PostisPop'},
+  pt:{summary:'As suas ideias à vista',feature:'Escreva, desenhe, grave áudio, tire fotografias, guarde capturas de ecrã, grave vídeo e anexe qualquer ficheiro.',donation:'Pedimos que use poucos dados, pois o preço da subscrição mal ajuda a pagar os servidores. Se gosta da aplicação e quiser fazer um donativo, envie-o por PayPal para muchisimoamorparati@gmail.com ou por Bizum para +34 692 225 392 (Espanha).',label:'Sobre o PostisPop'},
+  it:{summary:'Le tue idee, a colpo d’occhio',feature:'Scrivi, disegna, registra audio, scatta foto, salva screenshot, registra video e allega qualsiasi file.',donation:'Ti chiediamo di usare pochi dati: il prezzo dell’abbonamento copre a malapena i costi dei server. Se l’app ti piace e vuoi fare una donazione, inviala con PayPal a muchisimoamorparati@gmail.com oppure con Bizum al +34 692 225 392 (Spagna).',label:'Informazioni su PostisPop'},
+  ja:{summary:'アイデアをひと目で',feature:'文章や絵を作成し、音声を録音し、写真やスクリーンショットを保存し、動画を撮影して、あらゆる種類のファイルを添付できます。',donation:'サブスクリプション料金だけではサーバー費用をまかなうのが難しいため、データ通信量を控えめにご利用ください。アプリを気に入って寄付をご希望の場合は、PayPal（muchisimoamorparati@gmail.com）またはBizum（スペイン +34 692 225 392）でお送りください。',label:'PostisPopについて'},
+  ko:{summary:'아이디어를 한눈에',feature:'글쓰기, 그리기, 오디오 녹음, 사진 촬영, 스크린샷 저장, 동영상 녹화와 모든 종류의 파일 첨부를 지원합니다.',donation:'구독료만으로는 서버 비용을 충당하기 어려우니 데이터 사용량을 아껴 주세요. 앱이 마음에 들어 후원하고 싶다면 PayPal(muchisimoamorparati@gmail.com) 또는 Bizum(스페인 +34 692 225 392)으로 보내 주세요.',label:'PostisPop 소개'}
 };
 
 function render(){
-  const header=document.querySelector('.postispop .app-header');
   const board=document.querySelector('.postispop .board-frame');
-  if(!header||!board)return;
-  const [feature,limit]=copy[readBoardLanguage()]||copy.es;
+  if(!board)return;
+  const lang=readBoardLanguage(),strings=copy[lang]||copy.es;
   let card=document.querySelector('.pp-brand-highlights');
-  if(!card){card=document.createElement('aside');card.className='pp-brand-highlights';card.setAttribute('aria-label','PostIsPop');}
-  if(card.previousElementSibling!==board)board.after(card);
-  if(card.textContent===feature+limit)return;
-  card.replaceChildren();
-  const title=document.createElement('strong');title.textContent=feature;
-  const detail=document.createElement('small');detail.textContent=limit;
-  card.append(title,detail);
+  if(!card){card=document.createElement('aside');card.className='pp-brand-highlights';}
+  card.setAttribute('aria-label',strings.label);
+  const pager=board.querySelector('.pp-pagination');
+  if(pager){if(pager.previousElementSibling!==card)pager.before(card);}
+  else board.querySelector('.board-grid')?.after(card);
+  if(card.dataset.language===lang)return;
+
+  const details=document.createElement('details');
+  details.className='pp-brand-highlights-disclosure';
+  const summary=document.createElement('summary');
+  summary.textContent=strings.summary;
+  const content=document.createElement('div');
+  content.className='pp-brand-highlights-content';
+  const feature=document.createElement('p');feature.textContent=strings.feature;
+  const donation=document.createElement('p');donation.textContent=strings.donation;
+  content.append(feature,donation);
+  details.append(summary,content);
+  card.replaceChildren(details);
+  card.dataset.language=lang;
 }
 
 whenReactReady(()=>{
   render();
-  new MutationObserver(render).observe(document.body,{childList:true,subtree:true});
-  new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+  let scheduled=false;
+  const schedule=()=>{
+    if(scheduled)return;
+    scheduled=true;
+    requestAnimationFrame(()=>{scheduled=false;render();});
+  };
+  // React owns the board subtree. Watch only direct board-frame children so
+  // inserting the disclosure's own contents cannot feed back into this observer.
+  const frame=document.querySelector('.postispop .board-frame');
+  if(frame)new MutationObserver(schedule).observe(frame,{childList:true});
+  new MutationObserver(schedule).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
   window.addEventListener('storage',event=>{if(event.key==='pp:lang')render();});
 });
