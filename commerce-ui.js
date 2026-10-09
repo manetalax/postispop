@@ -103,10 +103,12 @@ async function sync() {
     const session = await api('session');
     actor = session.actor;
     access = null;
+    renderOwnerLink();
     alarms = [];
     serverOffset = 0;
     if (actor?.registered) {
       access = await api('commerce/status');
+      renderOwnerLink();
       const serverTime = Date.parse(access.server_now);
       serverOffset = Number.isFinite(serverTime) ? serverTime - Date.now() : 0;
       if (remindersActive()) alarms = (await api('commerce/alarms')).alarms || [];
@@ -116,6 +118,22 @@ async function sync() {
   try { await pendingSync; } finally { pendingSync = null; }
 }
 
+function renderOwnerLink() {
+  const nav=document.querySelector('.pp-app-links');
+  const existing=document.querySelector('[data-owner-dashboard-link]');
+  if(!access?.owner){existing?.remove();return;}
+  if(!nav)return;
+  const labels={es:'Estadísticas privadas',en:'Private statistics',de:'Private Statistiken',fr:'Statistiques privées',pt:'Estatísticas privadas',it:'Statistiche private',ja:'非公開の統計',ko:'비공개 통계'};
+  const lang=(document.documentElement.lang||'es').split('-')[0];
+  const link=existing||document.createElement('a');
+  link.dataset.ownerDashboardLink='';
+  link.href='/propietario.html';
+  const label=labels[lang]||labels.es;
+  if(link.textContent!==label)link.textContent=label;
+  if(!existing)nav.append(link);
+}
+new MutationObserver(renderOwnerLink).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['lang']});
+window.addEventListener('postispop:session-change',()=>{access=null;renderOwnerLink();lastSync=0;});
 function openPremium() {
   track('pricing_viewed');
   window.location.assign('/atelier.html');
