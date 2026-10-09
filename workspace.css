@@ -45,9 +45,14 @@ button, summary, a { touch-action: manipulation; }
 .postispop .app-header .brand { grid-column: 1; grid-row: 1; display: inline-flex; align-items: center; width: 156px; min-width: 0; height: 74px; padding: 0; }
 .postispop .brand-logo { display: block; width: 156px!important; height: 74px!important; object-fit: contain; filter: none!important; border-radius: 0; box-shadow: none; }
 :root[data-color-scheme=dark] .brand-logo { content: url('/assets/postispop-logo-light.svg'); }
-.pp-brand-highlights { box-sizing:border-box; width:min(760px,100%); margin:4px auto 10px; padding:9px 12px; border:1px solid var(--pp-border); border-radius:12px; background:var(--pp-surface); color:var(--pp-text); text-align:center; font:13px/1.45 system-ui,sans-serif; }
-.pp-brand-highlights strong { display:block; font-weight:650; }
-.pp-brand-highlights small { display:block; margin-top:3px; color:var(--pp-muted); font:11px/1.4 system-ui,sans-serif; }
+.pp-brand-highlights { box-sizing:border-box; width:min(760px,100%); margin:8px auto 0; padding:0; border:1px solid var(--pp-border); border-radius:12px; background:var(--pp-surface); color:var(--pp-text); font:13px/1.5 system-ui,sans-serif; }
+.pp-brand-highlights-disclosure > summary { display:flex; align-items:center; justify-content:center; min-height:42px; padding:7px 12px; color:var(--pp-accent); font-weight:650; cursor:pointer; list-style:none; }
+.pp-brand-highlights-disclosure > summary::-webkit-details-marker { display:none; }
+.pp-brand-highlights-disclosure > summary::after { content:'＋'; margin-left:9px; font-size:14px; }
+.pp-brand-highlights-disclosure[open] > summary::after { content:'−'; }
+.pp-brand-highlights-content { padding:0 14px 10px; text-align:center; }
+.pp-brand-highlights-content p { margin:6px 0 0; }
+.pp-brand-highlights-content p+p { color:var(--pp-muted); }
 .editor-dialog .edit-paper[data-pp-secondary=closed] .pp-attachments { display:block!important; }
 .postispop .app-header .header-title { grid-column: 2; grid-row: 1; justify-self: center; min-height: 44px; max-width: min(100%, 500px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0; padding: 6px 10px; border: 0!important; border-radius: 0!important; color: var(--pp-text)!important; background: transparent!important; box-shadow: none!important; font: 600 16px/1.35 ui-sans-serif, system-ui, sans-serif!important; letter-spacing: -.3px; }
 .postispop .app-header .header-title:hover { color: var(--pp-accent)!important; }
