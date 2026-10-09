@@ -4,11 +4,13 @@ import {shareFile,shareText,openWhatsApp} from './share-tools.js?v=20261009a';
 const DB_NAME = 'postispop-note-attachments';
 const STORE = 'attachments';
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
+// 144 kbit/s for five minutes is 5.4 MB; 6 MB leaves room for container overhead.
+const MAX_MEDIA_BYTES = 6_000_000;
 const CAMERA_PHOTO_BYTES = 128 * 1024;
-const CAMERA_VIDEO_BYTES = 5_000_000 - 1;
-const CAMERA_VIDEO_STOP_BYTES = 4_500_000;
+const CAMERA_VIDEO_BYTES = MAX_MEDIA_BYTES;
+const CAMERA_VIDEO_STOP_BYTES = 5_800_000;
 const CAMERA_VIDEO_DURATION_MS = 5 * 60 * 1000;
-const CAMERA_VIDEO_BITRATE = 80000;
+const CAMERA_VIDEO_BITRATE = 144000;
 const MAX_ATTACHMENTS = 100;
 
 let activeNoteId = '';
@@ -50,15 +52,16 @@ const notices={
   ko:{locked:'첨부 파일이 닫혔습니다. 노트가 보호되어 있거나 사용할 수 없습니다.',protecting:'노트를 보호하는 중입니다. 편집기를 닫고 비밀번호로 다시 여세요.'}
 };
 const addVideoLabels={es:'Añadir vídeo',en:'Add video',de:'Video hinzufügen',fr:'Ajouter une vidéo',pt:'Adicionar vídeo',it:'Aggiungi video',ja:'動画を追加',ko:'동영상 추가'};
+const mediaLimitMessages={es:'No se pudo comprimir el audio o vídeo dentro del límite de 6 MB.',en:'Could not compress the audio or video within the 6 MB limit.',de:'Audio oder Video konnten nicht auf höchstens 6 MB komprimiert werden.',fr:'Impossible de compresser l’audio ou la vidéo sous la limite de 6 Mo.',pt:'Não foi possível comprimir o áudio ou vídeo dentro do limite de 6 MB.',it:'Impossibile comprimere audio o video entro il limite di 6 MB.',ja:'音声または動画を6 MB以内に圧縮できませんでした。',ko:'오디오 또는 동영상을 6MB 한도 내로 압축하지 못했습니다.'};
 const cameraCopy={
-  es:{open:'Cámara',photo:'Hacer foto',record:'Grabar vídeo',stop:'Detener y guardar',close:'Cerrar cámara',photoInfo:'Foto WebP · hasta 128 KB',videoInfo:'Vídeo 360p/15 fps · hasta 5 min · objetivo <5 MB',permission:'Permite el acceso a la cámara para continuar.',unavailable:'La cámara no está disponible en este navegador.',unsupported:'Este navegador no puede grabar vídeo con el tamaño reducido.',limit:'La grabación se detuvo cerca de 5 MB para respetar el límite.',recording:'Grabando',audioUnavailable:'Se grabará vídeo sin audio.',photoFailed:'No se pudo crear una foto de 128 KB. Prueba con más luz o acércate al sujeto.'},
-  en:{open:'Camera',photo:'Take photo',record:'Record video',stop:'Stop and save',close:'Close camera',photoInfo:'WebP photo · up to 128 KB',videoInfo:'360p/15 fps video · up to 5 min · target <5 MB',permission:'Allow camera access to continue.',unavailable:'The camera is unavailable in this browser.',unsupported:'This browser cannot record reduced-size video.',limit:'Recording stopped near 5 MB to respect the size limit.',recording:'Recording',audioUnavailable:'Video will be recorded without audio.',photoFailed:'Could not make a 128 KB photo. Try more light or move closer.'},
-  de:{open:'Kamera',photo:'Foto aufnehmen',record:'Video aufnehmen',stop:'Stoppen und speichern',close:'Kamera schließen',photoInfo:'WebP-Foto · bis 128 KB',videoInfo:'360p/15 fps · bis 5 Min. · Ziel <5 MB',permission:'Erlaube den Kamerazugriff, um fortzufahren.',unavailable:'Die Kamera ist in diesem Browser nicht verfügbar.',unsupported:'Dieser Browser kann kein verkleinertes Video aufnehmen.',limit:'Die Aufnahme wurde nahe 5 MB gestoppt, um das Limit einzuhalten.',recording:'Aufnahme',audioUnavailable:'Das Video wird ohne Ton aufgenommen.',photoFailed:'Ein Foto mit 128 KB war nicht möglich. Bitte mehr Licht oder näher herangehen.'},
-  fr:{open:'Caméra',photo:'Prendre une photo',record:'Filmer',stop:'Arrêter et enregistrer',close:'Fermer la caméra',photoInfo:'Photo WebP · jusqu’à 128 Ko',videoInfo:'Vidéo 360p/15 ips · jusqu’à 5 min · objectif <5 Mo',permission:'Autorisez l’accès à la caméra pour continuer.',unavailable:'La caméra est indisponible dans ce navigateur.',unsupported:'Ce navigateur ne peut pas enregistrer une vidéo réduite.',limit:'L’enregistrement s’est arrêté vers 5 Mo pour respecter la limite.',recording:'Enregistrement',audioUnavailable:'La vidéo sera enregistrée sans son.',photoFailed:'Impossible de créer une photo de 128 Ko. Essayez avec plus de lumière ou rapprochez-vous.'},
-  pt:{open:'Câmara',photo:'Tirar fotografia',record:'Gravar vídeo',stop:'Parar e guardar',close:'Fechar câmara',photoInfo:'Fotografia WebP · até 128 KB',videoInfo:'Vídeo 360p/15 fps · até 5 min · objetivo <5 MB',permission:'Permita o acesso à câmara para continuar.',unavailable:'A câmara não está disponível neste navegador.',unsupported:'Este navegador não consegue gravar vídeo reduzido.',limit:'A gravação parou perto dos 5 MB para respeitar o limite.',recording:'A gravar',audioUnavailable:'O vídeo será gravado sem áudio.',photoFailed:'Não foi possível criar uma fotografia de 128 KB. Tente mais luz ou aproxime-se.'},
-  it:{open:'Fotocamera',photo:'Scatta foto',record:'Registra video',stop:'Ferma e salva',close:'Chiudi fotocamera',photoInfo:'Foto WebP · fino a 128 KB',videoInfo:'Video 360p/15 fps · fino a 5 min · obiettivo <5 MB',permission:'Consenti l’accesso alla fotocamera per continuare.',unavailable:'Fotocamera non disponibile in questo browser.',unsupported:'Questo browser non può registrare video a dimensioni ridotte.',limit:'Registrazione interrotta vicino a 5 MB per rispettare il limite.',recording:'Registrazione',audioUnavailable:'Il video verrà registrato senza audio.',photoFailed:'Impossibile creare una foto da 128 KB. Prova con più luce o avvicinati.'},
-  ja:{open:'カメラ',photo:'写真を撮る',record:'動画を撮影',stop:'停止して保存',close:'カメラを閉じる',photoInfo:'WebP写真 · 最大128 KB',videoInfo:'360p/15 fps動画 · 最大5分 · 目標5 MB未満',permission:'続行するにはカメラへのアクセスを許可してください。',unavailable:'このブラウザーではカメラを利用できません。',unsupported:'このブラウザーでは小容量の動画を録画できません。',limit:'サイズ制限を守るため、約5 MBで録画を停止しました。',recording:'録画中',audioUnavailable:'音声なしで動画を録画します。',photoFailed:'128 KBの写真を作成できませんでした。明るくするか、被写体に近づいてください。'},
-  ko:{open:'카메라',photo:'사진 찍기',record:'동영상 녹화',stop:'중지하고 저장',close:'카메라 닫기',photoInfo:'WebP 사진 · 최대 128KB',videoInfo:'360p/15fps 동영상 · 최대 5분 · 목표 5MB 미만',permission:'계속하려면 카메라 접근을 허용해 주세요.',unavailable:'이 브라우저에서 카메라를 사용할 수 없습니다.',unsupported:'이 브라우저는 작은 용량의 동영상을 녹화할 수 없습니다.',limit:'용량 제한을 지키기 위해 약 5MB에서 녹화를 중지했습니다.',recording:'녹화 중',audioUnavailable:'소리 없이 동영상을 녹화합니다.',photoFailed:'128KB 사진을 만들지 못했습니다. 더 밝은 곳에서 찍거나 가까이 이동해 주세요.'}
+  es:{open:'Cámara',photo:'Hacer foto',record:'Grabar vídeo',stop:'Detener y guardar',close:'Cerrar cámara',photoInfo:'Foto WebP · hasta 128 KB',videoInfo:'Vídeo 640×480 · 15 fps · máximo 5 min · hasta 6 MB',permission:'Permite el acceso a la cámara para continuar.',unavailable:'La cámara no está disponible en este navegador.',unsupported:'Este navegador no puede grabar vídeo con el tamaño reducido.',limit:'La grabación se detuvo cerca de 6 MB para respetar el límite.',recording:'Grabando',audioUnavailable:'Se grabará vídeo sin audio.',photoFailed:'No se pudo crear una foto de 128 KB. Prueba con más luz o acércate al sujeto.'},
+  en:{open:'Camera',photo:'Take photo',record:'Record video',stop:'Stop and save',close:'Close camera',photoInfo:'WebP photo · up to 128 KB',videoInfo:'640×480 video · 15 fps · max 5 min · up to 6 MB',permission:'Allow camera access to continue.',unavailable:'The camera is unavailable in this browser.',unsupported:'This browser cannot record reduced-size video.',limit:'Recording stopped near 6 MB to respect the size limit.',recording:'Recording',audioUnavailable:'Video will be recorded without audio.',photoFailed:'Could not make a 128 KB photo. Try more light or move closer.'},
+  de:{open:'Kamera',photo:'Foto aufnehmen',record:'Video aufnehmen',stop:'Stoppen und speichern',close:'Kamera schließen',photoInfo:'WebP-Foto · bis 128 KB',videoInfo:'Video 640×480 · 15 fps · max. 5 Min. · bis 6 MB',permission:'Erlaube den Kamerazugriff, um fortzufahren.',unavailable:'Die Kamera ist in diesem Browser nicht verfügbar.',unsupported:'Dieser Browser kann kein verkleinertes Video aufnehmen.',limit:'Die Aufnahme wurde nahe 6 MB gestoppt, um das Limit einzuhalten.',recording:'Aufnahme',audioUnavailable:'Das Video wird ohne Ton aufgenommen.',photoFailed:'Ein Foto mit 128 KB war nicht möglich. Bitte mehr Licht oder näher herangehen.'},
+  fr:{open:'Caméra',photo:'Prendre une photo',record:'Filmer',stop:'Arrêter et enregistrer',close:'Fermer la caméra',photoInfo:'Photo WebP · jusqu’à 128 Ko',videoInfo:'Vidéo 640×480 · 15 ips · 5 min max. · jusqu’à 6 Mo',permission:'Autorisez l’accès à la caméra pour continuer.',unavailable:'La caméra est indisponible dans ce navigateur.',unsupported:'Ce navigateur ne peut pas enregistrer une vidéo réduite.',limit:'L’enregistrement s’est arrêté vers 6 Mo pour respecter la limite.',recording:'Enregistrement',audioUnavailable:'La vidéo sera enregistrée sans son.',photoFailed:'Impossible de créer une photo de 128 Ko. Essayez avec plus de lumière ou rapprochez-vous.'},
+  pt:{open:'Câmara',photo:'Tirar fotografia',record:'Gravar vídeo',stop:'Parar e guardar',close:'Fechar câmara',photoInfo:'Fotografia WebP · até 128 KB',videoInfo:'Vídeo 640×480 · 15 fps · máximo 5 min · até 6 MB',permission:'Permita o acesso à câmara para continuar.',unavailable:'A câmara não está disponível neste navegador.',unsupported:'Este navegador não consegue gravar vídeo reduzido.',limit:'A gravação parou perto dos 6 MB para respeitar o limite.',recording:'A gravar',audioUnavailable:'O vídeo será gravado sem áudio.',photoFailed:'Não foi possível criar uma fotografia de 128 KB. Tente mais luz ou aproxime-se.'},
+  it:{open:'Fotocamera',photo:'Scatta foto',record:'Registra video',stop:'Ferma e salva',close:'Chiudi fotocamera',photoInfo:'Foto WebP · fino a 128 KB',videoInfo:'Video 640×480 · 15 fps · max 5 min · fino a 6 MB',permission:'Consenti l’accesso alla fotocamera per continuare.',unavailable:'Fotocamera non disponibile in questo browser.',unsupported:'Questo browser non può registrare video a dimensioni ridotte.',limit:'Registrazione interrotta vicino a 6 MB per rispettare il limite.',recording:'Registrazione',audioUnavailable:'Il video verrà registrato senza audio.',photoFailed:'Impossibile creare una foto da 128 KB. Prova con più luce o avvicinati.'},
+  ja:{open:'カメラ',photo:'写真を撮る',record:'動画を撮影',stop:'停止して保存',close:'カメラを閉じる',photoInfo:'WebP写真 · 最大128 KB',videoInfo:'640×480 · 15 fps · 最大5分 · 最大6 MB',permission:'続行するにはカメラへのアクセスを許可してください。',unavailable:'このブラウザーではカメラを利用できません。',unsupported:'このブラウザーでは小容量の動画を録画できません。',limit:'サイズ制限を守るため、約6 MBで録画を停止しました。',recording:'録画中',audioUnavailable:'音声なしで動画を録画します。',photoFailed:'128 KBの写真を作成できませんでした。明るくするか、被写体に近づいてください。'},
+  ko:{open:'카메라',photo:'사진 찍기',record:'동영상 녹화',stop:'중지하고 저장',close:'카메라 닫기',photoInfo:'WebP 사진 · 최대 128KB',videoInfo:'640×480 동영상 · 15fps · 최대 5분 · 최대 6MB',permission:'계속하려면 카메라 접근을 허용해 주세요.',unavailable:'이 브라우저에서 카메라를 사용할 수 없습니다.',unsupported:'이 브라우저는 작은 용량의 동영상을 녹화할 수 없습니다.',limit:'용량 제한을 지키기 위해 약 6MB에서 녹화를 중지했습니다.',recording:'녹화 중',audioUnavailable:'소리 없이 동영상을 녹화합니다.',photoFailed:'128KB 사진을 만들지 못했습니다. 더 밝은 곳에서 찍거나 가까이 이동해 주세요.'}
 };
 const shareLabels={
   es:{shareNote:'Compartir nota',shareApp:'Otras apps',whatsapp:'WhatsApp',noteTitle:'Nota de PostisPop',emptyNote:'Esta nota no tiene texto para compartir.',shareOpened:'Se abrió el menú para compartir.',shareCopied:'Texto copiado. Pégalo en la aplicación que quieras.',shareSaved:'Archivo descargado; puedes adjuntarlo en WhatsApp u otra aplicación.',shareFailed:'No se pudo compartir este elemento.',shareProtected:'Esta nota está protegida. Compártela con su enlace cifrado en las opciones de contraseña.',attachmentShare:'Compartir archivo'},
@@ -71,7 +74,7 @@ const shareLabels={
   ko:{shareNote:'메모 공유',shareApp:'다른 앱',whatsapp:'WhatsApp',noteTitle:'PostisPop 메모',emptyNote:'공유할 텍스트가 없습니다.',shareOpened:'공유 메뉴가 열렸습니다.',shareCopied:'텍스트를 복사했습니다. 원하는 앱에 붙여넣으세요.',shareSaved:'파일을 다운로드했습니다. WhatsApp 등에서 첨부할 수 있습니다.',shareFailed:'이 항목을 공유하지 못했습니다.',shareProtected:'이 메모는 보호되어 있습니다. 비밀번호 옵션에서 암호화 링크로 공유하세요.',attachmentShare:'파일 공유'}
 };
 let currentLanguage=readBoardLanguage();
-let labels={...(translations[currentLanguage]||translations.es),...(notices[currentLanguage]||notices.es),...(cameraCopy[currentLanguage]||cameraCopy.es),...(shareLabels[currentLanguage]||shareLabels.es),addVideo:addVideoLabels[currentLanguage]||addVideoLabels.es};
+let labels={...(translations[currentLanguage]||translations.es),...(notices[currentLanguage]||notices.es),...(cameraCopy[currentLanguage]||cameraCopy.es),...(shareLabels[currentLanguage]||shareLabels.es),mediaTooLarge:mediaLimitMessages[currentLanguage]||mediaLimitMessages.es,addVideo:addVideoLabels[currentLanguage]||addVideoLabels.es};
 
 function openDb() {
   return new Promise((resolve, reject) => {
@@ -165,7 +168,7 @@ async function compressAudio(file,onProgress=()=>{}){
     const buffer=await context.decodeAudioData(await file.arrayBuffer());
     const destination=context.createMediaStreamDestination(),source=context.createBufferSource();source.buffer=buffer;source.connect(destination);
     const mime=['audio/webm;codecs=opus','audio/mp4'].find(type=>MediaRecorder.isTypeSupported(type));
-    const targetBits=Math.min(128000,Math.max(64000,Math.floor(MAX_FILE_BYTES*8*.88/buffer.duration)));
+    const targetBits=Math.min(128000,Math.max(32000,Math.floor(MAX_MEDIA_BYTES*8*.9/buffer.duration)));
     const recorder=new MediaRecorder(destination.stream,{...(mime?{mimeType:mime}:{}),audioBitsPerSecond:targetBits});
     const chunks=[];
     const result=new Promise((resolve,reject)=>{
@@ -177,7 +180,7 @@ async function compressAudio(file,onProgress=()=>{}){
     await new Promise((resolve,reject)=>{const timer=setInterval(()=>{if(recorder.state==='recording')recorder.requestData();onProgress(Math.min(.98,(context.currentTime-startedAt)/buffer.duration));},1000);source.onended=()=>{clearInterval(timer);onProgress(1);resolve();};source.onerror=()=>{clearInterval(timer);reject(new Error('AUDIO_COMPRESS_FAILED'));};});
     if(recorder.state!=='inactive')recorder.stop();
     const blob=await result;
-    if(blob.size>MAX_FILE_BYTES)return null;
+    if(blob.size>MAX_MEDIA_BYTES)return null;
     const ext=blob.type.includes('mp4')?'m4a':'webm';
     return {file:fileFromBlob(blob,replaceExtension(file.name,ext),blob.type),compression:'audio-transcode'};
   }finally{await context.close().catch(()=>{});}
@@ -190,21 +193,29 @@ async function compressVideo(file,onProgress=()=>{}){
   let audioContext=null,source=null;
   try{
     await new Promise((resolve,reject)=>{video.onloadedmetadata=resolve;video.onerror=()=>reject(new Error('VIDEO_DECODE_FAILED'));});
+    if(!Number.isFinite(video.duration)||video.duration<=0){
+      await new Promise((resolve,reject)=>{
+        const finish=()=>{if(Number.isFinite(video.duration)&&video.duration>0){clearTimeout(timer);video.removeEventListener('durationchange',finish);video.removeEventListener('seeked',finish);video.currentTime=0;resolve();}};
+        const timer=setTimeout(()=>reject(new Error('VIDEO_DURATION_UNKNOWN')),2500);
+        video.addEventListener('durationchange',finish);video.addEventListener('seeked',finish);
+        try{video.currentTime=Number.MAX_SAFE_INTEGER;}catch(error){clearTimeout(timer);reject(error);}
+      });
+    }
     if(!Number.isFinite(video.duration)||video.duration<=0)return null;
-    const budgetBits=Math.floor(MAX_FILE_BYTES*8*.88/video.duration),audioBits=Math.min(96000,Math.floor(budgetBits*.18));
+    const budgetBits=Math.min(CAMERA_VIDEO_BITRATE,Math.floor(MAX_MEDIA_BYTES*8*.9/video.duration)),audioBits=Math.min(32000,Math.floor(budgetBits*.18));
     const videoBits=budgetBits-audioBits;
-    if(videoBits<260000)return null;
-    const maxDimension=videoBits>1000000?1280:videoBits>500000?960:videoBits>260000?720:480;
-    const ratio=Math.min(1,maxDimension/Math.max(video.videoWidth,video.videoHeight));
-    canvas.width=Math.max(2,Math.round(video.videoWidth*ratio/2)*2);canvas.height=Math.max(2,Math.round(video.videoHeight*ratio/2)*2);
+    if(videoBits<24000)return null;
+    canvas.width=640;canvas.height=480;
     const context=canvas.getContext('2d');if(!context)return null;
-    const videoStream=canvas.captureStream(24),tracks=[...videoStream.getVideoTracks()];
+    const ratio=Math.min(canvas.width/video.videoWidth,canvas.height/video.videoHeight),frameWidth=video.videoWidth*ratio,frameHeight=video.videoHeight*ratio,frameX=(canvas.width-frameWidth)/2,frameY=(canvas.height-frameHeight)/2;
+    const drawFrame=()=>{context.fillStyle='#000';context.fillRect(0,0,canvas.width,canvas.height);context.drawImage(video,frameX,frameY,frameWidth,frameHeight);};
+    const videoStream=canvas.captureStream(15),tracks=[...videoStream.getVideoTracks()];
     const AudioContextType=window.AudioContext||window.webkitAudioContext;
     if(AudioContextType){
       try{audioContext=new AudioContextType();await audioContext.resume();source=audioContext.createMediaElementSource(video);const destination=audioContext.createMediaStreamDestination();source.connect(destination);tracks.push(...destination.stream.getAudioTracks());}catch{}
     }
     const stream=new MediaStream(tracks);
-    const mime=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/mp4'].find(type=>MediaRecorder.isTypeSupported(type));
+    const mime=['video/webm;codecs=av01.0.08M.08,opus','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/mp4;codecs=av01.0.08M.08,mp4a.40.2','video/mp4;codecs=h264,aac','video/mp4'].find(type=>MediaRecorder.isTypeSupported(type));
     if(!mime)return null;
     const recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:videoBits,audioBitsPerSecond:audioBits});
     const chunks=[],result=new Promise((resolve,reject)=>{
@@ -213,42 +224,44 @@ async function compressVideo(file,onProgress=()=>{}){
       recorder.onstop=()=>resolve(new Blob(chunks,{type:recorder.mimeType||mime}));
     });
     let frame=0;
-    const draw=()=>{if(video.paused||video.ended)return;context.drawImage(video,0,0,canvas.width,canvas.height);frame=requestAnimationFrame(draw);};
+    const draw=()=>{if(video.paused||video.ended)return;drawFrame();frame=requestAnimationFrame(draw);};
     const ended=new Promise((resolve,reject)=>{video.onended=resolve;video.onerror=()=>reject(new Error('VIDEO_DECODE_FAILED'));});
-    await video.play();context.drawImage(video,0,0,canvas.width,canvas.height);recorder.start(1000);draw();await ended;
+    await video.play();drawFrame();recorder.start(1000);draw();await ended;
     cancelAnimationFrame(frame);if(recorder.state!=='inactive')recorder.stop();
     const blob=await result;onProgress(1);
-    if(blob.size>MAX_FILE_BYTES)return null;
+    if(blob.size>MAX_MEDIA_BYTES)return null;
     const ext=blob.type.includes('mp4')?'mp4':'webm';
     return {file:fileFromBlob(blob,replaceExtension(file.name,ext),blob.type),compression:'video-transcode'};
   }finally{video.pause();video.removeAttribute('src');video.load();URL.revokeObjectURL(mediaUrl);if(source)try{source.disconnect();}catch{}if(audioContext)await audioContext.close().catch(()=>{});}
 }
 
-async function compressGeneric(file){
+async function compressGeneric(file,maxBytes=MAX_FILE_BYTES){
   if(!window.CompressionStream)return null;
   try{
     let total=0;
-    const cap=new TransformStream({transform(chunk,controller){total+=chunk.byteLength;if(total>MAX_FILE_BYTES)throw new Error('TOO_LARGE');controller.enqueue(chunk);}});
+    const cap=new TransformStream({transform(chunk,controller){total+=chunk.byteLength;if(total>maxBytes)throw new Error('TOO_LARGE');controller.enqueue(chunk);}});
     const stream=file.stream().pipeThrough(new CompressionStream('gzip')).pipeThrough(cap);
     const blob=await new Response(stream).blob();
-    if(blob.size>=file.size||blob.size>MAX_FILE_BYTES)return null;
+    if(blob.size>=file.size||blob.size>maxBytes)return null;
     return {file:fileFromBlob(blob,`${file.name}.gz`,'application/gzip'),compression:'gzip'};
   }catch{return null;}
 }
 
 async function prepareFile(file,onProgress=()=>{}){
+  const maxBytes=/^(audio|video)\//.test(file.type)?MAX_MEDIA_BYTES:MAX_FILE_BYTES;
   onProgress(0);
   try{
     let result=null;
     if(file.type.startsWith('image/'))result=await compressImage(file,onProgress);
     else if(file.type.startsWith('audio/'))result=await compressAudio(file,onProgress);
     else if(file.type.startsWith('video/'))result=await compressVideo(file,onProgress);
-    if(result&&result.file.size<file.size){onProgress(1);return result;}
+    if(result&&result.file.size<=maxBytes&&(result.file.size<file.size||result.compression==='video-transcode')){onProgress(1);return result;}
     onProgress(.8);
-    const generic=await compressGeneric(file);
+    if(file.type.startsWith('video/'))return null;
+    const generic=await compressGeneric(file,maxBytes);
     if(generic&&generic.file.size<file.size){onProgress(1);return generic;}
-    onProgress(1);return file.size<=MAX_FILE_BYTES?{file,compression:''}:null;
-  }catch{onProgress(1);return file.size<=MAX_FILE_BYTES?{file,compression:''}:null;}
+    onProgress(1);return file.type.startsWith('video/')?null:(file.size<=maxBytes?{file,compression:''}:null);
+  }catch{onProgress(1);return file.type.startsWith('video/')?null:(file.size<=maxBytes?{file,compression:''}:null);}
 }
 
 function category(item) {
@@ -342,18 +355,19 @@ function progressStatus(phase,percent,fileName=''){
   toast.append(text,progress);toast.classList.add('is-visible');clearTimeout(notify.timer);
 }
 
-async function saveFiles(files, noteId=activeNoteId) {
+async function saveFiles(files, noteId=activeNoteId,{alreadyCompressed=false}={}) {
   if (!noteId) return;
   const ready=[],failures=[];
   const accepted=files.filter(supported),totalBytes=accepted.reduce((sum,file)=>sum+file.size,0)||1;let processedBytes=0;
   for(const source of accepted){
     if(!supported(source))continue;
     progressStatus('prepare',processedBytes/totalBytes*100,source.name);
-    const prepared=await prepareFile(source,ratio=>progressStatus('compress',(processedBytes+source.size*ratio)/totalBytes*100,source.name));
+    const prepared=alreadyCompressed?{file:source,compression:'recorded-video'}:await prepareFile(source,ratio=>progressStatus('compress',(processedBytes+source.size*ratio)/totalBytes*100,source.name));
     processedBytes+=source.size;
-    if(!prepared||prepared.file.size>MAX_FILE_BYTES){failures.push(`${source.name}: ${labels.tooLarge}`);continue;}
+    const maxBytes=/^(audio|video)\//.test(source.type)?MAX_MEDIA_BYTES:MAX_FILE_BYTES;
+    if(!prepared||prepared.file.size>maxBytes){failures.push(`${source.name}: ${maxBytes===MAX_MEDIA_BYTES?labels.mediaTooLarge:labels.tooLarge}`);continue;}
     ready.push({source,...prepared});
-    progressStatus('compress',processedBytes/totalBytes*100,source.name);
+    progressStatus(alreadyCompressed?'prepare':'compress',processedBytes/totalBytes*100,source.name);
   }
   let storedBytes=0;const saveTotal=ready.reduce((sum,item)=>sum+item.file.size,0)||1;
   try { await withNoteStorageLock(noteId, async()=>{
@@ -504,8 +518,8 @@ async function openCamera(panel){
   const noteId=activeNoteId;try{await assertAttachmentWritable(noteId);}catch{notify(labels.locked);return;}
   try{
     cameraPanel=panel;cameraNoteId=noteId;
-    try{cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720},frameRate:{ideal:24,max:30}},audio:{echoCancellation:true,noiseSuppression:true}});}
-    catch{cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720},frameRate:{ideal:24,max:30}},audio:false});cameraStatus(labels.audioUnavailable);}
+    try{cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:640},height:{ideal:480},frameRate:{ideal:15,max:15}},audio:{echoCancellation:true,noiseSuppression:true}});}
+    catch{cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:640},height:{ideal:480},frameRate:{ideal:15,max:15}},audio:false});cameraStatus(labels.audioUnavailable);}
     const consolePanel=panel.querySelector('.pp-camera-console'),preview=panel.querySelector('.pp-camera-preview');
     consolePanel.hidden=false;preview.srcObject=cameraStream;await new Promise(resolve=>{if(preview.readyState>=1)resolve();else preview.onloadedmetadata=resolve;});
     await preview.play();
@@ -534,18 +548,17 @@ async function takeCameraPhoto(panel){
 function startCameraRecording(panel){
   if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){notify(labels.unsupported);return;}
   const preview=panel.querySelector('.pp-camera-preview');if(!preview.videoWidth||!preview.videoHeight){notify(labels.unavailable);return;}
-  const canvas=document.createElement('canvas'),scale=Math.min(1,640/Math.max(preview.videoWidth,preview.videoHeight));
-  canvas.width=Math.max(2,Math.round(preview.videoWidth*scale/2)*2);canvas.height=Math.max(2,Math.round(preview.videoHeight*scale/2)*2);
+  const canvas=document.createElement('canvas');canvas.width=640;canvas.height=480;
   const context=canvas.getContext('2d');if(!context){notify(labels.unsupported);return;}
   const videoOnly=canvas.captureStream(15),tracks=[...videoOnly.getVideoTracks(),...cameraStream.getAudioTracks()];
   cameraRecordStream=new MediaStream(tracks);
-  const type=['video/webm;codecs=vp8,opus','video/webm;codecs=vp9,opus','video/mp4;codecs=h264,aac','video/mp4'].find(mime=>MediaRecorder.isTypeSupported(mime));
-  try{cameraRecorder=new MediaRecorder(cameraRecordStream,{...(type?{mimeType:type}:{}),videoBitsPerSecond:64000,audioBitsPerSecond:16000,bitsPerSecond:CAMERA_VIDEO_BITRATE});}
+  const type=['video/webm;codecs=av01.0.08M.08,opus','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/mp4;codecs=av01.0.08M.08,mp4a.40.2','video/mp4;codecs=h264,aac','video/mp4'].find(mime=>MediaRecorder.isTypeSupported(mime));
+  try{cameraRecorder=new MediaRecorder(cameraRecordStream,{...(type?{mimeType:type}:{}),videoBitsPerSecond:120000,audioBitsPerSecond:24000,bitsPerSecond:CAMERA_VIDEO_BITRATE});}
   catch{cameraRecordStream.getTracks().forEach(track=>track.stop());cameraRecordStream=null;notify(labels.unsupported);return;}
   cameraChunks=[];cameraRecordBytes=0;cameraRecordStarted=Date.now();cameraStopAtLimit=false;cameraCloseAfterStop=false;
   const recordButton=panel.querySelector('.pp-camera-record'),stopButton=panel.querySelector('.pp-camera-stop');
   recordButton.hidden=true;stopButton.hidden=false;panel.querySelector('.pp-camera-photo').disabled=true;
-  const draw=()=>{if(cameraRecorder?.state!=='recording')return;context.drawImage(preview,0,0,canvas.width,canvas.height);};draw();cameraFrame=setInterval(draw,1000/15);
+  const draw=()=>{if(cameraRecorder?.state!=='recording')return;context.fillStyle='#000';context.fillRect(0,0,canvas.width,canvas.height);const scale=Math.min(canvas.width/preview.videoWidth,canvas.height/preview.videoHeight),width=preview.videoWidth*scale,height=preview.videoHeight*scale;context.drawImage(preview,(canvas.width-width)/2,(canvas.height-height)/2,width,height);};draw();cameraFrame=setInterval(draw,1000/15);
   cameraRecorder.ondataavailable=event=>{
     if(!event.data.size)return;cameraRecordBytes+=event.data.size;cameraChunks.push(event.data);
     if(cameraRecordBytes>=CAMERA_VIDEO_STOP_BYTES){cameraStopAtLimit=true;cameraStatus(labels.limit);cameraRecorder?.stop();}
@@ -558,9 +571,9 @@ function startCameraRecording(panel){
     cameraRecordStream?.getTracks().forEach(track=>track.stop());cameraRecordStream=null;
     const closeWhenSaved=cameraCloseAfterStop,wasStoppedForLimit=cameraStopAtLimit;
     cameraChunks=[];
-    if(blob.size&&blob.size<CAMERA_VIDEO_BYTES+1){
+    if(blob.size&&blob.size<=CAMERA_VIDEO_BYTES){
       const ext=type.includes('mp4')?'mp4':'webm',stamp=new Date().toISOString().replace(/[:.]/g,'-');
-      await saveFiles([fileFromBlob(blob,`PostisPop-video-${stamp}.${ext}`,type)],cameraNoteId);
+      await saveFiles([fileFromBlob(blob,`PostisPop-video-${stamp}.${ext}`,type)],cameraNoteId,{alreadyCompressed:true});
       if(wasStoppedForLimit)notify(labels.limit);
     }else notify(labels.tooLarge);
     recordButton.hidden=false;stopButton.hidden=true;panel.querySelector('.pp-camera-photo').disabled=false;
@@ -657,7 +670,7 @@ enhanceEditor();
 
 function refreshAttachmentLanguage(){
   const language=readBoardLanguage();if(language===currentLanguage)return;
-  closeCamera();currentLanguage=language;labels={...(translations[language]||translations.es),...(notices[language]||notices.es),...(cameraCopy[language]||cameraCopy.es),...(shareLabels[language]||shareLabels.es),addVideo:addVideoLabels[language]||addVideoLabels.es};
+  closeCamera();currentLanguage=language;labels={...(translations[language]||translations.es),...(notices[language]||notices.es),...(cameraCopy[language]||cameraCopy.es),...(shareLabels[language]||shareLabels.es),mediaTooLarge:mediaLimitMessages[language]||mediaLimitMessages.es,addVideo:addVideoLabels[language]||addVideoLabels.es};
   document.querySelector('.pp-attachments')?.remove();enhanceEditor();
 }
 new MutationObserver(refreshAttachmentLanguage).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
