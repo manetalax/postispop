@@ -6,6 +6,16 @@ import {initBoardPreferences} from './board-preferences.js?v=20261008a';
 import {readBoardLanguage} from './seo-language.js';
 
 const ACCOUNT_LABELS={es:'Cuenta',en:'Account',de:'Konto',fr:'Compte',pt:'Conta',it:'Account',ja:'アカウント',ko:'계정'};
+const MENU_LABELS={
+  es:{menu:'Menú',nav:'Aplicación',premium:'Premium',downloads:'Descargas',help:'Ayuda'},
+  en:{menu:'Menu',nav:'App menu',premium:'Premium',downloads:'Downloads',help:'Help'},
+  de:{menu:'Menü',nav:'App-Menü',premium:'Premium',downloads:'Downloads',help:'Hilfe'},
+  fr:{menu:'Menu',nav:'Menu de l’application',premium:'Premium',downloads:'Téléchargements',help:'Aide'},
+  pt:{menu:'Menu',nav:'Menu da aplicação',premium:'Premium',downloads:'Transferências',help:'Ajuda'},
+  it:{menu:'Menu',nav:'Menu app',premium:'Premium',downloads:'Download',help:'Aiuto'},
+  ja:{menu:'メニュー',nav:'アプリメニュー',premium:'プレミアム',downloads:'ダウンロード',help:'ヘルプ'},
+  ko:{menu:'메뉴',nav:'앱 메뉴',premium:'프리미엄',downloads:'다운로드',help:'도움말'}
+};
 
 
 const SEO_TITLE='Bloc de notas online gratis y pizarra | PostisPop';
@@ -63,14 +73,15 @@ function update() {
   if(header)header.querySelector('.group-button')?.classList.add('pp-share-board-link');
 
   if (header && !header.querySelector('.pp-menu-toggle')) {
+    const labels=MENU_LABELS[readBoardLanguage()]||MENU_LABELS.es;
     const button = document.createElement('button');
     button.className = 'pp-icon pp-menu-toggle'; button.type = 'button';
     button.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
-    button.title = 'Menú'; button.setAttribute('aria-label', 'Menú'); button.setAttribute('aria-expanded', 'false');
+    button.title = labels.menu; button.setAttribute('aria-label', labels.menu); button.setAttribute('aria-expanded', 'false');
     button.onclick = () => { const open = header.classList.toggle('pp-menu-open'); button.setAttribute('aria-expanded', String(open)); };
     header.append(button);
-    const nav = document.createElement('nav'); nav.className = 'pp-app-links'; nav.setAttribute('aria-label', 'Aplicación');
-    for (const [label,href] of [['Premium','/atelier.html'],['Descargas','/descargas/'],['Ayuda','/ayuda.html']]) { const link=document.createElement('a'); link.textContent=label;link.href=href;nav.append(link); }
+    const nav = document.createElement('nav'); nav.className = 'pp-app-links'; nav.setAttribute('aria-label', labels.nav);
+    for (const [label,href] of [[labels.premium,'/atelier.html'],[labels.downloads,'/descargas/'],[labels.help,'/ayuda.html']]) { const link=document.createElement('a'); link.textContent=label;link.href=href;nav.append(link); }
     header.append(nav);
   }
   syncHeaderAccountActions(header);
