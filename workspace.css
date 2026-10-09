@@ -53,9 +53,9 @@ button, summary, a { touch-action: manipulation; }
 .postispop .app-header .header-title:hover { color: var(--pp-accent)!important; }
 .pp-menu-toggle { grid-column: 3; grid-row: 1; }
 .app-header .top-controls, .pp-app-links { display: none; }
-.app-header.pp-menu-open .top-controls { display: flex; flex-wrap: wrap; position: absolute; top: 54px; right: 0; width: 260px; z-index: 22; padding: 14px 14px 70px; gap: 10px; border: 1px solid var(--pp-border); border-radius: 16px; box-shadow: var(--pp-menu-shadow); background: var(--pp-surface); }
+.app-header.pp-menu-open .top-controls { display: flex; flex-wrap: wrap; position: absolute; top: 130px; right: 0; width: 260px; z-index: 22; padding: 14px; gap: 10px; border: 1px solid var(--pp-border); border-radius: 16px; box-shadow: var(--pp-menu-shadow); background: var(--pp-surface); }
 .app-header.pp-menu-open .top-controls button { min-height: 44px; }
-.pp-menu-open .pp-app-links { display: flex; justify-content: space-around; position: absolute; z-index: 23; top: 160px; right: 14px; width: 260px; gap: 8px; font-size: 13px; }
+.pp-menu-open .pp-app-links { display: flex; justify-content: space-around; position: absolute; z-index: 23; top: 210px; right: 14px; width: 260px; gap: 8px; font-size: 13px; }
 .pp-app-links a { color: var(--pp-accent); min-height: 44px; display: flex; align-items: center; }
 .pp-app-links .pp-share-board-link { color: var(--pp-accent); min-height: 44px; padding: 8px 10px; border: 1px solid currentColor; border-radius: 10px; background: transparent; font: inherit; cursor: pointer; }
 .pp-icon { display: inline-flex; justify-content: center; align-items: center; flex: none; width: 44px; min-width: 44px; height: 44px; padding: 0; border: 1px solid var(--pp-border); border-radius: var(--pp-radius); background: var(--pp-surface); color: var(--pp-text); font: 24px/1 system-ui; cursor: pointer; box-shadow: none; }
@@ -120,6 +120,7 @@ button, summary, a { touch-action: manipulation; }
 
 /* Keep account actions visible in the header, outside the collapsible menu. */
 .postispop .app-header.pp-has-account-strip { margin-bottom: 54px; }
+.postispop .app-header.pp-has-account-strip.pp-menu-open { margin-bottom: 174px; }
 .postispop .app-header .pp-account-strip {
   position: absolute; z-index: 24; top: calc(100% + 1px); left: 50%; transform: translateX(-50%);
   display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; width: min(520px,calc(100vw - 24px));
@@ -133,9 +134,10 @@ button, summary, a { touch-action: manipulation; }
 .postispop .pp-account-strip button:hover:not(:disabled) { background: var(--pp-accent-soft)!important; border-color: var(--pp-accent)!important; }
 .postispop .pp-account-strip button:disabled { opacity: .55; }
 .postispop .top-controls .header-auth-actions,
-.postispop .top-controls .group-button,
+.postispop .top-controls .header-share,
 .postispop .pp-app-links .pp-share-board-link,
 .postispop .session-identity .session-logout { display: none!important; }
+.postispop .app-header.pp-menu-open .top-controls :is(.group-button,.store-button,.settings-button) { display: inline-flex!important; }
 .postispop .app-header .top-controls :is(.primary,.secondary,.icon-button) {
   border-color: color-mix(in srgb,var(--pp-accent) 35%,var(--pp-border))!important;
   background: var(--pp-surface)!important; color: var(--pp-accent)!important; box-shadow: none!important;
@@ -177,6 +179,8 @@ button, summary, a { touch-action: manipulation; }
   .postispop .app-header .brand { width: 126px; height: 62px; }
   .postispop .brand-logo { width: 126px!important; height: 62px!important; }
   .postispop .app-header .header-title { font-size: 14px!important; padding: 4px; }
+  .app-header.pp-menu-open .top-controls { top: 112px; }
+  .pp-menu-open .pp-app-links { top: 194px; }
   .workspace-caption { min-height: 18px; }
   .pp-tools.pp-note-search { gap: 6px; margin: 2px auto 6px; }
   .pp-note-search input { font-size: 16px; }
@@ -191,6 +195,7 @@ button, summary, a { touch-action: manipulation; }
 
 @media (max-width: 520px) {
   .postispop .app-header.pp-has-account-strip { margin-bottom: 52px; }
+  .postispop .app-header.pp-has-account-strip.pp-menu-open { margin-bottom: 176px; }
   .postispop .app-header .pp-account-strip { gap: 7px; width: calc(100vw - 20px); }
   .postispop .pp-account-strip button { flex: 1 1 0; min-height: 42px; padding: 8px 10px; gap: 6px; font-size: 13px; }
 }

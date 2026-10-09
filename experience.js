@@ -60,6 +60,7 @@ function update() {
   const header=hydrated?document.querySelector('.app-header'):null;
 
   if(header)document.querySelectorAll('.header-share,.group-button').forEach(button=>{button.disabled=false;});
+  if(header)header.querySelector('.group-button')?.classList.add('pp-share-board-link');
 
   if (header && !header.querySelector('.pp-menu-toggle')) {
     const button = document.createElement('button');
