@@ -40,7 +40,16 @@ function render(){
 
 whenReactReady(()=>{
   render();
-  new MutationObserver(render).observe(document.body,{childList:true,subtree:true});
-  new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+  let scheduled=false;
+  const schedule=()=>{
+    if(scheduled)return;
+    scheduled=true;
+    requestAnimationFrame(()=>{scheduled=false;render();});
+  };
+  // React owns the board subtree. Watch only direct board-frame children so
+  // inserting the disclosure's own contents cannot feed back into this observer.
+  const frame=document.querySelector('.postispop .board-frame');
+  if(frame)new MutationObserver(schedule).observe(frame,{childList:true});
+  new MutationObserver(schedule).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
   window.addEventListener('storage',event=>{if(event.key==='pp:lang')render();});
 });
