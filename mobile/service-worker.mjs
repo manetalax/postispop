@@ -27,8 +27,13 @@ self.addEventListener('install', event => event.waitUntil((async () => {
       }));
     }
   } catch (error) { await caches.delete(CACHE); throw error; }
-})())); // No skipWaiting: an open editor keeps its current version.
-self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => (key.startsWith('postispop-shell-') || key.startsWith('postispop-wpo-')) && key !== CACHE).map(key => caches.delete(key))))));
+})()));
+// Install the new shell immediately so stale tabs cannot pin users to an old UI.
+self.addEventListener('install', event => event.waitUntil(self.skipWaiting()));
+self.addEventListener('activate', event => event.waitUntil((async () => {
+  await caches.keys().then(keys => Promise.all(keys.filter(key => (key.startsWith('postispop-shell-') || key.startsWith('postispop-wpo-')) && key !== CACHE).map(key => caches.delete(key))));
+  await self.clients.claim();
+})()));
 self.addEventListener('fetch', event => {
   const path = publicPath(event.request);
   if (!path) return; // API, storage, shares and auth requests are never intercepted.
@@ -36,8 +41,7 @@ self.addEventListener('fetch', event => {
     const cached = await (await caches.open(CACHE)).match(path);
     // Keep HTML and its unversioned modules in the SAME installed snapshot.
     // Network-first navigation could combine a new document with old scripts.
-    // The browser checks /sw.js for updates; a waiting version activates after
-    // the old clients close, without interrupting an active editor.
+    // A newly activated worker owns all tabs and serves one complete shell.
     if (cached) return cached;
     const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), 5000);
     try {
