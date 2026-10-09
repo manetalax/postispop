@@ -118,6 +118,37 @@ button, summary, a { touch-action: manipulation; }
 .site-legal-links a { min-height: 30px; display: inline-flex; align-items: center; color: var(--pp-muted)!important; }
 .pp-onboarding-tip { margin: 8px auto; max-width: 680px; font-size: 13px; }
 
+/* Keep account actions visible in the header, outside the collapsible menu. */
+.postispop .app-header.pp-has-account-strip { margin-bottom: 54px; }
+.postispop .app-header .pp-account-strip {
+  position: absolute; z-index: 24; top: calc(100% + 1px); left: 50%; transform: translateX(-50%);
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; width: min(520px,calc(100vw - 24px));
+}
+.postispop .pp-account-strip button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px; flex: 0 1 210px;
+  min-width: 0; min-height: 44px; padding: 9px 16px; border: 1px solid color-mix(in srgb,var(--pp-accent) 30%,var(--pp-border));
+  border-radius: 999px; background: var(--pp-surface)!important; color: var(--pp-accent)!important;
+  box-shadow: 0 2px 5px color-mix(in srgb,var(--pp-text) 10%,transparent)!important; font: 650 15px/1.25 system-ui,sans-serif;
+}
+.postispop .pp-account-strip button:hover:not(:disabled) { background: var(--pp-accent-soft)!important; border-color: var(--pp-accent)!important; }
+.postispop .pp-account-strip button:disabled { opacity: .55; }
+.postispop .top-controls .header-auth-actions,
+.postispop .top-controls .group-button,
+.postispop .pp-app-links .pp-share-board-link,
+.postispop .session-identity .session-logout { display: none!important; }
+.postispop .app-header .top-controls :is(.primary,.secondary,.icon-button) {
+  border-color: color-mix(in srgb,var(--pp-accent) 35%,var(--pp-border))!important;
+  background: var(--pp-surface)!important; color: var(--pp-accent)!important; box-shadow: none!important;
+}
+.postispop .app-header .top-controls .primary { background: var(--pp-accent)!important; color: var(--pp-surface)!important; }
+:root[data-color-scheme=dark] .postispop .pp-account-strip button,
+:root[data-color-scheme=dark] .postispop .app-header .top-controls :is(.primary,.secondary,.icon-button) {
+  border-color: var(--pp-accent)!important; background: var(--pp-accent-soft)!important; color: var(--pp-text)!important;
+}
+:root[data-color-scheme=dark] .postispop .app-header .top-controls .primary { background: var(--pp-accent-soft)!important; color: var(--pp-text)!important; }
+.postispop .app-header .top-controls .icon-button:hover,
+:root[data-color-scheme=dark] .postispop .app-header .top-controls .icon-button:hover { background: var(--pp-accent-soft)!important; }
+
 /* The editor is the paper itself. No dark application chrome around the note. */
 .editor-dialog { width: min(760px, calc(100vw - 32px))!important; max-width: calc(100vw - 32px)!important; max-height: calc(100dvh - 32px)!important; overflow: auto; padding: 20px!important; border: 1px solid #3144311a; border-radius: 5px 5px 20px 5px!important; background: var(--editor-paper, #fff0ad)!important; color: #2d3933; box-shadow: 0 20px 70px #172b2326; }
 .editor-dialog::backdrop { background: #233b3259; backdrop-filter: blur(4px); }
@@ -156,5 +187,11 @@ button, summary, a { touch-action: manipulation; }
   .editor-dialog { width: calc(100vw - 12px)!important; max-width: calc(100vw - 12px)!important; max-height: calc(100dvh - 12px)!important; padding: 12px!important; }
   .editor-dialog textarea, .editor-dialog .rich-paper-mirror { min-height: 200px; font-size: 17px; }
   .site-legal-links { gap: 8px; }
+}
+
+@media (max-width: 520px) {
+  .postispop .app-header.pp-has-account-strip { margin-bottom: 52px; }
+  .postispop .app-header .pp-account-strip { gap: 7px; width: calc(100vw - 20px); }
+  .postispop .pp-account-strip button { flex: 1 1 0; min-height: 42px; padding: 8px 10px; gap: 6px; font-size: 13px; }
 }
 @media (prefers-reduced-motion: reduce) { .sticky-note { transition: none!important; } }

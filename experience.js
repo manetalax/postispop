@@ -5,9 +5,47 @@ import {initBoardTools, download, openShareDialog} from './board-tools.js?v=2026
 import {initBoardPreferences} from './board-preferences.js?v=20261008a';
 import {readBoardLanguage} from './seo-language.js';
 
+const ACCOUNT_LABELS={es:'Cuenta',en:'Account',de:'Konto',fr:'Compte',pt:'Conta',it:'Account',ja:'アカウント',ko:'계정'};
+
 
 const SEO_TITLE='Bloc de notas online gratis y pizarra | PostisPop';
 let lastSave=null, installPrompt=null, reactReady=false;
+function syncHeaderAccountActions(header) {
+  if (!header) return;
+  const sources = {
+    login: header.querySelector('.header-auth-login'),
+    signup: header.querySelector('.header-auth-signup'),
+    logout: document.querySelector('.workspace-caption .session-identity .session-logout')
+  };
+  let strip = header.querySelector('.pp-account-strip');
+  if (Object.values(sources).some(Boolean) && !strip) {
+    strip = document.createElement('nav');
+    strip.className = 'pp-account-strip';
+    strip.setAttribute('aria-label', ACCOUNT_LABELS[readBoardLanguage()]||ACCOUNT_LABELS.es);
+    header.append(strip);
+    header.classList.add('pp-has-account-strip');
+  }
+  if (!strip) return;
+  strip.setAttribute('aria-label', ACCOUNT_LABELS[readBoardLanguage()]||ACCOUNT_LABELS.es);
+  for (const [action, source] of Object.entries(sources)) {
+    let proxy = strip.querySelector(`[data-pp-auth-proxy="${action}"]`);
+    if (!source) { proxy?.remove(); continue; }
+    if (!proxy) {
+      proxy = source.cloneNode(true);
+      proxy.removeAttribute('id');
+      proxy.dataset.ppAuthProxy = action;
+      proxy.removeAttribute('title');
+      strip.append(proxy);
+    }
+    if (proxy.innerHTML !== source.innerHTML) proxy.innerHTML = source.innerHTML;
+    proxy.disabled = source.disabled;
+    for (const attribute of ['aria-label', 'aria-haspopup', 'aria-expanded']) {
+      const value = source.getAttribute(attribute);
+      if (value === null) proxy.removeAttribute(attribute); else proxy.setAttribute(attribute, value);
+    }
+  }
+  if (!strip.children.length) { strip.remove(); header.classList.remove('pp-has-account-strip'); }
+}
 const notice=(message)=>{
   let node=document.querySelector('.pp-onboarding-tip');
   if(!node){node=document.createElement('p');node.className='pp-onboarding-tip';node.setAttribute('role','status');document.querySelector('.workspace-caption')?.after(node);}
@@ -32,10 +70,9 @@ function update() {
     header.append(button);
     const nav = document.createElement('nav'); nav.className = 'pp-app-links'; nav.setAttribute('aria-label', 'Aplicación');
     for (const [label,href] of [['Premium','/atelier.html'],['Descargas','/descargas/'],['Ayuda','/ayuda.html']]) { const link=document.createElement('a'); link.textContent=label;link.href=href;nav.append(link); }
-    const shareLabels={es:'Compartir pizarra',en:'Share board',de:'Pinnwand teilen',fr:'Partager le tableau',pt:'Partilhar quadro',it:'Condividi bacheca',ja:'ボードを共有',ko:'보드 공유'};
-    const shareButton=document.createElement('button');shareButton.className='pp-share-board-link';shareButton.type='button';shareButton.textContent=shareLabels[readBoardLanguage()]||shareLabels.es;shareButton.setAttribute('aria-label',shareButton.textContent);nav.prepend(shareButton);
     header.append(nav);
   }
+  syncHeaderAccountActions(header);
   // The mobile layout hides the text inside this icon button.
   document.querySelectorAll('.header-share').forEach(button=>{
     if(!button.getAttribute('aria-label'))button.setAttribute('aria-label',button.textContent.trim()||'Compartir');
@@ -68,6 +105,15 @@ window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();ins
 window.addEventListener('appinstalled',()=>{installPrompt=null;document.querySelector('[data-experience="install"]')?.setAttribute('hidden','');});
 document.addEventListener('change',event=>{if(event.target.matches('[data-experience-analytics]')){setMetricsEnabled(event.target.checked);recordVisit();}});
 document.addEventListener('click',async event=>{
+  const authProxy=event.target.closest('[data-pp-auth-proxy]');
+  if(authProxy){
+    event.preventDefault();event.stopPropagation();
+    const source=authProxy.dataset.ppAuthProxy==='logout'
+      ? document.querySelector('.workspace-caption .session-identity .session-logout')
+      : document.querySelector(`.header-auth-${authProxy.dataset.ppAuthProxy}`);
+    if(source&&!source.disabled)source.click();
+    return;
+  }
   const button=event.target.closest('[data-experience]');if(!button)return;
   const action=button.dataset.experience;
   if(action==='signup')document.querySelector('.header-auth-signup')?.click();
