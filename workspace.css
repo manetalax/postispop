@@ -200,6 +200,7 @@ button, summary, a { touch-action: manipulation; }
   .postispop .pp-account-strip button { flex: 1 1 0; min-height: 42px; padding: 8px 10px; gap: 6px; font-size: 13px; }
 }
 @media (max-width: 360px) {
+  .workspace-caption { display: none; }
   .postispop .board-frame { --pp-note-size: max(125px,min(calc((100vw - 34px)/2),calc((100vh - 330px)/3))); padding-top: 0; }
   .pp-tools.pp-note-search { margin-top: 0; margin-bottom: 2px; }
 }
