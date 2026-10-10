@@ -1,0 +1,98 @@
+name: Signed Android release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  signed-apk:
+    name: Build and verify signed APK
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6.0.3
+
+      - uses: actions/setup-node@v6.5.0
+        with:
+          node-version: 22
+
+      - name: Install project dependencies
+        run: npm ci --no-audit --no-fund
+
+      - uses: actions/setup-java@v5.7.0
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v4.0.4
+        with:
+          cmdline-tools-version: '12266719'
+          packages: platform-tools
+
+      - uses: gradle/actions/setup-gradle@v5.0.2
+        with:
+          gradle-version: '8.13'
+
+      - name: Install Android SDK packages
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+
+      - name: Validate signing configuration and write temporary keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.POSTISPOP_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.POSTISPOP_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.POSTISPOP_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.POSTISPOP_KEY_ALIAS }}
+          EXPECTED_CERT_SHA256: ${{ secrets.POSTISPOP_CERT_SHA256 }}
+        run: |
+          python3 - <<'PY'
+          import base64
+          import os
+          from pathlib import Path
+
+          required = {
+              "KEYSTORE_BASE64": os.environ.get("KEYSTORE_BASE64", ""),
+              "STORE_PASSWORD": os.environ.get("STORE_PASSWORD", ""),
+              "KEY_PASSWORD": os.environ.get("KEY_PASSWORD", ""),
+              "KEY_ALIAS": os.environ.get("KEY_ALIAS", ""),
+              "EXPECTED_CERT_SHA256": os.environ.get("EXPECTED_CERT_SHA256", ""),
+          }
+          missing = [name for name, value in required.items() if not value]
+          if missing:
+              raise SystemExit("Missing required GitHub Actions secrets: " + ", ".join(missing))
+
+          try:
+              data = base64.b64decode(required["KEYSTORE_BASE64"], validate=True)
+          except Exception as exc:
+              raise SystemExit("POSTISPOP_KEYSTORE_BASE64 is not valid base64") from exc
+          if not data:
+              raise SystemExit("The signing keystore secret decoded to an empty file")
+
+          keystore = Path(os.environ["RUNNER_TEMP"]) / "postispop-release.keystore"
+          keystore.write_bytes(data)
+          keystore.chmod(0o600)
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env_file:
+              env_file.write(f"POSTISPOP_KEYSTORE={keystore}\n")
+          PY
+
+      - name: Build and verify signed installer
+        env:
+          POSTISPOP_STORE_PASSWORD: ${{ secrets.POSTISPOP_STORE_PASSWORD }}
+          POSTISPOP_KEY_PASSWORD: ${{ secrets.POSTISPOP_KEY_PASSWORD }}
+          POSTISPOP_KEY_ALIAS: ${{ secrets.POSTISPOP_KEY_ALIAS }}
+          POSTISPOP_CERT_SHA256: ${{ secrets.POSTISPOP_CERT_SHA256 }}
+        run: node mobile/build-release.mjs
+
+      - name: Upload signed APK and verification record
+        uses: actions/upload-artifact@v6.0.0
+        with:
+          name: PostisPop-Android-signed-${{ github.run_number }}
+          path: |
+            android/app/build/verified/PostisPop-0.6.2-release-signed.apk
+            android/app/build/verified/verification.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Remove temporary signing keystore
+        if: always()
+        run: rm -f "$RUNNER_TEMP/postispop-release.keystore"
