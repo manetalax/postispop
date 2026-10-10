@@ -81,7 +81,7 @@ if(!html.includes('/wpo-features.js'))html=html.replace('</body>','<script type=
 html=html.replace('</head>','<link rel="stylesheet" href="/workspace.css?v=20261009b"></head>');
 html=html.replace(/href=(["'])\.\/note-attachments\.css(?:\?[^"']*)?\1/g,'href="/note-attachments.css?v=20261009b"').replace(/src=(["'])\.\/note-attachments\.js(?:\?[^"']*)?\1/g,'src="/note-attachments.js?v=20261009c"');
   html=html.replace(/src=(["'])\/experience\.js(?:\?[^"']*)?\1/g,'src="/experience.js?v=20261009e"').replace(/src=(["'])\/protected-notes\.js(?:\?[^"']*)?\1/g,'src="/protected-notes.js?v=20261008a"');
-if(file.href===new URL('index.html',out).href&&!html.includes('/brand-highlights.js'))html=html.replace('</body>','<script type="module" src="/brand-highlights.js?v=20261009b"></script></body>');
+if(file.href===new URL('index.html',out).href&&!html.includes('/brand-highlights.js'))html=html.replace('</body>','<script type="module" src="/brand-highlights.js?v=20261010-three-banners"></script></body>');
 if(file.href===new URL('index.html',out).href){
  html=html.replace(/<link\b[^>]*rel=["']preload["'][^>]*>/gi,tag=>/board-scene|cork-board|pen-/.test(tag)?'':tag);
  html=html.replace(/<link\b[^>]*rel=["']stylesheet["'][^>]*>/gi,tag=>{
