@@ -230,3 +230,14 @@ button, summary, a { touch-action: manipulation; }
 
 .pp-private-notice { margin:0 0 12px; padding:14px 18px; border:1px solid var(--pp-border); border-radius:12px; background:var(--pp-accent-soft); color:var(--pp-text); font-size:15px; line-height:1.6; text-align:center; }
 .pp-header-instructions details p { font-size:15px; line-height:1.7; margin:16px 0; }
+
+.postispop .app-header { grid-template-columns:minmax(0,312px) minmax(0,1fr) 44px; height:148px!important; min-height:148px!important; }
+.postispop .app-header .brand { width:312px; height:148px; }
+.postispop .brand-logo { width:312px!important; height:148px!important; }
+.pp-seventh-note-callout { margin:14px auto; text-align:center; }
+.pp-seventh-note-button { min-height:48px; padding:12px 22px; border:1px solid var(--pp-accent); border-radius:12px; background:var(--pp-accent); color:var(--pp-surface); font:600 16px/1.4 system-ui; cursor:pointer; }
+@media(max-width:700px){
+ .postispop .app-header { grid-template-columns:minmax(0,1fr) 44px; min-height:124px!important; height:auto!important; }
+ .postispop .app-header .brand { width:252px; height:124px; }
+ .postispop .brand-logo { width:252px!important; height:124px!important; }
+}
