@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 13635)
+Total output lines: 509
+
 /* PostisPop visual system: calm workspace, readable notes, compact controls.
    Note size and page capacity remain measured by board-layout.js. */
 :root {
@@ -227,78 +230,7 @@ button, summary, a { touch-action: manipulation; }
 .pp-header-instructions summary { text-align:center; color:var(--pp-accent); font-weight:650; cursor:pointer; }
 @media(max-width:700px){
  .postispop .app-header { grid-template-columns:minmax(0,1fr) 44px; height:auto!important; min-height:248px!important; }
- .postispop .app-header .brand { width:504px; height:248px; grid-column:1/-1; }
- .postispop .brand-logo { width:504px!important; height:248px!important; }
- .postispop .app-header .header-title { grid-column:1; grid-row:2; }
- .postispop .app-header .pp-menu-toggle { grid-column:2; grid-row:2; }
-}
-
-.pp-private-notice { margin:0 0 12px; padding:14px 18px; border:1px solid var(--pp-border); border-radius:12px; background:var(--pp-accent-soft); color:var(--pp-text); font-size:15px; line-height:1.6; text-align:center; }
-.pp-header-instructions details p { font-size:15px; line-height:1.7; margin:16px 0; }
-
-.postispop .app-header { grid-template-columns:minmax(0,312px) minmax(0,1fr) 44px; height:148px!important; min-height:148px!important; }
-.postispop .app-header .brand { width:312px; height:148px; }
-.postispop .brand-logo { width:312px!important; height:148px!important; }
-.pp-seventh-note-callout { margin:14px auto; text-align:center; }
-.pp-seventh-note-button { min-height:48px; padding:12px 22px; border:1px solid var(--pp-accent); border-radius:12px; background:var(--pp-accent); color:var(--pp-surface); font:600 16px/1.4 system-ui; cursor:pointer; }
-@media(max-width:700px){
- .postispop .app-header { grid-template-columns:minmax(0,1fr) 44px; min-height:124px!important; height:auto!important; }
- .postispop .app-header .brand { width:252px; height:124px; }
- .postispop .brand-logo { width:252px!important; height:124px!important; }
-}
-
-.pp-note-date { display:block; font:10px/1.3 system-ui,sans-serif; font-weight:400; color:inherit; opacity:.65; pointer-events:none; }
-.sticky-note > .pp-note-date { position:absolute; bottom:9px; left:10px; right:32px; text-align:left; }
-.editor-dialog > .pp-note-date { margin:8px 14px; text-align:right; font-size:11px; }
-.pp-sort-notes { max-width:220px; }
-
-/* Note-card controls: quiet on the paper, spacious enough to tap on phones. */
-.postispop .board-frame .sticky-note { padding:40px 20px 30px!important; container-type:inline-size; }
-.pp-note-preference { width:28px; height:28px; min-width:28px; font-size:20px; }
-.pp-note-color { top:4px; left:5px; right:auto; }
-.pp-note-color-dot { display:block; width:13px; height:13px; border-radius:50%; background:var(--pp-contrast-paper); border:2px solid color-mix(in srgb,var(--pp-text) 70%,transparent); box-shadow:0 0 0 1px var(--pp-surface); }
-.pp-note-favorite { top:4px; right:5px; }
-.pp-note-pin { top:4px; left:50%; }
-.pp-note-pin[aria-pressed="true"] { top:-13px; }
-.pp-note-symbol { right:5px; bottom:4px; left:auto; top:auto; font-size:21px; }
-.pp-note-symbol svg,.pp-note-symbol-option svg { display:block; width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
-.pp-note-symbol[data-selected="true"] { transform:rotate(-8deg); }
-.pp-note-symbol[data-selected="true"] { right:5px; bottom:12px; }
-.pp-note-symbol[data-selected="true"] svg { width:22px; height:22px; }
-.sticky-note .note-doodle { display:none!important; }
-.pp-note-picker { position:absolute; z-index:12; display:grid; grid-template-columns:repeat(3,32px); gap:4px; padding:7px; border:1px solid var(--pp-border); border-radius:12px; background:var(--pp-surface); color:var(--pp-text); box-shadow:var(--pp-menu-shadow); pointer-events:auto; }
-.pp-note-picker[hidden] { display:none!important; }
-.pp-note-color-picker { top:35px; left:4px; }
-.pp-note-symbol-picker { right:4px; bottom:57px; }
-.pp-note-color-option,.pp-note-symbol-option { display:grid; place-items:center; width:32px; height:32px; min-width:32px; padding:0; border:1px solid var(--pp-border); border-radius:8px; background:var(--pp-surface); color:var(--pp-text); cursor:pointer; }
-.pp-note-color-option::before { content:""; width:18px; height:18px; border-radius:50%; border:1px solid color-mix(in srgb,var(--pp-text) 18%,transparent); background:var(--pp-option-paper); }
-.pp-note-color-option[aria-pressed="true"],.pp-note-symbol-option[aria-pressed="true"] { outline:2px solid var(--pp-focus); outline-offset:1px; }
-.pp-note-symbol-option { font:20px/1 system-ui,sans-serif; }
-.pp-note-save-error { position:absolute; z-index:13; left:50%; bottom:8px; width:max-content; max-width:90%; transform:translateX(-50%); padding:4px 7px; border-radius:6px; background:var(--pp-surface); color:var(--pp-text); box-shadow:var(--pp-menu-shadow); font:10px/1.3 system-ui,sans-serif; }
-.postispop .note-number { position:absolute!important; top:auto!important; left:10px!important; right:auto!important; bottom:8px!important; z-index:2; font-size:10px!important; opacity:.72; }
-.sticky-note > .pp-note-date { left:22px; right:40px; bottom:8px; width:auto; max-width:none; text-align:left; font-size:clamp(9px,5cqi,14px); line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-@media(max-width:700px) {
-  .postispop .board-frame .sticky-note { padding:38px 12px 30px!important; }
-  .pp-note-preference { width:28px; height:28px; min-width:28px; }
-  .postispop .note-number { top:auto!important; left:8px!important; bottom:8px!important; }
-  .pp-note-symbol { right:5px; bottom:4px; }
-  .sticky-note > .pp-note-date { left:19px; right:38px; bottom:8px; width:auto; max-width:none; font-size:clamp(9px,5cqi,14px); line-height:1.3; }
-  .pp-note-symbol[data-selected="true"] { right:5px; bottom:12px; }
-  .pp-note-color-picker { top:33px; left:3px; }
-  .pp-note-symbol-picker { right:3px; bottom:54px; }
-}
-
-/* Shared brand dimensions across the board, pricing, legal and owner pages. */
-:root { --pp-brand-width:312px; --pp-brand-height:148px; }
-.postispop .app-header .brand,
-.pricing-header .brand,
-.legal-header .legal-brand,
-.pp-owner-brand { width:var(--pp-brand-width); height:var(--pp-brand-height); max-width:100%; flex-shrink:0; display:inline-flex; align-items:center; padding:0; }
-.postispop .brand-logo,
-.pricing-header .brand img,
-.legal-header .legal-brand img,
-.pp-owner-brand img { display:block; width:var(--pp-brand-width)!important; height:var(--pp-brand-height)!important; max-width:100%; object-fit:contain; content:url('/assets/postispop-smiling-logo.svg'); }
-:root[data-color-scheme=dark] .brand-logo,
+ .postispop .app-heade…1635 tokens truncated…dark] .brand-logo,
 :root[data-color-scheme=dark] .pricing-header .brand img,
 :root[data-color-scheme=dark] .legal-brand img,
 :root[data-color-scheme=dark] .pp-owner-brand img { content:url('/assets/postispop-smiling-logo.svg'); }
