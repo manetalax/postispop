@@ -162,11 +162,31 @@ function resizePapers({ frame, count, size }) {
   for (const [name, value] of Object.entries(styles)) if (frame.style.getPropertyValue(name) !== String(value)) frame.style.setProperty(name, value);
   frame.classList.toggle('pp-empty-results', count === 0);
 }
+
+const trialCalloutCopy={"es":["Añadir una séptima nota","Más espacio para tus ideas","Regístrate gratis para empezar con 12 notas y probar Premium durante 30 días. Después, las notas 1–6 siguen gratis. Para usar las demás necesitas Premium; se bloquean 30 días antes de borrarse.","Registrarme y probar gratis","Cerrar"],"en":["Add a seventh note","More room for your ideas","Sign up free to start with 12 notes and try Premium for 30 days. Afterwards, notes 1–6 stay free. The others require Premium; they are locked for 30 days before deletion.","Sign up and try free","Close"],"de":["Eine siebte Notiz hinzufügen","Mehr Platz für deine Ideen","Registriere dich kostenlos und starte mit 12 Notizen und 30 Tagen Premium-Test. Danach bleiben Notizen 1–6 kostenlos. Die anderen erfordern Premium und werden 30 Tage vor der Löschung gesperrt.","Kostenlos registrieren und testen","Schließen"],"fr":["Ajouter une septième note","Plus de place pour vos idées","Inscrivez-vous gratuitement pour commencer avec 12 notes et essayer Premium pendant 30 jours. Ensuite, les notes 1–6 restent gratuites. Les autres nécessitent Premium et sont bloquées 30 jours avant suppression.","M’inscrire et essayer gratuitement","Fermer"],"pt":["Adicionar uma sétima nota","Mais espaço para as suas ideias","Registe-se grátis para começar com 12 notas e experimentar Premium durante 30 dias. Depois, as notas 1–6 continuam grátis. As restantes precisam de Premium e ficam bloqueadas 30 dias antes de serem apagadas.","Registar-me e experimentar grátis","Fechar"],"it":["Aggiungi una settima nota","Più spazio per le tue idee","Registrati gratis per iniziare con 12 note e provare Premium per 30 giorni. Poi le note 1–6 restano gratuite. Le altre richiedono Premium e vengono bloccate per 30 giorni prima dell’eliminazione.","Registrati e prova gratis","Chiudi"],"ja":["7番目のノートを追加","アイデアのためのスペースを増やす","無料登録すると12件のノートで始められ、Premiumを30日間試せます。その後も1〜6番は無料です。他のノートにはPremiumが必要で、30日間ロックされた後に削除されます。","登録して無料で試す","閉じる"],"ko":["일곱 번째 메모 추가","아이디어를 위한 더 넓은 공간","무료로 가입하면 메모 12개로 시작하고 Premium을 30일 동안 체험할 수 있습니다. 이후 1~6번은 무료입니다. 나머지는 Premium이 필요하며 30일 동안 잠긴 뒤 삭제됩니다.","가입하고 무료로 체험","닫기"]};
+function trialCallout(state){
+ const {frame,data,total,count}=state;
+ let host=frame.querySelector('.pp-seventh-note-callout');
+ if(data.dataset.boardId!=='guest-board'||total!==6||count!==6){host?.remove();return;}
+ if(!host){host=element('aside','pp-seventh-note-callout');const button=element('button','pp-seventh-note-button');button.type='button';button.onclick=()=>{
+  const t=trialCalloutCopy[readBoardLanguage()]||trialCalloutCopy.es;
+  const dialog=document.createElement('dialog');dialog.className='pp-feature-dialog';
+  const title=element('h2','',t[1]),body=element('p','',t[2]),signup=element('button','',t[3]),close=element('button','',t[4]);
+  signup.type=close.type='button';
+  signup.onclick=()=>{dialog.close();dialog.remove();document.querySelector('.header-auth-signup')?.click();};
+  close.onclick=()=>dialog.close();
+  dialog.append(title,body,signup,close);dialog.addEventListener('close',()=>dialog.remove());document.body.append(dialog);dialog.showModal();
+ };host.append(button);frame.querySelector('.board-grid')?.after(host);}
+ const t=trialCalloutCopy[readBoardLanguage()]||trialCalloutCopy.es,button=host.querySelector('button');
+ if(button.textContent!==t[0])button.textContent=t[0];
+}
+
 function update() {
   if (!document.querySelector('.pp-note-search')) return;
   const state = pageState();
   if (!state) return;
   const { frame, page, pages, count, size, total, data } = state;
+  trialCallout(state);
   frame.classList.add('pp-notes-first');
   const pager = installPager(frame), select = pager.querySelector('select');
   if (select.options.length !== pages) {
