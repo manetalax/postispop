@@ -281,3 +281,6 @@ button, summary, a { touch-action: manipulation; }
 .pp-welcome-guide-content{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;margin-top:16px}.pp-header-instructions .pp-welcome-guide-content p{font:13px/1.65 system-ui;margin:0}
 :root[data-color-scheme=dark] .pp-welcome-banner{background:#34493c;color:#edf1e5}:root[data-color-scheme=dark] .pp-welcome-privacy{color:#c8d3c2}:root[data-color-scheme=dark] .pp-welcome-guide{border-color:#ffffff25}:root[data-color-scheme=dark] .pp-welcome-premium{background:#ffe58e;color:#244438!important}:root[data-color-scheme=dark] .pp-welcome-close{background:#ffffff10;border-color:#ffffff30}
 @media(max-width:700px){.pp-welcome-banner{grid-template-columns:1fr;padding:24px 20px;gap:16px}.pp-welcome-copy{padding-top:18px}.pp-welcome-art{max-height:160px}.pp-welcome-guide-content{grid-template-columns:1fr}.pp-welcome-title{font-size:29px}.pp-welcome-bar{gap:8px;font-size:11px}.pp-welcome-illustration{max-width:320px;width:100%;justify-self:center}}
+
+.pp-welcome-bar .pp-welcome-reopen{min-height:40px;transition:background .15s,color .15s}.pp-welcome-bar .pp-welcome-reopen.is-active[aria-expanded=true]{background:var(--pp-accent);color:var(--pp-surface);border-color:var(--pp-accent)}
+@media(max-width:480px){.pp-welcome-bar{gap:6px}.pp-welcome-bar .pp-welcome-reopen{padding:8px 10px;font-size:11px}}
