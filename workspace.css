@@ -227,3 +227,6 @@ button, summary, a { touch-action: manipulation; }
  .postispop .app-header .header-title { grid-column:1; grid-row:2; }
  .postispop .app-header .pp-menu-toggle { grid-column:2; grid-row:2; }
 }
+
+.pp-private-notice { margin:0 0 12px; padding:14px 18px; border:1px solid var(--pp-border); border-radius:12px; background:var(--pp-accent-soft); color:var(--pp-text); font-size:15px; line-height:1.6; text-align:center; }
+.pp-header-instructions details p { font-size:15px; line-height:1.7; margin:16px 0; }
