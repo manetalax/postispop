@@ -275,7 +275,7 @@ function ring(alarm) {
     oscillator.stop(audio.currentTime + 1);
   }
   if ('Notification' in window && Notification.permission === 'granted') {
-    try { new Notification('PostisPop · Recordatorio', { body: alarm.label, tag: alarm.id, icon: '/favicon.svg' }); }
+    try { new Notification('PostisPop · Recordatorio', { body: alarm.label, tag: alarm.id, icon: '/favicon-smiling-note.svg' }); }
     catch { /* The in-app alert remains available if the browser blocks notifications. */ }
   }
 }

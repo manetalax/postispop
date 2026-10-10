@@ -100,7 +100,7 @@ function pageHead(path, catalog, title, description, styles, extraSchema = []) {
 <title>${escape(title)}</title><meta name="description" content="${escape(description)}">
 <meta name="robots" content="index,follow"><link rel="canonical" href="${url}">
 ${alternates(path)}
-<link rel="icon" href="/favicon.svg"><meta name="theme-color" content="#f7f8f5">
+<link rel="icon" href="/favicon-smiling-note.svg"><meta name="theme-color" content="#f7f8f5">
 <meta property="og:type" content="website"><meta property="og:locale" content="${catalog.ogLocale}">
 ${SEO_LANGUAGES.filter(locale=>locale!==catalog.locale).map(locale=>`<meta property="og:locale:alternate" content="${({es:'es_ES',en:'en_US',de:'de_DE',fr:'fr_FR',ja:'ja_JP',pt:'pt_BR',it:'it_IT',ko:'ko_KR'})[locale]}">`).join('\n')}
 <meta property="og:site_name" content="PostisPop"><meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:url" content="${url}">

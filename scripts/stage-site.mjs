@@ -89,7 +89,7 @@ if(!html.includes('/wpo-features.js'))html=html.replace('</body>','<script type=
 html=html.replace('</head>','<link rel="stylesheet" href="/workspace.css?v=20261010-responsible-support"></head>');
 if(!html.includes('/themes.js'))html=html.replace(/(<meta\b[^>]*charset[^>]*>)/i,'$1<script src="/themes.js?v=20261010-toolbar-icons"></script>');
 html=html.replace(/href=(["'])\.\/note-attachments\.css(?:\?[^"']*)?\1/g,'href="/note-attachments.css?v=20261009b"').replace(/src=(["'])\.\/note-attachments\.js(?:\?[^"']*)?\1/g,'src="/note-attachments.js?v=20261009c"');
-  html=html.replace(/src=(["'])\/experience\.js(?:\?[^"']*)?\1/g,'src="/experience.js?v=20261009e"').replace(/src=(["'])\/protected-notes\.js(?:\?[^"']*)?\1/g,'src="/protected-notes.js?v=20261008a"');
+  html=html.replace(/src=(["'])\/experience\.js(?:\?[^"']*)?\1/g,'src="/experience.js?v=20261010b"').replace(/src=(["'])\/protected-notes\.js(?:\?[^"']*)?\1/g,'src="/protected-notes.js?v=20261008a"');
 if(file.href===new URL('index.html',out).href&&!html.includes('/brand-highlights.js'))html=html.replace('</body>','<script type="module" src="/brand-highlights.js?v=20261010-responsible-support"></script></body>');
 html=html.replace(/src=(["'])\/?(themes|brand-highlights)\.js(?:\?[^"']*)?\1/g,(_,quote,name)=>'src="/'+refreshedScripts[name]+'"');
 if(file.href===new URL('index.html',out).href){
@@ -104,7 +104,7 @@ if(file.href===new URL('index.html',out).href){
  const workspaceLink='<link rel="stylesheet" href="/'+workspaceStyles+'" precedence="vite-rsc/importer-resources" data-rsc-css-href="/'+workspaceStyles+'">';
  html=html.replace(/(<meta\b[^>]*charset[^>]*>)/i,'$1<link rel="preload" as="style" href="/'+workspaceStyles+'">');
  html=html.replace('</head>',workspaceLink+'</head>');
- html=html.replace('</head>','<link rel="modulepreload" href="/board-tools.js?v=20261008a"><link rel="modulepreload" href="/board-layout.js?v=20261008a"><link rel="modulepreload" href="/board-preferences.js?v=20261008a"><link rel="modulepreload" href="/ui-ready.js"></head>');
+ html=html.replace('</head>','<link rel="modulepreload" href="/board-tools.js?v=20261009a"><link rel="modulepreload" href="/board-layout.js?v=20261008a"><link rel="modulepreload" href="/board-preferences.js?v=20261010b"><link rel="modulepreload" href="/ui-ready.js"></head>');
 }
 html=html.replace(/<meta name="theme-color" content="[^"]*"\s*\/?\s*>/g,'<meta name="theme-color" content="'+themeColor+'">');await writeFile(file,html);}
 console.log('Staged WPO/PWA, public search and accessible tools. Captured API data excluded.');

@@ -210,7 +210,7 @@ for (const [
   <meta name="description" content="${escapeHtml(description)}">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="${url}">
-  <link rel="icon" href="/favicon.svg">
+  <link rel="icon" href="/favicon-smiling-note.svg">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
   <meta name="theme-color" content="#f7f8f5">

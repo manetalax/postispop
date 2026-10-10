@@ -1,5 +1,5 @@
 /** Paging is zero based; every note belongs to exactly one page. */
-import { readBoardPreferences } from './board-preferences.js?v=20261008a';
+import { readBoardPreferences } from './board-preferences.js?v=20261010b';
 export const mobileBoardQuery = '(max-width:700px), (max-width:1000px) and (max-height:500px) and (orientation:landscape)';
 export function boardPageSize(count, compact = typeof matchMedia === 'function' && matchMedia(mobileBoardQuery).matches) {
   return compact || count <= 6 ? 6 : 12;

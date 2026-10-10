@@ -76,11 +76,16 @@ button, summary, a { touch-action: manipulation; }
 .pp-note-search input::placeholder { color: var(--pp-muted); opacity: 1; }
 .pp-note-search > .pp-favorites-filter { width: 44px; min-width: 44px; min-height: 42px; padding: 0; border: 1px solid var(--pp-border); border-radius: var(--pp-radius); background: var(--pp-surface); color: var(--pp-text); font: 24px/1 system-ui; cursor: pointer; }
 .pp-note-search > .pp-favorites-filter[aria-pressed="true"] { background: var(--pp-accent-soft); color: var(--pp-accent-strong,var(--pp-text)); border-color: var(--pp-accent); }
-.pp-note-preferences { position: absolute; z-index: 9; top: 5px; right: 5px; display: flex; gap: 3px; padding: 3px; border: 1px solid #233c3218; border-radius: 999px; background: color-mix(in srgb,var(--pp-surface) 88%,transparent); box-shadow: 0 2px 7px #152a201a; }
-.pp-note-preference { display: grid; place-items: center; width: 30px; height: 30px; min-width: 30px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--pp-text); font: 17px/1 system-ui; cursor: pointer; }
-.pp-note-preference:hover,.pp-note-preference:focus-visible { background: var(--pp-accent-soft); outline: 2px solid var(--pp-focus); outline-offset: 1px; }
-.pp-note-favorite[aria-pressed="true"] { color: #b27a00; }
-.pp-note-pin[aria-pressed="true"] { background: var(--pp-accent-soft); }
+.pp-note-preferences { position: absolute; z-index: 9; inset: 0; pointer-events: none; }
+.pp-note-preference { position: absolute; display: grid; place-items: center; width: 30px; height: 30px; min-width: 30px; padding: 0; border: 0; border-radius: 4px; background: transparent; color: var(--pp-text); font: 21px/1 system-ui; cursor: pointer; pointer-events: auto; }
+.pp-note-preference:hover { opacity: .78; }
+.pp-note-preference:focus-visible { outline: 2px solid var(--pp-focus); outline-offset: 2px; }
+.pp-note-favorite { top: 4px; right: 5px; }
+.pp-note-favorite[aria-pressed="true"] { color: #d39a08; filter: drop-shadow(0 1px 1px #76540055); }
+.pp-note-pin { top: 4px; left: 50%; transform: translateX(-50%); }
+.pp-note-pin svg { display: block; overflow: visible; }
+.pp-note-pin[aria-pressed="true"] { top: -13px; width: 34px; height: 48px; transform: translateX(-50%) rotate(32deg); transform-origin: 50% 48%; filter: drop-shadow(1px 2px 1px #26312644); }
+.postispop .board-frame .sticky-note > .pin-sprite { display: none!important; }
 .pp-note-search > select { width: 44px; min-width: 44px; max-width: 44px; min-height: 42px; padding: 0 8px; border: 1px solid var(--pp-border); border-radius: var(--pp-radius); background-color: var(--pp-surface); color: var(--pp-text); font-size: 0; appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23315c50' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a9 9 0 1 0 0 18h1.4a2 2 0 0 0 1.4-3.4 1.2 1.2 0 0 1 .9-2.1H17a4 4 0 0 0 4-4C21 6.8 17 3 12 3Z'/%3E%3Ccircle cx='7.5' cy='10' r='.7'/%3E%3Ccircle cx='11' cy='7' r='.7'/%3E%3Ccircle cx='15.5' cy='8' r='.7'/%3E%3Ccircle cx='7.5' cy='15' r='.7'/%3E%3C/svg%3E"); background-position: center; background-size: 22px; background-repeat: no-repeat; }
 :root[data-color-scheme=dark] .pp-note-search > select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c0d8c8' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a9 9 0 1 0 0 18h1.4a2 2 0 0 0 1.4-3.4 1.2 1.2 0 0 1 .9-2.1H17a4 4 0 0 0 4-4C21 6.8 17 3 12 3Z'/%3E%3Ccircle cx='7.5' cy='10' r='.7'/%3E%3Ccircle cx='11' cy='7' r='.7'/%3E%3Ccircle cx='15.5' cy='8' r='.7'/%3E%3Ccircle cx='7.5' cy='15' r='.7'/%3E%3C/svg%3E"); }
 .pp-note-search > select option { font-size: 14px; }
@@ -247,6 +252,42 @@ button, summary, a { touch-action: manipulation; }
 .editor-dialog > .pp-note-date { margin:8px 14px; text-align:right; font-size:11px; }
 .pp-sort-notes { max-width:220px; }
 
+/* Note-card controls: quiet on the paper, spacious enough to tap on phones. */
+.postispop .board-frame .sticky-note { padding:40px 20px 30px!important; container-type:inline-size; }
+.pp-note-preference { width:28px; height:28px; min-width:28px; font-size:20px; }
+.pp-note-color { top:4px; left:5px; right:auto; }
+.pp-note-color-dot { display:block; width:13px; height:13px; border-radius:50%; background:var(--pp-contrast-paper); border:2px solid color-mix(in srgb,var(--pp-text) 70%,transparent); box-shadow:0 0 0 1px var(--pp-surface); }
+.pp-note-favorite { top:4px; right:5px; }
+.pp-note-pin { top:4px; left:50%; }
+.pp-note-pin[aria-pressed="true"] { top:-13px; }
+.pp-note-symbol { right:5px; bottom:4px; left:auto; top:auto; font-size:21px; }
+.pp-note-symbol svg,.pp-note-symbol-option svg { display:block; width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.pp-note-symbol[data-selected="true"] { transform:rotate(-8deg); }
+.pp-note-symbol[data-selected="true"] { right:5px; bottom:12px; }
+.pp-note-symbol[data-selected="true"] svg { width:22px; height:22px; }
+.sticky-note .note-doodle { display:none!important; }
+.pp-note-picker { position:absolute; z-index:12; display:grid; grid-template-columns:repeat(3,32px); gap:4px; padding:7px; border:1px solid var(--pp-border); border-radius:12px; background:var(--pp-surface); color:var(--pp-text); box-shadow:var(--pp-menu-shadow); pointer-events:auto; }
+.pp-note-picker[hidden] { display:none!important; }
+.pp-note-color-picker { top:35px; left:4px; }
+.pp-note-symbol-picker { right:4px; bottom:57px; }
+.pp-note-color-option,.pp-note-symbol-option { display:grid; place-items:center; width:32px; height:32px; min-width:32px; padding:0; border:1px solid var(--pp-border); border-radius:8px; background:var(--pp-surface); color:var(--pp-text); cursor:pointer; }
+.pp-note-color-option::before { content:""; width:18px; height:18px; border-radius:50%; border:1px solid color-mix(in srgb,var(--pp-text) 18%,transparent); background:var(--pp-option-paper); }
+.pp-note-color-option[aria-pressed="true"],.pp-note-symbol-option[aria-pressed="true"] { outline:2px solid var(--pp-focus); outline-offset:1px; }
+.pp-note-symbol-option { font:20px/1 system-ui,sans-serif; }
+.pp-note-save-error { position:absolute; z-index:13; left:50%; bottom:8px; width:max-content; max-width:90%; transform:translateX(-50%); padding:4px 7px; border-radius:6px; background:var(--pp-surface); color:var(--pp-text); box-shadow:var(--pp-menu-shadow); font:10px/1.3 system-ui,sans-serif; }
+.postispop .note-number { position:absolute!important; top:auto!important; left:10px!important; right:auto!important; bottom:8px!important; z-index:2; font-size:10px!important; opacity:.72; }
+.sticky-note > .pp-note-date { left:22px; right:40px; bottom:8px; width:auto; max-width:none; text-align:left; font-size:clamp(9px,5cqi,14px); line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+@media(max-width:700px) {
+  .postispop .board-frame .sticky-note { padding:38px 12px 30px!important; }
+  .pp-note-preference { width:28px; height:28px; min-width:28px; }
+  .postispop .note-number { top:auto!important; left:8px!important; bottom:8px!important; }
+  .pp-note-symbol { right:5px; bottom:4px; }
+  .sticky-note > .pp-note-date { left:19px; right:38px; bottom:8px; width:auto; max-width:none; font-size:clamp(9px,5cqi,14px); line-height:1.3; }
+  .pp-note-symbol[data-selected="true"] { right:5px; bottom:12px; }
+  .pp-note-color-picker { top:33px; left:3px; }
+  .pp-note-symbol-picker { right:3px; bottom:54px; }
+}
+
 /* Shared brand dimensions across the board, pricing, legal and owner pages. */
 :root { --pp-brand-width:312px; --pp-brand-height:148px; }
 .postispop .app-header .brand,
@@ -287,6 +328,77 @@ button, summary, a { touch-action: manipulation; }
 
 .pp-welcome-support{grid-column:1/-1;margin:0;padding:14px 0 0;border-top:1px solid #315d5025;font:12px/1.7 system-ui;color:#526355;overflow-wrap:anywhere}:root[data-color-scheme=dark] .pp-welcome-support{color:#c8d3c2;border-color:#ffffff25}
 
+/* Compact homepage masthead: brand, board switcher and menu share one aligned row. */
+.postispop .app-header {
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;
+  grid-template-rows:1fr!important;
+  align-items:center!important;
+  height:108px!important;min-height:108px!important;
+  gap:8px!important;margin:0 0 50px!important;
+}
+.postispop .app-header .brand {
+  position:static!important;grid-column:1!important;grid-row:1!important;
+  align-self:center!important;justify-self:start;width:min(260px,100%)!important;
+  max-width:100%!important;height:100px!important;
+}
+.postispop .app-header .pp-brand-lockup {
+  width:min(260px,100%)!important;height:100%!important;max-width:100%;
+}
+.postispop .app-header .header-title {
+  position:static!important;grid-column:2!important;grid-row:1!important;
+  justify-self:center!important;align-self:center!important;transform:none!important;
+  display:inline-flex!important;width:max-content!important;
+  max-width:min(30vw,220px)!important;min-height:40px!important;
+  margin:0!important;padding:4px 6px!important;
+  font-size:clamp(13px,1.4vw,16px)!important;
+}
+.postispop .app-header .pp-menu-toggle {
+  position:static!important;grid-column:3!important;grid-row:1!important;
+  justify-self:end!important;align-self:center!important;z-index:26;
+}
+.postispop .app-header.pp-has-account-strip {margin-bottom:50px!important}
+.postispop .app-header .pp-account-strip {top:calc(100% + 1px)!important;gap:7px!important}
+.postispop .pp-account-strip button {min-height:42px;padding:7px 13px;font-size:14px}
+.pp-header-instructions {margin:6px auto 10px!important}
+.pp-welcome-bar {gap:7px!important;margin:0 0 6px!important}
+.pp-welcome-bar .pp-welcome-reopen {min-height:40px}
+.postispop .workspace-caption {display:none!important;min-height:0!important;height:0!important;margin:0!important;padding:0!important}
+.postispop .pp-tools.pp-note-search {margin-top:0!important;margin-bottom:5px!important}
+.postispop .board-frame {--pp-note-size:max(160px,min(calc((100vw - 104px)/3),calc((100svh - 190px)/2)))!important}
+
+@media(max-width:700px) {
+  .postispop .app-header {height:100px!important;min-height:100px!important;gap:5px!important}
+  .postispop .app-header .brand {height:94px!important}
+  .postispop .app-header .pp-brand-lockup {gap:7px!important}
+  .postispop .app-header .header-title {max-width:29vw!important;padding:3px!important;font-size:13px!important}
+  .postispop .app-header.pp-has-account-strip {margin-bottom:50px!important}
+  .postispop .app-header.pp-has-account-strip.pp-menu-open {margin-bottom:54px!important}
+  .postispop .app-header .pp-account-strip {width:calc(100vw - 20px)!important;gap:7px!important}
+  .postispop .pp-account-strip button {min-height:42px;padding:7px 10px;font-size:13px}
+  .pp-header-instructions {margin-top:5px!important;margin-bottom:8px!important}
+  .pp-welcome-bar {gap:6px!important;margin-bottom:5px!important}
+  .postispop .board-frame {--pp-note-size:max(125px,min(calc((100vw - 34px)/2),calc((100svh - 280px)/3)))!important}
+}
+@media(max-width:420px) {
+  .postispop .app-header {grid-template-columns:minmax(0,1fr) 44px!important;grid-template-rows:68px 30px!important;height:104px!important;min-height:104px!important;row-gap:0!important}
+  .postispop .app-header .brand {grid-column:1!important;grid-row:1!important;width:min(210px,100%)!important;height:68px!important}
+  .postispop .app-header .pp-brand-lockup {width:min(210px,100%)!important;height:68px!important;gap:6px!important}
+  .postispop .app-header .pp-brand-lockup img {width:52px!important;height:64px!important;max-width:52px!important;flex-basis:52px!important}
+  .postispop .app-header .pp-brand-name {font-size:22px!important}
+  .postispop .app-header .pp-brand-tagline {font-size:6px!important;max-width:145px}
+  .postispop .app-header .header-title {grid-column:1/-1!important;grid-row:2!important;max-width:100%!important;min-height:30px!important;font-size:12px!important}
+  .postispop .app-header .pp-menu-toggle {grid-column:2!important;grid-row:1!important;align-self:center!important}
+  .postispop .pp-account-strip button {flex:0 1 280px!important}
+  .pp-welcome-bar {gap:3px!important}
+  .pp-welcome-bar .pp-welcome-reopen {padding:7px 4px!important;font-size:10px!important}
+  .postispop .pp-tools.pp-note-search {gap:4px!important}
+  .postispop .pp-note-search > :is(.pp-favorites-filter,select),
+  .postispop .pp-note-search .pp-board-options > summary {width:40px!important;min-width:40px!important;max-width:40px!important}
+}
+
+/* Match the note number's ink to the readable “Escribe aquí” placeholder. */
+.postispop .board-frame .note-number {color:#59624b!important;opacity:1!important}
+
 /* Anchor the main menu beside the brand, with its own space above account actions. */
 .postispop .app-header .pp-menu-toggle{position:absolute;top:10px;right:0;grid-column:auto;grid-row:auto;z-index:26;align-self:start}
 .postispop .app-header .brand{align-self:start}
@@ -299,7 +411,11 @@ button, summary, a { touch-action: manipulation; }
  .postispop .app-header .header-title{grid-column:1;grid-row:2;justify-self:start}
  .postispop .app-header .pp-menu-toggle{top:10px;right:0;grid-row:auto;grid-column:auto}
  .postispop .app-header.pp-has-account-strip.pp-menu-open{margin-bottom:54px}
+.postispop .app-header .header-title{position:relative;display:inline-flex!important;left:auto;top:auto;transform:none;grid-column:1/-1;grid-row:2;justify-self:center;max-width:100%}
 }
+
+/* Center the board switcher against the full viewport, not the free grid column. */
+@media(min-width:701px){.postispop .app-header .header-title{position:absolute;display:inline-flex!important;left:50%;top:50%;transform:translate(-50%,-50%);width:max-content;max-width:min(500px,calc(100% - 224px));}}
 
 /* Ten interface palettes. Explicit text/background pairs avoid unreadable mixed themes. */
 :root[data-pp-theme] body,:root[data-pp-theme] .postispop{color:var(--pp-text)!important;background:var(--pp-bg)!important}

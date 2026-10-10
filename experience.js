@@ -2,7 +2,7 @@ import {whenReactReady} from './ui-ready.js';
 import './board-layout.js?v=20261008a';
 import {track, metricsEnabled, setMetricsEnabled, readMetrics, recordVisit} from './usage-metrics.js';
 import {initBoardTools, download, openShareDialog} from './board-tools.js?v=20261009a';
-import {initBoardPreferences} from './board-preferences.js?v=20261008a';
+import {initBoardPreferences} from './board-preferences.js?v=20261010b';
 import {readBoardLanguage} from './seo-language.js';
 
 const ACCOUNT_LABELS={es:'Cuenta',en:'Account',de:'Konto',fr:'Compte',pt:'Conta',it:'Account',ja:'アカウント',ko:'계정'};
