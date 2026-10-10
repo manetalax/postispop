@@ -385,7 +385,7 @@ button, summary, a { touch-action: manipulation; }
   .postispop .app-header .pp-brand-lockup {width:min(210px,100%)!important;height:68px!important;gap:6px!important}
   .postispop .app-header .pp-brand-lockup img {width:52px!important;height:64px!important;max-width:52px!important;flex-basis:52px!important}
   .postispop .app-header .pp-brand-name {font-size:22px!important}
-  .postispop .app-header .pp-brand-tagline {font-size:6px!important;max-width:145px}
+  .postispop .app-header .pp-brand-tagline {font-size:10px!important;max-width:145px}
   .postispop .app-header .header-title {grid-column:1/-1!important;grid-row:2!important;max-width:100%!important;min-height:30px!important;font-size:12px!important}
   .postispop .app-header .pp-menu-toggle {grid-column:2!important;grid-row:1!important;align-self:center!important}
   .postispop .pp-account-strip button {flex:0 1 280px!important}
@@ -500,7 +500,7 @@ html .pp-brand-lockup img {width:80px!important;height:96px!important;max-width:
 .pp-brand-words {display:flex;flex-direction:column;gap:7px;min-width:0;text-align:left}
 .pp-brand-name {font:800 31px/1.1 system-ui,sans-serif;letter-spacing:-1px;color:var(--pp-text);white-space:nowrap}
 .pp-brand-is {color:var(--pp-accent)}
-.pp-brand-tagline {display:flex;align-items:flex-end;gap:5px;font:500 8px/1.65 system-ui,sans-serif;color:var(--pp-text);max-width:210px}
-.pp-brand-functions {display:block}
+.pp-brand-tagline {display:flex;align-items:flex-end;gap:5px;font:500 11px/1.4 system-ui,sans-serif;color:var(--pp-text);max-width:210px}
+.pp-brand-functions {display:block;min-width:0;line-height:1.4;white-space:normal}
 .pp-brand-tagline svg {width:14px;height:14px;flex:0 0 14px;fill:none;stroke:var(--pp-accent);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-bottom:2px}
-@media(max-width:700px){html .pp-brand-lockup{gap:9px}html .pp-brand-lockup img{width:65px!important;height:82px!important;max-width:65px!important;flex-basis:65px}.pp-brand-name{font-size:28px}.pp-brand-tagline{font-size:7px;max-width:175px}}
+@media(max-width:700px){html .pp-brand-lockup{gap:9px}html .pp-brand-lockup img{width:65px!important;height:82px!important;max-width:65px!important;flex-basis:65px}.pp-brand-name{font-size:28px}.pp-brand-tagline{font-size:10px;max-width:175px}}
