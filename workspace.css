@@ -339,3 +339,13 @@ button, summary, a { touch-action: manipulation; }
 .pp-global-theme-control[open]{border:1px solid var(--pp-border);border-radius:14px;padding:10px}
 .pp-global-theme-control .pp-theme-picker{margin-top:8px}
 @media(max-width:700px){.pricing-header,.legal-header,body:has(.pp-owner-brand)>header{flex-wrap:wrap}.pp-theme-grid{gap:10px}}
+
+/* Secondary editors and protected/offline dialogs use the same paired colours. */
+:root[data-pp-theme] :is(.pp-design-content,.pp-vault-dialog,.pp-offline-dialog,.pp-vault-toolbar,.pp-vault-share-card,.pp-vault-share,.pp-attachments,.pp-attachment-list,.pp-file-card){background:var(--pp-surface)!important;color:var(--pp-text)!important;border-color:var(--pp-border)!important}
+:root[data-pp-theme] :is(.pp-design-content,.pp-vault-dialog,.pp-offline-dialog,.pp-vault-share-card) :is(h1,h2,h3,h4,p,label,legend,output,span,small){color:var(--pp-text)!important}
+:root[data-pp-theme] :is(.pp-design-content,.pp-vault-dialog,.pp-offline-dialog,.pp-vault-share-card) :is(input:not([type=color]):not([type=checkbox]),select,textarea){background:var(--pp-bg)!important;color:var(--pp-text)!important;border-color:var(--pp-border)!important}
+:root[data-pp-theme] :is(.pp-vault-help,.pp-vault-status,.pp-vault-share-card footer,.pp-design-content output){color:var(--pp-muted)!important}
+:root[data-pp-theme] :is(.pp-offline-dialog button,.pp-vault-share a,.pp-vault-files a){color:var(--pp-accent)!important;background:var(--pp-accent-soft)!important;border-color:var(--pp-border)!important}
+:root[data-pp-theme] .pp-design-tools .pp-editor-tool[aria-pressed=true]{background:var(--pp-accent)!important;color:var(--pp-on-accent)!important}
+:root[data-pp-theme] .pp-vault-share-page{background:var(--pp-bg)!important;color:var(--pp-text)!important}
+.postispop .app-header.pp-menu-open .top-controls{max-height:274px}
