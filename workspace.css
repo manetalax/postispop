@@ -377,3 +377,14 @@ html:root[data-pp-theme] .pp-donation-notice {
  background-color:var(--pp-surface)!important;color:var(--pp-text)!important;
  font:500 13px/1.75 system-ui,sans-serif;overflow-wrap:anywhere;
 }
+
+/* Approved compact symbol, adaptive wordmark and translated seven-function tagline. */
+html .pp-brand-lockup {display:flex!important;align-items:center;justify-content:flex-start;gap:12px;width:var(--pp-brand-width)!important;height:var(--pp-brand-height)!important;text-decoration:none;color:var(--pp-text)}
+html .pp-brand-lockup img {width:80px!important;height:96px!important;max-width:80px!important;flex:0 0 80px;object-fit:contain}
+.pp-brand-words {display:flex;flex-direction:column;gap:7px;min-width:0;text-align:left}
+.pp-brand-name {font:800 31px/1.1 system-ui,sans-serif;letter-spacing:-1px;color:var(--pp-text);white-space:nowrap}
+.pp-brand-is {color:var(--pp-accent)}
+.pp-brand-tagline {display:flex;align-items:flex-end;gap:5px;font:500 8px/1.65 system-ui,sans-serif;color:var(--pp-text);max-width:210px}
+.pp-brand-functions {display:block}
+.pp-brand-tagline svg {width:14px;height:14px;flex:0 0 14px;fill:none;stroke:var(--pp-accent);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-bottom:2px}
+@media(max-width:700px){html .pp-brand-lockup{gap:9px}html .pp-brand-lockup img{width:65px!important;height:82px!important;max-width:65px!important;flex-basis:65px}.pp-brand-name{font-size:28px}.pp-brand-tagline{font-size:7px;max-width:175px}}
