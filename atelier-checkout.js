@@ -31,6 +31,15 @@ document.querySelectorAll('[data-label]').forEach(node=>{const key=node.dataset.
 document.querySelectorAll('.brand,.start-link,.back-link').forEach(link=>{link.href='/?lang='+encodeURIComponent(lang);});
 for(const price of document.querySelectorAll('[data-price-cents]')){const cents=Number(price.dataset.priceCents);if(Number.isInteger(cents))price.textContent=new Intl.NumberFormat(lang,{style:'currency',currency:'EUR'}).format(cents/100);}
 document.querySelectorAll('[data-i18n]').forEach(node=>{const key=node.dataset.i18n;if(t[key])node.textContent=t[key];});
+
+const premiumBenefits={"es":["Conserva y utiliza tus notas desde la número 7 con Premium activo.","Desbloquea las notas retenidas antes de que termine su plazo de borrado.","Más espacio para organizar tus ideas en notas y páginas. Todos los planes ofrecen el mismo Premium."],"en":["Keep and use notes from number 7 onwards while Premium is active.","Unlock retained notes before their deletion deadline.","More space to organise ideas in notes and pages. Every plan offers the same Premium."],"de":["Behalte und nutze Notizen ab Nummer 7 mit aktivem Premium.","Entsperre zurückgehaltene Notizen vor ihrer Löschfrist.","Mehr Platz für Ideen in Notizen und Seiten. Alle Pläne bieten dasselbe Premium."],"fr":["Conservez et utilisez les notes à partir de la numéro 7 avec Premium actif.","Débloquez les notes conservées avant leur date de suppression.","Plus de place pour vos idées, en notes et en pages. Toutes les formules offrent le même Premium."],"pt":["Conserve e use as notas a partir da número 7 com Premium ativo.","Desbloqueie as notas retidas antes do prazo de eliminação.","Mais espaço para organizar ideias em notas e páginas. Todos os planos oferecem o mesmo Premium."],"it":["Conserva e usa le note dalla numero 7 con Premium attivo.","Sblocca le note conservate prima della scadenza per l’eliminazione.","Più spazio per idee in note e pagine. Tutti i piani offrono lo stesso Premium."],"ja":["Premiumが有効な間は7番目以降のノートを保存して利用できます。","削除期限前に保留中のノートのロックを解除できます。","ノートとページでアイデアを整理するスペースが増えます。すべてのプランで同じPremium機能を利用できます。"],"ko":["Premium이 활성화되어 있으면 7번 이후 메모를 보관하고 사용할 수 있습니다.","삭제 기한 전에 보관 중인 메모의 잠금을 해제하세요.","메모와 페이지로 아이디어를 정리할 공간이 늘어납니다. 모든 요금제는 같은 Premium을 제공합니다."]};
+document.querySelectorAll('.premium-benefits [data-copy]').forEach((node,index)=>{node.textContent=(premiumBenefits[lang]||premiumBenefits.es)[index];});
+for(const [index,option] of [...document.querySelectorAll('.payment-option')].entries()){
+ const badge=document.createElement('span');badge.className='pp-plan-duration';badge.setAttribute('aria-hidden','true');
+ badge.textContent=['1','3','12','∞'][index]||'';
+ option.prepend(badge);
+}
+
 const status=document.querySelector('[data-purchase-status]'),badge=document.querySelector('[data-premium-state]'),buttons=[...document.querySelectorAll('[data-buy]')];
 const setStatus=text=>{if(status)status.textContent=text;};
 async function request(path,body){
