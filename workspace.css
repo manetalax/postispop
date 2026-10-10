@@ -284,3 +284,5 @@ button, summary, a { touch-action: manipulation; }
 
 .pp-welcome-bar .pp-welcome-reopen{min-height:40px;transition:background .15s,color .15s}.pp-welcome-bar .pp-welcome-reopen.is-active[aria-expanded=true]{background:var(--pp-accent);color:var(--pp-surface);border-color:var(--pp-accent)}
 @media(max-width:480px){.pp-welcome-bar{gap:6px}.pp-welcome-bar .pp-welcome-reopen{padding:8px 10px;font-size:11px}}
+
+.pp-welcome-support{grid-column:1/-1;margin:0;padding:14px 0 0;border-top:1px solid #315d5025;font:12px/1.7 system-ui;color:#526355;overflow-wrap:anywhere}:root[data-color-scheme=dark] .pp-welcome-support{color:#c8d3c2;border-color:#ffffff25}
