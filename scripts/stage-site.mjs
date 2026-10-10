@@ -69,6 +69,8 @@ const combined=(await Promise.all(initialStyles.map(name=>readFile(new URL(name,
 const compactStyles=(await transform(combined,{loader:'css',minify:true})).code;
 const workspaceStyles='workspace-'+createHash('sha256').update(compactStyles).digest('hex').slice(0,12)+'.css';
 await writeFile(new URL(workspaceStyles,out),compactStyles);
+const refreshedScripts={};
+for(const name of ['themes','brand-highlights']){const source=await readFile(new URL(name+'.js',out),'utf8');const asset=name+'-'+createHash('sha256').update(source).digest('hex').slice(0,12)+'.js';await writeFile(new URL(asset,out),source);refreshedScripts[name]=asset;}
 async function walk(dir){let result=[];for(const e of await readdir(dir,{withFileTypes:true})){const p=new URL(e.name+(e.isDirectory()?'/':''),dir);if(e.isDirectory())result.push(...await walk(p));else if(e.name.endsWith('.html'))result.push(p);}return result;}
 for(const file of await walk(out)){if(file.pathname.endsWith('/offline.html'))continue;let html=await readFile(file,'utf8');html=html.replaceAll(oldCss,cssPath);html=html.replace('<link rel="preload" as="image" href="./assets/postispop-logo.png" fetchpriority="high"/>','');html=html.replace('href="./assets/board-scene.webp" type="image/webp" fetchpriority="high"','href="/assets/board-scene-wpo-v2.avif" type="image/avif" fetchpriority="high"');
 html=html.replace(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/g,(full,text)=>{try{return ['Organization','WebSite'].includes(JSON.parse(text)['@type'])?'':full;}catch{return full;}});
@@ -83,6 +85,7 @@ if(!html.includes('/themes.js'))html=html.replace(/(<meta\b[^>]*charset[^>]*>)/i
 html=html.replace(/href=(["'])\.\/note-attachments\.css(?:\?[^"']*)?\1/g,'href="/note-attachments.css?v=20261009b"').replace(/src=(["'])\.\/note-attachments\.js(?:\?[^"']*)?\1/g,'src="/note-attachments.js?v=20261009c"');
   html=html.replace(/src=(["'])\/experience\.js(?:\?[^"']*)?\1/g,'src="/experience.js?v=20261009e"').replace(/src=(["'])\/protected-notes\.js(?:\?[^"']*)?\1/g,'src="/protected-notes.js?v=20261008a"');
 if(file.href===new URL('index.html',out).href&&!html.includes('/brand-highlights.js'))html=html.replace('</body>','<script type="module" src="/brand-highlights.js?v=20261010-responsible-support"></script></body>');
+html=html.replace(/src=(["'])\/?(themes|brand-highlights)\.js(?:\?[^"']*)?\1/g,(_,quote,name)=>'src="/'+refreshedScripts[name]+'"');
 if(file.href===new URL('index.html',out).href){
  html=html.replace(/<link\b[^>]*rel=["']preload["'][^>]*>/gi,tag=>/board-scene|cork-board|pen-/.test(tag)?'':tag);
  html=html.replace(/<link\b[^>]*rel=["']stylesheet["'][^>]*>/gi,tag=>{
