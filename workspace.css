@@ -354,3 +354,10 @@ button, summary, a { touch-action: manipulation; }
 html[data-pp-theme] body {background:var(--pp-bg)!important;color:var(--pp-text)!important}
 html[data-pp-theme] .free-plan,html[data-pp-theme] .premium-plan,html[data-pp-theme] .payment-option {background:var(--pp-surface)!important;color:var(--pp-text)!important;border-color:var(--pp-border)!important}
 html[data-pp-theme] .pricing-intro p,html[data-pp-theme] .pricing-intro h1,html[data-pp-theme] .premium-lead,html[data-pp-theme] .premium-benefits li,html[data-pp-theme] .plan-heading h2,html[data-pp-theme] .free-price,html[data-pp-theme] .price,html[data-pp-theme] .payment-option h3,html[data-pp-theme] .period,html[data-pp-theme] .plan-detail,html[data-pp-theme] .payment-disclosure,html[data-pp-theme] .purchase-status {color:var(--pp-text)!important}
+
+/* Distinct visible icons for the two compact native dropdowns. */
+html[data-pp-theme] .pp-note-search > select {
+ background-image:var(--pp-colour-filter-icon)!important;
+ background-position:center!important;background-size:23px!important;background-repeat:no-repeat!important;
+}
+html[data-pp-theme] .pp-note-search > select.pp-sort-notes {background-image:var(--pp-sort-icon)!important}
