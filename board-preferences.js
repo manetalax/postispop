@@ -84,15 +84,15 @@ ja:['並べ替え','ノート番号','編集：新しい順','編集：古い順
 ko:['정렬','메모 번호','편집: 최신순','편집: 오래된순','생성: 최신순','생성: 오래된순','즐겨찾기 우선','마지막 편집']
 };
 let editingId='';
-document.addEventListener('click',event=>{const note=event.target.closest('.sticky-note[data-note-id]');if(note)editingId=note.dataset.noteId;},true);
+if(typeof document!=='undefined')document.addEventListener('click',event=>{const note=event.target.closest('.sticky-note[data-note-id]');if(note)editingId=note.dataset.noteId;},true);
 function refreshDatesAndSort(frame,boardId){
  const lang=readBoardLanguage(),t=orderCopy[lang]||orderCopy.es;
  const host=document.querySelector('.pp-note-search');
  if(host){
   let select=host.querySelector('.pp-sort-notes');
-  if(!select){select=document.createElement('select');select.className='pp-sort-notes';host.append(select);select.addEventListener('change',()=>{const p=readBoardPreferences(boardId);p.sort=select.value;writeBoardPreferences(boardId,p);});}
+  if(!select){select=document.createElement('select');select.className='pp-sort-notes';host.append(select);select.addEventListener('change',()=>{const id=select.dataset.boardId;const p=readBoardPreferences(id);p.sort=select.value;writeBoardPreferences(id,p);});}
   if(select.dataset.language!==lang){const values=['number','updated-newest','updated-oldest','created-newest','created-oldest','favorites'];select.replaceChildren(...values.map((value,i)=>{const o=document.createElement('option');o.value=value;o.textContent=t[0]+': '+t[i+1];return o;}));select.dataset.language=lang;}
-  select.setAttribute('aria-label',t[0]);select.value=readBoardPreferences(boardId).sort||'number';
+  select.dataset.boardId=boardId;select.setAttribute('aria-label',t[0]);select.value=readBoardPreferences(boardId).sort||'number';
  }
  const format=value=>{const d=new Date(/^\d+$/.test(value)?Number(value):value);return Number.isNaN(d.getTime())?null:d;};
  function put(host,value){const d=format(value||'');if(!d)return;let time=host.querySelector(':scope > .pp-note-date');if(!time){time=document.createElement('time');time.className='pp-note-date';host.append(time);}const label=t[7]+': '+new Intl.DateTimeFormat(lang,{dateStyle:'short',timeStyle:'short'}).format(d);if(time.textContent!==label)time.textContent=label;time.dateTime=d.toISOString();}
