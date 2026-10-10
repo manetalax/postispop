@@ -150,7 +150,7 @@ function resizePapers({ frame, count, size }) {
   const gap = compact ? 10 : 16;
   const width = Math.max(200, frame.clientWidth - (compact ? 8 : 24));
   const top = frame.getBoundingClientRect().top;
-  const height = Math.max(300, innerHeight - top - 78);
+  const height = Math.max(compact ? 420 : 540, innerHeight - top - 78);
   const candidates = size <= 6 ? [[compact ? 2 : 3, compact ? 3 : 2]] : [[4, 3], [6, 2]];
   let best = null;
   for (const [columns, rows] of candidates) {
