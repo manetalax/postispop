@@ -246,3 +246,22 @@ button, summary, a { touch-action: manipulation; }
 .sticky-note > .pp-note-date { position:absolute; bottom:9px; left:10px; right:32px; text-align:left; }
 .editor-dialog > .pp-note-date { margin:8px 14px; text-align:right; font-size:11px; }
 .pp-sort-notes { max-width:220px; }
+
+/* Shared brand dimensions across the board, pricing, legal and owner pages. */
+:root { --pp-brand-width:312px; --pp-brand-height:148px; }
+.postispop .app-header .brand,
+.pricing-header .brand,
+.legal-header .legal-brand,
+.pp-owner-brand { width:var(--pp-brand-width); height:var(--pp-brand-height); max-width:100%; flex-shrink:0; display:inline-flex; align-items:center; padding:0; }
+.postispop .brand-logo,
+.pricing-header .brand img,
+.legal-header .legal-brand img,
+.pp-owner-brand img { display:block; width:var(--pp-brand-width)!important; height:var(--pp-brand-height)!important; max-width:100%; object-fit:contain; content:url('/assets/postispop-logo.svg'); }
+:root[data-color-scheme=dark] .brand-logo,
+:root[data-color-scheme=dark] .pricing-header .brand img,
+:root[data-color-scheme=dark] .legal-brand img,
+:root[data-color-scheme=dark] .pp-owner-brand img { content:url('/assets/postispop-logo-light.svg'); }
+@media(max-width:700px) {
+ :root { --pp-brand-width:252px; --pp-brand-height:124px; }
+ .pricing-header,.legal-header { flex-wrap:wrap; }
+}
