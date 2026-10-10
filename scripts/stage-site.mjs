@@ -62,6 +62,12 @@ const oldCss='_next/static/css/postispop-optimized-080259749895.css';
 let css=await readFile(new URL(oldCss,out),'utf8');css=css.replaceAll('/assets/pen.woff','/assets/pen-0bd158623a5b.woff2').replaceAll('format("woff")','format("woff2")');
 css+='\n@supports(background-image:image-set(url("/assets/cork-board-wpo-v2.avif") type("image/avif"))){.board-frame,.theme-preview{background-image:image-set(url("/assets/cork-board-wpo-v2.avif") type("image/avif"),url("/assets/cork-board.webp") type("image/webp"))}@media(min-width:651px){.board-frame{background-image:image-set(url("/assets/board-scene-wpo-v2.avif") type("image/avif"),url("/assets/board-scene.webp") type("image/webp"))}}}';
 const cssPath='_next/static/css/postispop-wpo-'+createHash('sha256').update(css).digest('hex').slice(0,12)+'.css';await writeFile(new URL(cssPath,out),css);
+// Publish the approved smiling symbol under a content fingerprint for every theme.
+const approvedLogo=await readFile(new URL('assets/postispop-smiling-logo.svg',out),'utf8');
+const approvedLogoPath='assets/postispop-smile-'+createHash('sha256').update(approvedLogo).digest('hex').slice(0,12)+'.svg';
+await writeFile(new URL(approvedLogoPath,out),approvedLogo);
+const sharedBrandCss=await readFile(new URL('workspace.css',out),'utf8');
+await writeFile(new URL('workspace.css',out),sharedBrandCss.replaceAll('/assets/postispop-smiling-logo.svg','/'+approvedLogoPath).replaceAll('/assets/postispop-logo-light.svg','/'+approvedLogoPath));
 // Consolidate initial workspace styles into one cacheable request.
 const {transform}=await import('esbuild');
 const initialStyles=[cssPath,'fonts.css','commerce.css','experience.css','note-attachments.css','design-tools.css','protected-notes.css','offline-ui.css','wpo-features.css','workspace.css'];
