@@ -25,6 +25,9 @@ function renderInstructions(){
   const clone=source.cloneNode(true);
   clone.querySelectorAll('[id]').forEach(node=>node.removeAttribute('id'));
   host.replaceChildren(clone);
+  const titles={es:'Tus ideas a la vista, una cada vez',en:'Your ideas in view, one at a time',de:'Deine Ideen im Blick, eine nach der anderen',fr:'Vos idées sous les yeux, une à la fois',pt:'As suas ideias à vista, uma de cada vez',it:'Le tue idee in vista, una alla volta',ja:'アイデアをひとつずつ、目の前に',ko:'아이디어를 하나씩 한눈에'};
+  const summary=host.querySelector('summary');
+  if(summary)summary.textContent=titles[lang]||titles.es;
   const detail=host.querySelector('details');
   if(detail)detail.open=wasOpen;
   host.dataset.language=lang;
