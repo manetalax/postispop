@@ -5,7 +5,7 @@ import {normalizeBackup} from './backup-import.js';
 const KEY = 'postispop-guest-board-v1';
 const PAPER_COUNT = 6;
 const FREE_NOTE_LIMIT = 6;
-const makeNote = (position) => ({id:`guest-note-${position}`,paper:position%PAPER_COUNT,text:'',marks:[],doodle:'',author:'guest',revision:1,created:Date.now(),updated:Date.now(),lockedUntil:0,editing:'',image:null,style:null,styleRevision:0,protectedEnvelope:null});
+const makeNote = (position) => ({id:`guest-note-${position}`,paper:0,text:'',marks:[],doodle:'',author:'guest',revision:1,created:Date.now(),updated:Date.now(),lockedUntil:0,editing:'',image:null,style:null,styleRevision:0,protectedEnvelope:null});
 const guestError = (code,status=400) => Object.assign(new Error(code),{status});
 const reserved = note => Boolean(localStorage.getItem('pp:protected-note:'+note.id));
 const markProtection = note => {try{if(note.protectedEnvelope)localStorage.setItem('pp:protected-note:'+note.id,'1');else localStorage.removeItem('pp:protected-note:'+note.id);}catch{/* The persisted envelope remains authoritative if a redundant UI marker cannot be saved. */}};
