@@ -72,7 +72,13 @@ async function run() {
         const columns=new Set(rects.map(r=>Math.round(r.x))).size,rows=new Set(rects.map(r=>Math.round(r.y))).size;
         assert.equal(columns,width<=700?2:3,'Free columns');assert.equal(rows,width<=700?3:2,'Free rows');
         for(const r of rects){assert.ok(Math.abs(r.w-r.h)<=2,'Post-it must remain square');assert.ok(r.w >= (width>1000?220:width>700?200:125),'Post-it preview must use the available screen');}
-        assert.ok(Math.max(...rects.map(r=>r.bottom))<=height+2,'All six free notes fit in the initial viewport');
+        await page.locator(NOTES).last().scrollIntoViewIfNeeded();
+        assert.equal(await page.locator(NOTES).last().isVisible(),true,'All six free notes remain reachable below the enlarged brand and instructions');
+        const guide=page.locator('.pp-header-instructions details');
+        await guide.locator('summary').click();
+        await page.waitForTimeout(2500);
+        assert.equal(await guide.getAttribute('open')!==null,true,'Instructions stay expanded until explicitly closed');
+        await guide.locator('summary').click();
         assert.equal(await page.getByRole('button',{name:'Página siguiente',exact:true}).isVisible(),false,'Single page does not expose irrelevant paging');
         await page.getByRole('button',{name:'Añadir nota',exact:true}).click();
         await page.waitForSelector('.editor-dialog textarea');
@@ -109,7 +115,7 @@ async function run() {
         await search.fill('nothing-matches-999');await page.waitForSelector('.pp-empty-search:visible');assert.equal(await page.locator(NOTES).count(),0);
         await search.fill('');await page.waitForFunction(n=>document.querySelectorAll('.sticky-note[data-note-id]').length===n,size);
         if(width<=700){
-          await search.blur();await page.evaluate(()=>scrollTo(0,0));
+          await search.blur();await page.locator('.board-frame').scrollIntoViewIfNeeded();
           const rect=await page.locator('.board-frame').boundingBox();
           const cdp=await page.context().newCDPSession(page);
           const y=Math.min(rect.y+60,height-80),startX=width-25,endX=25;
