@@ -12,7 +12,25 @@ const copy={
   ko:{summary:'아이디어를 한눈에',feature:'글쓰기, 그리기, 오디오 녹음, 사진 촬영, 스크린샷 저장, 동영상 녹화와 모든 종류의 파일 첨부를 지원합니다.',donation:'구독료만으로는 서버 비용을 충당하기 어려우니 데이터 사용량을 아껴 주세요. 앱이 마음에 들어 후원하고 싶다면 PayPal(muchisimoamorparati@gmail.com) 또는 Bizum(스페인 +34 692 225 392)으로 보내 주세요.',label:'PostisPop 소개'}
 };
 
+function renderInstructions(){
+  const header=document.querySelector('.postispop .app-header');
+  const source=document.querySelector('#pp-learn .pp-seo-about');
+  if(!header||!source)return;
+  let host=document.querySelector('.pp-header-instructions');
+  if(!host){host=document.createElement('section');host.className='pp-header-instructions';}
+  if(header.nextElementSibling!==host)header.after(host);
+  const lang=readBoardLanguage();
+  if(host.dataset.language===lang&&host.children.length)return;
+  const wasOpen=host.querySelector('details')?.open||false;
+  const clone=source.cloneNode(true);
+  clone.querySelectorAll('[id]').forEach(node=>node.removeAttribute('id'));
+  host.replaceChildren(clone);
+  const detail=host.querySelector('details');
+  if(detail)detail.open=wasOpen;
+  host.dataset.language=lang;
+}
 function render(){
+  renderInstructions();
   const board=document.querySelector('.postispop .board-frame');
   if(!board)return;
   const lang=readBoardLanguage(),strings=copy[lang]||copy.es;
@@ -20,7 +38,7 @@ function render(){
   if(!card){card=document.createElement('aside');card.className='pp-brand-highlights';}
   card.setAttribute('aria-label',strings.label);
   const pager=board.querySelector('.pp-pagination');
-  if(pager){if(pager.previousElementSibling!==card)pager.before(card);}
+  if(pager){if(pager.nextElementSibling!==card)pager.after(card);}
   else board.querySelector('.board-grid')?.after(card);
   if(card.dataset.language===lang)return;
 
@@ -34,6 +52,8 @@ function render(){
   const donation=document.createElement('p');donation.textContent=strings.donation;
   content.append(feature,donation);
   details.append(summary,content);
+  const wasOpen=card.querySelector('details')?.open||false;
+  details.open=wasOpen;
   card.replaceChildren(details);
   card.dataset.language=lang;
 }
@@ -50,6 +70,8 @@ whenReactReady(()=>{
   // inserting the disclosure's own contents cannot feed back into this observer.
   const frame=document.querySelector('.postispop .board-frame');
   if(frame)new MutationObserver(schedule).observe(frame,{childList:true});
+  const learn=document.querySelector('#pp-learn');
+  if(learn)new MutationObserver(schedule).observe(learn,{childList:true,subtree:true});
   new MutationObserver(schedule).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
   window.addEventListener('storage',event=>{if(event.key==='pp:lang')render();});
 });
