@@ -38,6 +38,27 @@
   for(const [id,values] of palettes){const b=document.createElement('button');b.type='button';b.dataset.ppThemeChoice=id;b.style.setProperty('--swatch-base',values[0]);b.style.setProperty('--swatch-accent',values[4]);b.addEventListener('click',()=>apply(id,true));grid.append(b);}
   field.append(grid);return field;
  }
+
+ const brandCopy={
+ es:'Escribe · dibuja · graba · adjunta · organiza · guarda · protege',
+ en:'Write · draw · record · attach · organize · save · protect',
+ de:'Schreiben · zeichnen · aufnehmen · anhängen · ordnen · speichern · schützen',
+ fr:'Écrivez · dessinez · enregistrez · joignez · organisez · sauvegardez · protégez',
+ pt:'Escreva · desenhe · grave · anexe · organize · guarde · proteja',
+ it:'Scrivi · disegna · registra · allega · organizza · salva · proteggi',
+ ja:'書く · 描く · 録音 · 添付 · 整理 · 保存 · 保護',
+ ko:'쓰기 · 그리기 · 녹음 · 첨부 · 정리 · 저장 · 보호'
+ };
+ function mountBrand(lang){
+  for(const host of document.querySelectorAll('.app-header .brand,.pricing-header .brand,.legal-header .legal-brand,.pp-owner-brand')){
+   const img=host.querySelector('img');if(!img)continue;
+   host.classList.add('pp-brand-lockup');
+   let words=host.querySelector('.pp-brand-words');
+   if(!words){words=document.createElement('span');words.className='pp-brand-words';const name=document.createElement('span');name.className='pp-brand-name';name.append('Post');const syllable=document.createElement('span');syllable.className='pp-brand-is';syllable.textContent='Is';name.append(syllable,'Pop');const tagline=document.createElement('span');tagline.className='pp-brand-tagline';const text=document.createElement('span');text.className='pp-brand-functions';tagline.append(text);const lock=document.createElementNS('http://www.w3.org/2000/svg','svg');lock.setAttribute('viewBox','0 0 24 24');lock.setAttribute('aria-hidden','true');lock.innerHTML='<rect x="6" y="10" width="12" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/>';tagline.append(lock);words.append(name,tagline);host.append(words);}
+   const text=words.querySelector('.pp-brand-functions');const translated=brandCopy[lang]||brandCopy.es;if(text.textContent!==translated)text.textContent=translated;
+  }
+ }
+
  function mount(){
   if(document.querySelector('.postispop')&&root.dataset.ppReady!=='true')return;
   const controls=document.querySelector('.postispop .app-header .top-controls');
@@ -48,7 +69,7 @@
    const box=document.createElement('details');box.className='pp-global-theme-control';const summary=document.createElement('summary');box.append(summary,picker());
    const host=document.querySelector('.pricing-header,.legal-header,body > header')||document.querySelector('footer')||document.body;host.append(box);
   }
-  const lang=language(),t=labels[lang];
+  const lang=language(),t=labels[lang];mountBrand(lang);
   for(const field of document.querySelectorAll('.pp-theme-picker')){
    if(field.dataset.language===lang)continue;field.dataset.language=lang;field.querySelector('legend').textContent=t[0];
    const buttons=field.querySelectorAll('button');buttons.forEach((b,i)=>{b.title=t[i+1];b.setAttribute('aria-label',t[i+1]);b.setAttribute('aria-pressed',String(b.dataset.ppThemeChoice===selected));});
