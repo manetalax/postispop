@@ -35,6 +35,7 @@
   field.append(grid);return field;
  }
  function mount(){
+  if(document.querySelector('.postispop')&&root.dataset.ppReady!=='true')return;
   const controls=document.querySelector('.postispop .app-header .top-controls');
   if(controls){
    let p=controls.querySelector('.pp-theme-picker');if(!p){p=picker();controls.append(p);}
@@ -53,6 +54,7 @@
   const scheme=dark.has(selected)?'dark':'light';if(root.dataset.colorScheme!==scheme)root.dataset.colorScheme=scheme;
  }
  let scheduled=false;function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;mount();});}
+ window.addEventListener('postispop:ui-ready',schedule);
  function boot(){mount();new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});new MutationObserver(schedule).observe(root,{attributes:true,attributeFilter:['lang','data-color-scheme']});}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
  window.addEventListener('storage',e=>{if(e.key===key){apply(e.newValue||'sage');schedule();}if(e.key==='pp:lang')schedule();});
