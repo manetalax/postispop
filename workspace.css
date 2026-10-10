@@ -265,3 +265,19 @@ button, summary, a { touch-action: manipulation; }
  :root { --pp-brand-width:252px; --pp-brand-height:124px; }
  .pricing-header,.legal-header { flex-wrap:wrap; }
 }
+/* Dismissible creative welcome: one shared layout for all eight languages. */
+.pp-welcome-bar{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin:0 0 12px;font:12px/1.5 system-ui,sans-serif;color:var(--pp-muted)}
+.pp-welcome-reopen{border:1px solid var(--pp-border);background:var(--pp-surface);color:var(--pp-accent);border-radius:22px;padding:8px 14px;font:600 12px/1.4 system-ui;cursor:pointer}
+.pp-welcome-banner{position:relative;display:grid;grid-template-columns:1.3fr 1fr;align-items:center;gap:18px 24px;padding:30px;border:1px solid var(--pp-border);border-radius:22px;background:#e9eedf;color:#293e37;text-align:left}
+.pp-welcome-banner[hidden]{display:none!important}
+.pp-welcome-close{position:absolute;right:12px;top:10px;width:36px;height:36px;display:grid;place-items:center;border:1px solid #315d5030;border-radius:50%;background:#ffffff80;color:inherit;font:26px/1 system-ui;cursor:pointer;z-index:1}
+.pp-welcome-copy{padding-top:8px}.pp-welcome-eyebrow{font:750 10px/1.5 system-ui;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:10px}
+.pp-welcome-title{font:750 clamp(25px,3.3vw,39px)/1.12 system-ui;letter-spacing:-1px;margin:0 0 14px;max-width:520px;color:inherit}
+.pp-welcome-lead{font:14px/1.6 system-ui;margin:0 0 16px;max-width:480px}.pp-welcome-features{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}.pp-welcome-features span{padding:5px 9px;background:#ffffffb0;border-radius:20px;font:11px/1.5 system-ui;color:#315447}
+.pp-welcome-premium{display:inline-flex;padding:11px 17px;border-radius:12px;background:#315d50;color:#fff!important;font:650 13px/1.5 system-ui;text-decoration:none}
+.pp-welcome-privacy{font:11px/1.6 system-ui!important;color:#526355;margin:14px 0 0!important;max-width:520px}.pp-welcome-art{display:block;width:100%;max-height:240px}
+.pp-header-instructions .pp-welcome-guide{grid-column:1/-1;margin:0;padding:14px 0 0;border:0;border-top:1px solid #315d5025;border-radius:0;background:transparent;color:inherit}
+.pp-header-instructions .pp-welcome-guide summary{display:flex;justify-content:space-between;gap:12px;text-align:left;list-style:none;font:650 13px/1.5 system-ui;color:inherit}.pp-welcome-guide summary::-webkit-details-marker{display:none}.pp-welcome-guide summary:after{content:'＋'}.pp-welcome-guide[open] summary:after{content:'−'}
+.pp-welcome-guide-content{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;margin-top:16px}.pp-header-instructions .pp-welcome-guide-content p{font:13px/1.65 system-ui;margin:0}
+:root[data-color-scheme=dark] .pp-welcome-banner{background:#34493c;color:#edf1e5}:root[data-color-scheme=dark] .pp-welcome-privacy{color:#c8d3c2}:root[data-color-scheme=dark] .pp-welcome-guide{border-color:#ffffff25}:root[data-color-scheme=dark] .pp-welcome-premium{background:#ffe58e;color:#244438!important}:root[data-color-scheme=dark] .pp-welcome-close{background:#ffffff10;border-color:#ffffff30}
+@media(max-width:700px){.pp-welcome-banner{grid-template-columns:1fr;padding:24px 20px;gap:16px}.pp-welcome-copy{padding-top:18px}.pp-welcome-art{max-height:160px}.pp-welcome-guide-content{grid-template-columns:1fr}.pp-welcome-title{font-size:29px}.pp-welcome-bar{gap:8px;font-size:11px}.pp-welcome-illustration{max-width:320px;width:100%;justify-self:center}}
