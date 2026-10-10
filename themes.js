@@ -23,6 +23,7 @@
  apply(selected);
  function language(){
   const requested=new URLSearchParams(location.search).get('lang');if(labels[requested])return requested;
+  const pageLang=location.pathname.split('/')[1];if(labels[pageLang])return pageLang;
   let saved;try{saved=localStorage.getItem('pp:lang');}catch{}
   return labels[saved]?saved:labels[root.lang]?root.lang:'es';
  }
