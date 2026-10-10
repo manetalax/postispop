@@ -256,11 +256,11 @@ button, summary, a { touch-action: manipulation; }
 .postispop .brand-logo,
 .pricing-header .brand img,
 .legal-header .legal-brand img,
-.pp-owner-brand img { display:block; width:var(--pp-brand-width)!important; height:var(--pp-brand-height)!important; max-width:100%; object-fit:contain; content:url('/assets/postispop-logo.svg'); }
+.pp-owner-brand img { display:block; width:var(--pp-brand-width)!important; height:var(--pp-brand-height)!important; max-width:100%; object-fit:contain; content:url('/assets/postispop-smiling-logo.svg'); }
 :root[data-color-scheme=dark] .brand-logo,
 :root[data-color-scheme=dark] .pricing-header .brand img,
 :root[data-color-scheme=dark] .legal-brand img,
-:root[data-color-scheme=dark] .pp-owner-brand img { content:url('/assets/postispop-logo-light.svg'); }
+:root[data-color-scheme=dark] .pp-owner-brand img { content:url('/assets/postispop-smiling-logo.svg'); }
 @media(max-width:700px) {
  :root { --pp-brand-width:252px; --pp-brand-height:124px; }
  .pricing-header,.legal-header { flex-wrap:wrap; }
