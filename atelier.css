@@ -113,3 +113,5 @@ footer a { display: inline-flex; align-items: center; min-height: 44px; }
 .plan-tag { color:#496040!important; }
 .pp-plan-duration { display:flex; align-items:center; justify-content:center; width:48px; height:48px; margin:0 0 14px; border:2px solid #315c50; border-top-width:7px; border-radius:9px; background:#e6ecdf; color:#315c50; font:750 24px/1 system-ui,sans-serif; }
 .premium-benefits li::before { content:"✓"; color:#315c50; font-weight:750; }
+
+.note-preview > span,.free-price span { color:#283633!important; }
