@@ -15,6 +15,10 @@
   const palette=palettes.find(([name])=>name===id);if(!palette)return;
   selected=id;root.dataset.ppTheme=id;root.dataset.colorScheme=dark.has(id)?'dark':'light';
   palette[1].forEach((value,i)=>root.style.setProperty('--pp-'+vars[i],value));
+  const icon=(paths)=>'url("data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="'+palette[1][2]+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+paths+'</svg>')+'")';
+  root.style.setProperty('--pp-colour-filter-icon',icon('<path d="M12 3a9 9 0 1 0 0 18h1.4a2 2 0 0 0 1.4-3.4 1.2 1.2 0 0 1 .9-2.1H17a4 4 0 0 0 4-4C21 6.8 17 3 12 3Z"/><circle cx="7.5" cy="10" r=".7"/><circle cx="11" cy="7" r=".7"/><circle cx="15.5" cy="8" r=".7"/><circle cx="7.5" cy="15" r=".7"/>'));
+  root.style.setProperty('--pp-sort-icon',icon('<path d="M7 4v16m-3-3 3 3 3-3M13 6h7M13 11h5M13 16h3"/>'));
+
   root.style.setProperty('--pp-focus',palette[1][4]);root.style.setProperty('--wpo-bg',palette[1][0]);root.style.setProperty('--wpo-text',palette[1][2]);
   root.style.colorScheme=dark.has(id)?'dark':'light';
   if(persist)try{localStorage.setItem(key,id);localStorage.setItem('postispop-color-scheme',dark.has(id)?'dark':'light');}catch{}
