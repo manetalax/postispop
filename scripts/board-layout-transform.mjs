@@ -28,7 +28,7 @@ export function transformBoardLayout(source){
  },[]);
  (0,u.useEffect)(()=>{if(a){A(current=>ppBoardClamp(current,ppMatches.length));document.documentElement.dataset.ppReady='true';window.dispatchEvent(new Event('postispop:ui-ready'))}},[a?.id,ppMatches.length]);return`);
  replace('xn.indexOf(e)===11&&hd(e)?(0,V.jsx)(_d,{lang:t},e.id):','');
- replace('"data-note-id":e.id,className:', '"data-note-id":e.id,"data-pp-slot":xn.indexOf(e)+1||n+1,className:');
+ replace('"data-note-id":e.id,className:', '"data-note-id":e.id,"data-pp-slot":xn.indexOf(e)+1||n+1,"data-updated":e.updated||e.created||"","data-created":e.created||"",className:');
  replace('function _d({lang:e})','function _d({lang:e,board:b,resultCount:c})');
  const from='return(0,V.jsxs)(`div`,{className:`note-cell daily-quote `+(r?`quote-expanded`:``),children:';
  const start=source.indexOf(from),end=source.indexOf('}var vd=',start);
