@@ -78,7 +78,7 @@ if(!html.includes('/wpo-features.css'))html=html.replace('</head>','<link rel="s
 if(file.href===new URL('index.html',out).href&&!html.includes('rel="preconnect"'))html=html.replace('</head>','<link rel="preconnect" href="https://htfyjefmviwlgmfqrwue.supabase.co" crossorigin></head>');
 if(!html.includes('/wpo-register.js'))html=html.replace('</body>','<script src="/wpo-register.js" defer></script></body>');
 if(!html.includes('/wpo-features.js'))html=html.replace('</body>','<script type="module" src="/wpo-features.js?v=20261002b"></script></body>');
-html=html.replace('</head>','<link rel="stylesheet" href="/workspace.css?v=20261010-themes"></head>');
+html=html.replace('</head>','<link rel="stylesheet" href="/workspace.css?v=20261010-themes-final"></head>');
 if(!html.includes('/themes.js'))html=html.replace(/(<meta\b[^>]*charset[^>]*>)/i,'$1<script src="/themes.js?v=20261010"></script>');
 html=html.replace(/href=(["'])\.\/note-attachments\.css(?:\?[^"']*)?\1/g,'href="/note-attachments.css?v=20261009b"').replace(/src=(["'])\.\/note-attachments\.js(?:\?[^"']*)?\1/g,'src="/note-attachments.js?v=20261009c"');
   html=html.replace(/src=(["'])\/experience\.js(?:\?[^"']*)?\1/g,'src="/experience.js?v=20261009e"').replace(/src=(["'])\/protected-notes\.js(?:\?[^"']*)?\1/g,'src="/protected-notes.js?v=20261008a"');
