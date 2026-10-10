@@ -106,3 +106,10 @@ footer a { display: inline-flex; align-items: center; min-height: 44px; }
 .pricing-header .brand img { display: block; width: 148px; height: auto; }
 .pricing-header .brand { min-height: 44px; }
 .free-plan, .premium-plan { box-shadow: 0 3px 12px #273c2d04; }
+
+/* Pricing cards keep legible contrast when the document uses dark mode. */
+.free-plan,.premium-plan,.payment-option { color:#283633!important; }
+.free-plan h2,.premium-plan h2,.premium-lead,.free-price,.price,.payment-option h3,.premium-benefits li,.preview-note { color:#283633!important; }
+.plan-tag { color:#496040!important; }
+.pp-plan-duration { display:flex; align-items:center; justify-content:center; width:48px; height:48px; margin:0 0 14px; border:2px solid #315c50; border-top-width:7px; border-radius:9px; background:#e6ecdf; color:#315c50; font:750 24px/1 system-ui,sans-serif; }
+.premium-benefits li::before { content:"✓"; color:#315c50; font-weight:750; }
