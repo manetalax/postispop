@@ -300,3 +300,42 @@ button, summary, a { touch-action: manipulation; }
  .postispop .app-header .pp-menu-toggle{top:10px;right:0;grid-row:auto;grid-column:auto}
  .postispop .app-header.pp-has-account-strip.pp-menu-open{margin-bottom:54px}
 }
+
+/* Ten interface palettes. Explicit text/background pairs avoid unreadable mixed themes. */
+:root[data-pp-theme] body,:root[data-pp-theme] .postispop{color:var(--pp-text)!important;background:var(--pp-bg)!important}
+:root[data-pp-theme] :is(.pp-welcome-banner,.pp-brand-highlights,.pp-private-notice){background:var(--pp-accent-soft)!important;color:var(--pp-text)!important;border-color:var(--pp-border)!important}
+:root[data-pp-theme] :is(.pp-welcome-title,.pp-welcome-eyebrow,.pp-welcome-lead,.pp-welcome-guide,.pp-welcome-guide summary,.pp-welcome-guide-content p){color:var(--pp-text)!important}
+:root[data-pp-theme] :is(.pp-welcome-privacy,.pp-welcome-support){color:var(--pp-muted)!important;border-color:var(--pp-border)!important}
+:root[data-pp-theme] .pp-welcome-features span{background:var(--pp-surface)!important;color:var(--pp-text)!important}
+:root[data-pp-theme] :is(.pp-welcome-close,.pp-welcome-reopen,.pp-menu-toggle,.pp-account-strip button,.pp-note-search select,.pp-note-search input,.pp-board-options>summary){background:var(--pp-surface)!important;color:var(--pp-text)!important;border-color:var(--pp-border)!important}
+:root[data-pp-theme] :is(.pp-welcome-premium,.pp-seventh-note-button,.pp-primary,.start-link,.pp-start-primary,.payment-option button[data-ready=true],.pp-welcome-reopen.is-active[aria-expanded=true]){background:var(--pp-accent)!important;color:var(--pp-on-accent)!important;border-color:var(--pp-accent)!important}
+:root[data-pp-theme] :is(.pp-dialog,.editor-dialog,.settings-dialog,.share-dialog,.pp-board-options .pp-tools,.top-controls,.legal-card,.plan-card,.payment-option,.pp-cards>li,.pp-cards>article,.pp-global-theme-control[open],.metrics article,.table-wrap){background:var(--pp-surface)!important;color:var(--pp-text)!important;border-color:var(--pp-border)!important}
+:root[data-pp-theme] :is(.pp-dialog,.settings-dialog,.share-dialog,.legal-card,.plan-card,.payment-option,.pp-cards>li,.pp-cards>article) :is(h1,h2,h3,h4,p,li,label,legend,summary,strong,small,.price,.price span,.period){color:var(--pp-text)!important}
+:root[data-pp-theme] :is(.pp-dialog,.settings-dialog,.share-dialog,.payment-option) :is(input:not([type=color]):not([type=checkbox]):not([type=radio]),select,textarea){background:var(--pp-bg)!important;color:var(--pp-text)!important;border-color:var(--pp-border)!important}
+:root[data-pp-theme] :is(.pp-secondary,.subscription-manage,.payment-option button:disabled,.pp-dialog-head button,.pp-plan-duration,.premium-state){background:var(--pp-accent-soft)!important;color:var(--pp-text)!important;border-color:var(--pp-border)!important}
+:root[data-pp-theme] :is(.pricing-intro,.pricing-header,.pricing-faq,.legal-header,.legal-shell,.pp-guide,.pp-learn,.site-legal-links,.pp-app-links,.payment-disclosure,.purchase-status,.plan-detail,.plan-footnote,.premium-benefits,.premium-lead,.pricing-intro h1,.pricing-intro p,.legal-content,.legal-lead,.legal-updated,.pp-eyebrow,.value-proposition,.pp-start-note){color:var(--pp-text)!important}
+:root[data-pp-theme] :is(.pp-guide,.pp-learn){background:var(--pp-bg)!important}
+:root[data-pp-theme] :is(.site-legal-links a,.pp-app-links a,.legal-back,.legal-nav a,.pp-guide a:not(.pp-start-primary),.pp-learn a:not(.pp-start-primary),.premium-benefits li::before){color:var(--pp-accent)!important}
+:root[data-pp-theme] .payment-option button[data-ready=true]{color:var(--pp-on-accent)!important}
+:root[data-pp-theme] .pp-plan-duration{border-top-color:var(--pp-accent)!important}
+:root[data-pp-theme] [data-color-toggle]{display:none!important}
+:root[data-pp-theme] .pp-welcome-art [fill="#315d50"]{fill:var(--pp-accent)}
+:root[data-pp-theme] .pp-welcome-art [fill="#d1dfbd"]{fill:var(--pp-illustration)}
+:root[data-pp-theme] .pp-welcome-art :is([fill="#ffe789"],[fill="#eed4de"]){fill:var(--pp-paper-accent)}
+:root[data-pp-theme] .pp-welcome-art [fill="#fff0a0"]{fill:var(--pp-on-accent)}
+:root[data-pp-theme] .pp-welcome-art [stroke="#315d50"]{stroke:var(--pp-accent)}
+:root[data-pp-theme] .pp-welcome-art [stroke="#fff6cd"]{stroke:var(--pp-on-accent)}
+.pp-theme-picker{flex:0 0 100%;min-width:0;margin:10px 0 0;padding:12px 0;border:0;border-top:1px solid var(--pp-border);border-bottom:1px solid var(--pp-border);color:var(--pp-text)}
+.pp-theme-picker legend{float:left;width:100%;margin:0 0 9px;font:600 12px/1.4 system-ui;color:var(--pp-text)}
+.pp-theme-grid{clear:both;display:grid;grid-template-columns:repeat(5,32px);justify-content:center;gap:10px}
+.pp-theme-grid button{min-width:32px!important;width:32px!important;min-height:32px!important;height:32px!important;padding:0!important;border:1px solid var(--pp-border)!important;border-radius:7px!important;background:linear-gradient(135deg,var(--swatch-base) 0 48%,var(--swatch-accent) 49% 100%)!important;box-shadow:inset 0 0 0 2px #ffffff30;position:relative;cursor:pointer}
+.pp-theme-grid button[aria-pressed=true]{outline:2px solid var(--pp-text);outline-offset:3px}
+.pp-theme-grid button[aria-pressed=true]::after{content:'✓';position:absolute;inset:6px;display:grid;place-items:center;background:var(--pp-surface);color:var(--pp-text);font:bold 12px/1 system-ui;border-radius:50%}
+.postispop .app-header.pp-menu-open{height:350px!important;min-height:350px!important}
+.postispop .app-header.pp-menu-open .top-controls{min-height:0;padding:14px;max-height:290px;overflow:auto;gap:10px}
+.postispop .app-header.pp-menu-open .top-controls .pp-app-links{position:static;flex:0 0 100%;width:100%;margin:5px 0 0;padding:0;display:flex;justify-content:space-around;font-size:12px;gap:8px}
+.pp-global-theme-control{position:relative;margin:10px 0;color:var(--pp-text);max-width:240px;font:13px/1.5 system-ui}
+.pp-global-theme-control>summary{cursor:pointer;list-style:none;border:1px solid var(--pp-border);border-radius:18px;padding:8px 14px;background:var(--pp-surface)}
+.pp-global-theme-control[open]{border:1px solid var(--pp-border);border-radius:14px;padding:10px}
+.pp-global-theme-control .pp-theme-picker{margin-top:8px}
+@media(max-width:700px){.pricing-header,.legal-header,body:has(.pp-owner-brand)>header{flex-wrap:wrap}.pp-theme-grid{gap:10px}}
