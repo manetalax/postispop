@@ -286,3 +286,17 @@ button, summary, a { touch-action: manipulation; }
 @media(max-width:480px){.pp-welcome-bar{gap:6px}.pp-welcome-bar .pp-welcome-reopen{padding:8px 10px;font-size:11px}}
 
 .pp-welcome-support{grid-column:1/-1;margin:0;padding:14px 0 0;border-top:1px solid #315d5025;font:12px/1.7 system-ui;color:#526355;overflow-wrap:anywhere}:root[data-color-scheme=dark] .pp-welcome-support{color:#c8d3c2;border-color:#ffffff25}
+
+/* Anchor the main menu beside the brand, with its own space above account actions. */
+.postispop .app-header .pp-menu-toggle{position:absolute;top:10px;right:0;grid-column:auto;grid-row:auto;z-index:26;align-self:start}
+.postispop .app-header .brand{align-self:start}
+.postispop .app-header.pp-menu-open{height:232px!important;min-height:232px!important}
+.postispop .app-header.pp-has-account-strip.pp-menu-open{margin-bottom:54px}
+.postispop .app-header.pp-menu-open .top-controls{top:62px;right:0;width:min(280px,calc(100vw - 24px));min-height:142px;padding:14px 14px 64px;align-content:flex-start}
+.postispop .app-header.pp-menu-open .pp-app-links{top:144px;right:14px;width:min(252px,calc(100vw - 52px));padding:0;flex-wrap:wrap;row-gap:8px}
+@media(max-width:700px){
+ .postispop .app-header .brand{grid-column:1;grid-row:1;max-width:calc(100% - 8px)}
+ .postispop .app-header .header-title{grid-column:1;grid-row:2;justify-self:start}
+ .postispop .app-header .pp-menu-toggle{top:10px;right:0;grid-row:auto;grid-column:auto}
+ .postispop .app-header.pp-has-account-strip.pp-menu-open{margin-bottom:54px}
+}
