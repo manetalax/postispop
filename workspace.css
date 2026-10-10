@@ -210,3 +210,20 @@ button, summary, a { touch-action: manipulation; }
   .pp-tools.pp-note-search { margin-top: 0; margin-bottom: 2px; }
 }
 @media (prefers-reduced-motion: reduce) { .sticky-note { transition: none!important; } }
+
+/* Large wordmark and persistent account instructions. */
+.postispop .app-header { grid-template-columns:minmax(0,624px) minmax(0,1fr) 44px; height:296px!important; min-height:296px!important; }
+.postispop .app-header .brand { width:624px; max-width:100%; height:296px; }
+.postispop .brand-logo { width:624px!important; max-width:100%; height:296px!important; }
+.postispop > #pp-learn { display:none!important; }
+.pp-header-instructions { width:min(1100px,100%); margin:12px auto 20px; color:var(--pp-text); }
+.pp-header-instructions .pp-seo-about { margin:0; padding:0; }
+.pp-header-instructions details { border:1px solid var(--pp-border); border-radius:12px; padding:10px 16px; background:var(--pp-surface); }
+.pp-header-instructions summary { text-align:center; color:var(--pp-accent); font-weight:650; cursor:pointer; }
+@media(max-width:700px){
+ .postispop .app-header { grid-template-columns:minmax(0,1fr) 44px; height:auto!important; min-height:248px!important; }
+ .postispop .app-header .brand { width:504px; height:248px; grid-column:1/-1; }
+ .postispop .brand-logo { width:504px!important; height:248px!important; }
+ .postispop .app-header .header-title { grid-column:1; grid-row:2; }
+ .postispop .app-header .pp-menu-toggle { grid-column:2; grid-row:2; }
+}
