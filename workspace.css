@@ -307,7 +307,7 @@ button, summary, a { touch-action: manipulation; }
 :root[data-pp-theme] :is(.pp-welcome-title,.pp-welcome-eyebrow,.pp-welcome-lead,.pp-welcome-guide,.pp-welcome-guide summary,.pp-welcome-guide-content p){color:var(--pp-text)!important}
 :root[data-pp-theme] :is(.pp-welcome-privacy,.pp-welcome-support){color:var(--pp-muted)!important;border-color:var(--pp-border)!important}
 :root[data-pp-theme] .pp-welcome-features span{background:var(--pp-surface)!important;color:var(--pp-text)!important}
-:root[data-pp-theme] :is(.pp-welcome-close,.pp-welcome-reopen,.pp-menu-toggle,.pp-account-strip button,.pp-note-search select,.pp-note-search input,.pp-board-options>summary){background:var(--pp-surface)!important;color:var(--pp-text)!important;border-color:var(--pp-border)!important}
+:root[data-pp-theme] :is(.pp-welcome-close,.pp-welcome-reopen,.pp-menu-toggle,.pp-account-strip button,.pp-note-search input,.pp-board-options>summary){background:var(--pp-surface)!important;color:var(--pp-text)!important;border-color:var(--pp-border)!important}
 :root[data-pp-theme] :is(.pp-welcome-premium,.pp-seventh-note-button,.pp-primary,.start-link,.pp-start-primary,.payment-option button[data-ready=true],.pp-welcome-reopen.is-active[aria-expanded=true]){background:var(--pp-accent)!important;color:var(--pp-on-accent)!important;border-color:var(--pp-accent)!important}
 :root[data-pp-theme] :is(.pp-dialog,.editor-dialog,.settings-dialog,.share-dialog,.pp-board-options .pp-tools,.top-controls,.legal-card,.plan-card,.payment-option,.pp-cards>li,.pp-cards>article,.pp-global-theme-control[open],.metrics article,.table-wrap){background:var(--pp-surface)!important;color:var(--pp-text)!important;border-color:var(--pp-border)!important}
 :root[data-pp-theme] :is(.pp-dialog,.settings-dialog,.share-dialog,.legal-card,.plan-card,.payment-option,.pp-cards>li,.pp-cards>article) :is(h1,h2,h3,h4,p,li,label,legend,summary,strong,small,.price,.price span,.period){color:var(--pp-text)!important}
@@ -366,3 +366,14 @@ html:root[data-color-scheme=light] .pp-note-search > select:not(.pp-sort-notes) 
 html[data-color-scheme=light] .pp-note-search > select.pp-sort-notes {background-image:var(--pp-sort-icon,url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23293e37%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M7%204v16m-3-3%203%203%203-3M13%206h7M13%2011h5M13%2016h3%22%2F%3E%3C%2Fsvg%3E"))!important}
 html:root[data-color-scheme=dark] .pp-note-search > select:not(.pp-sort-notes) {background-image:var(--pp-colour-filter-icon,url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23edf1e5%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%203a9%209%200%201%200%200%2018h1.4a2%202%200%200%200%201.4-3.4%201.2%201.2%200%200%201%20.9-2.1H17a4%204%200%200%200%204-4C21%206.8%2017%203%2012%203Z%22%2F%3E%3Ccircle%20cx%3D%227.5%22%20cy%3D%2210%22%20r%3D%22.7%22%2F%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%227%22%20r%3D%22.7%22%2F%3E%3Ccircle%20cx%3D%2215.5%22%20cy%3D%228%22%20r%3D%22.7%22%2F%3E%3Ccircle%20cx%3D%227.5%22%20cy%3D%2215%22%20r%3D%22.7%22%2F%3E%3C%2Fsvg%3E"))!important}
 html[data-color-scheme=dark] .pp-note-search > select.pp-sort-notes {background-image:var(--pp-sort-icon,url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23edf1e5%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M7%204v16m-3-3%203%203%203-3M13%206h7M13%2011h5M13%2016h3%22%2F%3E%3C%2Fsvg%3E"))!important}
+
+/* Keep background colours from resetting toolbar SVG images. */
+html:root[data-pp-theme] .pp-note-search select {background-color:var(--pp-surface)!important}
+/* Donation information uses a distinct, readable support panel in every theme. */
+html:root[data-pp-theme] .pp-welcome-support,
+html:root[data-pp-theme] .pp-donation-notice {
+ padding:16px 18px;margin-top:16px;border:1px solid var(--pp-border)!important;
+ border-left:4px solid var(--pp-accent)!important;border-radius:12px;
+ background-color:var(--pp-surface)!important;color:var(--pp-text)!important;
+ font:500 13px/1.75 system-ui,sans-serif;overflow-wrap:anywhere;
+}
