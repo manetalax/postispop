@@ -35,6 +35,23 @@ test('Complete note crosses isolated devices with text, drawing, video, audio, i
  }finally{await browser.close();}
 });
 
+test('An already open reader switches note links and locks protected content without reloading',async()=>{
+ const {sealSharedNote}=await import('../note-share-package.js'),{encryptNote}=await import('../note-crypto.js');
+ const sealed=[];
+ for(const note of [{text:'Primera nota',paper:0},{paper:0,protectedEnvelope:await encryptNote({text:'Segunda nota protegida',attachments:[]},'clave')},{text:'Tercera nota',paper:0}])sealed.push(await sealSharedNote({format:'postispop',version:2,notes:[note]}));
+ const store=new Map(await Promise.all(sealed.map(async s=>[s.token,Buffer.from(await s.blob.arrayBuffer())])));
+ const url=s=>'https://postispop.com/nota-compartida.html#'+s.token+'.'+s.key;
+ const browser=await chromium.launch(browserOptions());try{
+ const {context}=await isolatedContext(browser,{width:390,height:844},null);await shareTransport(context,store);const page=await context.newPage();
+ await page.goto(url(sealed[0]));await page.getByText('Primera nota',{exact:true}).waitFor();await page.evaluate(()=>window.__sameReader=true);
+ await page.goto(url(sealed[1]));await page.locator('#shared-unlock:visible').waitFor();assert.equal(await page.locator('#shared-content:visible').count(),0);assert.equal(await page.evaluate(()=>window.__sameReader),true);
+ await page.locator('#shared-password').fill('clave');await page.getByRole('button',{name:'Abrir nota',exact:true}).click();await page.getByText('Segunda nota protegida',{exact:true}).waitFor();
+ await page.goto(url(sealed[2]));await page.getByText('Tercera nota',{exact:true}).waitFor();assert.equal(await page.locator('#shared-unlock:visible').count(),0);assert.equal(await page.getByText('Segunda nota protegida',{exact:true}).count(),0);
+ await page.goto(url(sealed[1]));await page.locator('#shared-unlock:visible').waitFor();assert.equal(await page.locator('#shared-password').inputValue(),'');assert.equal(await page.locator('#shared-content:visible').count(),0);
+ await context.close();
+ }finally{await browser.close();}
+});
+
 test('Short text and photo previews accompany the link in the native picker; unsupported browsers preserve the link',async()=>{
  const browser=await chromium.launch(browserOptions()),store=new Map();try{
  const board=fixture(6);board.notes[0].text='Foto con texto debajo';
@@ -48,7 +65,8 @@ test('Short text and photo previews accompany the link in the native picker; uns
  await fs.mkdir('test-results/complete-note-share',{recursive:true});await dialog.locator('img').screenshot({path:'test-results/complete-note-share/preview-photo-text.png'});
  await page.evaluate(()=>{delete window.__postispopNativeShare;Object.defineProperty(navigator,'share',{configurable:true,value:undefined});window.open=url=>{window.__wa=url;return {};};});
  await dialog.getByRole('button',{name:'WhatsApp',exact:true}).click();await page.waitForFunction(()=>window.__wa);assert.ok(new URL(await page.evaluate(()=>window.__wa)).searchParams.get('text').includes(url));await dialog.getByText('Tu navegador solo permite compartir el enlace. Puedes descargar la vista previa y adjuntarla al mensaje.',{exact:true}).waitFor();
- await dialog.getByRole('button',{name:'Cerrar',exact:true}).click();await page.getByRole('button',{name:'Volver a la pizarra'}).click();await page.locator('.sticky-note').nth(1).click();await page.getByRole('button',{name:'Compartir nota completa',exact:true}).click();await page.locator('.pp-note-share-preview').waitFor();
+ await dialog.getByRole('button',{name:'Cerrar',exact:true}).click();await page.getByRole('button',{name:'Volver a la pizarra'}).click();await page.locator('.sticky-note').nth(1).click();await page.locator('.editor-dialog textarea').fill('Una nota breve sin foto');await page.getByRole('button',{name:'Compartir nota completa',exact:true}).click();await page.locator('.pp-note-share-preview').waitFor();
+ await page.locator('.pp-note-share-dialog').getByRole('button',{name:'Cerrar',exact:true}).click();await page.locator('.editor-dialog textarea').fill('x'.repeat(301));await page.getByRole('button',{name:'Compartir nota completa',exact:true}).click();await page.locator('.pp-note-share-dialog input').waitFor();assert.equal(await page.locator('.pp-note-share-preview').count(),0);
  await context.close();
  }finally{await browser.close();}
 });

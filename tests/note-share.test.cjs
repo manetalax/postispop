@@ -47,5 +47,5 @@ test('Preview selection never reveals protected notes or hides videos, extra fil
  const image={kind:'file',type:'image/png',data:'',size:0};
  assert.equal(previewEligible({text:'Foto con texto',attachments:[image]}),true);
  assert.equal(previewEligible({text:'',attachments:[image]}),true);
- for(const note of [{text:''},{text:'x'.repeat(601)},{text:'Hola',protectedEnvelope:{}},{text:'Hola',attachments:[{kind:'file',type:'video/webm'}]},{text:'Hola',attachments:[image,image]},{text:'Hola',attachments:[{kind:'link'}]},{text:'Hola',style:{drawing:{strokes:[{}]}}}])assert.equal(previewEligible(note),false);
+ for(const note of [{text:''},{text:'x'.repeat(301)},{text:'Hola',protectedEnvelope:{}},{text:'Hola',attachments:[{kind:'file',type:'video/webm'}]},{text:'Hola',attachments:[image,image]},{text:'Hola',attachments:[{kind:'link'}]},{text:'Hola',style:{drawing:{strokes:[{}]}}}])assert.equal(previewEligible(note),false);
 });
