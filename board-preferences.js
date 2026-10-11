@@ -84,14 +84,14 @@ function refreshControls(frame,boardId) {
     pin.addEventListener('click',()=>{if(toggle(boardId,id,'pin'))refreshControls(frame,boardId);});
     const colorButton=element('button','pp-note-preference pp-note-color','');colorButton.type='button';colorButton.setAttribute('aria-label',strings.color+' · '+strings.note+' '+slot);colorButton.title=colorButton.getAttribute('aria-label');
     const dot=element('span','pp-note-color-dot','');dot.style.setProperty('--pp-current-paper',colors[paper]);dot.style.setProperty('--pp-contrast-paper',colors[contrastColors[paper]]);colorButton.append(dot);
-    const colorMenu=element('div','pp-note-picker pp-note-color-picker','');colorMenu.hidden=true;colorMenu.setAttribute('role','group');colorMenu.setAttribute('aria-label',strings.color);
+    const colorMenu=element('div','pp-note-picker pp-note-color-picker','');colorMenu.hidden=true;colorMenu.id='pp-note-color-picker-'+id;colorButton.setAttribute('aria-controls',colorMenu.id);colorButton.setAttribute('aria-expanded','false');colorMenu.setAttribute('role','group');colorMenu.setAttribute('aria-label',strings.color);
     colors.forEach((color,index)=>{const option=element('button','pp-note-color-option','');option.type='button';option.style.setProperty('--pp-option-paper',color);option.setAttribute('aria-label',strings.colors[index]);option.setAttribute('aria-pressed',String(index===paper));option.title=strings.colors[index];option.addEventListener('click',()=>saveNoteValue(note,boardId,'paper',index,colorMenu,actions,strings));colorMenu.append(option);});
-    colorButton.addEventListener('click',()=>{colorMenu.hidden=!colorMenu.hidden;symbolMenu.hidden=true;});
+    colorButton.addEventListener('click',()=>{colorMenu.hidden=!colorMenu.hidden;symbolMenu.hidden=true;colorButton.setAttribute('aria-expanded',String(!colorMenu.hidden));symbolButton.setAttribute('aria-expanded','false');});
     const symbolButton=element('button','pp-note-preference pp-note-symbol','');symbolButton.type='button';symbolButton.dataset.selected=String(Boolean(doodle&&symbols[doodle]));symbolButton.setAttribute('aria-label',strings.symbol+' · '+strings.note+' '+slot);symbolButton.title=symbolButton.getAttribute('aria-label');
     if(doodle&&symbols[doodle])symbolButton.innerHTML=symbols[doodle];else symbolButton.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2v20M2 12h20"/></svg>';
-    const symbolMenu=element('div','pp-note-picker pp-note-symbol-picker','');symbolMenu.hidden=true;symbolMenu.setAttribute('role','group');symbolMenu.setAttribute('aria-label',strings.symbol);
+    const symbolMenu=element('div','pp-note-picker pp-note-symbol-picker','');symbolMenu.hidden=true;symbolMenu.id='pp-note-symbol-picker-'+id;symbolButton.setAttribute('aria-controls',symbolMenu.id);symbolButton.setAttribute('aria-expanded','false');symbolMenu.setAttribute('role','group');symbolMenu.setAttribute('aria-label',strings.symbol);
     ['',...Object.keys(symbols)].forEach(value=>{const option=element('button','pp-note-symbol-option','');option.type='button';option.setAttribute('aria-label',strings.symbols[value||'none']);option.setAttribute('aria-pressed',String((doodle||'')===value));option.title=strings.symbols[value||'none'];if(value)option.innerHTML=symbols[value];else option.textContent='×';option.addEventListener('click',()=>saveNoteValue(note,boardId,'doodle',value,symbolMenu,actions,strings));symbolMenu.append(option);});
-    symbolButton.addEventListener('click',()=>{symbolMenu.hidden=!symbolMenu.hidden;colorMenu.hidden=true;});
+    symbolButton.addEventListener('click',()=>{symbolMenu.hidden=!symbolMenu.hidden;colorMenu.hidden=true;symbolButton.setAttribute('aria-expanded',String(!symbolMenu.hidden));colorButton.setAttribute('aria-expanded','false');});
     actions.replaceChildren(colorButton,star,pin,symbolButton,colorMenu,symbolMenu);
   }
 }
@@ -101,7 +101,7 @@ async function saveNoteValue(note,boardId,kind,value,menu,actions,strings){
   try {
     const response=await fetch(`/api/note/${encodeURIComponent(id)}/${kind}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({[kind]:value,revision})});
     if(!response.ok)throw new Error('NOTE_SAVE_FAILED');
-    menu.hidden=true;
+    menu.hidden=true;actions.querySelector('[aria-controls="'+menu.id+'"]')?.setAttribute('aria-expanded','false');
     window.dispatchEvent(new CustomEvent('postispop:board-reload',{detail:{boardId}}));
   } catch {
     const status=element('span','pp-note-save-error',strings.saveError);status.setAttribute('role','status');actions.append(status);setTimeout(()=>status.remove(),3500);

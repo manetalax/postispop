@@ -87,6 +87,7 @@ if(file.href===new URL('index.html',out).href&&!html.includes('rel="preconnect"'
 if(!html.includes('/wpo-register.js'))html=html.replace('</body>','<script src="/wpo-register.js" defer></script></body>');
 if(!html.includes('/wpo-features.js'))html=html.replace('</body>','<script type="module" src="/wpo-features.js?v=20261002b"></script></body>');
 html=html.replace('</head>','<link rel="stylesheet" href="/workspace.css?v=20261011-editor-themes"></head>');
+if(!html.includes('/submenu-dismiss.js'))html=html.replace(/(<meta\b[^>]*charset[^>]*>)/i,'$1<script src="/submenu-dismiss.js" defer></script>');
 if(!html.includes('/themes.js'))html=html.replace(/(<meta\b[^>]*charset[^>]*>)/i,'$1<script src="/themes.js?v=20261010-toolbar-icons"></script>');
 html=html.replace(/href=(["'])\.\/note-attachments\.css(?:\?[^"']*)?\1/g,'href="/note-attachments.css?v=20261011-complete-share"').replace(/src=(["'])\.\/note-attachments\.js(?:\?[^"']*)?\1/g,'src="/note-attachments.js?v=20261011-complete-share"');
   html=html.replace(/src=(["'])\/experience\.js(?:\?[^"']*)?\1/g,'src="/experience.js?v=20261010b"').replace(/src=(["'])\/protected-notes\.js(?:\?[^"']*)?\1/g,'src="/protected-notes.js?v=20261011-complete-share"');

@@ -573,3 +573,7 @@ html:root[data-pp-theme] .editor-dialog .rich-paper-input textarea::placeholder 
  .postispop .board-frame .note-number{font-size:14px!important}
  .sticky-note>.pp-note-date{left:40px;font-size:11px}
 }
+
+/* An open note picker sits above the search row and neighbouring notes. */
+.postispop .note-cell:has(.pp-note-picker:not([hidden])) { z-index:12; }
+.postispop .board-frame:has(.pp-note-picker:not([hidden])) { z-index:11; }
