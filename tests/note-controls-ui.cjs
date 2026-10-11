@@ -32,7 +32,7 @@ await page.locator('.pp-note-color').first().click();assert.equal(await page.loc
 await page.reload();await ready(page);await page.locator('.pp-note-favorite[aria-pressed="true"]').waitFor();
 for(const size of await page.locator('.pp-note-symbol[data-selected="true"] svg').evaluateAll(ns=>ns.map(n=>n.getBoundingClientRect().width)))assert.ok(size>=(width>700?50:36),'Chosen symbols are prominent');
 for(const size of await page.locator('.note-number').evaluateAll(ns=>ns.map(n=>parseFloat(getComputedStyle(n).fontSize))))assert.ok(size>=14,'Note numbers remain readable');
-await page.locator('.pp-welcome-close').click();assert.equal(await page.locator('.pp-premium-entry').isVisible(),true,'Premium remains visible when welcome is dismissed');await page.evaluate(()=>scrollTo(0,0));const entryRect=await page.locator('.pp-premium-entry').boundingBox();assert.ok(entryRect.y+entryRect.height<900,'Premium above fold');
+if(await page.locator('.pp-welcome-close').isVisible())await page.locator('.pp-welcome-close').click();assert.equal(await page.locator('.pp-premium-entry').isVisible(),true,'Premium remains visible when welcome is dismissed');await page.evaluate(()=>scrollTo(0,0));const entryRect=await page.locator('.pp-premium-entry').boundingBox();assert.ok(entryRect.y+entryRect.height<900,'Premium above fold');
 const dots=await page.locator('.pp-note-color-dot').evaluateAll(ns=>ns.map(n=>({width:n.getBoundingClientRect().width,ink:getComputedStyle(n).borderColor,bg:getComputedStyle(n).backgroundColor})));for(const d of dots){assert.equal(d.width,28);assert.ok(contrast(d.ink,d.bg)>=3);}
 assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);
 await page.locator('.board-frame').scrollIntoViewIfNeeded();

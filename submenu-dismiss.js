@@ -15,7 +15,7 @@
  }
  function outside(event){for(const menu of menus())if(!menu.contains(event.target))menu.close();}
  // Capture handles controls that intentionally stop bubbling (note colour and symbols).
- document.addEventListener('click',outside,true);
+ document.addEventListener('click',event=>{outside(event);pointerActive=false;},true);
  let pointerActive=false;
  document.addEventListener('pointerdown',()=>{pointerActive=true;},true);
  document.addEventListener('pointerup',()=>{setTimeout(()=>{pointerActive=false;},0);},true);
