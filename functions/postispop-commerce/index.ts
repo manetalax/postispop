@@ -129,6 +129,7 @@ Deno.serve(async(req:Request)=>{
     }
     if(action==='checkout'&&req.method==='POST') {
       const slug=String(body.slug),plan=premiumPlans[slug];
+      const language=['es','en','de','fr','pt','it','ja','ko'].includes(body.lang)?body.lang:'es';
       if(!plan)return reply({error:'PRODUCT_NOT_FOUND'},404);
       const accessResponse=await fetch(env('SUPABASE_URL')+'/rest/v1/rpc/postispop_access',{method:'POST',headers:{Authorization:authorization,apikey:env('SUPABASE_ANON_KEY'),'Content-Type':'application/json'},body:'{}'});
       if(!accessResponse.ok)throw new Error('DATABASE_ERROR');
@@ -138,7 +139,7 @@ Deno.serve(async(req:Request)=>{
       if(!p||p.stripe_price_id!==plan.price||p.price_cents!==plan.amount||p.currency!=='eur')return reply({error:'PRODUCT_NOT_CONFIGURED'},503);
       const owned=await db('store_entitlements?user_id=eq.'+user.id+'&select=product_slug');
       if(owned.some((e:any)=>e.product_slug==='postispop-pro'))return reply({error:'ALREADY_OWNED'},409);
-      const form=new URLSearchParams({mode:plan.mode,client_reference_id:user.id,customer_email:user.email,success_url:origin+'/?purchase={CHECKOUT_SESSION_ID}',cancel_url:origin+'/atelier.html?cancelled=1','metadata[postispop_user]':user.id,'metadata[postispop_product]':slug,'line_items[0][price]':plan.price,'line_items[0][quantity]':'1'});
+      const form=new URLSearchParams({mode:plan.mode,client_reference_id:user.id,customer_email:user.email,success_url:origin+'/?lang='+language+'&purchase={CHECKOUT_SESSION_ID}',cancel_url:origin+'/atelier.html?'+new URLSearchParams({lang:language,plan:slug,cancelled:'1'}),'metadata[postispop_user]':user.id,'metadata[postispop_product]':slug,'line_items[0][price]':plan.price,'line_items[0][quantity]':'1'});
       if(plan.mode==='subscription')form.set('subscription_data[metadata][postispop_user]',user.id);
       const session=await stripe('checkout/sessions',form,'pp-'+user.id+'-'+slug+'-'+Math.floor(Date.now()/60000));
       return reply({url:session.url});

@@ -20,6 +20,22 @@ const MENU_LABELS={
 
 const SEO_TITLE='Bloc de notas online gratis y pizarra | PostisPop';
 let lastSave=null, installPrompt=null, reactReady=false;
+const premiumPlans=new Set(['premium-monthly','premium-quarterly','premium-yearly','premium-lifetime']);
+let premiumAuthChecking=false,premiumAuthOpened=false;
+async function continuePremiumSignIn(afterSignIn=false){
+  const params=new URLSearchParams(location.search),plan=params.get('plan');
+  if(!reactReady||params.get('premium_login')!=='1'||!premiumPlans.has(plan)||premiumAuthChecking||premiumAuthOpened&&!afterSignIn)return;
+  premiumAuthChecking=true;
+  try{
+    const response=await fetch('/api/session',{cache:'no-store'});if(!response.ok)return;
+    const state=await response.json();
+    if(state.actor?.registered){location.replace('/atelier.html?'+new URLSearchParams({lang:readBoardLanguage(),plan}));return;}
+    const login=document.querySelector('.header-auth-login');
+    if(login&&!login.disabled&&!premiumAuthOpened){premiumAuthOpened=true;login.click();}
+  }catch{/* Keep the existing sign-in controls available after a connection failure. */}
+  finally{premiumAuthChecking=false;}
+}
+window.addEventListener('postispop:session-change',()=>{setTimeout(()=>void continuePremiumSignIn(true),0);});
 function syncHeaderAccountActions(header) {
   if (!header) return;
   const sources = {
@@ -93,6 +109,7 @@ function update() {
     header.append(nav);
   }
   syncHeaderAccountActions(header);
+  if(header)void continuePremiumSignIn();
   // The mobile layout hides the text inside this icon button.
   document.querySelectorAll('.header-share').forEach(button=>{
     if(!button.getAttribute('aria-label'))button.setAttribute('aria-label',button.textContent.trim()||'Compartir');
