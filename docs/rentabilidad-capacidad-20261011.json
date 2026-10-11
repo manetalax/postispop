@@ -1,0 +1,77 @@
+{
+  "assumptions": {
+    "notes_per_user": 100,
+    "full_utilization": true,
+    "mb_decimal": true,
+    "vat_assumption": 0.21,
+    "stripe_eea_standard": 0.015,
+    "stripe_billing": 0.007,
+    "stripe_fixed_eur": 0.25,
+    "usd_eur_stress_assumption": 1,
+    "backend_usd_month": 25,
+    "stress_storage_multiplier": 4.2,
+    "excluded": [
+      "support",
+      "development",
+      "income_tax",
+      "refunds",
+      "unbounded_traffic",
+      "unbounded_versions",
+      "extra_shared_copies"
+    ]
+  },
+  "plans": [
+    {
+      "plan": "Premium",
+      "pvp_eur": 2.95,
+      "note_mb": 10,
+      "active_gb": 1.0,
+      "net_after_assumed_vat_and_stripe_eur": 2.1231,
+      "idrive_single_copy_usd": 0.006,
+      "backblaze_single_copy_usd": 0.0069,
+      "r2_single_copy_usd": 0.015,
+      "stress_gb": 4.2,
+      "idrive_stress_variable_usd": 0.0252,
+      "r2_stress_variable_usd": 0.063
+    },
+    {
+      "plan": "Plus",
+      "pvp_eur": 4.95,
+      "note_mb": 25,
+      "active_gb": 2.5,
+      "net_after_assumed_vat_and_stripe_eur": 3.732,
+      "idrive_single_copy_usd": 0.015,
+      "backblaze_single_copy_usd": 0.0174,
+      "r2_single_copy_usd": 0.0375,
+      "stress_gb": 10.5,
+      "idrive_stress_variable_usd": 0.063,
+      "r2_stress_variable_usd": 0.1575
+    },
+    {
+      "plan": "Max",
+      "pvp_eur": 9.95,
+      "note_mb": 50,
+      "active_gb": 5.0,
+      "net_after_assumed_vat_and_stripe_eur": 7.7542,
+      "idrive_single_copy_usd": 0.03,
+      "backblaze_single_copy_usd": 0.0347,
+      "r2_single_copy_usd": 0.075,
+      "stress_gb": 21.0,
+      "idrive_stress_variable_usd": 0.126,
+      "r2_stress_variable_usd": 0.315
+    },
+    {
+      "plan": "Ultra",
+      "pvp_eur": 19.9,
+      "note_mb": 100,
+      "active_gb": 10.0,
+      "net_after_assumed_vat_and_stripe_eur": 15.7585,
+      "idrive_single_copy_usd": 0.06,
+      "backblaze_single_copy_usd": 0.0695,
+      "r2_single_copy_usd": 0.15,
+      "stress_gb": 42.0,
+      "idrive_stress_variable_usd": 0.252,
+      "r2_stress_variable_usd": 0.63
+    }
+  ]
+}
