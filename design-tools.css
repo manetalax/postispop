@@ -93,3 +93,6 @@
 .editor-dialog .edit-paper[data-pp-secondary=open] :is(.note-customization,.pen-tray,.pp-attachments){animation:none}
 .editor-dialog .edit-paper .capture-preview{max-width:100%;max-height:210px;overflow:hidden;margin:0 0 10px}
 .editor-dialog .edit-paper .capture-preview img{max-height:210px;object-fit:contain}
+
+/* Keep stationery artwork inside the content area, clear of card controls. */
+.pp-styled-note:not([data-pp-paper="plain"]){background-origin:content-box!important;background-repeat:no-repeat!important;background-color:var(--pp-paper-base)!important}

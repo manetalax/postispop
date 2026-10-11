@@ -76,7 +76,7 @@ function refreshControls(frame,boardId) {
     const paper=Math.max(0,Math.min(5,Number(note.dataset.paper)||0)),doodle=note.dataset.doodle||'';
     if(actions.dataset.noteId===id&&actions.dataset.favorite===String(favorite)&&actions.dataset.pinned===String(pinned)&&actions.dataset.language===lang&&actions.dataset.paper===String(paper)&&actions.dataset.doodle===doodle)continue;
     actions.dataset.noteId=id;actions.dataset.favorite=String(favorite);actions.dataset.pinned=String(pinned);actions.dataset.language=lang;actions.dataset.paper=String(paper);actions.dataset.doodle=doodle;
-    const star=element('button','pp-note-preference pp-note-favorite',favorite?'★':'☆');
+    const star=element('button','pp-note-preference pp-note-favorite','');star.innerHTML=symbols.star;
     star.type='button';star.setAttribute('aria-pressed',String(favorite));star.setAttribute('aria-label',`${favorite?strings.unfavorite:strings.favorite} · ${strings.note} ${slot}`);star.title=star.getAttribute('aria-label');
     star.addEventListener('click',()=>{if(toggle(boardId,id,'favorite'))refreshControls(frame,boardId);});
     const pin=element('button','pp-note-preference pp-note-pin','');pin.innerHTML=pinned?pushpin:pinMarker;
@@ -88,7 +88,7 @@ function refreshControls(frame,boardId) {
     colors.forEach((color,index)=>{const option=element('button','pp-note-color-option','');option.type='button';option.style.setProperty('--pp-option-paper',color);option.setAttribute('aria-label',strings.colors[index]);option.setAttribute('aria-pressed',String(index===paper));option.title=strings.colors[index];option.addEventListener('click',()=>saveNoteValue(note,boardId,'paper',index,colorMenu,actions,strings));colorMenu.append(option);});
     colorButton.addEventListener('click',()=>{colorMenu.hidden=!colorMenu.hidden;symbolMenu.hidden=true;});
     const symbolButton=element('button','pp-note-preference pp-note-symbol','');symbolButton.type='button';symbolButton.dataset.selected=String(Boolean(doodle&&symbols[doodle]));symbolButton.setAttribute('aria-label',strings.symbol+' · '+strings.note+' '+slot);symbolButton.title=symbolButton.getAttribute('aria-label');
-    if(doodle&&symbols[doodle])symbolButton.innerHTML=symbols[doodle];else symbolButton.textContent='＋';
+    if(doodle&&symbols[doodle])symbolButton.innerHTML=symbols[doodle];else symbolButton.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2v20M2 12h20"/></svg>';
     const symbolMenu=element('div','pp-note-picker pp-note-symbol-picker','');symbolMenu.hidden=true;symbolMenu.setAttribute('role','group');symbolMenu.setAttribute('aria-label',strings.symbol);
     ['',...Object.keys(symbols)].forEach(value=>{const option=element('button','pp-note-symbol-option','');option.type='button';option.setAttribute('aria-label',strings.symbols[value||'none']);option.setAttribute('aria-pressed',String((doodle||'')===value));option.title=strings.symbols[value||'none'];if(value)option.innerHTML=symbols[value];else option.textContent='×';option.addEventListener('click',()=>saveNoteValue(note,boardId,'doodle',value,symbolMenu,actions,strings));symbolMenu.append(option);});
     symbolButton.addEventListener('click',()=>{symbolMenu.hidden=!symbolMenu.hidden;colorMenu.hidden=true;});
