@@ -1,3 +1,5 @@
+import {assertNoteSize,noteSizeMessages} from './note-size.js';
+import {readGuest} from './guest-board.js';
 import {withNoteStorageLock,assertAttachmentWritable,protectedMarker} from './attachment-lock.js';
 import {readBoardLanguage} from './seo-language.js';
 import {shareFile,shareText,openWhatsApp} from './share-tools.js?v=20261009a';
@@ -347,6 +349,20 @@ function progressStatus(phase,percent,fileName=''){
   toast.append(text,progress);toast.classList.add('is-visible');clearTimeout(notify.timer);
 }
 
+async function sizeSnapshot(noteId, attachments) {
+  let note;
+  if(noteId.startsWith('guest-')) note=readGuest().notes.find(item=>item.id===noteId);
+  else {
+    const boardId=localStorage.getItem('pp:last-board');
+    if(!boardId)throw Error('NOTE_UNAVAILABLE');
+    const response=await fetch('/api/board/'+encodeURIComponent(boardId),{cache:'no-store'});
+    if(!response.ok)throw Error('NOTE_UNAVAILABLE');
+    note=(await response.json()).notes.find(item=>item.id===noteId);
+  }
+  if(!note)throw Error('NOTE_UNAVAILABLE');
+  const detail={noteId,snapshot:null};window.dispatchEvent(new CustomEvent('postispop:editor-snapshot',{detail}));
+  return {...note,...(detail.snapshot||{}),attachments};
+}
 async function saveFiles(files, noteId=activeNoteId,{alreadyCompressed=false}={}) {
   if (!noteId) return;
   const ready=[],failures=[];
@@ -364,12 +380,15 @@ async function saveFiles(files, noteId=activeNoteId,{alreadyCompressed=false}={}
   let storedBytes=0;const saveTotal=ready.reduce((sum,item)=>sum+item.file.size,0)||1;
   try { await withNoteStorageLock(noteId, async()=>{
     await assertAttachmentWritable(noteId);
-    let count=(await listForNote(noteId)).length;
+    const existing=await listForNote(noteId);
+    const snapshot=await sizeSnapshot(noteId,existing);
+    let count=existing.length;
     for (const {source,file,compression} of ready) {
       if(count>=MAX_ATTACHMENTS){failures.push(labels.limit);break;}
       progressStatus('save',storedBytes/saveTotal*100,source.name);
       const id=crypto.randomUUID(),item={key:`${noteId}::${id}`,id,noteId,kind:'file',name:compression==='gzip'?source.name:(file.name||`audio-${Date.now()}.webm`),type:compression==='gzip'?(source.type||'application/octet-stream'):(file.type||'application/octet-stream'),...(compression==='gzip'?{originalType:source.type||'application/octet-stream'}:{}),size:file.size,originalSize:source.size,compression,created:Date.now(),blob:file};
-      await transaction('readwrite',store=>store.put(item));count++;storedBytes+=file.size;progressStatus('save',storedBytes/saveTotal*100,source.name);
+      try{assertNoteSize({...snapshot,attachments:[...existing,item]});}catch(error){if(error.message==='NOTE_TOO_LARGE'){failures.push(noteSizeMessages[readBoardLanguage()]||noteSizeMessages.en);break;}throw error;}
+      await transaction('readwrite',store=>store.put(item));existing.push(item);count++;storedBytes+=file.size;progressStatus('save',storedBytes/saveTotal*100,source.name);
     }
   }); } catch(error) { notify(error.message==='NOTE_PROTECTED'?labels.protected:labels.failed);return; }
   if(activeNoteId===noteId)await renderList();
@@ -387,8 +406,9 @@ async function saveLink(raw, noteId=activeNoteId) {
     await assertAttachmentWritable(noteId);
     if((await listForNote(noteId)).length>=MAX_ATTACHMENTS){notify(labels.limit);return;}
     const id=crypto.randomUUID();const item={key:`${noteId}::${id}`,id,noteId,kind:'link',name:url.hostname,url:url.href,created:Date.now(),size:0,type:'text/uri-list'};
+    assertNoteSize(await sizeSnapshot(noteId,[...(await listForNote(noteId)),item]));
     await transaction('readwrite',store=>store.put(item));
-  });}catch(error){notify(error.message==='NOTE_PROTECTED'?labels.protectedLink:labels.failed);}
+  });}catch(error){notify(error.message==='NOTE_TOO_LARGE'?(noteSizeMessages[readBoardLanguage()]||noteSizeMessages.en):error.message==='NOTE_PROTECTED'?labels.protectedLink:labels.failed);}
   if(activeNoteId===noteId)await renderList();
 }
 

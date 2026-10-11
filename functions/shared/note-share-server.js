@@ -1,5 +1,7 @@
 // Transport only: keys and plaintext never reach this function.
-export const MAX_SHARE_BODY=50*1024*1024+28;
+// A 10 MB logical note can expand during JSON/base64 transport.
+// The encrypted server cannot inspect content; apply a bounded transport cap.
+export const MAX_SHARE_BODY=14_000_000+28;
 const origins=new Set(['https://postispop.com','https://www.postispop.com','https://appassets.androidplatform.net']);
 export async function boundedBytes(body,max){
   if(!body)throw Error('EMPTY_BODY');

@@ -1,3 +1,4 @@
+import {validateNoteWrite} from './backup-import.js';
 import { readGuest, guestRequest, guestImportSlots } from './guest-board.js';
 import { createOfflineStore, sameMutation } from './offline-sync.js';
 import { getOfflineRights, saveOfflineReceipt } from './offline-license.js';
@@ -180,6 +181,8 @@ async function api(endpoint, init) {
       }catch(error){await restored?.rollback();throw error;}
     });
   }
+  const sizeWrite=method==='POST'&&endpoint.match(/^note\/([^/]+)(?:\/(text|paper|doodle|image|style|protect|protected-save))?$/);
+  if(sizeWrite&&sizeWrite[1].startsWith('guest-')){const note=readGuest().notes.find(n=>n.id===sizeWrite[1]);if(note)await validateNoteWrite(note,sizeWrite[2],payload);}
   const local=guestRequest(endpoint,method,payload);
   if(local) return json(local);
 
@@ -308,6 +311,7 @@ async function api(endpoint, init) {
   }
   if (!user && endpoint === "boards" && method === "POST") return json(readGuest());
   if (!user) return json({ error: "SESSION_REQUIRED" }, 401);
+  if(sizeWrite){const rows=await rest('notes','?id=eq.'+encodeURIComponent(sizeWrite[1])+'&select=*');if(rows[0]){const style=offline.projectStyles(user.id).find(item=>item.note_id===sizeWrite[1]);await validateNoteWrite({...mapNote(rows[0]),style:style||null},sizeWrite[2],payload);}}
 
   if(init?.accountId && init.accountId!==user.id)return json({error:'SESSION_CHANGED'},401);
   if(endpoint==='roulette/status'&&method==='GET')return json(await rest('rpc/postispop_saturday_status','',{method:'POST',body:'{}'}));
@@ -505,7 +509,11 @@ window.fetch = async (input, init = {}) => {
     }
     // Write-ahead local save occurs before any network request. No queue is shared across accounts.
     if(account&&mode==='cloud'&&method==='POST'&&offline.isMutation(endpoint)) {
-      const body=JSON.parse(init.body||'{}'), result=offline.enqueue(account.id,endpoint,body);
+      const body=JSON.parse(init.body||'{}');
+      const sizeId=body.note_id||endpoint.split('/')[1],sizeKind=endpoint==='designs/styles'?'style':endpoint.split('/')[2];
+      const stored=offline.findNote(account.id,sizeId)?.note;
+      if(stored){const style=offline.projectStyles(account.id).find(item=>item.note_id===sizeId);await validateNoteWrite({...stored,style},sizeKind,sizeKind==='style'?{style:body}:body);}
+      const result=offline.enqueue(account.id,endpoint,body);
       announce('postispop:offline',outboxStatus());
       if(online())await flushOutbox(account.id);
       if(requestGeneration!==sessionGeneration||session()?.user?.id!==account.id)return json({error:'SESSION_CHANGED'},401);

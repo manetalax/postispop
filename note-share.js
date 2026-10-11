@@ -87,7 +87,7 @@ export async function showCompleteNoteShare(id,{getSnapshot}={}){
     make(t.copy,async()=>{try{await navigator.clipboard.writeText(url);status.textContent=t.copied;}catch{input.focus();input.select();status.textContent=t.copyFailed;}});
     make(t.download,async()=>{const file=shortcutFile(url,t.openApp);const result=await shareFile(file,{title:t.received,text:url});if(result==='unsupported')download(file);});
     status.textContent=preview?t.chooseApp:t.snapshot;
-  }catch(error){if(controller.signal.aborted)return;status.textContent=['SHARE_TOO_LARGE','BACKUP_TOO_LARGE'].includes(error.message)?t.tooLarge:error.message==='EMPTY_NOTE'?t.empty:t.failed;}
+  }catch(error){if(controller.signal.aborted)return;status.textContent=['SHARE_TOO_LARGE','BACKUP_TOO_LARGE','NOTE_TOO_LARGE'].includes(error.message)?t.tooLarge:error.message==='EMPTY_NOTE'?t.empty:t.failed;}
 }
 export function installEditorShareButton(editor,id){
   if(editor.querySelector('.pp-complete-note-share'))return;
