@@ -129,7 +129,7 @@ function openAttachmentDb(){
     request.onsuccess=()=>resolve(request.result);request.onerror=request.onblocked=()=>reject(Error('ATTACHMENT_CHECK_UNAVAILABLE'));
   });
 }
-async function readAttachmentRows(noteId){
+export async function readAttachmentRows(noteId){
   const db=await openAttachmentDb();
   return new Promise((resolve,reject)=>{
     const tx=db.transaction('attachments','readonly'),request=tx.objectStore('attachments').index('noteId').getAll(noteId);let rows=[];
@@ -260,3 +260,5 @@ export async function validateNoteWrite(note,kind,payload) {
   const previous={...note,attachments};
   assertNoteSize({...prospectiveNote(note,kind,payload),attachments},{previousBytes:noteSize(previous)});
 }
+
+export {purgeOversizedBoard} from './note-size-cleanup.js';

@@ -1,5 +1,6 @@
+import {purgeOversizedBoard} from './backup-import.js';
 import {validateNoteWrite} from './backup-import.js';
-import { readGuest, guestRequest, guestImportSlots } from './guest-board.js';
+import { readGuest, guestRequest, guestImportSlots, purgeGuestNoteForSize } from './guest-board.js';
 import { createOfflineStore, sameMutation } from './offline-sync.js';
 import { getOfflineRights, saveOfflineReceipt } from './offline-license.js';
 import { installOfflineUI } from './offline-ui.js';
@@ -183,6 +184,7 @@ async function api(endpoint, init) {
   }
   const sizeWrite=method==='POST'&&endpoint.match(/^note\/([^/]+)(?:\/(text|paper|doodle|image|style|protect|protected-save))?$/);
   if(sizeWrite&&sizeWrite[1].startsWith('guest-')){const note=readGuest().notes.find(n=>n.id===sizeWrite[1]);if(note)await validateNoteWrite(note,sizeWrite[2],payload);}
+  if(endpoint==='board/guest-board'&&method==='GET')await purgeOversizedBoard(readGuest(),{remove:note=>purgeGuestNoteForSize(note.id)});
   const local=guestRequest(endpoint,method,payload);
   if(local) return json(local);
 
@@ -398,6 +400,7 @@ async function api(endpoint, init) {
     const result=await rest('rpc/postispop_restore_board_note','',{method:'POST',body:JSON.stringify({p_trash:restoreMatch[1]})});return api('board/'+result.board_id,{method:'GET'});
   }
 
+  if(endpoint==='capacity/purge-note'&&method==='POST')return json(await rest('rpc/postispop_purge_oversized_note','',{method:'POST',body:JSON.stringify({p_note:payload.noteId,p_device_bytes:payload.bytes})}));
   const boardMatch = endpoint.match(/^board\/([^/]+)$/);
   if (boardMatch && method === "GET") {
     const id = boardMatch[1];
@@ -407,7 +410,12 @@ async function api(endpoint, init) {
     const access=await rest('rpc/postispop_board_access','',{method:'POST',body:JSON.stringify({p_board:id})});
     const notes = await rest("notes", `?board_id=eq.${id}&select=*&order=position.asc`);
     const members = await rest("board_members", `?board_id=eq.${id}&select=*`);
-    return json(mapBoard(boards[0], notes, members,access));
+    let board=mapBoard(boards[0], notes, members,access);
+    if(boards[0].owner_id===user.id&&typeof indexedDB!=='undefined'){
+      const styles=notes.length?await rest('postispop_note_style','?note_id=in.('+notes.map(n=>n.id).join(',')+')&select=*'):[];
+      board=await purgeOversizedBoard(board,{styles,remove:(note,bytes)=>rest('rpc/postispop_purge_oversized_note','',{method:'POST',body:JSON.stringify({p_note:note.id,p_device_bytes:bytes})})});
+    }
+    return json(board);
   }
 
   const swapMatch=endpoint.match(/^board\/([^/]+)\/swap$/);
