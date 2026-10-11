@@ -127,6 +127,10 @@ function enhanceEditor(){
   const options=paper.querySelector('.pp-editor-options'),summary=options.querySelector('summary');summary.replaceChildren(icon('more'));summary.title=T('Personalizar nota');summary.setAttribute('aria-label',T('Personalizar nota'));paper.classList.add('pp-unified-editor');
   options.addEventListener('keydown',event=>{if(event.key==='Escape'&&options.open){event.stopPropagation();options.open=false;summary.focus();}});
   const content=options.querySelector('.pp-design-content'),fields=el('div','','pp-style-fields');content.prepend(el('h3','Texto y papel'),fields);
+  const fitOptions=()=>{if(!options.open)return;const bottom=Math.min(innerHeight,dialog.getBoundingClientRect().bottom),top=content.getBoundingClientRect().top;content.style.maxHeight=Math.max(1,Math.min(innerHeight*.62,510,bottom-top-12))+'px';};
+  options.addEventListener('toggle',fitOptions);dialog.addEventListener('scroll',fitOptions);window.addEventListener('resize',fitOptions);
+  const optionsResize=new ResizeObserver(fitOptions);optionsResize.observe(dialog);
+
   const status=el('p','','pp-style-status');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
   const canvas=el('canvas','','pp-drawing-canvas');canvas.width=960;canvas.height=600;
   canvas.setAttribute('aria-label',T('Dibujo de la nota. Activa el lápiz para dibujar.'));
@@ -262,7 +266,7 @@ function enhanceEditor(){
   for(const name of ['pagehide','online','postispop:native-background'])window.addEventListener(name,backgroundSave);
   const cleanup=new MutationObserver(()=>{
     if(panel.isConnected)return;
-    textResize.disconnect();text.removeEventListener('input',updateTextOverflow);
+    textResize.disconnect();optionsResize.disconnect();window.removeEventListener('resize',fitOptions);dialog.removeEventListener('scroll',fitOptions);text.removeEventListener('input',updateTextOverflow);
     clearTimeout(saveTimer);window.removeEventListener('postispop:editor-flush',beforeClose);window.removeEventListener('postispop:editor-snapshot',shareSnapshot);
     for(const name of ['pagehide','online','postispop:native-background'])window.removeEventListener(name,backgroundSave);
     cleanup.disconnect();
