@@ -44,11 +44,11 @@ function renderInstructions(){
  const wasOpen=host.querySelector('details')?.open||false;
  const node=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls;if(text)n.textContent=text;return n;};
  const premiumEntry=node('a','pp-premium-entry');premiumEntry.href='/atelier.html?lang='+lang;premiumEntry.lang=lang;
- premiumEntry.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8l-6.2 3.3L7 14.2 2 9.3l6.9-1L12 2z"/></svg>';premiumEntry.append(node('span','',premiumEntryCopy[lang]||premiumEntryCopy.es));
+ premiumEntry.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8l-6.2 3.3L7 14.2 2 9.3l6.9-1L12 2z"/></svg>';premiumEntry.append(node('span','pp-action-full',premiumEntryCopy[lang]||premiumEntryCopy.es));premiumEntry.setAttribute('aria-label',premiumEntryCopy[lang]||premiumEntryCopy.es);premiumEntry.title=premiumEntryCopy[lang]||premiumEntryCopy.es;const compactPremium=node('span','pp-action-compact','Premium');compactPremium.setAttribute('aria-hidden','true');premiumEntry.append(compactPremium);
  const arrow=node('span','pp-premium-entry-arrow','→');arrow.setAttribute('aria-hidden','true');premiumEntry.append(arrow);
  const bar=node('div','pp-welcome-bar');
  const notice=node('span','pp-welcome-status',t[10]);notice.title=(instructionsCopy[lang]||instructionsCopy.es)[0];
- const reopen=node('button','pp-welcome-reopen',t[8]);reopen.type='button';reopen.setAttribute('aria-expanded',String(!welcomeDismissed));reopen.setAttribute('aria-controls','pp-welcome-banner');
+ const reopen=node('button','pp-welcome-reopen');reopen.append(node('span','pp-action-full',t[8]));const helpLabels={es:'Ayuda',en:'Help',de:'Hilfe',fr:'Aide',pt:'Ajuda',it:'Aiuto',ja:'ヘルプ',ko:'도움말'};const compactHelp=node('span','pp-action-compact',helpLabels[lang]||helpLabels.es);compactHelp.setAttribute('aria-hidden','true');reopen.append(compactHelp);reopen.setAttribute('aria-label',t[8]);reopen.title=t[8];reopen.type='button';reopen.setAttribute('aria-expanded',String(!welcomeDismissed));reopen.setAttribute('aria-controls','pp-welcome-banner');
  bar.append(reopen);
  const topicButtons=[reopen];
  const extras=extraWelcomeCopy[lang]||extraWelcomeCopy.es;

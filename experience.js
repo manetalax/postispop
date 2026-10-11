@@ -74,6 +74,9 @@ function syncHeaderAccountActions(header) {
       const label=labels[readBoardLanguage()]||labels.es;
       const span=proxy.querySelector('span');
       if(span&&span.textContent!==label)span.textContent=label;
+      const shortLabels={es:'Entrar',en:'Sign in',de:'Anmelden',fr:'Connexion',pt:'Entrar',it:'Accedi',ja:'ログイン',ko:'로그인'};
+      if(span){span.classList.add('pp-action-full');let compact=proxy.querySelector('.pp-action-compact');if(!compact){compact=document.createElement('span');compact.className='pp-action-compact';compact.setAttribute('aria-hidden','true');proxy.append(compact);}compact.textContent=shortLabels[readBoardLanguage()]||shortLabels.es;}
+      proxy.title=label;
       proxy.setAttribute('aria-label',label);
     }
     proxy.disabled = source.disabled;
