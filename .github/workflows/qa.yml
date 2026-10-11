@@ -17,6 +17,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm test && npm run test:database && npm run lint && npm run build
       - run: node scripts/stage-site.mjs
+      - run: node tests/protected-media-ui.cjs
       - run: npm run test:seo
       - run: node tests/camera-capture-ui.cjs
       - run: node --test tests/complete-note-share-ui.cjs tests/note-size-cleanup-ui.cjs && node tests/editor-themes-ui.cjs && node tests/note-controls-ui.cjs && node tests/premium-checkout-ui.cjs && node tests/workspace-harmony-ui.cjs && node tests/drawing-paper-ui.cjs && node tests/submenu-dismiss-ui.cjs && node tests/android-auth-ui.cjs
