@@ -90,7 +90,7 @@
       {
         "name": "Plus",
         "max_note_bytes": 25000000,
-        "account_storage_bytes": 2000000000,
+        "account_storage_bytes": 2500000000,
         "monthly_cents": 495
       },
       {
@@ -98,6 +98,14 @@
         "max_note_bytes": 50000000,
         "account_storage_bytes": 10000000000,
         "monthly_cents": 995
+      },
+      {
+        "name": "Ultra",
+        "max_note_bytes": 100000000,
+        "account_storage_bytes": 10000000000,
+        "max_notes": 100,
+        "monthly_cents": 1990,
+        "price_basis": "Twice Max monthly price, explicitly requested 2026-10-11"
       }
     ],
     "activation_requires": [
@@ -105,6 +113,7 @@
       "Server-verified capacity entitlements",
       "Account storage quotas and billing tests"
     ],
-    "lifetime_capacity": false
+    "lifetime_capacity": false,
+    "pricing_reviewed_on": "2026-10-11"
   }
 }
