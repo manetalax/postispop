@@ -41,7 +41,7 @@ const palettes=['forest','cinnamon','sage','ocean','lavender','terracotta','grap
   assert.equal(await summary.evaluate(n=>n===document.activeElement),true);await page.keyboard.press('Escape');await editor.waitFor({state:'hidden'});
   await page.locator('.pp-board-options>summary').click();
   const download=page.waitForEvent('download');await page.locator('.pp-board-options .pp-tools button').first().click();await download;
-  assert.equal(await page.locator('.pp-board-options').evaluate(n=>n.open),false,'Export closes its menu');
+  assert.equal(await page.locator('.pp-board-options').evaluate(n=>n.open),false,'Export closes its menu');assert.equal(await page.locator('.pp-board-options>summary').evaluate(n=>n===document.activeElement),true,'Export returns focus to a visible control');
   await context.route('**/functions/v1/postispop-commerce/status',r=>r.fulfill({contentType:'application/json',body:'{"checkoutReady":true}'}));
   await page.goto('https://postispop.com/atelier.html?lang='+lang);const global=page.locator('.pp-global-theme-control');await global.locator('summary').click();await page.locator('.pricing-intro').click();assert.equal(await global.evaluate(n=>n.open),false);
   await global.locator('summary').click();await page.keyboard.press('Escape');assert.equal(await global.evaluate(n=>n.open),false);assert.equal(await global.locator('summary').evaluate(n=>n===document.activeElement),true);

@@ -97,7 +97,7 @@ test('PNG failure or unsupported size reports an error without a partial downloa
         await page.getByRole('button',{name:'Descargar imagen',exact:true}).click();
         const expected=count===6?'No se pudo generar la imagen':'La imagen admite hasta 100 notas';
         await page.waitForFunction(expected=>document.querySelector('.pp-search-status')?.textContent.includes(expected),expected);
-        assert.equal(downloads.length,0);assert.equal(await page.getByRole('button',{name:'Descargar imagen',exact:true}).isDisabled(),false);
+        assert.equal(downloads.length,0);assert.equal(await page.getByRole('button',{name:'Descargar imagen',exact:true,includeHidden:true}).isDisabled(),false);
         assert.equal(await page.evaluate(()=>window.savedNativeDownloads.length),0,'No partial image reaches the native transport');
         assert.equal(await page.evaluate(()=>window.pngCanvases.every(canvas=>canvas.width===0&&canvas.height===0)),true);
         assert.deepEqual(errors,[]);
@@ -117,8 +117,9 @@ test('JSON and PNG wait for native saving, preserve blob until completion, and d
           window.__postispopNative=true;window.nativeCalls=[];
           window.__postispopSaveDownload=(url,name)=>new Promise((resolve,reject)=>{window.nativeCalls.push({url,name,resolve,reject});});
         });
-        const button=page.getByRole('button',{name:buttonName,exact:true});
+        const button=page.getByRole('button',{name:buttonName,exact:true,includeHidden:true});
         for(const outcome of ['saved','canceled','failed']){
+          if(!await page.locator('.pp-board-options').evaluate(n=>n.open))await page.locator('.pp-board-options>summary').click();
           await button.click();await page.waitForFunction(()=>window.nativeCalls.length>0);
           const pending=await page.evaluate(async()=>{
             const call=window.nativeCalls[0],blob=await(await fetch(call.url)).blob();

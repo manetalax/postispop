@@ -90,6 +90,7 @@ let observedErrors=[];
   // Restore a valid copy without overwriting the current note, then refuse an
   // unsafe copy before any write. These are real local import/export modules.
   const openImport=async()=>{
+    if(!await page.locator('.pp-board-options').evaluate(n=>n.open))await page.getByLabel('Opciones avanzadas',{exact:true}).click();
     await page.getByRole('button',{name:'Restaurar una copia',exact:true}).click();
     return page.getByRole('dialog',{name:'Restaurar una copia de seguridad',exact:true});
   };
@@ -109,10 +110,10 @@ let observedErrors=[];
   assert.equal(await page.evaluate(()=>localStorage.getItem('postispop-guest-board-v1')),beforeInvalid);
   await importDialog.getByRole('button',{name:'Cerrar',exact:true}).click();
   await page.locator('dialog.pp-feature-dialog').waitFor({state:'detached'});
-  assert.equal(await page.getByRole('button',{name:'Restaurar una copia',exact:true}).evaluate(node=>node===document.activeElement),true,'Closing the import dialog returns keyboard focus');
+  assert.equal(await page.getByLabel('Opciones avanzadas',{exact:true}).evaluate(node=>node===document.activeElement),true,'Closing the import dialog returns keyboard focus to its visible menu trigger');
+  await page.getByLabel('Opciones avanzadas',{exact:true}).click();
   const pngPromise=page.waitForEvent('download');await page.getByRole('button',{name:'Descargar imagen',exact:true}).click();
   const png=await fs.readFile(await(await pngPromise).path());assert.equal(png.subarray(1,4).toString(),'PNG');await fs.writeFile(path.join(results,'export.png'),png);
-  await page.getByLabel('Opciones avanzadas',{exact:true}).click();
   assert.equal(await page.locator('.pp-board-options').getAttribute('open'),null);
   assert.equal(await page.locator('.pp-board-options .pp-tools').isVisible(),false);
   assert.equal(await page.getByRole('searchbox',{name:'Buscar notas o etiquetas'}).isVisible(),true);
