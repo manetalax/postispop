@@ -46,8 +46,10 @@ No había una rama independiente de staging; el esquema aditivo se validó prime
 en PGlite. Los asesores no señalan WARN/ERROR nuevos de esta función; RLS sin
 políticas es deliberado en sus tablas privadas con acceso de cliente revocado.
 
-Las notas con hasta 600 caracteres y 12 líneas, sin cifrado ni dibujo, y con cero
+Las notas con hasta 300 caracteres y ocho líneas, sin cifrado ni dibujo, y con cero
 o una foto raster generan una imagen PNG local: foto arriba y texto debajo. También
+se comprueba que el texto ajustado cabe en ocho líneas con letra grande para móvil;
+si no cabe, se usa el enlace completo sin cortar contenido. Además
 se comparte un enlace y una indicación traducida en los ocho idiomas. Vídeo, audio,
 documentos, varias fotos, dibujos o texto extenso usan solo el mensaje y el enlace.
 Las imágenes no se publican como metadatos abiertos ni se generan para notas cifradas.
@@ -64,6 +66,17 @@ la apertura de una imagen adjunta como si fuera un enlace: este va visible en el
 La publicación web y la APK se tramitan mediante PR/main y el workflow firmado.
 La APK se publica solo tras verificar firma, certificado asociado y archivos físicos.
 Una comprobación en un dispositivo Android físico sigue pendiente.
+
+Estado de publicación: PR #35 integrado, workflow Pages 38111685265 completado
+con éxito y web 0.6.3 publicada. La prueba en producción confirma emisor y receptor
+independientes con foto/texto; también se verificó vídeo WebM real con bytes exactos.
+El build Android interno 38111685264 compila y verifica físicamente APK/AAB.
+El release firmado 38111685280 está bloqueado: `POSTISPOP_KEYSTORE_BASE64` sigue
+siendo inválido incluso admitiendo saltos de línea. El propietario debe corregir
+ese secreto con su clave original; no se creó una identidad de firma nueva.
+La comprobación de enlaces sucesivos detectó la necesidad de reaccionar a cambios
+de fragmento sin recargar. La corrección invalida descargas y contraseñas anteriores,
+limpia el contenido visible y vuelve a pedir la contraseña para una nota protegida.
 
 ## Publicación y verificación
 

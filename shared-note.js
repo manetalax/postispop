@@ -8,17 +8,17 @@ import {normalizeStyle,drawStrokes,readableInk,paperColor} from './style-model.j
 import {paperSvg,svgUrl} from './editor-catalog.js';
 if(window.PostisPopShare)installNativeShare();
 const t=shareCopy(),status=document.querySelector('#shared-status'),content=document.querySelector('#shared-content'),form=document.querySelector('#shared-unlock'),password=document.querySelector('#shared-password');
-let urls=[],protectedNote=null,link=null,active=true,attempt=0;
+let urls=[],protectedNote=null,link=null,active=true,attempt=0,loadController=null;
 const node=(tag,text='',cls='')=>{const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;return e;};
 const objectUrl=blob=>{const url=URL.createObjectURL(blob);urls.push(url);return url;};
 function clear(){urls.forEach(URL.revokeObjectURL);urls=[];content.replaceChildren();content.hidden=true;password.value='';}
-async function readCopy(){
-  const response=await fetch(`${SUPABASE_URL}/functions/v1/postispop-note-share/${link.token}`,{headers:{apikey:SUPABASE_PUBLISHABLE_KEY},cache:'no-store',referrerPolicy:'no-referrer'});
+async function readCopy(currentLink=link,signal=loadController?.signal){
+  const response=await fetch(`${SUPABASE_URL}/functions/v1/postispop-note-share/${currentLink.token}`,{headers:{apikey:SUPABASE_PUBLISHABLE_KEY},cache:'no-store',referrerPolicy:'no-referrer',signal});
   if(!response.ok)throw Error('UNAVAILABLE');
   if(Number(response.headers.get('content-length'))>MAX_SHARE_BYTES+28)throw Error('TOO_LARGE');
   const reader=response.body.getReader(),chunks=[];let size=0;
   try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>MAX_SHARE_BYTES+28){await reader.cancel();throw Error('TOO_LARGE');}chunks.push(value);}}finally{reader.releaseLock();}
-  return openSharedNote(new Blob(chunks),link.token,link.key);
+  return openSharedNote(new Blob(chunks),currentLink.token,currentLink.key);
 }
 function render(note){
   clear();const paper=node('section','','pp-shared-paper'),text=node('p','','pp-shared-text');
@@ -47,9 +47,11 @@ function render(note){
   }content.append(files);content.hidden=false;status.textContent=t.snapshot;
 }
 async function load(){
+  const n=++attempt;loadController?.abort();loadController=new AbortController();
+  clear();protectedNote=null;form.hidden=true;form.querySelector('button').disabled=false;
   document.title=t.received+' · PostisPop';document.querySelector('#shared-heading').textContent=t.received;document.querySelector('#shared-footer').textContent=t.snapshot;document.querySelector('#shared-password-label').textContent=t.password;form.querySelector('button').textContent=t.open;status.textContent=t.opening;
-  try{link=parseShareLink(location.hash);const data=await readCopy();if(!active)return;const note=data.notes[0];if(note.protectedEnvelope){protectedNote=note;form.hidden=false;status.textContent=t.protected;}else render(note);}catch{status.textContent=t.unavailable;}
+  try{link=parseShareLink(location.hash);const data=await readCopy();if(!active||n!==attempt)return;const note=data.notes[0];if(note.protectedEnvelope){protectedNote=note;form.hidden=false;status.textContent=t.protected;}else render(note);}catch{if(active&&n===attempt)status.textContent=t.unavailable;}
 }
-form.addEventListener('submit',async event=>{event.preventDefault();const n=++attempt;const button=form.querySelector('button');button.disabled=true;try{const data=await readCopy();const payload=await decryptNote(data.notes[0].protectedEnvelope,password.value);if(!active||n!==attempt||document.hidden)return;render(payload);password.value='';form.hidden=true;}catch{status.textContent=t.wrongPassword;}finally{button.disabled=false;}});
-function relock(){if(protectedNote){attempt++;clear();form.hidden=false;status.textContent=t.protected;}}
-document.addEventListener('visibilitychange',()=>{if(document.hidden)relock();});window.addEventListener('pagehide',()=>{active=false;attempt++;clear();});window.addEventListener('pageshow',event=>{active=true;if(event.persisted){protectedNote=null;load();}});load();
+form.addEventListener('submit',async event=>{event.preventDefault();const n=++attempt;const button=form.querySelector('button');button.disabled=true;try{const data=await readCopy();const payload=await decryptNote(data.notes[0].protectedEnvelope,password.value);if(!active||n!==attempt||document.hidden)return;render(payload);password.value='';form.hidden=true;}catch{if(active&&n===attempt)status.textContent=t.wrongPassword;}finally{if(n===attempt)button.disabled=false;}});
+function relock(){if(protectedNote){attempt++;loadController?.abort();loadController=new AbortController();clear();form.hidden=false;form.querySelector('button').disabled=false;status.textContent=t.protected;}}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)relock();});window.addEventListener('pagehide',()=>{active=false;attempt++;loadController?.abort();clear();});window.addEventListener('pageshow',event=>{active=true;if(event.persisted)load();});window.addEventListener('hashchange',()=>load());load();
