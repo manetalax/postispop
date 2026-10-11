@@ -74,11 +74,13 @@ async function run() {
         for(const r of rects){assert.ok(Math.abs(r.w-r.h)<=2,'Post-it must remain square');assert.ok(r.w >= (width>1000?220:width>700?200:125),'Post-it preview must use the available screen');}
         await page.locator(NOTES).last().scrollIntoViewIfNeeded();
         assert.equal(await page.locator(NOTES).last().isVisible(),true,'All six free notes remain reachable below the enlarged brand and instructions');
+        await page.locator('.pp-home-actions .pp-welcome-reopen').click();
         const guide=page.locator('.pp-header-instructions details');
         await guide.locator('summary').click();
         await page.waitForTimeout(2500);
         assert.equal(await guide.getAttribute('open')!==null,true,'Instructions stay expanded until explicitly closed');
         await guide.locator('summary').click();
+        await page.locator('.pp-welcome-close').click();
         assert.equal(await page.getByRole('button',{name:'Página siguiente',exact:true}).isVisible(),false,'Single page does not expose irrelevant paging');
         await page.getByRole('button',{name:'Añadir nota',exact:true}).click();
         await page.waitForSelector('.editor-dialog textarea');

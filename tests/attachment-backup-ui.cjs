@@ -34,10 +34,10 @@ test('Real guest UI downloads and restores attachments offline without replacing
   try{
     const response=await page.goto('https://postispop.com/');assert.equal(response.status(),200,'the staged app must exist; run stage-site or package-mobile before this integration test');await page.waitForSelector('.sticky-note:not([disabled])');
     await page.locator('.sticky-note').first().click();await page.locator('.editor-dialog textarea').fill('Nota con archivo de prueba');
-    await page.getByRole('button',{name:'Más opciones de la nota',exact:true}).click();
+    await page.locator('.pp-content-options>summary').click();
     const fileBytes=Buffer.from([37,80,68,70,45,49,46,52,10,0,255,128,64]);
     await page.locator('.pp-file-action input').setInputFiles({name:'Archivo.pdf',mimeType:'application/pdf',buffer:fileBytes});
-    await page.waitForSelector('.pp-attachment-card');await page.keyboard.press('Escape');await page.waitForSelector('.editor-dialog',{state:'detached'});
+    await page.waitForSelector('.pp-attachment-card');await page.locator('.dialog-heading button.icon-button').first().click();await page.waitForSelector('.editor-dialog',{state:'detached'});
     let backupText;
     if(await page.evaluate(()=>window.__postispopNative===true)){
       const downloads=[],listener=download=>downloads.push(download);page.on('download',listener);

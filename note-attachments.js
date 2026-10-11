@@ -1,3 +1,4 @@
+import {uiText as T} from './ui-copy.js';
 import {assertNoteSize,noteSizeMessages} from './note-size.js';
 import {readGuest} from './guest-board.js';
 import {withNoteStorageLock,assertAttachmentWritable,protectedMarker} from './attachment-lock.js';
@@ -535,6 +536,7 @@ async function openCamera(panel){
     const consolePanel=panel.querySelector('.pp-camera-console'),preview=panel.querySelector('.pp-camera-preview');
     consolePanel.hidden=false;preview.srcObject=cameraStream;await new Promise(resolve=>{if(preview.readyState>=1)resolve();else preview.onloadedmetadata=resolve;});
     await preview.play();
+    panel.querySelector('.pp-camera-photo').focus({preventScroll:true});
     panel.querySelector('.pp-camera-open').hidden=true;
     panel.querySelector('.pp-camera-photo').disabled=false;
     panel.querySelector('.pp-camera-record').disabled=false;
@@ -569,7 +571,7 @@ function startCameraRecording(panel){
   catch{cameraRecordStream.getTracks().forEach(track=>track.stop());cameraRecordStream=null;notify(labels.unsupported);return;}
   cameraChunks=[];cameraRecordBytes=0;cameraRecordStarted=Date.now();cameraStopAtLimit=false;cameraCloseAfterStop=false;
   const recordButton=panel.querySelector('.pp-camera-record'),stopButton=panel.querySelector('.pp-camera-stop');
-  recordButton.hidden=true;stopButton.hidden=false;panel.querySelector('.pp-camera-photo').disabled=true;
+  stopButton.hidden=false;stopButton.focus({preventScroll:true});recordButton.hidden=true;panel.querySelector('.pp-camera-photo').disabled=true;
   const draw=()=>{if(cameraRecorder?.state!=='recording')return;context.fillStyle='#000';context.fillRect(0,0,canvas.width,canvas.height);const scale=Math.min(canvas.width/preview.videoWidth,canvas.height/preview.videoHeight),width=preview.videoWidth*scale,height=preview.videoHeight*scale;context.drawImage(preview,(canvas.width-width)/2,(canvas.height-height)/2,width,height);};draw();cameraFrame=setInterval(draw,1000/15);
   cameraRecorder.ondataavailable=event=>{
     if(!event.data.size)return;cameraRecordBytes+=event.data.size;cameraChunks.push(event.data);
@@ -588,7 +590,7 @@ function startCameraRecording(panel){
       await saveFiles([fileFromBlob(blob,`PostisPop-video-${stamp}.${ext}`,type)],cameraNoteId,{alreadyCompressed:true});
       if(wasStoppedForLimit)notify(labels.limit);
     }else notify(labels.tooLarge);
-    recordButton.hidden=false;stopButton.hidden=true;panel.querySelector('.pp-camera-photo').disabled=false;
+    recordButton.hidden=false;if(document.activeElement===stopButton)recordButton.focus({preventScroll:true});stopButton.hidden=true;panel.querySelector('.pp-camera-photo').disabled=false;
     if(closeWhenSaved)releaseCamera();else cameraStatus(labels.videoInfo);
   };
   cameraRecorder.start(1000);
@@ -606,11 +608,8 @@ function createPanel() {
     <div class="pp-attachments-heading"><div><strong>${labels.title}</strong><small>${labels.local}</small></div></div>
     <div class="pp-attachment-actions">
       <label class="pp-attachment-action pp-file-action">📎 <span>${labels.add}</span><input type="file" multiple></label>
-      <label class="pp-attachment-action pp-video-action">🎬 <span>${labels.addVideo}</span><input type="file" accept="video/*" multiple></label>
       <button type="button" class="pp-attachment-action pp-camera-open">📷 <span>${labels.open}</span></button>
       <button type="button" class="pp-attachment-action pp-voice-action">🎙️ <span>${labels.voice}</span></button>
-      <button type="button" class="pp-attachment-action pp-note-share">↗ <span>${labels.shareNote}</span></button>
-      <button type="button" class="pp-attachment-action pp-note-whatsapp">💬 <span>${labels.whatsapp}</span></button>
       <button type="button" class="pp-attachment-action pp-link-action">🔗 <span>${labels.link}</span></button>
     </div>
     <div class="pp-camera-console" hidden>
@@ -629,12 +628,7 @@ function createPanel() {
   panel.querySelector('input[type=file]').addEventListener('change', async event => {
     const input=event.currentTarget,noteId=activeNoteId;await saveFiles([...input.files],noteId); input.value='';
   });
-  panel.querySelector('.pp-video-action input').addEventListener('change',async event=>{
-    const input=event.currentTarget,noteId=activeNoteId;await saveFiles([...input.files],noteId);input.value='';
-  });
   panel.querySelector('.pp-camera-open').addEventListener('click',()=>openCamera(panel));
-  panel.querySelector('.pp-note-share').addEventListener('click',shareNoteWithApps);
-  panel.querySelector('.pp-note-whatsapp').addEventListener('click',shareNoteOnWhatsApp);
   panel.querySelector('.pp-camera-photo').addEventListener('click',()=>takeCameraPhoto(panel));
   panel.querySelector('.pp-camera-record').addEventListener('click',()=>startCameraRecording(panel));
   panel.querySelector('.pp-camera-stop').addEventListener('click',()=>{if(cameraRecorder?.state==='recording')cameraRecorder.stop();});
@@ -646,7 +640,7 @@ function createPanel() {
     event.preventDefault(); const input = event.currentTarget.querySelector('input');
     await saveLink(input.value); input.value = ''; toggleLinkForm(panel, false);
   });
-  return panel;
+  const disclosure=document.createElement('details');disclosure.className='pp-content-options';const summary=document.createElement('summary');summary.textContent=T('Añadir contenido');disclosure.append(summary,panel);disclosure.addEventListener('toggle',()=>{if(disclosure.open)return;if(recorder?.state==='recording')recorder.stop();closeCamera();});return disclosure;
 }
 
 function noteIdFromDialog(dialog) {
@@ -684,7 +678,7 @@ enhanceEditor();
 function refreshAttachmentLanguage(){
   const language=readBoardLanguage();if(language===currentLanguage)return;
   closeCamera();currentLanguage=language;labels={...(translations[language]||translations.es),...(notices[language]||notices.es),...(cameraCopy[language]||cameraCopy.es),...(shareLabels[language]||shareLabels.es),mediaTooLarge:mediaLimitMessages[language]||mediaLimitMessages.es,addVideo:addVideoLabels[language]||addVideoLabels.es};
-  document.querySelector('.pp-attachments')?.remove();enhanceEditor();
+  document.querySelector('.pp-content-options')?.remove();enhanceEditor();
 }
 new MutationObserver(refreshAttachmentLanguage).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
 window.addEventListener('storage',event=>{if(event.key==='pp:lang')refreshAttachmentLanguage();});
@@ -695,5 +689,5 @@ function closeProtectedAttachments(id){
   const panel=document.querySelector('.pp-attachments');if(panel){panel.replaceChildren();const text=document.createElement('p');text.textContent=labels.protecting;panel.append(text);}
   const editor=document.querySelector('.editor-dialog');editor?.querySelectorAll('textarea,input,button').forEach(input=>{if(!input.classList.contains('icon-button')&&!input.disabled){input.dataset.ppStorageDisabled='1';input.disabled=true;}});
 }
-window.addEventListener('storage',event=>{if(event.key!==protectedMarker(activeNoteId))return;if(event.newValue==='1')closeProtectedAttachments(activeNoteId);else if(event.newValue===null){document.querySelectorAll('[data-pp-storage-disabled]').forEach(input=>{input.disabled=false;delete input.dataset.ppStorageDisabled;});document.querySelector('.pp-attachments')?.remove();enhanceEditor();}});
+window.addEventListener('storage',event=>{if(event.key!==protectedMarker(activeNoteId))return;if(event.newValue==='1')closeProtectedAttachments(activeNoteId);else if(event.newValue===null){document.querySelectorAll('[data-pp-storage-disabled]').forEach(input=>{input.disabled=false;delete input.dataset.ppStorageDisabled;});document.querySelector('.pp-content-options')?.remove();enhanceEditor();}});
 window.addEventListener('postispop:protected',event=>closeProtectedAttachments(event.detail?.noteId));

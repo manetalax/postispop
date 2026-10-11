@@ -140,7 +140,7 @@ function toolbar({styleResponse,guest=false,offline=false}={}){
   const id=guest?'guest-board':BOARD;
   const board={id,title:'Mis notas',order:[NOTE],offline,notes:[{id:NOTE,text:'Mi dibujo',paper:0,...(guest?{style:style()}: {})}]};
   const document={addEventListener(){},createElement:()=>({click(){downloads.push(this.download);}})};
-  const context=vm.createContext({window:{addEventListener(){}},document,localStorage:disk(),Blob,setTimeout(){},
+  const context=vm.createContext({T:value=>value,window:{addEventListener(){}},document,localStorage:disk(),Blob,setTimeout(){},
     URL:{createObjectURL:()=> 'blob:backup',revokeObjectURL(){}},
     fetch:async endpoint=>{
       if(endpoint==='/api/me')return Response.json({boards:[{id}]});
