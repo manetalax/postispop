@@ -1,6 +1,7 @@
 import {withNoteStorageLock,assertAttachmentWritable,protectedMarker} from './attachment-lock.js';
 import {readBoardLanguage} from './seo-language.js';
 import {shareFile,shareText,openWhatsApp} from './share-tools.js?v=20261009a';
+import {showCompleteNoteShare,installEditorShareButton} from './note-share.js';
 const DB_NAME = 'postispop-note-attachments';
 const STORE = 'attachments';
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
@@ -295,17 +296,8 @@ function noteText(){
   const editor=document.querySelector('.editor-dialog'),field=editor?.querySelector('textarea,[contenteditable="true"]');
   return String(field?.value??field?.innerText??'').trim();
 }
-async function shareNoteWithApps(){
-  const content=noteText();if(content===null){notify(labels.shareProtected);return;}
-  if(!content){notify(labels.emptyNote);return;}
-  try{const result=await shareText(content,{title:labels.noteTitle});notify(result==='shared'?labels.shareOpened:result==='copied'?labels.shareCopied:labels.shareFailed);}
-  catch{notify(labels.shareFailed);}
-}
-function shareNoteOnWhatsApp(){
-  const content=noteText();if(content===null){notify(labels.shareProtected);return;}
-  if(!content){notify(labels.emptyNote);return;}
-  openWhatsApp(`${labels.noteTitle}\n\n${content}`);
-}
+async function shareNoteWithApps(){await showCompleteNoteShare(activeNoteId);}
+async function shareNoteOnWhatsApp(){await showCompleteNoteShare(activeNoteId);}
 function downloadSharedFile(file){
   const url=URL.createObjectURL(file),link=document.createElement('a');link.href=url;link.download=file.name;link.click();setTimeout(()=>URL.revokeObjectURL(url),30000);
 }
@@ -649,6 +641,7 @@ async function enhanceEditor() {
   if (!dialog || dialog.querySelector('.pp-attachments')) return;
   activeNoteId = noteIdFromDialog(dialog);
   if (!activeNoteId) return;
+  installEditorShareButton(dialog,activeNoteId);
   const anchor = dialog.querySelector('.edit-paper');
   if (!anchor) return;
   anchor.append(createPanel());

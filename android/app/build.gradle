@@ -14,8 +14,8 @@ android {
         applicationId 'com.postispop.android'
         minSdk 23
         targetSdk 36
-        versionCode 8
-        versionName '0.6.2'
+        versionCode 9
+        versionName '0.6.3'
         manifestPlaceholders = [appLabel: 'PostisPop']
     }
     def releaseStore = System.getenv('POSTISPOP_KEYSTORE')

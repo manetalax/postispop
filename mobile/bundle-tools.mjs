@@ -14,6 +14,7 @@ export const publicFiles = [
   'board-layout.js', 'board-view-model.js', 'board-preferences.js', 'daily-quote-model.js', 'experience-content.js', 'experience.css', 'experience.js', 'usage-metrics.js', 'board-tools.js', 'backup-import.js',
   'search.js', 'search-index.json', 'premios.html', 'site-metrics.js', 'atelier.html', 'atelier.js', 'atelier-checkout.js', 'atelier.css',
   'design-tools.js', 'design-tools.css', 'style-model.js', 'fonts.css',
+  'native-share.js', 'note-share.js', 'note-share-package.js', 'note-share-copy.js', 'note-share-preview.js', 'shared-note.js', 'note-share.css', 'nota-compartida.html',
   'note-crypto.js', 'protected-notes.js', 'protected-notes.css', 'protected-share.js', 'compartir.html', 'attachment-lock.js',
   'offline-sync.js', 'offline-ui.js', 'offline-ui.css', 'offline-license.js', 'license-public-keys.json', 'propietario.html', 'owner-dashboard.js', 'owner-dashboard.css',
 ];

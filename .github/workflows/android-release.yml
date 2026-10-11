@@ -2,9 +2,19 @@ name: Signed Android release
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'android/**'
+      - 'mobile/**'
+      - 'note-share*'
+      - 'shared-note.js'
+      - 'native-share.js'
+      - 'scripts/package-mobile.mjs'
+      - '.github/workflows/android-release.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   signed-apk:
@@ -88,7 +98,7 @@ jobs:
         with:
           name: PostisPop-Android-signed-${{ github.run_number }}
           path: |
-            android/app/build/verified/PostisPop-0.6.2-release-signed.apk
+            android/app/build/verified/PostisPop-0.6.3-release-signed.apk
             android/app/build/verified/verification.json
           if-no-files-found: error
           retention-days: 30
@@ -96,3 +106,14 @@ jobs:
       - name: Remove temporary signing keystore
         if: always()
         run: rm -f "$RUNNER_TEMP/postispop-release.keystore"
+
+      - name: Publish verified signed Android installer
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create android-v0.6.3 \
+            android/app/build/verified/PostisPop-0.6.3-release-signed.apk \
+            android/app/build/verified/verification.json \
+            --target "$GITHUB_SHA" \
+            --title 'PostisPop Android 0.6.3' \
+            --notes 'Compartir notas completas con archivos, vídeo y contraseña. Vista previa de texto breve y foto. Incluye el lector de enlaces compartidos y mejoras de contraste del editor. APK firmado y recursos verificados; instalación física pendiente de prueba.'

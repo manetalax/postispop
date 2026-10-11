@@ -6,6 +6,7 @@ astro-dist/
 dist/
 _site/
 .cache/
+supabase/.temp/
 mobile-dist/
 android/.gradle/
 android/app/build/

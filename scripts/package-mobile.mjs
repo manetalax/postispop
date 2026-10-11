@@ -23,13 +23,13 @@ await copyPublicTree(resolve(root, 'mobile/mobile-entry.js'), resolve(out, 'mobi
 await rm(resolve(out, 'sw.js'), {force:true});
 await rm(resolve(out, 'wpo-register.js'), {force:true});
 await writeFile(resolve(out, 'mobile-build.json'), JSON.stringify({
-  version:'0.6.2', runtime:'bundled-local', applicationId:'com.postispop.android',
+  version:'0.6.3', runtime:'bundled-local', applicationId:'com.postispop.android',
   database:'https://htfyjefmviwlgmfqrwue.supabase.co', payments:'coming-soon-disabled',
   attachments:'local-indexeddb', protectedNotes:'aes-gcm-local',
   accountOffline:'persistent-queue-requires-server-migration',
   installationTested:false, newPurchasesEnabled:false,
 }, null, 2) + '\n');
 await auditBundle(out);
-const manifest = await writeBundleManifest(out, {target:'android-assets', version:'0.6.2'});
+const manifest = await writeBundleManifest(out, {target:'android-assets', version:'0.6.3'});
 console.log('Verified complete mobile bundle:', manifest.files, 'files;', manifest.contentHash);
 console.log('Assets prepared only. This command does not build, sign, install or publish an APK.');
