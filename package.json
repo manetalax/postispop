@@ -16,7 +16,7 @@
     "test:experience": "node tests/experience-ui.cjs",
     "test:premium": "node tests/premium-ui.cjs",
     "test:atelier": "node tests/atelier-ui.cjs",
-    "test:protected": "node tests/protected-share-ui.cjs && node tests/protected-concurrency-ui.cjs",
+    "test:protected": "node tests/protected-share-ui.cjs && node tests/protected-concurrency-ui.cjs && node tests/protected-media-ui.cjs",
     "test:offline-shell": "node tests/offline-shell-ui.cjs",
     "test:cloud-import": "node tests/cloud-import-ui.cjs",
     "test:autosave": "node tests/autosave-ui.cjs",
