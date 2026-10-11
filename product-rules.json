@@ -19,7 +19,10 @@
     "existing_accounts_rollout": "Give current accounts 30 days from activation before locking notes beyond position 6.",
     "premium_limit": 100,
     "premium_limit_reason": "Premium removes the post-trial lock and keeps existing extra notes readable; new-note creation retains the current 100-note Premium ceiling.",
-    "desktop_free_layout": { "columns": 3, "rows": 2 },
+    "desktop_free_layout": {
+      "columns": 3,
+      "rows": 2
+    },
     "desktop_premium_notes_per_page": 12,
     "mobile_notes_per_page": 6,
     "mobile_columns": 2,
@@ -28,7 +31,9 @@
     "default_editor_mode": "text",
     "drawing": "Available inside the same note, without a separate purchase",
     "existing_data": "Preserve existing notes and purchased rights. Never delete notes merely because the commercial offer changes.",
-    "access_enforcement": "Server-authoritative for cloud data; device-local for guest notes"
+    "access_enforcement": "Server-authoritative for cloud data; device-local for guest notes",
+    "max_total_bytes": 10000000,
+    "size_policy": "10 decimal MB including text, drawings, metadata and stored attachments. Existing larger notes remain recoverable; no deletion on downgrade."
   },
   "billing": {
     "product": "Premium",
@@ -64,7 +69,12 @@
   "android": {
     "notes_and_assets_on_device": true,
     "offline_read_write": true,
-    "server_functions": ["Account sign-in", "Explicit cloud saving and synchronization", "Shared boards", "Entitlement validation"],
+    "server_functions": [
+      "Account sign-in",
+      "Explicit cloud saving and synchronization",
+      "Shared boards",
+      "Entitlement validation"
+    ],
     "release_rule": "Only describe an APK as delivered when it exists, has been built, and its verification status is stated accurately",
     "preserve_existing_signing_identity": true
   },
@@ -72,5 +82,29 @@
     "no_unverified_zero_bug_claim": true,
     "report_implementation_tests_and_deployment_separately": true,
     "protect_secrets": true
+  },
+  "capacity_plans": {
+    "status": "proposal_not_for_sale",
+    "currency": "EUR",
+    "plans": [
+      {
+        "name": "Plus",
+        "max_note_bytes": 25000000,
+        "account_storage_bytes": 2000000000,
+        "monthly_cents": 495
+      },
+      {
+        "name": "Max",
+        "max_note_bytes": 50000000,
+        "account_storage_bytes": 10000000000,
+        "monthly_cents": 995
+      }
+    ],
+    "activation_requires": [
+      "User acceptance of final prices",
+      "Server-verified capacity entitlements",
+      "Account storage quotas and billing tests"
+    ],
+    "lifetime_capacity": false
   }
 }

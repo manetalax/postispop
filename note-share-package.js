@@ -1,15 +1,17 @@
+import {assertNoteSize} from './note-size.js';
 import {normalizeBackup,LOCAL_BACKUP_BYTES,verifyBackupAttachments} from './backup-import.js';
 import {bytesToBase64,base64ToBytes} from './note-crypto.js';
 export const MAX_SHARE_BYTES=LOCAL_BACKUP_BYTES;
 export const SHARE_TTL_DAYS=7;
 export function validateSharedNote(data){
   if(data?.format!=='postispop'||data.version!==2||data.notes?.length!==1)throw Error('INVALID_SHARED_NOTE');
-  const normalized=normalizeBackup(data,{maxNotes:1,maxBytes:MAX_SHARE_BYTES});
+  const normalized=normalizeBackup(data,{maxNotes:1,maxBytes:MAX_SHARE_BYTES,maxNoteBytes:MAX_SHARE_BYTES});
   if(normalized.notes.length!==1)throw Error('EMPTY_NOTE');
   return {...data,notes:normalized.notes};
 }
 export async function sealSharedNote(data){
   validateSharedNote(data);
+  assertNoteSize(data.notes[0]);
   const raw=new TextEncoder().encode(JSON.stringify(data));if(raw.length>MAX_SHARE_BYTES)throw Error('SHARE_TOO_LARGE');
   const keyBytes=crypto.getRandomValues(new Uint8Array(32)),iv=crypto.getRandomValues(new Uint8Array(12));
   const token=bytesToBase64(crypto.getRandomValues(new Uint8Array(32)));

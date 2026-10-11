@@ -1,3 +1,4 @@
+import {assertNoteSize,noteSize,prospectiveNote} from './note-size.js';
 import {normalizeStyle} from './style-model.js';
 import {validateEnvelope,bytesToBase64,base64ToBytes} from './note-crypto.js';
 import {withNoteStorageLock,protectedMarker,assertAttachmentWritable} from './attachment-lock.js';
@@ -9,7 +10,7 @@ const fail=code=>{throw Object.assign(new Error(code),{status:400});};
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 // Copy data only. IDs, authors and revision fields in an export never grant access.
-export function normalizeBackup(data,{maxNotes=100,maxBytes=CLOUD_BACKUP_BYTES}={}) {
+export function normalizeBackup(data,{maxNotes=100,maxBytes=CLOUD_BACKUP_BYTES,maxNoteBytes=10_000_000}={}) {
   if(!data||typeof data!=='object'||Array.isArray(data)||
     (data.format!==undefined&&data.format!=='postispop')||(data.version!==undefined&&![1,2].includes(data.version))||
     !Array.isArray(data.notes)||data.notes.length>maxNotes)fail('INVALID_BACKUP');
@@ -18,7 +19,7 @@ export function normalizeBackup(data,{maxNotes=100,maxBytes=CLOUD_BACKUP_BYTES}=
     if(!n||typeof n!=='object'||Array.isArray(n))fail('INVALID_BACKUP');
     const paper=n.paper??0;
     if(!Number.isInteger(paper)||paper<0||paper>5)fail('INVALID_BACKUP');
-    if(n.protectedEnvelope){validateEnvelope(n.protectedEnvelope);return {paper,protectedEnvelope:n.protectedEnvelope};}
+    if(n.protectedEnvelope){validateEnvelope(n.protectedEnvelope);assertNoteSize({paper,protectedEnvelope:n.protectedEnvelope},{maxBytes:maxNoteBytes});return {paper,protectedEnvelope:n.protectedEnvelope};}
     if(typeof n.text!=='string'||n.text.length>10000)fail('INVALID_BACKUP');
     const marks=n.marks??[],doodle=n.doodle??'';
     if(!Array.isArray(marks)||marks.length>10000||typeof doodle!=='string'||
@@ -35,6 +36,7 @@ export function normalizeBackup(data,{maxNotes=100,maxBytes=CLOUD_BACKUP_BYTES}=
     const style=rawStyle?normalizeStyle(rawStyle):null;
     if(style&&!Number.isInteger(style.size))fail('INVALID_STYLE');
     const attachments=normalizeBackupAttachments(n.attachments);
+    assertNoteSize({text:n.text,paper,marks,doodle,image,style,attachments},{maxBytes:maxNoteBytes});
     return {text:n.text,paper,marks:marks.map(({start,end,ink})=>({start,end,ink})),doodle,image,style,...(attachments.length?{attachments}:{})};
   }).filter(n=>n.protectedEnvelope||n.text!==''||n.marks?.length||n.doodle||n.image||n.style?.drawing?.strokes?.length||n.attachments?.length);
   return {format:'postispop',version:data.version===2||notes.some(note=>note.attachments?.length)?2:1,notes};
@@ -251,4 +253,10 @@ export async function createBoardBackup(board,{maxBytes=LOCAL_BACKUP_BYTES}={}){
     if(new TextEncoder().encode(JSON.stringify(result)).length>maxBytes)fail('BACKUP_TOO_LARGE');
     return result;
   }finally{for(const event of ['postispop:session-change','storage'])globalThis.window?.removeEventListener(event,changed);}
+}
+
+export async function validateNoteWrite(note,kind,payload) {
+  const attachments=note.protectedEnvelope||kind==='protect'||kind==='protected-save'?[]:typeof indexedDB==='undefined'?[]:await readAttachmentRows(note.id);
+  const previous={...note,attachments};
+  assertNoteSize({...prospectiveNote(note,kind,payload),attachments},{previousBytes:noteSize(previous)});
 }
