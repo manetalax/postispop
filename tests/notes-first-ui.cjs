@@ -84,6 +84,7 @@ async function run() {
         await page.waitForSelector('.editor-dialog textarea');
         const input=page.locator('.editor-dialog textarea');
         assert.equal(await input.inputValue(),'','Add reuses an existing empty slot');
+        await page.waitForFunction(()=>document.activeElement===document.querySelector('.editor-dialog textarea'));
         assert.equal(await input.evaluate(el=>document.activeElement===el),true,'Reused empty note is ready to type');
         const firstIdea='Primera idea guardada desde + · '+width;
         await input.fill(firstIdea);await page.keyboard.press('Escape');

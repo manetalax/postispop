@@ -6,8 +6,9 @@ const vm = require('node:vm');
 
 // Execute the real mobile entry module with the native WebMessage boundary
 // mocked. Native document-picker behavior still needs a device check.
+const nativeShareSource=fs.readFileSync(path.join(__dirname,'../native-share.js'),'utf8').replace('export function','function');
 const source = fs.readFileSync(path.join(__dirname, '../mobile/mobile-entry.js'), 'utf8')
-  .replace(/^import '\.\/supabase-bridge\.js';\s*/, '');
+  .replace(/^import \{installNativeShare\} from '\.\/native-share\.js';\s*/,nativeShareSource+'\n').replace(/import '\.\/supabase-bridge\.js';\s*/, '');
 function harness(options = {}) {
   const state = {reads:0, fetches:0, messages:[], shareMessages:[], blob:options.blob || new Blob(['{"notes":[]}'], {type:'application/json'})};
   let nextMessage,nextShareMessage;

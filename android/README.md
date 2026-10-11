@@ -1,10 +1,10 @@
-# PostisPop Android 0.6.2 — recursos incluidos
+# PostisPop Android 0.6.3 — recursos incluidos
 
 La aplicación ejecuta archivos del APK con WebViewAssetLoader bajo el origen lógico `https://postispop.com`. No descarga la página pública como sustitución cuando falta un recurso. La pizarra, las fuentes, las herramientas y los módulos de cifrado/offline forman parte del manifiesto obligatorio del empaquetado. Una dependencia local ausente o un CDN de código, imagen o fuente hace fallar la verificación.
 
 ## Identidad y estado real
 
-- Release: `com.postispop.android`, versión `0.6.2`, código `8`. Android 6+ con WebView actualizado.
+- Release: `com.postispop.android`, versión `0.6.3`, código `9`. Android 6+ con WebView actualizado.
 - Debug/beta: `com.postispop.android.beta`, identidad separada. Instalar release no migra ni reemplaza automáticamente los datos privados de la beta o del navegador.
 - Se mantiene R8, reducción de recursos, depuración de WebView desactivada y bloqueo de tráfico HTTP. Los mapas privados no se incluyen en web ni APK; el JavaScript fuente permanece legible.
 - El empaquetado de archivos no equivale a compilar, firmar, publicar ni instalar. La validación de código puede utilizar un SDK/JDK/Gradle temporal; la clave original sigue siendo necesaria para un instalador de distribución. No se entrega un binario antiguo o sin firmar como instalador final.
@@ -68,8 +68,26 @@ node mobile/build-release.mjs
 
 El script recompila los recursos actuales, verifica el bundle, ejecuta `assembleRelease` y `lintRelease`, exige validación de `apksigner` y sólo entonces exporta el APK firmado a `android/app/build/verified/`, junto con SHA-256, huella de certificado y hash exacto de los recursos. No imprime contraseñas ni las escribe en el proyecto. Un build Gradle directo sin esas variables seguirá siendo un candidato interno sin firmar, no un instalador distribuible.
 
-La antigua `.well-known/assetlinks.json` corresponde a la beta. Antes de dar por válido el retorno de Google al release, se debe añadir la huella pública de la clave release original en el sitio y comprobar «Abrir enlaces compatibles» en un dispositivo. No se inventa esa huella. Google/Stripe se abren en el navegador externo; no existe adaptación a Play Billing ni binario iOS.
+`.well-known/assetlinks.json` asocia la beta y el release con sus certificados originales. El build firmado verifica que su certificado coincide con la asociación del release antes de exportar el instalador. Sigue siendo necesario comprobar «Abrir enlaces compatibles» en un dispositivo. Google/Stripe se abren en el navegador externo; no existe adaptación a Play Billing ni binario iOS.
 
 ## Prueba final pendiente en Android real
 
 Instalación limpia firmada; creación y adjuntos en modo avión; cierre forzado y reapertura; cuenta validada previamente con cola pendiente; regreso de red y conflictos entre dos dispositivos; nota protegida sin filtraciones; revocación; enlaces Google; exportación PNG y actualización con la misma clave. Las pruebas de navegador sirven para el bundle y su persistencia, pero no certifican instalación ni comportamiento del sistema Android.
+
+## Copias completas compartidas (0.6.3)
+
+`nota-compartida.html#TOKEN.CLAVE` y todos sus módulos están incluidos en el
+paquete. Android App Links conserva ruta y fragmento al cargarlo dentro de la
+WebView; el dominio y las huellas de firma se mantienen. Si Android tiene
+habilitada la apertura de enlaces compatibles, el enlace abre la APK instalada;
+sin app, abre la página web. Una APK anterior a 0.6.3 no contiene este lector y
+necesita actualizarse. No se fuerza ni se altera la preferencia del dispositivo.
+
+El lector no requiere iniciar sesión. Obtener la copia cifrada necesita conexión
+y la función `postispop-note-share` desplegada; texto, dibujo y adjuntos se
+interpretan localmente. Los vídeos y audios se reproducen según los códecs que
+admita la WebView del dispositivo. Un archivo incompatible conserva su descarga.
+La clave del enlace no se entrega al servidor y una nota protegida sigue pidiendo
+su contraseña. Los archivos se pueden enviar al selector nativo para guardarlos
+o abrirlos en otra aplicación. Esto necesita probarse en un dispositivo físico
+con la APK firmada vigente; el empaquetado y las pruebas del puente no lo sustituyen.

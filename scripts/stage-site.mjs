@@ -70,7 +70,7 @@ const sharedBrandCss=await readFile(new URL('workspace.css',out),'utf8');
 await writeFile(new URL('workspace.css',out),sharedBrandCss.replaceAll('/assets/postispop-smiling-logo.svg','/'+approvedLogoPath).replaceAll('/assets/postispop-logo-light.svg','/'+approvedLogoPath));
 // Consolidate initial workspace styles into one cacheable request.
 const {transform}=await import('esbuild');
-const initialStyles=[cssPath,'fonts.css','commerce.css','experience.css','note-attachments.css','design-tools.css','protected-notes.css','offline-ui.css','wpo-features.css','workspace.css'];
+const initialStyles=[cssPath,'fonts.css','commerce.css','experience.css','note-attachments.css','note-share.css','design-tools.css','protected-notes.css','offline-ui.css','wpo-features.css','workspace.css'];
 const combined=(await Promise.all(initialStyles.map(name=>readFile(new URL(name,out),'utf8')))).join('\n');
 const compactStyles=(await transform(combined,{loader:'css',minify:true})).code;
 const workspaceStyles='workspace-'+createHash('sha256').update(compactStyles).digest('hex').slice(0,12)+'.css';
@@ -78,7 +78,7 @@ await writeFile(new URL(workspaceStyles,out),compactStyles);
 const refreshedScripts={};
 for(const name of ['themes','brand-highlights']){const source=await readFile(new URL(name+'.js',out),'utf8');const asset=name+'-'+createHash('sha256').update(source).digest('hex').slice(0,12)+'.js';await writeFile(new URL(asset,out),source);refreshedScripts[name]=asset;}
 async function walk(dir){let result=[];for(const e of await readdir(dir,{withFileTypes:true})){const p=new URL(e.name+(e.isDirectory()?'/':''),dir);if(e.isDirectory())result.push(...await walk(p));else if(e.name.endsWith('.html'))result.push(p);}return result;}
-for(const file of await walk(out)){if(file.pathname.endsWith('/offline.html'))continue;let html=await readFile(file,'utf8');html=html.replaceAll(oldCss,cssPath);html=html.replace('<link rel="preload" as="image" href="./assets/postispop-logo.png" fetchpriority="high"/>','');html=html.replace('href="./assets/board-scene.webp" type="image/webp" fetchpriority="high"','href="/assets/board-scene-wpo-v2.avif" type="image/avif" fetchpriority="high"');
+for(const file of await walk(out)){if(file.pathname.endsWith('/offline.html')||file.pathname.endsWith('/nota-compartida.html'))continue;let html=await readFile(file,'utf8');html=html.replaceAll(oldCss,cssPath);html=html.replace('<link rel="preload" as="image" href="./assets/postispop-logo.png" fetchpriority="high"/>','');html=html.replace('href="./assets/board-scene.webp" type="image/webp" fetchpriority="high"','href="/assets/board-scene-wpo-v2.avif" type="image/avif" fetchpriority="high"');
 html=html.replace(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/g,(full,text)=>{try{return ['Organization','WebSite'].includes(JSON.parse(text)['@type'])?'':full;}catch{return full;}});
 if(!html.includes('id="pp-schema-graph"'))html=html.replace('</head>','<script id="pp-schema-graph" type="application/ld+json">'+JSON.stringify(graph).replace(/</g,'\\u003c')+'</script></head>');
 if(!html.includes('id="pp-color-init"'))html=html.replace(/(<meta\b[^>]*charset[^>]*>)/i,'$1<script id="pp-color-init">'+theme+'</script>');
@@ -86,10 +86,10 @@ if(!html.includes('/wpo-features.css'))html=html.replace('</head>','<link rel="s
 if(file.href===new URL('index.html',out).href&&!html.includes('rel="preconnect"'))html=html.replace('</head>','<link rel="preconnect" href="https://htfyjefmviwlgmfqrwue.supabase.co" crossorigin></head>');
 if(!html.includes('/wpo-register.js'))html=html.replace('</body>','<script src="/wpo-register.js" defer></script></body>');
 if(!html.includes('/wpo-features.js'))html=html.replace('</body>','<script type="module" src="/wpo-features.js?v=20261002b"></script></body>');
-html=html.replace('</head>','<link rel="stylesheet" href="/workspace.css?v=20261010-responsible-support"></head>');
+html=html.replace('</head>','<link rel="stylesheet" href="/workspace.css?v=20261011-editor-themes"></head>');
 if(!html.includes('/themes.js'))html=html.replace(/(<meta\b[^>]*charset[^>]*>)/i,'$1<script src="/themes.js?v=20261010-toolbar-icons"></script>');
-html=html.replace(/href=(["'])\.\/note-attachments\.css(?:\?[^"']*)?\1/g,'href="/note-attachments.css?v=20261009b"').replace(/src=(["'])\.\/note-attachments\.js(?:\?[^"']*)?\1/g,'src="/note-attachments.js?v=20261009c"');
-  html=html.replace(/src=(["'])\/experience\.js(?:\?[^"']*)?\1/g,'src="/experience.js?v=20261010b"').replace(/src=(["'])\/protected-notes\.js(?:\?[^"']*)?\1/g,'src="/protected-notes.js?v=20261008a"');
+html=html.replace(/href=(["'])\.\/note-attachments\.css(?:\?[^"']*)?\1/g,'href="/note-attachments.css?v=20261011-complete-share"').replace(/src=(["'])\.\/note-attachments\.js(?:\?[^"']*)?\1/g,'src="/note-attachments.js?v=20261011-complete-share"');
+  html=html.replace(/src=(["'])\/experience\.js(?:\?[^"']*)?\1/g,'src="/experience.js?v=20261010b"').replace(/src=(["'])\/protected-notes\.js(?:\?[^"']*)?\1/g,'src="/protected-notes.js?v=20261011-complete-share"');
 if(file.href===new URL('index.html',out).href&&!html.includes('/brand-highlights.js'))html=html.replace('</body>','<script type="module" src="/brand-highlights.js?v=20261010-responsible-support"></script></body>');
 html=html.replace(/src=(["'])\/?(themes|brand-highlights)\.js(?:\?[^"']*)?\1/g,(_,quote,name)=>'src="/'+refreshedScripts[name]+'"');
 if(file.href===new URL('index.html',out).href){
@@ -115,5 +115,5 @@ console.log('Daily quote loading optimized:', await optimizeQuotes(out));
 await buildMultilingualSeo(fileURLToPath(out));
 await auditBundle(fileURLToPath(out));
 console.log('Offline public shell:',await writePublicServiceWorker(fileURLToPath(out)),'resources; API responses excluded.');
-const manifest=await writeBundleManifest(fileURLToPath(out),{target:'web',version:'0.6.2',includes:['atelier','design-tools','protected-notes','offline-sync','local-fonts','notes-first']});
+const manifest=await writeBundleManifest(fileURLToPath(out),{target:'web',version:'0.6.3',includes:['atelier','design-tools','protected-notes','offline-sync','local-fonts','notes-first']});
 console.log('Verified public bundle:',manifest.files,'files;',manifest.contentHash);

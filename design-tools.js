@@ -264,13 +264,15 @@ function enhanceEditor(){
   }
   // Closing waits for the actual write. A failure leaves the editable note open.
   const beforeClose=event=>{if(panel.isConnected)event.detail.waits.push(flush());};
+  const shareSnapshot=event=>{if(panel.isConnected&&event.detail.noteId===id){finishGesture();event.detail.snapshot={style:structuredClone(value)};}};
+  window.addEventListener('postispop:editor-snapshot',shareSnapshot);
   const backgroundSave=()=>{if(dirty||pointerId!==null)void flush();};
   window.addEventListener('postispop:editor-flush',beforeClose);
   for(const name of ['pagehide','online','postispop:native-background'])window.addEventListener(name,backgroundSave);
   const cleanup=new MutationObserver(()=>{
     if(panel.isConnected)return;
     textResize.disconnect();text.removeEventListener('input',updateTextOverflow);
-    clearTimeout(saveTimer);window.removeEventListener('postispop:editor-flush',beforeClose);
+    clearTimeout(saveTimer);window.removeEventListener('postispop:editor-flush',beforeClose);window.removeEventListener('postispop:editor-snapshot',shareSnapshot);
     for(const name of ['pagehide','online','postispop:native-background'])window.removeEventListener(name,backgroundSave);
     cleanup.disconnect();
   });cleanup.observe(document.body,{childList:true,subtree:true});
