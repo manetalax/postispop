@@ -3,6 +3,7 @@ import {encryptNote,decryptNote,bytesToBase64,base64ToBytes,MAX_ATTACHMENT_BYTES
 import {drawStrokes,normalizeStyle} from './style-model.js';
 import {showCompleteNoteShare} from './note-share.js';
 import {shareCopy} from './note-share-copy.js';
+import {shareFile} from './share-tools.js';
 import {withNoteStorageLock,protectedMarker} from './attachment-lock.js';
 
 const messages={LOCAL_STORAGE_FULL:T("No queda espacio suficiente en este dispositivo. Tus datos anteriores se conservan; libera espacio y vuelve a intentarlo."),LINK_UNAVAILABLE:T("El enlace ha caducado, se ha revocado o ya no está disponible."),STORAGE_LOCK_UNAVAILABLE:T("Este navegador no permite coordinar el cifrado con otros editores abiertos. Usa una versión actual de Chrome, Firefox, Safari o la aplicación para proteger esta nota."),UNLOCK_FAILED:T("La contraseña no es correcta o la nota está dañada."),PASSWORD_TOO_SHORT:T("La contraseña debe tener al menos 4 caracteres."),PASSWORD_TOO_LONG:T("La contraseña es demasiado larga."),CONFLICT:T("La nota cambió en otro lugar. Cierra y vuelve a abrir antes de guardar."),STYLE_CONFLICT:T("El dibujo cambió. Cierra y vuelve a abrir antes de proteger."),ATTACHMENTS_TOO_LARGE:T("Los adjuntos superan 2 MB en total. Esta nota se conserva sin cambios; reduce sus adjuntos antes de protegerla."),NOTE_TOO_LARGE:T("La nota supera el tamaño de cifrado permitido. Se conserva sin cambios."),PENDING_CHANGES:T("Guarda y sincroniza los cambios pendientes antes de proteger esta nota."),UNFINISHED_DRAFT:T("Hay un borrador pendiente de esta nota. Ábrelo y guárdalo antes de protegerla."),REMOTE_IMAGE:T("Esta nota tiene una captura alojada fuera del cifrado. Descárgala, elimina la captura de la nota y añádela como archivo local antes de protegerla."),SESSION_REQUIRED:T("Inicia sesión para compartir una nota protegida."),OWNER_REQUIRED:T("Solo la persona propietaria de la pizarra puede modificar o compartir esta nota."),SECURE_CONTEXT_REQUIRED:T("El cifrado necesita HTTPS o la aplicación instalada."),CLEANUP_FAILED:T("La nota está cifrada, pero no se han podido retirar todos los adjuntos locales anteriores. Mantén este dispositivo privado y reabre la aplicación para reintentar la limpieza.")};
@@ -70,7 +71,50 @@ export function renderProtectedPayload(container,payload,urls=[]){
 }
 function renderAttachments(container,attachments,urls){
   if(!attachments.length)return;const list=node('ul',undefined,'pp-vault-files');
-  attachments.forEach(item=>{const shownName=item.compression==='gzip'?item.name.replace(/\.gz$/,''):item.name,li=node('li'),a=node('a',shownName);if(item.kind==='link'){a.href=item.url;a.target='_blank';a.rel='noopener noreferrer';}else if(item.compression==='gzip'&&window.DecompressionStream){a.href='#';a.addEventListener('click',async event=>{event.preventDefault();try{const blob=new Blob([base64ToBytes(item.data)],{type:'application/gzip'}),bytes=await new Response(blob.stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer(),url=URL.createObjectURL(new Blob([bytes],{type:item.originalType||item.type||'application/octet-stream'})),download=node('a');urls.push(url);download.href=url;download.download=shownName;download.click();}catch{const url=URL.createObjectURL(new Blob([base64ToBytes(item.data)],{type:'application/gzip'}));urls.push(url);const download=node('a');download.href=url;download.download=`${item.name}.gz`;download.click();}});}else{const url=URL.createObjectURL(new Blob([base64ToBytes(item.data)],{type:item.type||'application/octet-stream'}));urls.push(url);a.href=url;a.download=item.name;}li.append(a);list.append(li);});container.append(list);
+  container.append(list);
+  for(const item of attachments){
+    const li=node('li'),name=item.compression==='gzip'?item.name.replace(/\.gz$/,''):item.name;
+    list.append(li);
+    if(item.kind==='link'){
+      const a=node('a',item.url);try{const url=new URL(item.url);if(!/^https?:$/.test(url.protocol))throw Error();a.href=url.href;a.target='_blank';a.rel='noopener noreferrer';li.append(a);}catch{li.append(node('p',name));}
+      continue;
+    }
+    const status=node('p',T("Preparando adjunto…"),'pp-vault-help');status.setAttribute('role','status');li.append(status);
+    void (async()=>{
+      try{
+        await Promise.resolve();
+        let blob=new Blob([base64ToBytes(item.data)],{type:item.type||'application/octet-stream'}),downloadName=name;
+        if(item.compression==='gzip'){
+          if(!globalThis.DecompressionStream){blob=new Blob([blob],{type:'application/gzip'});downloadName=item.name.endsWith('.gz')?item.name:`${item.name}.gz`;}
+          else{
+            const reader=blob.stream().pipeThrough(new DecompressionStream('gzip')).getReader(),parts=[];let size=0;
+            try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>25*1024*1024){await reader.cancel();throw Error('ATTACHMENTS_TOO_LARGE');}parts.push(value);}}finally{reader.releaseLock();}
+            blob=new Blob(parts,{type:item.originalType||item.type||'application/octet-stream'});
+          }
+        }
+        // A decompression may finish after the user closes or re-locks the note.
+        if(!li.isConnected)return;
+        const url=URL.createObjectURL(blob);urls.push(url);
+        const mime=blob.type.split(';')[0].toLowerCase();let media;
+        // Never embed active formats such as HTML or SVG from decrypted files.
+        if(/^image\/(png|jpeg|webp|gif|avif)$/.test(mime)){media=node('img');media.alt=name;}
+        else if(/^video\/(mp4|webm|ogg|quicktime)$/.test(mime))media=node('video');
+        else if(/^audio\/(mpeg|mp4|webm|ogg|wav|x-wav|aac)$/.test(mime))media=node('audio');
+        if(media){
+          media.src=url;media.className='pp-vault-media';
+          if(media.tagName!=='IMG'){media.controls=true;media.preload='metadata';media.setAttribute('aria-label',name);if(media.tagName==='VIDEO')media.playsInline=true;}
+          media.addEventListener('error',()=>{status.textContent=T("Este dispositivo no puede mostrar este archivo. Puedes guardarlo o abrirlo con otra aplicación.");});
+          li.append(media);
+        }
+        const a=node('a',downloadName);a.href=url;a.download=downloadName;
+        a.addEventListener('click',async event=>{
+          if(!window.__postispopNativeShare)return;
+          event.preventDefault();try{await shareFile(new File([blob],downloadName,{type:blob.type}),{title:downloadName});}catch{status.textContent=T("No se pudo abrir el adjunto. Vuelve a intentarlo.");}
+        });
+        li.append(a);status.textContent='';
+      }catch{if(li.isConnected)status.textContent=T("No se pudo preparar este adjunto. La nota cifrada se conserva sin cambios.");}
+    })();
+  }
 }
 async function shareControls(el,note,status,getSnapshot){
   const complete=node('button',shareCopy().complete);complete.type='button';complete.addEventListener('click',()=>showCompleteNoteShare(note.id,{getSnapshot}));el.append(complete);
