@@ -131,3 +131,15 @@ export function guestRequest(endpoint, method, payload={}, importOptions) {
   else throw new Error('UNSUPPORTED_OPERATION');
   note.revision++;note.updated=Date.now();save();return {note};
 }
+
+export function purgeGuestNoteForSize(noteId) {
+ const board=readGuest();
+ board.notes=board.notes.filter(n=>n.id!==noteId);
+ board.order=board.order.filter(id=>id!==noteId);
+ board.trash=(board.trash||[]).filter(item=>item.note?.id!==noteId);
+ board.legacyNoteIds=(board.legacyNoteIds||[]).filter(id=>id!==noteId);
+ board.revision++;
+ localStorage.setItem(KEY,JSON.stringify(board));
+ localStorage.removeItem('pp:protected-note:'+noteId);
+ return board;
+}

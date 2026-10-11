@@ -33,7 +33,7 @@
     "existing_data": "Preserve existing notes and purchased rights. Never delete notes merely because the commercial offer changes.",
     "access_enforcement": "Server-authoritative for cloud data; device-local for guest notes",
     "max_total_bytes": 10000000,
-    "size_policy": "10 decimal MB including text, drawings, metadata and stored attachments. Existing larger notes remain recoverable; no deletion on downgrade."
+    "size_policy": "10 decimal MB including text, drawings, metadata and stored attachments. Delete existing notes above this limit and reject every oversized mutation. User explicitly authorized this policy on 2026-10-11."
   },
   "billing": {
     "product": "Premium",

@@ -11,8 +11,7 @@ export function noteSize(note) {
 }
 export function assertNoteSize(note, {previousBytes = 0, maxBytes = MAX_NOTE_BYTES} = {}) {
   const bytes = noteSize(note);
-  // Existing oversized notes remain recoverable and can be reduced.
-  if (bytes > maxBytes && bytes > previousBytes) throw Object.assign(new Error('NOTE_TOO_LARGE'), {status:413});
+  if (bytes > maxBytes) throw Object.assign(new Error('NOTE_TOO_LARGE'), {status:413});
   return bytes;
 }
 export const noteSizeMessages = {

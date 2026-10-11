@@ -1,6 +1,6 @@
 # Capacidad y propuesta de planes
 
-Límite estándar: 10.000.000 bytes por nota, sumando texto UTF-8, dibujos, metadatos y todos los archivos almacenados. Base64 de transporte no se cobra como contenido duplicado. Una nota ya mayor puede reducirse o descargarse; no se borra. El servidor de copias cifradas impone además 14 MB de transporte, para admitir base64 sin inspeccionar contenido privado; el límite lógico de 10 MB se comprueba en el cliente. Las notas protegidas conservan además sus límites de cifrado actuales, inferiores a 10 MB.
+Límite estándar: 10.000.000 bytes por nota, sumando texto UTF-8, dibujos, metadatos y todos los archivos almacenados. Base64 de transporte no se cobra como contenido duplicado. Por instrucción explícita posterior del usuario, las notas existentes mayores se eliminan y ninguna escritura puede superar 10 MB. La nube se comprueba al aplicar la migración; los archivos privados de dispositivos se comprueban al abrir su pizarra. El servidor de copias cifradas impone además 14 MB de transporte, para admitir base64 sin inspeccionar contenido privado; el límite lógico de 10 MB se comprueba en el cliente. Las notas protegidas conservan además sus límites de cifrado actuales, inferiores a 10 MB.
 
 ## Propuesta comercial, todavía sin cobros nuevos
 
@@ -10,7 +10,7 @@ Límite estándar: 10.000.000 bytes por nota, sumando texto UTF-8, dibujos, meta
 | Plus | 25 MB | 2 GB | 4,95 € |
 | Max | 50 MB | 10 GB | 9,95 € |
 
-Plus y Max serían planes completos que incluyen Premium, no suplementos acumulativos. Mantener el máximo actual de 100 notas. Estos precios son propuestas: no hay nuevos productos Stripe ni derechos de capacidad concedidos por el navegador. Activarlos requiere aceptar precios y desarrollar cuotas totales verificadas en servidor y renovación/cancelación. No ofrecer almacenamiento ampliado de por vida: sus costes siguen cada mes. Las copias compartidas caducan en siete días; no equivalen a almacenamiento permanente en la nube. Tras una bajada de plan, conservar lectura y exportación, bloquear ampliaciones por encima de la cuota y evitar borrados automáticos por tamaño.
+Plus y Max serían planes completos que incluyen Premium, no suplementos acumulativos. Mantener el máximo actual de 100 notas. Estos precios son propuestas: no hay nuevos productos Stripe ni derechos de capacidad concedidos por el navegador. Activarlos requiere aceptar precios y desarrollar cuotas totales verificadas en servidor y renovación/cancelación. No ofrecer almacenamiento ampliado de por vida: sus costes siguen cada mes. Las copias compartidas caducan en siete días; no equivalen a almacenamiento permanente en la nube. Tras una bajada de plan, respetar la política de tamaño acordada y desarrollar avisos de cambio de cuota antes de activar los planes.
 
 ## Hosting recomendado
 

@@ -1,9 +1,9 @@
 // Shared origin-wide lock: migration and every legacy attachment write participate.
 export const protectedMarker=id=>'pp:protected-note:'+id;
 export function canCoordinateAttachments(){return Boolean(globalThis.navigator?.locks?.request);}
-export async function withNoteStorageLock(id,work,{requireLock=false}={}){
+export async function withNoteStorageLock(id,work,{requireLock=false,ifAvailable=false}={}){
   if(!id)throw Error('NOTE_REQUIRED');
-  if(canCoordinateAttachments())return navigator.locks.request('postispop-note-storage:'+id,{mode:'exclusive'},work);
+  if(canCoordinateAttachments())return navigator.locks.request('postispop-note-storage:'+id,{mode:'exclusive',...(ifAvailable?{ifAvailable:true}:{})},lock=>{if(ifAvailable&&!lock)return;return work();});
   if(requireLock)throw Error('STORAGE_LOCK_UNAVAILABLE');
   return work();
 }
