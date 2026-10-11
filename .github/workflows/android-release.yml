@@ -72,7 +72,9 @@ jobs:
               raise SystemExit("Missing required GitHub Actions secrets: " + ", ".join(missing))
 
           try:
-              data = base64.b64decode(required["KEYSTORE_BASE64"], validate=True)
+              # Standard base64 exports can wrap lines or end with a newline.
+              encoded = "".join(required["KEYSTORE_BASE64"].split())
+              data = base64.b64decode(encoded, validate=True)
           except Exception as exc:
               raise SystemExit("POSTISPOP_KEYSTORE_BASE64 is not valid base64") from exc
           if not data:
