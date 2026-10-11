@@ -8,6 +8,7 @@ on:
       - 'android/**'
       - 'mobile/**'
       - 'note-share*'
+      - 'protected-notes*'
       - 'shared-note.js'
       - 'native-share.js'
       - 'scripts/package-mobile.mjs'
@@ -87,6 +88,15 @@ jobs:
               env_file.write(f"POSTISPOP_KEYSTORE={keystore}\n")
           PY
 
+      - name: Verify decrypted media in the Android resources
+        env:
+          POSTISPOP_TEST_ROOT: android/app/src/main/assets/www
+        run: |
+          npx playwright install --with-deps chromium
+          npm run build
+          node scripts/package-mobile.mjs
+          node tests/protected-media-ui.cjs
+
       - name: Build and verify signed installer
         env:
           POSTISPOP_STORE_PASSWORD: ${{ secrets.POSTISPOP_STORE_PASSWORD }}
@@ -100,7 +110,7 @@ jobs:
         with:
           name: PostisPop-Android-signed-${{ github.run_number }}
           path: |
-            android/app/build/verified/PostisPop-0.6.8-release-signed.apk
+            android/app/build/verified/PostisPop-0.6.9-release-signed.apk
             android/app/build/verified/verification.json
           if-no-files-found: error
           retention-days: 30
@@ -113,9 +123,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create android-v0.6.8 \
-            android/app/build/verified/PostisPop-0.6.8-release-signed.apk \
+          gh release create android-v0.6.9 \
+            android/app/build/verified/PostisPop-0.6.9-release-signed.apk \
             android/app/build/verified/verification.json \
             --target "$GITHUB_SHA" \
-            --title 'PostisPop Android 0.6.8' \
-            --notes 'Icono redondo con la carita amarilla y fondo blanco elegido. Botones de cuenta, Premium y ayuda compactos en una fila móvil, traducidos en ocho idiomas. Firma original y contenido del APK verificados; instalación física pendiente de prueba.'
+            --title 'PostisPop Android 0.6.9' \
+            --notes 'Las notas descifradas muestran fotos y vídeos reproducibles. Apertura de adjuntos mediante Android y conservación de archivos al editar. Firma original y contenido del APK verificados; instalación física pendiente de prueba.'
