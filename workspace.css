@@ -553,3 +553,23 @@ html:root[data-pp-theme] .editor-dialog .rich-paper-input textarea::placeholder 
 @media(max-width:350px){
   html:root[data-pp-theme] .editor-dialog :is(.pp-editor-toolbar>.pp-editor-tool,.pp-editor-options>summary) {width:32px;min-width:32px;flex-basis:32px;padding:5px}
 }
+
+/* A permanent, translated shop entry, visible even when welcome is dismissed. */
+.postispop .pp-premium-entry{display:flex;align-items:center;justify-content:center;gap:12px;width:fit-content;max-width:100%;box-sizing:border-box;margin:0 auto 12px;padding:12px 24px;min-height:50px;border:2px solid #8c5a15;border-radius:16px;background:#ffe080;color:#33230e;font:750 17px/1.35 system-ui,sans-serif;text-align:center;text-decoration:none;box-shadow:0 3px 0 #8c5a15;}
+.postispop .pp-premium-entry svg{width:24px;height:24px;flex:0 0 24px;fill:currentColor}
+.postispop .pp-premium-entry:hover{background:#ffce4e;color:#33230e;box-shadow:0 4px 0 #8c5a15}
+.postispop .pp-premium-entry:focus-visible{outline:3px solid var(--pp-focus);outline-offset:4px}
+.pp-premium-entry-arrow{font-size:24px;line-height:1}
+/* Chosen symbols become a visible part of the card; reserve room for them. */
+.pp-note-symbol[data-selected="true"]{width:clamp(38px,4vw,56px);height:clamp(38px,4vw,56px);min-width:38px;right:7px;bottom:12px}
+.pp-note-symbol[data-selected="true"] svg{width:100%;height:100%;stroke-width:1.8}
+.note-cell:has(.pp-note-symbol[data-selected="true"]) .sticky-note{padding-bottom:clamp(56px,calc(4vw + 24px),80px)!important}
+.note-cell:has(.pp-note-symbol[data-selected="true"]) .pp-note-sketch{bottom:clamp(56px,calc(4vw + 24px),80px);height:28%}
+.postispop .board-frame .note-number{font-size:16px!important;font-weight:700!important;line-height:1.2!important}
+.sticky-note>.pp-note-date{left:44px;font-size:clamp(11px,5cqi,14px)}
+.note-cell:has(.pp-note-symbol[data-selected="true"]) .pp-note-date{right:clamp(54px,calc(4vw + 14px),74px)}
+@media(max-width:700px){
+ .postispop .pp-premium-entry{width:100%;padding:12px 14px;font-size:16px;gap:9px}
+ .postispop .board-frame .note-number{font-size:14px!important}
+ .sticky-note>.pp-note-date{left:40px;font-size:11px}
+}
