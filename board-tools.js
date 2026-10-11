@@ -218,7 +218,7 @@ export function initBoardTools(){
   let timer;search.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(filter,180);});colors.addEventListener('change',filter);
   window.addEventListener('postispop:clear-filter',()=>{if(!searchTools?.contains(search))return;clearTimeout(timer);search.value='';colors.value='';favoritesOnly=false;favorite.textContent='☆';favorite.setAttribute('aria-pressed','false');searchTools.classList.remove('showing-favorites');filter();});
   const operations=[['Guardar una copia',exportJson],['Restaurar una copia',trigger=>showImport(undefined,trigger)],['Descargar imagen',exportPng],['Imprimir',printPdf]];
-  operations.forEach(([name,fn])=>{const button=text('button',name);button.type='button';button.addEventListener('click',async()=>{button.disabled=true;try{await fn(button);}catch(error){message(exportError(error));}finally{button.disabled=false;}});tools.append(button);});
+  operations.forEach(([name,fn])=>{const button=text('button',name);button.type='button';button.addEventListener('click',async()=>{button.disabled=true;options.open=false;summary.focus({preventScroll:true});try{await fn(summary);}catch(error){message(exportError(error));}finally{button.disabled=false;}});tools.append(button);});
   const installHelp=text('a','Descargas e instalación');installHelp.href='/descargas/';tools.append(installHelp);
   const install=text('button','Instalar aplicación');install.type='button';install.dataset.experience='install';install.hidden=true;tools.append(install);
   const status=text('span','');status.className='pp-search-status';status.setAttribute('role','status');searchTools.append(status);options.append(tools);searchTools.append(options);

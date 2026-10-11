@@ -21,7 +21,12 @@ const fs=require('node:fs/promises'),path=require('node:path');
    await page.locator('.editor-dialog textarea').fill(text);
    await page.getByLabel('Más herramientas',{exact:true}).click();
    await page.getByRole('button',{name:'Cursiva',exact:true}).click();
-   if(mode==='Escape')await page.keyboard.press('Escape');
+   if(mode==='Escape'){
+    await page.keyboard.press('Escape');
+    assert.equal(await page.locator('.pp-editor-options').evaluate(n=>n.open),false,'First Escape closes tools');
+    assert.equal(await page.locator('.editor-dialog').isVisible(),true,'Closing tools keeps the note open');
+    await page.keyboard.press('Escape');
+   }
    if(mode==='outside')await page.mouse.click(5,5);
    if(mode==='back')await page.goBack();
    await page.waitForSelector('.editor-dialog',{state:'detached'});
