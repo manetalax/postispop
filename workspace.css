@@ -625,3 +625,7 @@ html:root[data-pp-theme] .editor-dialog .rich-paper-mirror{inset:0!important;wid
 
 /* Keep the brand hit area within the header, above account actions. */
 @media(min-width:701px){.postispop .app-header .pp-brand-lockup{height:100px!important}}
+
+/* Leave room around a focused tool in the scrolling personalization panel. */
+.pp-design-content{scroll-padding-block:16px}
+.pp-design-content :is(button,select,input){scroll-margin-block:8px}
