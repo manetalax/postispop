@@ -6,7 +6,8 @@ import {whenReactReady} from './ui-ready.js';
 let activeId='',board=null,styles=new Map(),mountedBoard=null,scheduled=false,loading=false;
 const paperImages=new Map();
 const el=(tag,text='',className='')=>{const node=document.createElement(tag);node.textContent=text;if(className)node.className=className;return node;};
-const paperImage=id=>{if(!paperImages.has(id))paperImages.set(id,svgUrl(paperSvg(id)));return paperImages.get(id);};
+// Decorative paper headings stay in the editor; card previews reserve room for note text.
+const paperImage=(id,preview=false)=>{const key=id+':'+preview;if(!paperImages.has(key)){const svg=paperSvg(id);paperImages.set(key,svgUrl(preview?svg.replace(/<text\b[^>]*>[\s\S]*?<\/text>/g,''):svg));}return paperImages.get(key);};
 const safeStyle=value=>{try{return normalizeStyle(value||{});}catch{return normalizeStyle();}};
 const noteById=id=>board?.notes?.find(note=>note.id===id);
 // Apply the current writing default only when the note has no saved style.
@@ -46,7 +47,7 @@ async function api(path,payload){
   const data=await response.json();if(!response.ok)throw Object.assign(new Error(data.error||'REQUEST_FAILED'),{status:response.status});return data;
 }
 function setVariables(node,style){
-  const values={'--pp-font':fonts.find(font=>font.id===style.font)?.css||'sans-serif','--pp-font-size':style.size+'px','--pp-ink':readableInk(style.ink,paperColor(style.paper)),'--pp-slant':style.italic?'italic':'normal','--pp-decoration':style.underline?'underline':'none','--pp-paper-image':`url("${paperImage(style.paper)}")`};
+  const values={'--pp-paper-base':paperColor(style.paper),'--pp-font':fonts.find(font=>font.id===style.font)?.css||'sans-serif','--pp-font-size':style.size+'px','--pp-ink':readableInk(style.ink,paperColor(style.paper)),'--pp-slant':style.italic?'italic':'normal','--pp-decoration':style.underline?'underline':'none','--pp-paper-image':`url("${paperImage(style.paper,node.matches('.sticky-note'))}")`};
   for(const [name,value]of Object.entries(values))if(node.style.getPropertyValue(name)!==value)node.style.setProperty(name,value);
   node.dataset.ppPaper=style.paper;
 }

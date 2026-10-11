@@ -81,7 +81,7 @@ button, summary, a { touch-action: manipulation; }
 .pp-note-preference:hover { opacity: .78; }
 .pp-note-preference:focus-visible { outline: 2px solid var(--pp-focus); outline-offset: 2px; }
 .pp-note-favorite { top: 4px; right: 5px; }
-.pp-note-favorite[aria-pressed="true"] { color: #d39a08; filter: drop-shadow(0 1px 1px #76540055); }
+.pp-note-favorite[aria-pressed="true"] { color: #765000; filter: none; }
 .pp-note-pin { top: 4px; left: 50%; transform: translateX(-50%); }
 .pp-note-pin svg { display: block; overflow: visible; }
 .pp-note-pin[aria-pressed="true"] { top: -13px; width: 34px; height: 48px; transform: translateX(-50%) rotate(32deg); transform-origin: 50% 48%; filter: drop-shadow(1px 2px 1px #26312644); }
@@ -255,19 +255,21 @@ button, summary, a { touch-action: manipulation; }
 /* Note-card controls: quiet on the paper, spacious enough to tap on phones. */
 .postispop .board-frame .sticky-note { padding:40px 20px 30px!important; container-type:inline-size; }
 /* Keep every note-card action legible on all ten page palettes and paper colors. */
-.pp-note-preference { width:28px; height:28px; min-width:28px; font-size:20px; border:1px solid #26332e; border-radius:50%; background:#fff; color:#17231f; box-shadow:0 1px 3px #17231f38; opacity:1; }
-.pp-note-preference:hover { background:#fff; border-color:#111b17; color:#111b17; opacity:1; box-shadow:0 2px 5px #17231f4d; }
+.pp-note-preference { width:28px; height:28px; min-width:28px; font-size:20px; border:0; border-radius:4px; background:transparent; color:#17231f; box-shadow:none; opacity:1; }
+.pp-note-preference:hover { background:transparent; opacity:1; box-shadow:none; }
 .pp-note-preference:focus-visible { outline:2px solid #17231f!important; outline-offset:2px; }
 .pp-note-color { top:4px; left:5px; right:auto; }
-.pp-note-color-dot { display:block; width:13px; height:13px; border-radius:50%; background:var(--pp-contrast-paper); border:2px solid color-mix(in srgb,var(--pp-text) 70%,transparent); box-shadow:0 0 0 1px var(--pp-surface); }
+.pp-note-color-dot { display:block; box-sizing:border-box; width:28px; height:28px; border-radius:50%; background:var(--pp-contrast-paper); border:2px solid #17231f; box-shadow:none; }
 .pp-note-favorite { top:4px; right:5px; }
 .pp-note-pin { top:4px; left:50%; }
 .pp-note-pin[aria-pressed="true"] { top:-13px; }
 .pp-note-symbol { right:5px; bottom:4px; left:auto; top:auto; font-size:21px; }
-.pp-note-symbol svg,.pp-note-symbol-option svg { display:block; width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.pp-note-favorite svg,.pp-note-symbol svg,.pp-note-pin:not([aria-pressed="true"]) svg { display:block; width:28px; height:28px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.pp-note-favorite[aria-pressed="true"] svg { fill:currentColor; }
+.pp-note-symbol-option svg { display:block; width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 .pp-note-symbol[data-selected="true"] { transform:rotate(-8deg); }
 .pp-note-symbol[data-selected="true"] { right:5px; bottom:12px; }
-.pp-note-symbol[data-selected="true"] svg { width:22px; height:22px; }
+.pp-note-symbol[data-selected="true"] svg { width:28px; height:28px; }
 .sticky-note .note-doodle { display:none!important; }
 .pp-note-picker { position:absolute; z-index:12; display:grid; grid-template-columns:repeat(3,32px); gap:4px; padding:7px; border:1px solid var(--pp-border); border-radius:12px; background:var(--pp-surface); color:var(--pp-text); box-shadow:var(--pp-menu-shadow); pointer-events:auto; }
 .pp-note-picker[hidden] { display:none!important; }
@@ -399,8 +401,8 @@ button, summary, a { touch-action: manipulation; }
   .postispop .pp-note-search .pp-board-options > summary {width:40px!important;min-width:40px!important;max-width:40px!important}
 }
 
-/* Match the note number's ink to the readable “Escribe aquí” placeholder. */
-.postispop .board-frame .note-number {color:#59624b!important;opacity:1!important}
+/* Numbers and dates use the same opaque ink as the controls on light paper. */
+.postispop .board-frame .note-number,.postispop .board-frame .pp-note-date {color:#17231f!important;opacity:1!important}
 
 /* Anchor the main menu beside the brand, with its own space above account actions. */
 .postispop .app-header .pp-menu-toggle{position:absolute;top:10px;right:0;grid-column:auto;grid-row:auto;z-index:26;align-self:start}
