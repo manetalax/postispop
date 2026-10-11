@@ -1,10 +1,10 @@
-# PostisPop Android 0.6.7 — recursos incluidos
+# PostisPop Android 0.6.8 — recursos incluidos
 
 La aplicación ejecuta archivos del APK con WebViewAssetLoader bajo el origen lógico `https://postispop.com`. No descarga la página pública como sustitución cuando falta un recurso. La pizarra, las fuentes, las herramientas y los módulos de cifrado/offline forman parte del manifiesto obligatorio del empaquetado. Una dependencia local ausente o un CDN de código, imagen o fuente hace fallar la verificación.
 
 ## Identidad y estado real
 
-- Release: `com.postispop.android`, versión `0.6.7`, código `13`. Android 6+ con WebView actualizado.
+- Release: `com.postispop.android`, versión `0.6.8`, código `14`. Android 6+ con WebView actualizado.
 - Debug/beta: `com.postispop.android.beta`, identidad separada. Instalar release no migra ni reemplaza automáticamente los datos privados de la beta o del navegador.
 - Se mantiene R8, reducción de recursos, depuración de WebView desactivada y bloqueo de tráfico HTTP. Los mapas privados no se incluyen en web ni APK; el JavaScript fuente permanece legible.
 - El empaquetado de archivos no equivale a compilar, firmar, publicar ni instalar. La validación de código puede utilizar un SDK/JDK/Gradle temporal; la clave original sigue siendo necesaria para un instalador de distribución. No se entrega un binario antiguo o sin firmar como instalador final.
@@ -74,13 +74,13 @@ El script recompila los recursos actuales, verifica el bundle, ejecuta `assemble
 
 Instalación limpia firmada; creación y adjuntos en modo avión; cierre forzado y reapertura; cuenta validada previamente con cola pendiente; regreso de red y conflictos entre dos dispositivos; nota protegida sin filtraciones; revocación; enlaces Google; exportación PNG y actualización con la misma clave. Las pruebas de navegador sirven para el bundle y su persistencia, pero no certifican instalación ni comportamiento del sistema Android.
 
-## Copias completas compartidas (0.6.7)
+## Copias completas compartidas (0.6.8)
 
 `nota-compartida.html#TOKEN.CLAVE` y todos sus módulos están incluidos en el
 paquete. Android App Links conserva ruta y fragmento al cargarlo dentro de la
 WebView; el dominio y las huellas de firma se mantienen. Si Android tiene
 habilitada la apertura de enlaces compatibles, el enlace abre la APK instalada;
-sin app, abre la página web. Una APK anterior a 0.6.7 no contiene este lector y
+sin app, abre la página web. Una APK anterior a 0.6.8 no contiene este lector y
 necesita actualizarse. No se fuerza ni se altera la preferencia del dispositivo.
 
 El lector no requiere iniciar sesión. Obtener la copia cifrada necesita conexión
