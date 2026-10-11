@@ -100,7 +100,7 @@ jobs:
         with:
           name: PostisPop-Android-signed-${{ github.run_number }}
           path: |
-            android/app/build/verified/PostisPop-0.6.5-release-signed.apk
+            android/app/build/verified/PostisPop-0.6.6-release-signed.apk
             android/app/build/verified/verification.json
           if-no-files-found: error
           retention-days: 30
@@ -113,9 +113,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create android-v0.6.5 \
-            android/app/build/verified/PostisPop-0.6.5-release-signed.apk \
+          gh release create android-v0.6.6 \
+            android/app/build/verified/PostisPop-0.6.6-release-signed.apk \
             android/app/build/verified/verification.json \
             --target "$GITHUB_SHA" \
-            --title 'PostisPop Android 0.6.5' \
+            --title 'PostisPop Android 0.6.6' \
             --notes 'Botones de cuenta, Premium y ayuda compactos en una fila en móvil, traducidos en ocho idiomas. Nuevo icono amarillo con carita, adaptativo y redondo en Android. Firma y contenido verificados; instalación física pendiente de prueba.'
