@@ -35,12 +35,12 @@ const releaseAssociation = associations.find(item=>item.target?.package_name==='
 if (!releaseAssociation?.target?.sha256_cert_fingerprints?.some(value=>value.replaceAll(':','').toLowerCase()===fingerprint.toLowerCase())) throw new Error('APK certificate is not associated with postispop.com. No installer exported.');
 const target = resolve(root,'android/app/build/verified');
 await mkdir(target,{recursive:true});
-const name = 'PostisPop-0.6.6-release-signed.apk';
+const name = 'PostisPop-0.6.7-release-signed.apk';
 await cp(apk,resolve(target,name));
 const bytes = await readFile(apk);
 const bundle = JSON.parse(await readFile(resolve(root,'android/app/src/main/assets/www/bundle-manifest.json'),'utf8'));
 await writeFile(resolve(target,'verification.json'),JSON.stringify({
-  file:name,applicationId:'com.postispop.android',version:'0.6.6',versionCode:12,
+  file:name,applicationId:'com.postispop.android',version:'0.6.7',versionCode:13,
   bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex'),
   certificateSha256:fingerprint,bundledContentHash:bundle.contentHash,
   bundledPayloadVerified:true,signatureVerified:true,physicalInstallationTested:false,published:false,
