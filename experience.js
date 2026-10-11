@@ -1,3 +1,4 @@
+import {uiText as T} from './ui-copy.js';
 import {whenReactReady} from './ui-ready.js';
 import './board-layout.js?v=20261008a';
 import {track, metricsEnabled, setMetricsEnabled, readMetrics, recordVisit} from './usage-metrics.js';
@@ -46,7 +47,7 @@ function syncHeaderAccountActions(header) {
     login: header.querySelector('.header-auth-login'),
     logout: document.querySelector('.workspace-caption .session-identity .session-logout')
   };
-  let strip = header.querySelector('.pp-account-strip');
+  let strip = document.querySelector('.pp-account-strip');
   if (Object.values(sources).some(Boolean) && !strip) {
     strip = document.createElement('nav');
     strip.className = 'pp-account-strip';
@@ -82,6 +83,7 @@ function syncHeaderAccountActions(header) {
       if (value === null) proxy.removeAttribute(attribute); else proxy.setAttribute(attribute, value);
     }
   }
+  document.querySelector('.pp-home-actions')?.prepend(strip);
   if (!strip.children.length) { strip.remove(); header.classList.remove('pp-has-account-strip'); }
 }
 const notice=(message)=>{
@@ -98,7 +100,7 @@ function update() {
   const header=hydrated?document.querySelector('.app-header'):null;
 
   if(header)document.querySelectorAll('.header-share,.group-button').forEach(button=>{button.disabled=false;});
-  if(header)header.querySelector('.group-button')?.classList.add('pp-share-board-link');
+  if(header){const share=header.querySelector('.group-button');if(share){share.classList.add('pp-share-board-link');share.title=T('Compartir pizarra');share.setAttribute('aria-label',T('Compartir pizarra'));}}
 
   if (header && !header.querySelector('.pp-menu-toggle')) {
     const labels=MENU_LABELS[readBoardLanguage()]||MENU_LABELS.es;
@@ -109,14 +111,15 @@ function update() {
     button.onclick = () => { const open = header.classList.toggle('pp-menu-open'); button.setAttribute('aria-expanded', String(open)); };
     header.append(button);
     const nav = document.createElement('nav'); nav.className = 'pp-app-links'; nav.setAttribute('aria-label', labels.nav);
-    for (const [label,href] of [[labels.premium,'/atelier.html'],[labels.downloads,'/descargas/'],[labels.help,'/ayuda.html']]) { const link=document.createElement('a'); link.textContent=label;link.href=href;nav.append(link); }
+    for (const [label,href] of [[labels.downloads,'/descargas/'],[labels.help,'/ayuda.html']]) { const link=document.createElement('a'); link.textContent=label;link.href=href;nav.append(link); }
     header.append(nav);
   }
+  if(header){const lang=readBoardLanguage(),labels=MENU_LABELS[lang]||MENU_LABELS.es,menu=header.querySelector('.pp-menu-toggle');if(menu?.getAttribute('aria-label')!==labels.menu){menu?.setAttribute('aria-label',labels.menu);if(menu)menu.title=labels.menu;}const links=header.querySelectorAll('.pp-app-links a');for(const [index,[label,path]]of [[labels.downloads,'/descargas/'],[labels.help,'/ayuda.html']].entries()){const link=links[index];if(link){if(link.textContent!==label)link.textContent=label;const href=(lang==='es'?'':'/'+lang)+path;if(link.getAttribute('href')!==href)link.setAttribute('href',href);}}}
   syncHeaderAccountActions(header);
   if(header)void continuePremiumSignIn();
   // The mobile layout hides the text inside this icon button.
   document.querySelectorAll('.header-share').forEach(button=>{
-    if(!button.getAttribute('aria-label'))button.setAttribute('aria-label',button.textContent.trim()||'Compartir');
+    if(!button.getAttribute('aria-label'))button.setAttribute('aria-label',button.textContent.trim()||T("Compartir"));
   });
   // Recovered React may replace its document title; preserve the real SEO title.
   if(document.title==='PostisPop')document.title=SEO_TITLE;
@@ -127,10 +130,10 @@ function update() {
     const span=node.querySelector('span');
     if(!span)return;
     if(lastSave && lastSave.mode===(local?'local':'cloud')){
-      const text=lastSave.state==='saving'?'Guardando…':lastSave.state==='error'?'Error al guardar. Conserva el borrador y vuelve a intentarlo.':local?'Guardado en este dispositivo':'Guardado en la nube';
+      const text=T(lastSave.state==='saving'?T("Guardando…"):lastSave.state==='error'?T("Error al guardar. Conserva el borrador y vuelve a intentarlo."):local?T("Guardado en este dispositivo"):T("Guardado en la nube"));
       if(span.textContent!==text)span.textContent=text;
-      const at=lastSave.state==='saved'?new Date(lastSave.at).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}):null;
-      const title=at?(local?'Último guardado local: ':'Última sincronización: ')+at:(local?'Modo local':'Modo nube');
+      const at=lastSave.state==='saved'?new Date(lastSave.at).toLocaleTimeString(readBoardLanguage(),{hour:'2-digit',minute:'2-digit'}):null;
+      const title=at?(local?T("Último guardado local: "):T("Última sincronización: "))+at:(local?T("Modo local"):T("Modo nube"));
       if(node.title!==title)node.title=title;
     }
   });
@@ -163,14 +166,14 @@ document.addEventListener('click',async event=>{
     const close=document.querySelector('.onboarding-card .onboarding-heading button');close?.click();
     const note=[...document.querySelectorAll('.sticky-note:not([disabled])')].find(n=>n.querySelector('.blank-note'))||document.querySelector('.sticky-note:not([disabled])');
     note?.click();
-    if(!note)notice('La pizarra se está preparando. Espera un momento y vuelve a pulsar.');
+    if(!note)notice(T("La pizarra se está preparando. Espera un momento y vuelve a pulsar."));
   }
   if(action==='metrics'){
     button.disabled=true;
     try{
       const saved=await download('PostisPop-contadores.json',JSON.stringify(readMetrics(),null,2),'application/json');
-      if(!saved)notice('Guardado cancelado. Tus contadores se conservan.');
-    }catch{notice('No se pudieron guardar los contadores. Vuelve a intentarlo; los datos se conservan.');}
+      if(!saved)notice(T("Guardado cancelado. Tus contadores se conservan."));
+    }catch{notice(T("No se pudieron guardar los contadores. Vuelve a intentarlo; los datos se conservan."));}
     finally{button.disabled=false;}
   }
   if(action==='install' && installPrompt){await installPrompt.prompt();installPrompt=null;button.hidden=true;}
@@ -178,7 +181,7 @@ document.addEventListener('click',async event=>{
 document.addEventListener('click',event=>{
   const button=event.target.closest('.group-button,.header-share,.pp-share-board-link');if(!button)return;
   event.preventDefault();event.stopImmediatePropagation();
-  try{openShareDialog(button);}catch{notice('No se pudo abrir el menú para compartir. Tus notas se conservan.');}
+  try{openShareDialog(button);}catch{notice(T("No se pudo abrir el menú para compartir. Tus notas se conservan."));}
 },true);
 let scheduled=false;
 whenReactReady(() => {

@@ -577,3 +577,51 @@ html:root[data-pp-theme] .editor-dialog .rich-paper-input textarea::placeholder 
 /* An open note picker sits above the search row and neighbouring notes. */
 .postispop .note-cell:has(.pp-note-picker:not([hidden])) { z-index:12; }
 .postispop .board-frame:has(.pp-note-picker:not([hidden])) { z-index:11; }
+
+/* Workspace hierarchy: account, upgrade and help form one compact action row. */
+.postispop .app-header,.postispop .app-header.pp-has-account-strip,.postispop .app-header.pp-has-account-strip.pp-menu-open{margin-bottom:8px!important}
+.pp-home-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+.postispop .pp-home-actions .pp-account-strip{position:static!important;inset:auto!important;transform:none!important;width:auto!important;display:flex;flex:1 1 auto;justify-content:flex-start;margin:0!important}
+.postispop .pp-home-actions .pp-account-strip button{flex:0 1 auto!important;max-width:100%;white-space:normal!important}
+.pp-home-actions .pp-premium-entry{display:inline-flex!important;flex:0 1 auto;width:auto!important;max-width:100%;min-height:44px;margin:0!important;padding:10px 14px!important;font-size:14px!important;line-height:1.4;box-shadow:none!important;text-align:center;white-space:normal}
+.pp-home-actions .pp-welcome-bar{margin:0!important;display:flex}
+.pp-home-actions .pp-welcome-reopen{min-height:44px!important;font-size:13px!important;padding:9px 12px!important}
+.pp-help-topics{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;padding-right:36px}
+@media(max-width:700px){.pp-home-actions{gap:8px;justify-content:space-between}.postispop .pp-home-actions .pp-account-strip{flex:1 1 45%;width:auto!important}.pp-home-actions .pp-premium-entry{flex:1 1 40%}.pp-home-actions .pp-welcome-bar{justify-content:flex-end;width:100%}.pp-home-actions .pp-welcome-reopen{font-size:12px!important}}
+/* Both layers use identical bounds and padding, including their scroll gutter. */
+html:root[data-pp-theme] .editor-dialog .rich-paper-input{padding:0!important}
+html:root[data-pp-theme] .editor-dialog .rich-paper-input :is(textarea,.rich-paper-mirror){box-sizing:border-box!important;padding:10px!important;border:0!important}
+html:root[data-pp-theme] .editor-dialog .rich-paper-mirror{inset:0!important;width:100%!important;height:100%!important}
+/* One React-owned disclosure contains all appearance and text-marking controls. */
+.editor-dialog .edit-paper{position:relative}
+.editor-dialog .edit-paper>.pp-editor-options{position:absolute;right:0;top:0;margin:0;z-index:21}
+.editor-dialog .edit-paper>.pp-editor-options>summary{font-size:0;list-style:none}
+.editor-dialog .edit-paper>.pp-editor-options>.pp-design-content{top:48px;width:min(370px,calc(100vw - 56px));max-height:min(62dvh,510px)}
+.editor-dialog .pp-editor-toolbar{padding-right:48px;box-sizing:border-box}
+.editor-dialog .pp-design-content .note-customization{display:block!important;margin-top:16px}
+.editor-dialog .pp-design-content .pen-tray{display:flex!important;flex-wrap:wrap}
+.editor-dialog .capture-editor:not(:has(.capture-preview)) .capture-actions{display:none!important}
+.editor-dialog .pp-content-options{margin-top:12px;border:1px solid var(--pp-border);border-radius:12px;background:var(--pp-surface);color:var(--pp-text)}
+.editor-dialog .pp-content-options>summary{cursor:pointer;padding:12px;min-height:44px;box-sizing:border-box;font:650 14px/1.4 system-ui;color:var(--pp-text)}
+.editor-dialog .pp-content-options .pp-attachments{margin:0;border:0}
+.editor-dialog .pp-content-options .pp-attachments-heading{display:none}
+.editor-dialog .pp-note-drawing{background:var(--editor-paper)!important}
+.editor-dialog .pp-drawing-canvas{background-color:var(--editor-paper)!important}
+.pp-note-search select[data-active=true]{outline:2px solid var(--pp-accent);outline-offset:1px}
+.pp-note-search .pp-clear-filters{grid-column:1/-1;width:auto!important;min-height:40px;height:auto!important;font:600 13px/1.4 system-ui!important;color:var(--pp-text)!important;background:var(--pp-surface)!important;border:1px solid var(--pp-border)!important;border-radius:8px;padding:8px 12px!important}
+.pp-note-search .pp-clear-filters[hidden]{display:none!important}
+.editor-dialog .edit-paper>.pp-editor-options{top:12px}
+.editor-dialog .pp-design-content .pens{display:flex;flex-wrap:wrap;gap:6px}
+.editor-dialog .pp-design-content .pen-tool{width:44px;height:44px;min-height:44px;padding:4px;color:var(--pp-text);background:var(--pp-surface);border:1px solid var(--pp-border);border-radius:8px}
+.editor-dialog .pp-design-content .pen-tool svg{width:28px;height:28px;display:block;margin:auto}
+.editor-dialog .pp-design-content .paper-options button{min-width:36px;min-height:36px;border:2px solid var(--pp-text)!important}
+.editor-dialog .pp-design-content :is(.paper-options,.doodle-options){display:flex;flex-wrap:wrap;gap:8px;padding:8px 0}
+.editor-dialog .pp-design-content .note-customization-actions{display:flex;gap:8px;flex-wrap:wrap}
+.editor-dialog .pp-design-content .note-customization-actions button{min-height:44px;white-space:normal}
+.pp-home-actions{align-items:stretch}
+.postispop .pp-home-actions .pp-account-strip{align-items:stretch}
+.postispop .pp-home-actions .pp-account-strip button{align-self:stretch}
+@media(max-width:700px){.pp-home-actions .pp-premium-entry-arrow{display:none}.pp-home-actions .pp-premium-entry{gap:8px!important}.pp-home-actions .pp-premium-entry svg{width:20px!important;height:20px!important;flex:0 0 20px}.postispop .pp-home-actions .pp-account-strip button{width:100%}}
+
+/* Keep the brand hit area within the header, above account actions. */
+@media(min-width:701px){.postispop .app-header .pp-brand-lockup{height:100px!important}}

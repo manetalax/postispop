@@ -1,3 +1,4 @@
+import {uiText as T} from './ui-copy.js';
 import { boardPageSize, boardPageCount, boardViewLabel, clampBoardView } from './board-view-model.js?v=20261008a';
 import { whenReactReady } from './ui-ready.js';
 import { attachmentNoteIds } from './backup-import.js';
@@ -31,8 +32,8 @@ const element = (tag, className, text = '') => {
 function iconButton(label, glyph) {
   const button = element('button', 'pp-icon', glyph);
   button.type = 'button';
-  button.title = label;
-  button.setAttribute('aria-label', label);
+  button.title = T(label);
+  button.setAttribute('aria-label', T(label));
   return button;
 }
 function pageState() {
@@ -81,17 +82,17 @@ function installPager(frame) {
   let pager = frame.querySelector('.pp-pagination');
   if (pager) return pager;
   pager = element('nav', 'pp-pagination');
-  pager.setAttribute('aria-label', 'Páginas de notas');
+  pager.setAttribute('aria-label', T('Páginas de notas'));
   const previous = iconButton('Página anterior', '‹');
   previous.dataset.pagePrevious = '';
   previous.onclick = () => goTo(pageState().page - 1);
   const selector = element('select', 'pp-page-select');
-  selector.setAttribute('aria-label', 'Ir a la página');
+  selector.setAttribute('aria-label', T('Ir a la página'));
   selector.onchange = () => goTo(Number(selector.value));
   const next = iconButton('Página siguiente', '›');
   next.dataset.pageNext = '';
   next.onclick = () => goTo(pageState().page + 1);
-  const add = iconButton('Añadir nota', '+');
+  const add = iconButton(T('Añadir nota'), '+');
   add.classList.add('pp-add-note');
   add.onclick = async () => {
     const state = pageState();
@@ -185,19 +186,20 @@ function update() {
   if (!document.querySelector('.pp-note-search')) return;
   const state = pageState();
   if (!state) return;
-  const { frame, page, pages, count, size, total, data } = state;
+  const { frame, page, pages, count, size, total, data } = state;const language=readBoardLanguage();
   trialCallout(state);
   frame.classList.add('pp-notes-first');
   const pager = installPager(frame), select = pager.querySelector('select');
-  if (select.options.length !== pages) {
+  if (select.options.length !== pages || pager.dataset.language !== language) {
+    pager.dataset.language = language;
     select.replaceChildren(...Array.from({ length: pages }, (_, index) => {
-      const option = element('option', '', `Página ${index + 1} de ${pages}`);
+      const option = element('option', '', T('Página {page} de {pages}').replace('{page}',index+1).replace('{pages}',pages));
       option.value = index;
       return option;
     }));
   }
   select.value = String(page);
-  select.title = boardViewLabel(page, count, size);
+  select.title=T('Página {page} de {pages}').replace('{page}',page+1).replace('{pages}',pages);select.setAttribute('aria-label',T('Ir a la página'));pager.setAttribute('aria-label',T('Páginas de notas'));for(const [selector,key]of [['[data-page-previous]','Página anterior'],['[data-page-next]','Página siguiente'],['.pp-add-note','Añadir nota']]){const node=pager.querySelector(selector);node.setAttribute('aria-label',T(key));node.title=T(key);}
   select.hidden = pages <= 1;
   pager.querySelector('[data-page-previous]').hidden = pages <= 1;
   pager.querySelector('[data-page-next]').hidden = pages <= 1;
@@ -206,13 +208,13 @@ function update() {
   const add = pager.querySelector('.pp-add-note');
   add.hidden = data.dataset.boardRole !== 'owner';
   // Existing notes beyond the free limit remain accessible. The API controls creation.
-  add.title = total >= 6 ? 'Añadir nota · sujeto al límite de tu cuenta' : 'Añadir nota';
+  add.title = total >= 6 ? T('Añadir nota · sujeto al límite de tu cuenta') : T('Añadir nota');
   let empty = frame.querySelector('.pp-empty-search');
-  if (!empty) { empty = element('p', 'pp-empty-search', 'No hay notas que coincidan. Prueba otro texto o color.'); frame.append(empty); }
-  if(data.dataset.favoritesOnly==='true'){
+  if (!empty) { empty = element('p', 'pp-empty-search', T('No hay notas que coincidan. Prueba otro texto o color.')); frame.append(empty); }
+  if(favoritesOnly){
     const favoritesEmpty={es:'Aún no tienes notas favoritas.',en:'You do not have any favourite notes yet.',de:'Du hast noch keine Favoriten.',fr:'Vous n’avez pas encore de notes favorites.',pt:'Ainda não tens notas favoritas.',it:'Non hai ancora note preferite.',ja:'お気に入りのノートはまだありません。',ko:'아직 즐겨찾는 메모가 없습니다.'};
     empty.textContent=favoritesEmpty[language]||favoritesEmpty.es;
-  }else empty.textContent='No hay notas que coincidan. Prueba otro texto o color.';
+  }else empty.textContent=T('No hay notas que coincidan. Prueba otro texto o color.');
   empty.hidden = count !== 0;
   for (const note of frame.querySelectorAll('.sticky-note[data-note-id]')) {
     const text = note.querySelector('.note-text')?.textContent.trim();
@@ -220,10 +222,10 @@ function update() {
     // Let the note's real text name its button; a truncated label hides content
     // from speech input and assistive technology.
     if (text && !note.classList.contains('pp-vault-locked')) note.removeAttribute('aria-label');
-    else if (blank) note.setAttribute('aria-label', blank + '. Nota ' + note.dataset.ppSlot);
+    else if (blank) note.setAttribute('aria-label', blank + '. '+T('Nota')+' ' + note.dataset.ppSlot);
   }
   const slots=new Set(String(data.dataset.lockedSlots||'').split(',').map(Number).filter(Number.isFinite));
-  const purgeAt=Number(data.dataset.purgeAt),language=readBoardLanguage();
+  const purgeAt=Number(data.dataset.purgeAt);
   for(const cell of frame.querySelectorAll('.note-cell[data-pp-slot]')){
     const slot=Number(cell.dataset.ppSlot);
     if(slots.has(slot)&&purgeAt>0)installLockedNote(cell,purgeAt,language);
@@ -231,7 +233,8 @@ function update() {
   }
   resizePapers(state);
 }
-let scheduled = false;
+let scheduled = false,favoritesOnly=false;
+window.addEventListener('postispop:filter',event=>{favoritesOnly=Boolean(event.detail?.favoritesOnly);schedule();});
 function schedule() {
   if (scheduled) return;
   scheduled = true;

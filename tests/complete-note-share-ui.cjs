@@ -18,7 +18,7 @@ test('Complete note crosses isolated devices with text, drawing, video, audio, i
  const browser=await chromium.launch(browserOptions()),store=new Map();try{
  const board=fixture(6);board.notes[0].text='Texto completo';board.notes[0].style={font:'serif',size:20,paper:'grid',drawing:{version:1,selectedInstrument:'ballpoint',strokes:[{instrument:'ballpoint',color:'#163b62',width:3,points:[{x:.1,y:.2,p:.5},{x:.8,y:.7,p:.5}]}]}};
  const {context,blocked,missing}=await isolatedContext(browser,{width:390,height:900},board);await shareTransport(context,store);const sender=await context.newPage(),errors=[];sender.on('pageerror',e=>errors.push(e.message));await sender.goto('https://postispop.com/');await ready(sender);
- await sender.locator('.sticky-note').first().click();await sender.locator('.pp-attachments').waitFor();const files=await seedFiles(sender,board.notes[0].id);assert.ok(files.videoBytes>0);
+ await sender.locator('.sticky-note').first().click();await sender.locator('.pp-attachments').waitFor({state:'attached'});const files=await seedFiles(sender,board.notes[0].id);assert.ok(files.videoBytes>0);
  await sender.getByRole('button',{name:'Compartir nota completa',exact:true}).click();const dialog=sender.locator('.pp-note-share-dialog');await dialog.locator('input').waitFor();const url=await dialog.locator('input').inputValue();assert.match(url,/^https:\/\/postispop.com\/nota-compartida.html#[\w-]{43}\.[\w-]{43}$/);assert.equal(store.size,1);
  await sender.evaluate(()=>{window.__sent=[];Object.defineProperty(window,'__postispopNativeShare',{configurable:true,value:async value=>window.__sent.push({text:value.text,file:value.file?.name})});window.open=url=>{window.__wa=url;return {};};});
  await dialog.getByRole('button',{name:'Compartir por otras aplicaciones'}).click();await sender.waitForFunction(()=>window.__sent.length===1);assert.equal((await sender.evaluate(()=>window.__sent[0])).text,'Pulsa para ver toda la información en PostisPop.\n'+url);
@@ -56,7 +56,7 @@ test('Short text and photo previews accompany the link in the native picker; uns
  const browser=await chromium.launch(browserOptions()),store=new Map();try{
  const board=fixture(6);board.notes[0].text='Foto con texto debajo';
  const {context}=await isolatedContext(browser,{width:390,height:844},board);await shareTransport(context,store);
- const page=await context.newPage();await page.goto('https://postispop.com/');await ready(page);await page.locator('.sticky-note').first().click();await page.locator('.pp-attachments').waitFor();
+ const page=await context.newPage();await page.goto('https://postispop.com/');await ready(page);await page.locator('.sticky-note').first().click();await page.locator('.pp-attachments').waitFor({state:'attached'});
  await seedFiles(page,board.notes[0].id);
  await page.evaluate(async id=>{const db=await new Promise(resolve=>{const r=indexedDB.open('postispop-note-attachments',1);r.onsuccess=()=>resolve(r.result);});await new Promise(resolve=>{const tx=db.transaction('attachments','readwrite');for(const suffix of ['1','2','3','4','link'])tx.objectStore('attachments').delete(id+'::'+suffix);tx.oncomplete=resolve;});db.close();},board.notes[0].id);
  await page.getByRole('button',{name:'Compartir nota completa',exact:true}).click();const dialog=page.locator('.pp-note-share-dialog');await dialog.locator('input').waitFor();const url=await dialog.locator('input').inputValue();await dialog.locator('img').waitFor();

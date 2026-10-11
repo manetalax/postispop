@@ -31,16 +31,16 @@ test('Board, complete note links, WhatsApp and individual attachments use explic
 
     await page.locator('.sticky-note[data-note-id]').first().click();
     await page.locator('.editor-dialog textarea').fill('Texto que decido compartir');
-    await page.getByRole('button',{name:'Más opciones de la nota',exact:true}).click();
-    await page.locator('.pp-note-share').click();
+    await page.locator('.pp-complete-note-share').click();
     await page.locator('.pp-note-share-dialog input').waitFor();await page.getByRole('button',{name:'Compartir por otras aplicaciones',exact:true}).click();
     await page.waitForFunction(()=>window.__shared.some(item=>item.text?.includes('https://postispop.com/nota-compartida.html#')));
     await page.locator('.pp-note-share-dialog').getByRole('button',{name:'Cerrar',exact:true}).click();
-    await page.locator('.pp-note-whatsapp').click();await page.locator('.pp-note-share-dialog input').waitFor();await page.locator('.pp-note-share-dialog').getByRole('button',{name:'WhatsApp',exact:true}).click();
+    await page.locator('.pp-complete-note-share').click();await page.locator('.pp-note-share-dialog input').waitFor();await page.locator('.pp-note-share-dialog').getByRole('button',{name:'WhatsApp',exact:true}).click();
     await page.waitForFunction(()=>window.__shared.filter(item=>item.files?.[0]?.name==='PostisPop-nota.png').length===2);
     assert.equal(await page.evaluate(()=>window.__whatsapp),'');
     await page.locator('.pp-note-share-dialog').getByRole('button',{name:'Cerrar',exact:true}).click();
 
+    await page.locator('.pp-content-options>summary').click();
     await page.locator('.pp-file-action input').setInputFiles({name:'adjunto.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF-1.7 share test')});
     await page.locator('.pp-attachment-share').waitFor();await page.locator('.pp-attachment-share').click();
     await page.waitForFunction(()=>window.__shared.some(item=>item.files?.[0]?.name==='adjunto.pdf'));

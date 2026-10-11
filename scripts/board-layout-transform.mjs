@@ -1,6 +1,18 @@
 // Checked transformations of the recovered editor; the original bundle stays intact.
 export function transformBoardLayout(source){
  const replace=(from,to)=>{if(source.split(from).length!==2)throw Error('Board layout integration changed: '+from.slice(0,60));source=source.replace(from,to);};
+ // React owns the colour, symbol and text-marking controls inside one disclosure.
+ // Extension tools insert their own nodes into this host without reparenting React nodes.
+ const customizationStart=source.indexOf('(0,V.jsxs)(`div`,{className:`doodle-controls note-customization`');
+ const customizationEnd=source.indexOf('(0,V.jsxs)(`div`,{className:`editor-actions`',customizationStart);
+ if(customizationStart<0||customizationEnd<0)throw Error('Editor personalization integration changed');
+ const customization=source.slice(customizationStart,customizationEnd).replace(/,$/,'').replace('st.add,(0,V.jsx)(Hd','ppUiText(`Símbolo de la nota`,t),(0,V.jsx)(Hd');
+ source=source.slice(0,customizationStart)+source.slice(customizationEnd);
+ source='import {uiText as ppUiText} from "../../../ui-copy.js";'+source;
+ replace('className:`edit-paper`,children:[','className:`edit-paper`,style:{"--editor-paper":zd[L?.paper??0]},children:[(0,V.jsxs)(`details`,{className:`pp-editor-options`,children:[(0,V.jsx)(`summary`,{title:ppUiText(`Personalizar nota`,t),"aria-label":ppUiText(`Personalizar nota`,t),children:ppUiText(`Personalizar nota`,t)}),(0,V.jsx)(`div`,{className:`pp-design-content`,children:['+customization+']})]}),');
+ // Text-marking tools use sharp, immediately available vector icons.
+ replace('function Yd({cell:e}){return(0,V.jsx)(`span`,{"aria-hidden":`true`,className:`clay-tool`,style:{backgroundPosition:`${e%3*50}% ${e<3?0:100}%`}})}','function Yd({cell:e}){if(document.documentElement.dataset.ppReady!==`true`)return(0,V.jsx)(`span`,{"aria-hidden":`true`,className:`clay-tool`,style:{backgroundPosition:`${e%3*50}% ${e<3?0:100}%`}});return(0,V.jsxs)(`svg`,{viewBox:`0 0 24 24`,width:24,height:24,fill:`none`,stroke:`currentColor`,strokeWidth:1.8,"aria-hidden":`true`,children:[(0,V.jsx)(`path`,{d:e===4?`M5 17h14M7 13l8-8 4 4-8 8H7z`:`M4 20l4-1L20 7l-4-4L4 15zM14 5l5 5`}), (0,V.jsx)(`circle`,{cx:19,cy:19,r:3,fill:e===4?`#f3d65c`:e%2?`#b7354a`:`#2368aa`,stroke:`currentColor`})]})}');
+ replace('"aria-label":`Volver a la pizarra`,title:`Volver a la pizarra`','"aria-label":ppUiText(`Volver a la pizarra`,t),title:ppUiText(`Volver a la pizarra`,t)');
  // Keep the Spanish SSR/first render identical. Apply an explicit entry-page
  // language or saved preference only in React's existing mount effect.
  source='import {readBoardLanguage as ppBoardLanguage,consumeBoardLanguageQuery as ppConsumeBoardLanguage} from "../../../seo-language.js";'+source;

@@ -1,3 +1,4 @@
+import {uiText as T} from './ui-copy.js';
 // Lightweight stationery primitives used by the note editor.
 // No themes, country art, storefront data or network dependencies.
 
@@ -40,4 +41,4 @@ function paperContent(type){
   if(type==='study')art+='<path d="M58 39v194" stroke="#ac8272" opacity=".5"/><rect x="12" y="12" width="196" height="24" rx="3" fill="#e7ecdf"/><text x="20" y="28" font-size="9" font-family="sans-serif" fill="#445b50">TEMA · IDEAS · REPASO</text>';
   return art;
 }
-export function paperSvg(type='plain'){return `<svg xmlns="http://www.w3.org/2000/svg" width="220" height="250" viewBox="0 0 220 250">${paperContent(type)}</svg>`;}
+export function paperSvg(type='plain'){let content=paperContent(type);for(const label of ['MI VIAJE','APUNTES PERSONALES','FECHA: __________','PAPEL CREATIVO · NO ES UNA RECETA MÉDICA','MI CUADRANTE','RECORDATORIOS','TEMA · IDEAS · REPASO'])content=content.replace(label,T(label));const days={es:['L','M','X','J','V','S','D'],en:['M','T','W','T','F','S','S'],de:['M','D','M','D','F','S','S'],fr:['L','M','M','J','V','S','D'],pt:['S','T','Q','Q','S','S','D'],it:['L','M','M','G','V','S','D'],ja:['月','火','水','木','金','土','日'],ko:['월','화','수','목','금','토','일']};if(type==='shift'){const labels=days[typeof document==='undefined'?'es':document.documentElement.lang]||days.es;let day=0;content=content.replace(/(<text[^>]+y="69"[^>]*>)[^<]+/g,(_,prefix)=>prefix+labels[day++]);}return `<svg xmlns="http://www.w3.org/2000/svg" width="220" height="250" viewBox="0 0 220 250">${content}</svg>`;}

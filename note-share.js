@@ -65,6 +65,7 @@ export async function showCompleteNoteShare(id,{getSnapshot}={}){
   const controller=new AbortController(),heading=node('h2',t.title),description=node('p',t.notice),status=node('p',t.preparing),close=node('button',t.close);
   heading.id='pp-note-share-heading';dialog.setAttribute('aria-labelledby',heading.id);status.setAttribute('role','status');close.type='button';close.addEventListener('click',()=>dialog.close());
   const actions=node('div','','pp-note-share-actions');dialog.append(heading,description,status,actions,close);(document.querySelector('.editor-dialog')||document.querySelector('.pp-vault-dialog')||document.body).append(dialog);dialog.showModal();
+  dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const bounds=dialog.getBoundingClientRect();if(event.clientX<bounds.left||event.clientX>bounds.right||event.clientY<bounds.top||event.clientY>bounds.bottom)dialog.close();});
   let previewUrl=null;
   dialog.addEventListener('close',()=>{controller.abort();if(previewUrl)URL.revokeObjectURL(previewUrl);dialog.remove();activeShare=null;},{once:true});
   try{

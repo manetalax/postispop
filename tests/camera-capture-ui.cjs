@@ -14,7 +14,7 @@ test('Camera captures a photo under 128 KB and records 640x480 at 15 fps within 
     await page.goto('https://postispop.com/');await ready(page);
     await page.locator('.sticky-note[data-note-id]').first().click();
     await page.waitForSelector('.editor-dialog');
-    await page.getByRole('button',{name:'Más opciones de la nota',exact:true}).click();
+    await page.locator('.pp-content-options>summary').click();
     await page.locator('.pp-camera-open').click();
     await page.waitForFunction(()=>{const v=document.querySelector('.pp-camera-preview');return v?.videoWidth>0&&v?.videoHeight>0;});
     const cameraSettings=await page.evaluate(()=>document.querySelector('.pp-camera-preview').srcObject.getVideoTracks()[0].getSettings());
@@ -45,7 +45,7 @@ test('Camera captures a photo under 128 KB and records 640x480 at 15 fps within 
       window.__compressionProgressObserver=new MutationObserver(()=>{const label=document.querySelector('.pp-progress-label')?.textContent;if(label?.includes('Comprimiendo'))window.__compressionProgress.push(label);});
       window.__compressionProgressObserver.observe(document.body,{subtree:true,childList:true,attributes:true,characterData:true});
     });
-    await page.locator('.pp-video-action input').setInputFiles({name:'video-importado.webm',mimeType:video.type,buffer:Buffer.from(recordedBytes)});
+    await page.locator('.pp-file-action input').setInputFiles({name:'video-importado.webm',mimeType:video.type,buffer:Buffer.from(recordedBytes)});
     await page.waitForFunction(()=>document.querySelectorAll('.pp-attachments-list .pp-attachment-card').length>=3);
     const compressionProgress=await page.evaluate(()=>{window.__compressionProgressObserver.disconnect();return window.__compressionProgress;});
     assert.ok(compressionProgress.length>0,'video import displays live compression percentage');

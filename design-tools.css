@@ -82,15 +82,8 @@
 @media(prefers-reduced-motion:reduce){.pp-design-tools *{animation:none!important;transition:none!important}}
 /* Disclosure controls the original React-owned secondary sections without
    reparenting them. Any existing picture remains visible in the note. */
-.editor-dialog .edit-paper[data-pp-secondary=closed] :is(.note-customization,.pen-tray,.pp-attachments),
-.editor-dialog .edit-paper[data-pp-secondary=closed] .capture-editor:not(:has(.capture-preview)),
-.editor-dialog .edit-paper[data-pp-secondary=closed] .capture-actions{display:none!important}
 .editor-dialog .edit-paper .editor-actions button{display:inline-flex;align-items:center;justify-content:center;min-width:42px;width:42px;height:42px;min-height:42px;padding:9px;font-size:0;gap:0;border:0;border-radius:10px;background:transparent}
 .editor-dialog .edit-paper .editor-actions button svg{width:21px;height:21px;min-width:21px;font-size:initial}
-.editor-dialog .edit-paper .editor-actions button:not(.pp-editor-secondary){flex:0 0 42px}
-.editor-dialog .edit-paper .editor-actions .pp-editor-secondary{margin-left:auto;width:auto;flex:none;gap:5px;padding-inline:8px;font-size:12px;font-weight:600;white-space:nowrap}
-.editor-dialog .edit-paper .editor-actions .pp-editor-secondary[aria-expanded=true]{background:#244b3d;color:#fff}
-.editor-dialog .edit-paper[data-pp-secondary=open] :is(.note-customization,.pen-tray,.pp-attachments){animation:none}
 .editor-dialog .edit-paper .capture-preview{max-width:100%;max-height:210px;overflow:hidden;margin:0 0 10px}
 .editor-dialog .edit-paper .capture-preview img{max-height:210px;object-fit:contain}
 

@@ -1,3 +1,4 @@
+import {uiText as T} from './ui-copy.js';
 import {fonts,instruments,papers,palettes,paperSvg,svgUrl} from './editor-catalog.js';
 import {normalizeStyle,drawStrokes,readableInk,paperColor} from './style-model.js';
 import {readGuest} from './guest-board.js';
@@ -5,24 +6,13 @@ import {whenReactReady} from './ui-ready.js';
 
 let activeId='',board=null,styles=new Map(),mountedBoard=null,scheduled=false,loading=false;
 const paperImages=new Map();
-const el=(tag,text='',className='')=>{const node=document.createElement(tag);node.textContent=text;if(className)node.className=className;return node;};
+const el=(tag,text='',className='')=>{const node=document.createElement(tag);node.textContent=T(text);if(className)node.className=className;return node;};
 // Decorative paper headings stay in the editor; card previews reserve room for note text.
-const paperImage=(id,preview=false)=>{const key=id+':'+preview;if(!paperImages.has(key)){const svg=paperSvg(id);paperImages.set(key,svgUrl(preview?svg.replace(/<text\b[^>]*>[\s\S]*?<\/text>/g,''):svg));}return paperImages.get(key);};
+const paperImage=(id,preview=false)=>{const key=id+':'+preview+':'+(typeof document==='undefined'?'es':document.documentElement.lang);if(!paperImages.has(key)){const svg=paperSvg(id);paperImages.set(key,svgUrl(preview?svg.replace(/<text\b[^>]*>[\s\S]*?<\/text>/g,''):svg));}return paperImages.get(key);};
 const safeStyle=value=>{try{return normalizeStyle(value||{});}catch{return normalizeStyle();}};
 const noteById=id=>board?.notes?.find(note=>note.id===id);
 // Apply the current writing default only when the note has no saved style.
 const styleFor=note=>safeStyle(styles.get(note.id)||note.style||{ink:'#2d3933'});
-// Extension labels use the same document-language fallback as guest-status.
-const noteOptionsLabels={
-  es:['Opciones','Más opciones de la nota'],
-  en:['Options','More note options'],
-  de:['Optionen','Weitere Notizoptionen'],
-  fr:['Options','Plus d’options pour la note'],
-  ja:['オプション','ノートの追加オプション'],
-  pt:['Opções','Mais opções da nota'],
-  it:['Opzioni','Altre opzioni della nota'],
-  ko:['옵션','노트 추가 옵션']
-};
 const ICONS={
   text:'M4 5h16M12 5v15M8 20h8',
   pen:'m15 4 5 5M4 20l4-1 12-12a2 2 0 0 0-4-4L4 15z',
@@ -40,7 +30,7 @@ function icon(name){
   const path=document.createElementNS(svg.namespaceURI,'path');path.setAttribute('d',ICONS[name]);svg.append(path);return svg;
 }
 function iconButton(label,name,action){
-  const button=el('button','','pp-editor-tool');button.type='button';button.title=label;button.setAttribute('aria-label',label);button.append(icon(name));button.addEventListener('click',action);return button;
+  const button=el('button','','pp-editor-tool');button.type='button';button.title=T(label);button.setAttribute('aria-label',T(label));button.append(icon(name));button.addEventListener('click',action);return button;
 }
 async function api(path,payload){
   const response=await fetch('/api/'+path,{method:payload===undefined?'GET':'POST',headers:{'Content-Type':'application/json'},body:payload===undefined?undefined:JSON.stringify(payload)});
@@ -93,18 +83,18 @@ async function refresh(){
 }
 function control(labelText,input){const label=el('label',labelText);label.append(input);return label;}
 function select(labelText,items,value,onChange){
-  const input=el('select');input.setAttribute('aria-label',labelText);
+  const input=el('select');input.setAttribute('aria-label',T(labelText));
   for(const item of items){const option=el('option',item.name);option.value=item.id;input.append(option);}
   input.value=value;input.addEventListener('change',()=>onChange(input.value));return control(labelText,input);
 }
 function errorMessage(error){
-  if(error.message==='CONFLICT'||error.status===409)return 'Esta nota cambió en otra ventana. Tu dibujo sigue aquí. Cierra y vuelve a abrir la nota para cargar la versión guardada.';
-  if(error.message==='NOTE_PROTECTED')return 'La nota ya está protegida. Ábrela con su contraseña para continuar.';
-  if(error.message==='LOCAL_STORAGE_FULL'||error.status===507)return 'No queda espacio en este dispositivo. Conserva esta nota abierta hasta liberar espacio.';
-  if(!navigator.onLine)return 'Sin conexión: estos cambios aún no se han guardado. Conserva la nota abierta; volveremos a intentarlo al conectarte.';
-  if(error.status===403||error.message.includes('LOCKED'))return 'Tu cuenta no permite guardar este cambio todavía. La nota sigue abierta con tus cambios.';
-  if(error.message==='INVALID_STYLE')return 'El dibujo ha alcanzado el límite de esta nota. Deshaz el último trazo antes de guardar.';
-  return 'No se pudo guardar. Tu dibujo sigue aquí; vuelve a intentarlo.';
+  if(error.message==='CONFLICT'||error.status===409)return T('Esta nota cambió en otra ventana. Tu dibujo sigue aquí. Cierra y vuelve a abrir la nota para cargar la versión guardada.');
+  if(error.message==='NOTE_PROTECTED')return T('La nota ya está protegida. Ábrela con su contraseña para continuar.');
+  if(error.message==='LOCAL_STORAGE_FULL'||error.status===507)return T('No queda espacio en este dispositivo. Conserva esta nota abierta hasta liberar espacio.');
+  if(!navigator.onLine)return T('Sin conexión: estos cambios aún no se han guardado. Conserva la nota abierta; volveremos a intentarlo al conectarte.');
+  if(error.status===403||error.message.includes('LOCKED'))return T('Tu cuenta no permite guardar este cambio todavía. La nota sigue abierta con tus cambios.');
+  if(error.message==='INVALID_STYLE')return T('El dibujo ha alcanzado el límite de esta nota. Deshaz el último trazo antes de guardar.');
+  return T('No se pudo guardar. Tu dibujo sigue aquí; vuelve a intentarlo.');
 }
 
 // Erasing removes the touched stroke, including the segment between recorded
@@ -133,19 +123,19 @@ function enhanceEditor(){
   let mode='text',stroke=null,pointerId=null,gestureBefore=null;
   const undoHistory=[],redoHistory=[];
   const panel=el('section','','pp-design-tools'),toolbar=el('div','','pp-editor-toolbar');
-  panel.setAttribute('aria-label','Herramientas de la nota');toolbar.setAttribute('role','group');toolbar.setAttribute('aria-label','Escribir y dibujar');panel.append(toolbar);
-  const options=el('details','','pp-editor-options'),summary=el('summary');summary.title='Más herramientas';summary.setAttribute('aria-label','Más herramientas');summary.append(icon('more'));options.append(summary);
+  panel.setAttribute('aria-label',T('Herramientas de la nota'));toolbar.setAttribute('role','group');toolbar.setAttribute('aria-label',T('Escribir y dibujar'));panel.append(toolbar);
+  const options=paper.querySelector('.pp-editor-options'),summary=options.querySelector('summary');summary.replaceChildren(icon('more'));summary.title=T('Personalizar nota');summary.setAttribute('aria-label',T('Personalizar nota'));paper.classList.add('pp-unified-editor');
   options.addEventListener('keydown',event=>{if(event.key==='Escape'&&options.open){event.stopPropagation();options.open=false;summary.focus();}});
-  const content=el('div','','pp-design-content'),fields=el('div','','pp-style-fields');options.append(content);content.append(el('h3','Texto y papel'),fields);
+  const content=options.querySelector('.pp-design-content'),fields=el('div','','pp-style-fields');content.prepend(el('h3','Texto y papel'),fields);
   const status=el('p','','pp-style-status');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
   const canvas=el('canvas','','pp-drawing-canvas');canvas.width=960;canvas.height=600;
-  canvas.setAttribute('aria-label','Dibujo de la nota. Activa el lápiz para dibujar.');
+  canvas.setAttribute('aria-label',T('Dibujo de la nota. Activa el lápiz para dibujar.'));
   const sketch=el('div','','pp-note-drawing');sketch.append(canvas);
   const savedLayer=el('canvas'),activeLayer=el('canvas');
   for(const layer of [savedLayer,activeLayer]){layer.width=canvas.width;layer.height=canvas.height;}
   let savedLayerKey='';
   function paintSketch(){
-    const context=canvas.getContext('2d'),background=paperColor(value.paper);
+    const context=canvas.getContext('2d'),background=getComputedStyle(paper).getPropertyValue('--editor-paper').trim()||paperColor(value.paper);
     if(stroke&&gestureBefore!==null){
       const key=gestureBefore+'|'+value.paper;
       if(savedLayerKey!==key){
@@ -176,14 +166,14 @@ function enhanceEditor(){
     eraserButton.disabled=!value.drawing.strokes.length&&mode!=='erase';
     sketch.hidden=mode==='text'&&!value.drawing.strokes.length;
     paper.dataset.ppEditMode=mode;canvas.tabIndex=mode==='text'&&value.drawing.strokes.length?0:-1;
-    canvas.setAttribute('aria-label',mode==='text'?'Abrir el dibujo de esta nota':mode==='erase'?'Goma: toca un trazo para borrarlo. Puedes deshacer.':'Dibuja con el ratón, lápiz o dedo.');
+    canvas.setAttribute('aria-label',T(mode==='text'?'Abrir el dibujo de esta nota':mode==='erase'?'Goma: toca un trazo para borrarlo. Puedes deshacer.':'Dibuja con el ratón, lápiz o dedo.'));
     canvas.style.cursor=mode==='text'?'pointer':mode==='erase'?'cell':'crosshair';
   }
   function preview(){
-    paper.classList.add('pp-styled-editor');setVariables(paper,value);canvas.style.backgroundImage=`url("${paperImage(value.paper)}")`;
-    paintSketch();syncTools();updateTextOverflow();
+    paper.classList.add('pp-styled-editor');setVariables(paper,value);canvas.style.backgroundImage=value.paper==='plain'?'none':`url("${svgUrl(paperSvg(value.paper).replace(/<rect width="220" height="250" fill="[^"]*"\/>/,''))}")`;
+    canvas.style.backgroundColor='var(--editor-paper)';if(value.paper==='plain')canvas.style.backgroundImage='none';paintSketch();syncTools();updateTextOverflow();
   }
-  function changed(){dirty=true;status.textContent='Guardando…';status.dataset.state='saving';preview();clearTimeout(saveTimer);saveTimer=setTimeout(()=>flush(),350);}
+  function changed(){dirty=true;status.textContent=T('Guardando…');status.dataset.state='saving';preview();clearTimeout(saveTimer);saveTimer=setTimeout(()=>flush(),350);}
   function finishGesture(){
     if(pointerId===null)return;
     if(canvas.hasPointerCapture(pointerId))canvas.releasePointerCapture(pointerId);
@@ -203,9 +193,9 @@ function enhanceEditor(){
   const eraserButton=iconButton('Borrar trazos','eraser',()=>setMode('erase'));
   const undo=iconButton('Deshacer trazo','undo',()=>{finishGesture();if(!undoHistory.length)return;redoHistory.push(drawingSnapshot());value.drawing.strokes=JSON.parse(undoHistory.pop());changed();});
   const redo=iconButton('Rehacer trazo','redo',()=>{finishGesture();if(!redoHistory.length)return;undoHistory.push(drawingSnapshot());value.drawing.strokes=JSON.parse(redoHistory.pop());changed();});
-  toolbar.append(textButton,penButton,brushButton,eraserButton,undo,redo,options);
+  toolbar.append(textButton,penButton,brushButton,eraserButton,undo,redo);
   fields.append(select('Tipo de letra',fonts,value.font,font=>{value.font=font;changed();}));
-  const size=el('input');size.type='range';size.min='12';size.max='36';size.step='1';size.value=String(value.size);size.setAttribute('aria-label','Tamaño del texto');
+  const size=el('input');size.type='range';size.min='12';size.max='36';size.step='1';size.value=String(value.size);size.setAttribute('aria-label',T('Tamaño del texto'));
   const sizeLabel=control('Tamaño del texto',size),sizeOutput=el('output',value.size+' px');sizeLabel.append(sizeOutput);
   size.addEventListener('input',()=>{value.size=Number(size.value);sizeOutput.value=value.size+' px';changed();});fields.append(sizeLabel);
   fields.append(select('Tipo de papel',papers,value.paper,paperId=>{value.paper=paperId;changed();}));
@@ -217,18 +207,18 @@ function enhanceEditor(){
   content.append(el('h3','Dibujo'),select('Instrumento',instruments,value.drawing.selectedInstrument,instrument=>{value.drawing.selectedInstrument=instrument;setMode('draw',instrument);changed();}));
   const inkArea=el('fieldset','','pp-ink-colors');inkArea.append(el('legend','Color de tinta'));
   for(const color of palettes.find(palette=>palette.id==='classic').colors){
-    const button=el('button');button.type='button';button.style.background=color;button.title='Tinta '+color;button.setAttribute('aria-label','Tinta '+color);button.setAttribute('aria-pressed',String(color===value.ink));
+    const button=el('button');button.type='button';button.style.background=color;button.dataset.ink=color;button.title=T('Color de tinta')+' '+color;button.setAttribute('aria-label',button.title);button.setAttribute('aria-pressed',String(color===value.ink));
     button.addEventListener('click',()=>{value.ink=color;ink.value=color;syncInk();changed();});inkArea.append(button);
   }
-  const ink=el('input');ink.type='color';ink.value=value.ink;ink.title='Elegir otro color de tinta';ink.setAttribute('aria-label','Elegir otro color de tinta');
-  const syncInk=()=>inkArea.querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.getAttribute('aria-label')==='Tinta '+value.ink)));
+  const ink=el('input');ink.type='color';ink.value=value.ink;ink.title=T('Elegir otro color de tinta');ink.setAttribute('aria-label',T('Elegir otro color de tinta'));
+  const syncInk=()=>inkArea.querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.ink===value.ink)));
   ink.addEventListener('input',()=>{value.ink=ink.value;syncInk();changed();});inkArea.append(ink);content.append(inkArea);
   const point=event=>{const box=canvas.getBoundingClientRect();return{x:Math.max(0,Math.min(1,(event.clientX-box.left)/box.width)),y:Math.max(0,Math.min(1,(event.clientY-box.top)/box.height)),p:Math.max(0,Math.min(1,event.pointerType==='pen'?event.pressure:.5))};};
   function eraseAt(event){const box=canvas.getBoundingClientRect(),index=strokeAt(value.drawing.strokes,point(event),box.width,box.height);if(index>=0){value.drawing.strokes.splice(index,1);preview();}}
   canvas.addEventListener('pointerdown',event=>{
     if(event.button!==0||pointerId!==null)return;
     if(mode==='text'){setMode('draw',value.drawing.selectedInstrument);return;}
-    if(mode==='draw'&&(value.drawing.strokes.length>=120||value.drawing.strokes.reduce((total,item)=>total+item.points.length,0)>=16000)){status.dataset.state='error';status.textContent='Límite del dibujo alcanzado. Borra o deshaz un trazo para continuar.';return;}
+    if(mode==='draw'&&(value.drawing.strokes.length>=120||value.drawing.strokes.reduce((total,item)=>total+item.points.length,0)>=16000)){status.dataset.state='error';status.textContent=T('Límite del dibujo alcanzado. Borra o deshaz un trazo para continuar.');return;}
     event.preventDefault();clearTimeout(saveTimer);canvas.setPointerCapture(event.pointerId);pointerId=event.pointerId;gestureBefore=drawingSnapshot();
     if(mode==='erase'){eraseAt(event);return;}
     const pen=instruments.find(item=>item.id===value.drawing.selectedInstrument)||instruments[1];
@@ -247,13 +237,13 @@ function enhanceEditor(){
   const retry=iconButton('Reintentar guardar','redo',()=>flush());retry.classList.add('pp-style-retry');retry.hidden=true;
   const saveLine=el('div','','pp-style-save-line');saveLine.append(status,retry);panel.append(saveLine);
   async function persist(){
-    const snapshot=JSON.stringify(value);status.textContent='Guardando…';status.dataset.state='saving';retry.hidden=true;
+    const snapshot=JSON.stringify(value);status.textContent=T('Guardando…');status.dataset.state='saving';retry.hidden=true;
     try{
       const normalized=normalizeStyle(value);let queued=false;
       if(id.startsWith('guest-note-')){const data=await api('note/'+id+'/style',{style:normalized,styleRevision:revision});revision=data.styleRevision;Object.assign(noteById(id)||note,data.note);}
       else{const data=await api('designs/styles',{...normalized,note_id:id,revision:remoteRevision??0});styles.set(id,data.style);remoteRevision=data.style?.revision;queued=data.pending===true;}
       dirty=JSON.stringify(value)!==snapshot;status.dataset.state=dirty?'saving':queued?'queued':'saved';
-      status.textContent=dirty?'Guardando…':queued?'Guardado en este dispositivo · pendiente de sincronizar':'Guardado';
+      status.textContent=T(dirty?'Guardando…':queued?'Guardado en este dispositivo · pendiente de sincronizar':'Guardado');
       window.dispatchEvent(new CustomEvent('postispop:style-saved',{detail:{noteId:id}}));renderBoard();return true;
     }catch(error){dirty=true;options.open=false;status.dataset.state='error';status.textContent=errorMessage(error);retry.hidden=false;return false;}
   }
@@ -278,27 +268,6 @@ function enhanceEditor(){
     cleanup.disconnect();
   });cleanup.observe(document.body,{childList:true,subtree:true});
   paper.prepend(panel);paper.querySelector('.rich-paper-input')?.after(sketch);
-  const actions=paper.querySelector('.editor-actions');
-  if(actions){
-    paper.dataset.ppSecondary='closed';
-    const [optionsText,optionsLabel]=noteOptionsLabels[(document.documentElement.lang||'es').split('-')[0]]||noteOptionsLabels.es;
-    const secondary=iconButton(optionsLabel,'more',()=>{
-      const open=paper.dataset.ppSecondary!=='open';paper.dataset.ppSecondary=open?'open':'closed';secondary.setAttribute('aria-expanded',String(open));
-    });
-    secondary.append(el('span',optionsText));
-    secondary.classList.add('pp-editor-secondary');secondary.setAttribute('aria-expanded','false');
-    const controls=[];
-    for(const [index,node]of [...paper.querySelectorAll('.note-customization,.pen-tray,.capture-editor,.pp-attachments')].entries()){
-      if(!node.id)node.id='pp-note-options-'+index;
-      controls.push(node.id);
-    }
-    secondary.setAttribute('aria-controls',controls.join(' '));
-    for(const button of actions.querySelectorAll('button')){
-      if(!button.getAttribute('aria-label')&&button.textContent.trim())button.setAttribute('aria-label',button.textContent.trim());
-      if(!button.title)button.title=button.getAttribute('aria-label')||'';
-    }
-    actions.append(secondary);
-  }
   preview();
   // Never steal focus after a user starts operating another control.
   requestAnimationFrame(()=>{if(dialog.isConnected&&mode==='text'&&(!document.activeElement||document.activeElement===document.body||document.activeElement===dialog))text?.focus({preventScroll:true});});
