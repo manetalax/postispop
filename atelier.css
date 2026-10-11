@@ -110,8 +110,20 @@ footer a { display: inline-flex; align-items: center; min-height: 44px; }
 /* Pricing cards keep legible contrast when the document uses dark mode. */
 .free-plan,.premium-plan,.payment-option { color:#283633!important; }
 .free-plan h2,.premium-plan h2,.premium-lead,.free-price,.price,.payment-option h3,.premium-benefits li,.preview-note { color:#283633!important; }
-.plan-tag { color:#496040!important; }
+.plan-tag { background:var(--pp-accent-soft,#e9eedf);color:var(--pp-text,#17231f)!important; }
 .pp-plan-duration { display:flex; align-items:center; justify-content:center; width:48px; height:48px; margin:0 0 14px; border:2px solid #315c50; border-top-width:7px; border-radius:9px; background:#e6ecdf; color:#315c50; font:750 24px/1 system-ui,sans-serif; }
 .premium-benefits li::before { content:"✓"; color:#315c50; font-weight:750; }
 
-.note-preview > span,.free-price span { color:#283633!important; }
+.note-preview > span { color:#283633!important; }
+.free-price span { color:var(--pp-text,#17231f)!important; }
+
+/* Purchase controls stay readable across translations and interface palettes. */
+.payment-option button{min-height:48px;font-size:14px;line-height:1.4;white-space:normal;overflow-wrap:anywhere}
+.payment-option[data-selected="true"]{outline:3px solid var(--pp-text,#17231f);outline-offset:3px}
+.purchase-status{font-size:14px;line-height:1.6;color:var(--pp-text,#17231f)}
+.plan-heading{flex-wrap:wrap}
+.plan-tag{max-width:100%;box-sizing:border-box;white-space:normal;font-size:14px;line-height:1.4}
+.premium-plan .plan-tag{background:var(--pp-accent-soft,#e9eedf);color:var(--pp-text,#17231f)}
+.plan-summary,.plan-detail,.plan-footnote,.period,.payment-disclosure,.pricing-questions details p{color:var(--pp-text,#17231f);font-size:14px;line-height:1.6}
+footer,footer a{color:var(--pp-text,#17231f)}
+.note-preview>span{color:#17231f}

@@ -52,3 +52,20 @@ test('Authenticated annual checkout uses the configured Stripe Price and subscri
 });
 test('Unknown products cannot begin a payment',async()=>{const {call,checkout}=setup();const r=await call(new Request('https://example/checkout',{method:'POST',headers:{Authorization:'Bearer test'},body:JSON.stringify({slug:'theme-100'})}));assert.equal(r.status,404);assert.equal(checkout.length,0);});
 test('A live Premium purchase must match its configured price and product',async()=>{const {call,writes,session}=setup();session.metadata.postispop_product='theme-100';const r=await call(new Request('https://example/reconcile',{method:'POST',headers:{Authorization:'Bearer test'},body:JSON.stringify({session_id:'cs_live_123'})}));assert.equal(r.status,500);assert.equal(writes.length,0);});
+
+test('Checkout returns preserve supported languages and the selected plan safely',async()=>{
+  for(const lang of ['es','en','de','fr','pt','it','ja','ko','https://evil.invalid/']){
+    const {call,checkout}=setup();
+    const response=await call(new Request('https://example/checkout',{method:'POST',headers:{Authorization:'Bearer test','Content-Type':'application/json'},body:JSON.stringify({slug:'premium-yearly',lang})}));
+    assert.equal(response.status,200);
+    const expected=lang.startsWith('https:')?'es':lang;
+    const success=new URL(checkout[0].get('success_url'));
+    const cancel=new URL(checkout[0].get('cancel_url'));
+    assert.equal(success.origin,'https://postispop.com');
+    assert.equal(cancel.origin,success.origin);
+    assert.equal(success.searchParams.get('lang'),expected);
+    assert.equal(cancel.searchParams.get('lang'),expected);
+    assert.equal(cancel.searchParams.get('plan'),'premium-yearly');
+    assert.equal(cancel.searchParams.get('cancelled'),'1');
+  }
+});

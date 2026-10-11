@@ -8,6 +8,16 @@ const messages={
   ja:{monthly:'月額',quarterly:'3か月ごと',yearly:'年額',lifetime:'買い切り',perMonth:'1か月あたり',perQuarter:'3か月ごと',perYear:'1年あたり',oneTime:'一回払い',connecting:'Stripeに接続中…',checking:'利用状況を確認中…',ready:'Premiumをご利用いただけます',off:'お支払いは一時的にご利用いただけません。',login:'PostisPopにログインしてから、こちらに戻ってPremiumをご購入ください。',signIn:'購入するにはログイン',continue:'Stripeで続行',loading:'安全な決済画面を開いています…',failed:'決済画面を開けませんでした。もう一度お試しください。',cancelled:'お支払いは行われていません。いつでも別のプランを選べます。',manage:'サブスクリプションを管理'},
   ko:{monthly:'월간',quarterly:'3개월마다',yearly:'연간',lifetime:'평생 이용',perMonth:'월',perQuarter:'3개월마다',perYear:'연',oneTime:'일회 결제',connecting:'Stripe 연결 중…',checking:'이용 가능 여부 확인 중…',ready:'Premium 이용 가능',off:'결제를 일시적으로 이용할 수 없습니다.',login:'PostisPop에 로그인한 뒤 이 페이지로 돌아와 Premium을 구매하세요.',signIn:'구매하려면 로그인',continue:'Stripe에서 계속',loading:'안전한 결제 페이지를 여는 중…',failed:'결제 페이지를 열지 못했습니다. 다시 시도해 주세요.',cancelled:'결제가 이루어지지 않았습니다. 언제든 다른 요금제를 선택할 수 있습니다.',manage:'구독 관리'}
 };
+const purchaseFlowCopy={
+ es:{owned:'Ya tienes Premium activo.',selected:'Tu plan elegido',login:'Inicia sesión o regístrate para continuar. Después volverás al plan elegido.'},
+ en:{owned:'You already have Premium.',selected:'Your chosen plan',login:'Sign in or create an account to continue. You will return to your chosen plan.'},
+ de:{owned:'Du hast bereits Premium.',selected:'Dein gewählter Plan',login:'Melde dich an oder registriere dich. Danach kehrst du zu deinem gewählten Plan zurück.'},
+ fr:{owned:'Vous avez déjà Premium.',selected:'Votre formule choisie',login:'Connectez-vous ou créez un compte pour continuer. Vous retrouverez ensuite la formule choisie.'},
+ pt:{owned:'Já tem Premium ativo.',selected:'O seu plano escolhido',login:'Inicie sessão ou registe-se para continuar. Depois voltará ao plano escolhido.'},
+ it:{owned:'Hai già Premium attivo.',selected:'Il piano scelto',login:'Accedi o registrati per continuare. Poi tornerai al piano scelto.'},
+ ja:{owned:'Premiumはすでに有効です。',selected:'選択したプラン',login:'ログインまたは新規登録して続けてください。その後、選択したプランに戻ります。'},
+ ko:{owned:'이미 Premium을 이용하고 있습니다.',selected:'선택한 요금제',login:'로그인하거나 가입하여 계속하세요. 그다음 선택한 요금제로 돌아옵니다.'}
+};
 const pageCopy={
  es:{brand:'PostisPop, volver a mis notas',back:'Mis notas',eyebrow:'MENOS RUIDO. MÁS IDEAS.',headline:'Todo a la vista. Así de simple.',intro:'Tus notas son las protagonistas. Empieza gratis y elige Premium cuando necesites más espacio para tus ideas.',free:'Gratis',start:'Para empezar',freeSummary:'Empieza con 6 notas. Grandes, claras y siempre a mano.',freeDetail:'Escribe y dibuja en la misma nota.',openNotes:'Abrir mis notas',noCard:'Sin tarjeta.',premium:'Premium',lead:'Más notas. La misma sencillez.',planSummary:'Un único Premium. Elige cuánto tiempo quieres disfrutarlo.',paymentDisclosure:'Los planes mensual, trimestral y anual se renuevan automáticamente hasta que los canceles. Puedes administrar o cancelar la suscripción desde Stripe. El plan de por vida es un único pago.',benefit1:'30 días para usar todas las notas. Después, Premium mantiene accesibles las notas 7 en adelante.',benefit2:'Sin Premium, esas notas quedan bloqueadas durante 30 días y luego se eliminan.',benefit3:'Más de 6 notas, organizadas por páginas.',faq:'Preguntas frecuentes',faq1q:'¿Qué pasa con mis notas después de 30 días?',faq1a:'Después de la prueba, puedes seguir leyendo las notas 1 a 6 gratis. Las demás se bloquean durante 30 días y muestran el tiempo restante antes de eliminarse. Premium las desbloquea y las conserva.',faq2q:'¿Hay diferentes niveles Premium?',faq2a:'No. Mensual, trimestral, anual y de por vida dan acceso al mismo Premium. Solo cambia la forma de pago.',faq3q:'¿Qué ocurre con mis compras anteriores?',faq3a:'Los derechos que ya tengas se conservan. La nueva oferta no exige volver a comprar lo que ya es tuyo.',footer:'PostisPop · Tus ideas a la vista.',legal:'Información legal',privacy:'Privacidad',terms:'Condiciones',legalNotice:'Aviso legal',title:'Gratis o Premium · PostisPop',description:'Empieza con 30 días para usar todas tus notas. Después, sigue leyendo seis gratis o conserva el acceso con Premium.'},
  en:{brand:'PostisPop, back to my notes',back:'My notes',eyebrow:'LESS NOISE. MORE IDEAS.',headline:'Everything in view. Simple as that.',intro:'Your notes take the lead. Start for free and choose Premium when you need more room for your ideas.',free:'Free',start:'A place to start',freeSummary:'Start with 6 notes. Clear, spacious and always close at hand.',freeDetail:'Write and draw in the same note.',openNotes:'Open my notes',noCard:'No card required.',premium:'Premium',lead:'More notes. Same simplicity.',planSummary:'One Premium plan. Choose how long you want to enjoy it.',paymentDisclosure:'Monthly, quarterly and yearly plans renew automatically until cancelled. You can manage or cancel your subscription through Stripe. Lifetime is a one-time payment.',benefit1:'Use all your notes for 30 days. After that, Premium keeps notes 7 and beyond available.',benefit2:'Without Premium, those notes are locked for 30 days and then deleted.',benefit3:'More than 6 notes, organised across pages.',faq:'Frequently asked questions',faq1q:'What happens to my notes after 30 days?',faq1a:'After the trial, you can keep reading notes 1 to 6 for free. The rest are locked for 30 days and show the time left before deletion. Premium unlocks and keeps them.',faq2q:'Are there different Premium tiers?',faq2a:'No. Monthly, quarterly, yearly and lifetime plans all include the same Premium access. Only the payment schedule changes.',faq3q:'What happens to my previous purchases?',faq3a:'Any access you already own is preserved. The new offer does not require you to buy what is already yours again.',footer:'PostisPop · Your ideas in view.',legal:'Legal information',privacy:'Privacy',terms:'Terms',legalNotice:'Legal notice',title:'Free or Premium · PostisPop',description:'Start with 30 days to use all your notes. Then keep reading six for free or retain access with Premium.'},
@@ -20,7 +30,7 @@ const pageCopy={
 };
 const routeLocale=()=>location.pathname.match(/^\/(en|de|fr|ja|pt|it|ko)(?:\/|$)/)?.[1]||new URLSearchParams(location.search).get('lang');
 const preferred=()=>{try{return routeLocale()||localStorage.getItem('pp:lang')||'es';}catch{return routeLocale()||'es';}};
-const lang=messages[preferred()]?preferred():'es',t=messages[lang],copy=pageCopy[lang]||pageCopy.es;
+const lang=messages[preferred()]?preferred():'es',t={...messages[lang],...purchaseFlowCopy[lang]},copy=pageCopy[lang]||pageCopy.es;
 document.documentElement.lang=lang;
 document.title=copy.title;
 const description=document.querySelector('meta[name="description"]');if(description)description.content=copy.description;
@@ -41,28 +51,36 @@ for(const [index,option] of [...document.querySelectorAll('.payment-option')].en
 }
 
 const status=document.querySelector('[data-purchase-status]'),badge=document.querySelector('[data-premium-state]'),buttons=[...document.querySelectorAll('[data-buy]')];
+if(status){status.id='pp-purchase-status';for(const button of buttons)button.setAttribute('aria-describedby',status.id);}
+const selected=buttons.find(button=>button.dataset.buy===new URLSearchParams(location.search).get('plan'));
+if(selected){const card=selected.closest('.payment-option');card.dataset.selected='true';card.setAttribute('aria-label',card.querySelector('h3').textContent+' · '+t.selected);}
+const markOwned=()=>{for(const button of buttons){button.disabled=true;delete button.dataset.ready;delete button.dataset.requiresAuth;button.textContent=t.owned;}if(badge)badge.textContent=t.owned;setStatus(t.owned);};
 const setStatus=text=>{if(status)status.textContent=text;};
 async function request(path,body){
   const response=await fetch(`/api/${path}`,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined,cache:'no-store'});
   const data=await response.json();if(!response.ok)throw Object.assign(new Error(data.error||'REQUEST_FAILED'),{status:response.status});return data;
 }
 async function initialize(){
-  if(new URLSearchParams(location.search).has('cancelled'))setStatus(t.cancelled);
+  const cancelled=new URLSearchParams(location.search).has('cancelled');if(cancelled)setStatus(t.cancelled);
   let catalog;
   try{catalog=await request('commerce/catalog');}catch{if(badge)badge.textContent=t.off;setStatus(t.off);return;}
   if(!catalog.checkoutReady){if(badge)badge.textContent=t.off;setStatus(t.off);return;}
   if(badge)badge.textContent=t.ready;
   let session=null;try{session=await request('session');}catch{/* An expired session must not make a healthy checkout look unavailable. */}
-  if(!session?.actor?.registered){for(const button of buttons)button.textContent=t.signIn;setStatus(t.login);return;}
-  for(const button of buttons){button.disabled=false;button.dataset.ready='true';button.textContent=t.continue;}
+  if(!session?.actor?.registered){for(const button of buttons){button.disabled=false;button.dataset.ready='true';button.dataset.requiresAuth='true';button.textContent=t.signIn;}setStatus(t.login);return;}
+  let access=null;try{access=await request('commerce/status');}catch{/* The payment service still rejects duplicate purchases. */}
+  if(access?.premium||access?.owner)markOwned();else for(const button of buttons){button.disabled=false;button.dataset.ready='true';delete button.dataset.requiresAuth;button.textContent=t.continue;}
   try{const portal=await request('commerce/portal-status');const manage=document.querySelector('[data-portal]');if(portal.portalReady&&manage){manage.hidden=false;manage.textContent=t.manage;}}catch{/* Checkout remains available if the subscription portal is not. */}
-  setStatus(t.ready);
+  if(access?.premium||access?.owner)return;
+  setStatus(cancelled?t.cancelled:selected?t.selected+': '+selected.closest('.payment-option').querySelector('h3').textContent+'. '+t.continue+'.':t.ready);
+  if(selected){selected.scrollIntoView({block:'center'});selected.focus({preventScroll:true});}
 }
 document.addEventListener('click',async event=>{
   const button=event.target.closest('[data-buy]');if(!button||button.disabled)return;
+  if(button.dataset.requiresAuth==='true'){location.assign('/?'+new URLSearchParams({lang,premium_login:'1',plan:button.dataset.buy}));return;}
   button.disabled=true;button.textContent=t.loading;setStatus(t.loading);
-  try{const result=await request('commerce/checkout',{slug:button.dataset.buy});if(!result.url)throw new Error('CHECKOUT_UNAVAILABLE');location.assign(result.url);}
-  catch(error){button.disabled=false;button.textContent=t.continue;setStatus(error.status===401?t.login:t.failed);}
+  try{const result=await request('commerce/checkout',{slug:button.dataset.buy,lang});if(!result.url)throw new Error('CHECKOUT_UNAVAILABLE');location.assign(result.url);}
+  catch(error){if(error.message==='ALREADY_OWNED'){markOwned();return;}button.disabled=false;if(error.status===401){button.dataset.requiresAuth='true';button.textContent=t.signIn;}else button.textContent=t.continue;setStatus(error.status===401?t.login:t.failed);}
 });
 document.querySelector('[data-portal]')?.addEventListener('click',async event=>{
   const button=event.currentTarget;button.disabled=true;setStatus(t.loading);

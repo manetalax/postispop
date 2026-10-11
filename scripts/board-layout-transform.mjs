@@ -43,7 +43,7 @@ export function transformBoardLayout(source){
  replace('text:(L?.text||``)+`\n`','text:(L?.text||L?.ppQuoteDraft||``)+`\n`');
  replace('value:L?.text||``,onScroll:', 'value:L?.text||L?.ppQuoteDraft||``,onScroll:');
  source='import {authPKCE as ppAuthPKCE} from "../../../auth-pkce.js";'+source;
- replace('sessionStorage.setItem(`pp:auth-verifier`,n),sessionStorage.setItem(`pp:auth-return`,location.pathname+location.hash)','ppAuthPKCE.save(n,location.pathname+location.hash)');
+ replace('sessionStorage.setItem(`pp:auth-verifier`,n),sessionStorage.setItem(`pp:auth-return`,location.pathname+location.hash)','ppAuthPKCE.save(n,location.pathname+location.search+location.hash)');
  const callbackStart=source.indexOf('if(r){let e=sessionStorage.getItem(`pp:auth-verifier`)');
  const callbackEnd=source.indexOf('c(n.actor)',callbackStart);
  if(callbackStart<0||callbackEnd<0)throw Error('Auth callback integration changed');
