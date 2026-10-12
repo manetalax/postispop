@@ -38,7 +38,7 @@ test('Offline binary attachment roundtrip preserves bytes and links, scopes expo
     await page.goto('https://backup.test/');await page.waitForFunction(()=>window.ready);await context.setOffline(true);
     const result=await page.evaluate(async()=>{
       const {createBoardBackup,normalizeBackup,restoreBackupAttachments}=window.backup;
-      const board=window.guest.readGuest();board.notes[0].text='A note with local files';
+      const board=window.guest.readGuest();board.notes.forEach(note=>Object.assign(note,{text:'',doodle:''}));board.notes[0].text='A note with local files';
       board.notes[1].protectedEnvelope=await window.cryptoNotes.encryptNote({text:'encrypted text',attachments:[{kind:'file',name:'secret.pdf',type:'application/pdf',data:'c2VjcmV0'}]},'test-password');
       localStorage.setItem('postispop-guest-board-v1',JSON.stringify(board));localStorage.setItem('pp:protected-note:guest-note-1','1');
       const db=await new Promise((resolve,reject)=>{const request=indexedDB.open('postispop-note-attachments',1);request.onupgradeneeded=()=>{const store=request.result.createObjectStore('attachments',{keyPath:'key'});store.createIndex('noteId','noteId');};request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);});

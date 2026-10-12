@@ -30,6 +30,8 @@ test('Real guest UI downloads and restores attachments offline without replacing
       queueMicrotask(()=>this.onmessage?.({data:JSON.stringify({id:payload.id,status:'saved'})}));
     }};
   });
+  const blank=require('./notes-first-ui.cjs').fixture(6);blank.notes.forEach(n=>Object.assign(n,{text:'',doodle:'',paper:0}));
+  await context.addInitScript(board=>{if(!localStorage.getItem('postispop-guest-board-v1'))localStorage.setItem('postispop-guest-board-v1',JSON.stringify(board));},blank);
   page.on('pageerror',error=>errors.push(error.message));
   try{
     const response=await page.goto('https://postispop.com/');assert.equal(response.status(),200,'the staged app must exist; run stage-site or package-mobile before this integration test');await page.waitForSelector('.sticky-note:not([disabled])');

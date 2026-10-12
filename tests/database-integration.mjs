@@ -230,5 +230,23 @@ await db.exec(`select set_config('request.jwt.claim.sub','',false);set role auth
 await db.exec('set role anon');let anonCreation=false;try{await db.query('select postispop_create_board($1)',[requestId(209)])}catch(error){anonCreation=error.code==='42501'}finally{await db.exec('reset role')};assert(anonCreation,'anonymous users cannot execute the creation RPC');
 await db.exec(createSql);r=await createBoard(5,201);assert(r.rows[0].b.id===createdFree.id,'migration reapply preserves creation retry receipts and existing notes');
 
+const introSql=fs.readFileSync(new URL('../database/intro-board.sql',import.meta.url),'utf8');
+await db.exec(introSql);await db.exec(introSql);
+const {introNotes}=await import('../intro-notes.js');
+await db.query('insert into auth.users(id,email,email_confirmed_at)values($1,$2,now())',[userId(9),'intro-fixture@example.invalid']);
+r=await asUser('9','select postispop_create_intro_board($1,$2::jsonb)as b',[requestId(219),JSON.stringify(introNotes('ko'))]);
+const introBoard=r.rows[0].b;
+r=await asUser('9','select text,paper,doodle from notes where board_id=$1 order by position',[introBoard.id]);
+assert(JSON.stringify(r.rows)===JSON.stringify(introNotes('ko').map(({text,paper,doodle})=>({text,paper,doodle}))),'cloud intro seeds all six Korean examples, colours and symbols atomically');
+assert(Boolean(introBoard.introFirstNote),'cloud intro returns the first note for pin and favourite preferences');
+await asUser('9','update notes set text=$1 where board_id=$2 and position=0',['User edit',introBoard.id]);
+await asUser('9','select postispop_create_intro_board($1,$2::jsonb)',[requestId(219),JSON.stringify(introNotes('en'))]);
+r=await asUser('9','select text from notes where board_id=$1 and position=0',[introBoard.id]);
+assert(r.rows[0].text==='User edit','intro retry never overwrites edited notes or switches their language');
+await rejectQuery('9','select postispop_create_intro_board($1,$2::jsonb)',[requestId(220),'[]'],'INVALID_INTRO','invalid introductory payload rejects without creating a board');
+await db.query('delete from notes where board_id=$1 and position=3',[introBoard.id]);
+r=await asUser('9','select postispop_add_board_note($1)as n',[introBoard.id]);
+assert(r.rows[0].n.paper===0&&!r.rows[0].n.doodle&&!r.rows[0].n.text,'new cloud notes stay yellow and have no symbol or example');
+
 console.log('PASS synthetic database integration; deployment schema and production remain unmodified');
 await db.close();

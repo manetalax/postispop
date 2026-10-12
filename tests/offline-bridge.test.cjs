@@ -5,7 +5,7 @@ function disk(){const m=new Map();return{get length(){return m.size},key:i=>[...
 const saved=id=>({access_token:'token-'+id,refresh_token:'refresh-'+id,expires_at:Math.floor(Date.now()/1000)+3600,user:{id,email:id+'@example.test'}});
 const deferred=()=>{let resolve;const promise=new Promise(r=>resolve=r);return{promise,resolve}};
 async function setup({storage=disk(),before}={}){
- const sync=await import('../offline-sync.js'),imports=await import('../backup-import.js');if(!storage.getItem(SESSION))storage.setItem(SESSION,JSON.stringify(saved('A')));
+ const intro=await import('../intro-notes.js'),sync=await import('../offline-sync.js'),imports=await import('../backup-import.js');if(!storage.getItem(SESSION))storage.setItem(SESSION,JSON.stringify(saved('A')));
  const server={id:'note-a',board_id:'board-a',author_id:'A',text:'Original',paper:0,marks:[],doodle:'',revision:1,created_at:new Date().toISOString(),updated_at:new Date().toISOString()};
  const navigator={onLine:true}, calls=[],events={};
  const window={addEventListener:(name,f)=>{events[name]=f},dispatchEvent:()=>{},fetch:async(url,options={})=>{
@@ -16,7 +16,7 @@ async function setup({storage=disk(),before}={}){
   if(url.includes('/rpc/postispop_board_access'))return Response.json({premium:false,trial_active:true,trial_expires_at:new Date(Date.now()+86400000).toISOString(),purge_at:new Date(Date.now()+31*86400000).toISOString(),locked_positions:[],max_notes:2147483647,note_count:6,owner:true,server_now:new Date().toISOString()});
   if(url.includes('/rpc/postispop_add_board_note'))return Response.json({id:'note-new',board_id:'board-a',position:1,text:'',paper:1,revision:1});
   if(url.includes('/functions/v1/postispop-commerce/status'))return Response.json({checkoutReady:true});
-  if(url.includes('/rpc/postispop_create_board'))return Response.json({message:'BOARD_LIMIT_REACHED',code:'23514'},{status:400});
+  if(url.includes('/rpc/postispop_create_intro_board'))return Response.json({message:'BOARD_LIMIT_REACHED',code:'23514'},{status:400});
   if(url.includes('/rest/v1/boards'))return Response.json([{id:'board-a',owner_id:'A',title:'A private board',revision:1}]);
   if(url.includes('/rest/v1/board_members'))return Response.json([]);
   if(url.includes('/rest/v1/notes')){
@@ -25,7 +25,7 @@ async function setup({storage=disk(),before}={}){
   }
   throw Error('Unexpected '+url);
  }};
- const context=vm.createContext({window,navigator,localStorage:storage,location:{origin:'https://postispop.com',href:'https://postispop.com/'},Response,Request,URL,URLSearchParams,AbortController,TypeError,Date,JSON,crypto,encodeURIComponent,setTimeout,clearTimeout,console,guestRequest:()=>null,readGuest:()=>({}),...sync,...imports,installOfflineUI:()=>{},getOfflineRights:async()=>null,saveOfflineReceipt:async()=>false});
+ const context=vm.createContext({window,navigator,localStorage:storage,location:{origin:'https://postispop.com',href:'https://postispop.com/'},Response,Request,URL,URLSearchParams,AbortController,TypeError,Date,JSON,crypto,encodeURIComponent,setTimeout,clearTimeout,console,guestRequest:()=>null,readGuest:()=>({}),...sync,...imports,...intro,installOfflineUI:()=>{},getOfflineRights:async()=>null,saveOfflineReceipt:async()=>false});
  vm.runInContext(source,context);
  const request=async(endpoint,data)=>{const r=await window.fetch('/api/'+endpoint,data===undefined?{}:{method:'POST',body:JSON.stringify(data)});return{status:r.status,data:await r.json()}};
  return{request,storage,server,navigator,calls,window};
@@ -64,10 +64,10 @@ test('Both storefront endpoints show the four Premium choices and production che
 test('Cloud board creation delegates ownership and six-note seeding to one atomic server RPC',async()=>{
  let payload;
  const app=await setup({before:async(url,options)=>{
-  if(url.includes('/rpc/postispop_create_board')){payload=JSON.parse(options.body);return Response.json({id:'board-a',owner_id:'A'});}
+  if(url.includes('/rpc/postispop_create_intro_board')){payload=JSON.parse(options.body);return Response.json({id:'board-a',owner_id:'A'});}
  }});
  assert.equal((await app.request('boards',{})).status,200);
- assert.deepEqual(Object.keys(payload),['p_request_id']);assert.match(payload.p_request_id,/^[a-f0-9-]{36}$/);
+ assert.deepEqual(Object.keys(payload),['p_request_id','p_notes']);assert.equal(payload.p_notes.length,6);assert.equal(payload.p_notes[0].doodle,'check');assert.match(payload.p_request_id,/^[a-f0-9-]{36}$/);
  assert.equal(app.calls.filter(c=>c.options.method==='POST').length,2);
  assert.equal(app.calls.some(c=>c.options.method==='POST'&&/\/rest\/v1\/(boards|notes)/.test(c.url)),false);
 });
@@ -95,7 +95,7 @@ test('Free accounts cannot multiply their allowance by creating more boards or f
 
 test('Premium account creation uses the same server-authorized RPC and keeps six starter notes',async()=>{
  const app=await setup({before:async(url,options)=>{
-  if(url.includes('/rpc/postispop_create_board'))return Response.json({id:'board-a',owner_id:'A'});
+  if(url.includes('/rpc/postispop_create_intro_board'))return Response.json({id:'board-a',owner_id:'A'});
   if(url.includes('/rest/v1/notes'))return Response.json(Array.from({length:6},(_,position)=>({id:'note-'+position,position,board_id:'board-a'})));
  }});
  const result=await app.request('boards',{});assert.equal(result.status,200);assert.equal(result.data.notes.length,6);
@@ -111,24 +111,24 @@ test('A trial account requests extra notes through the server-authorized note RP
 
 test('Missing atomic creation RPC fails closed without partial board or note writes',async()=>{
  const app=await setup({before:async(url)=>{
-  if(url.includes('/rpc/postispop_create_board'))return Response.json({code:'PGRST202',message:'Could not find function'},{status:404});
+  if(url.includes('/rpc/postispop_create_intro_board'))return Response.json({code:'PGRST202',message:'Could not find function'},{status:404});
   if(url.includes('/rest/v1/boards?select='))return Response.json([]);
  }});
  for(const endpoint of ['boards','me']){
   const result=await app.request(endpoint,endpoint==='boards'?{}:undefined);assert.equal(result.status,503);assert.equal(result.data.error,'CREATE_BOARD_UNAVAILABLE');
  }
- assert.equal(app.calls.filter(c=>c.options.method==='POST').every(c=>c.url.includes('/rpc/postispop_create_board')),true);
+ assert.equal(app.calls.filter(c=>c.options.method==='POST').every(c=>c.url.includes('/rpc/postispop_create_intro_board')),true);
 });
 test('Lost board-creation response retains its retry ticket and never repeats separate inserts',async()=>{
  const ids=[];
  const app=await setup({before:async(url,options)=>{
-  if(url.includes('/rpc/postispop_create_board')){ids.push(JSON.parse(options.body).p_request_id);if(ids.length===1)throw new TypeError('Response lost after atomic commit');return Response.json({id:'board-a',owner_id:'A'});}
+  if(url.includes('/rpc/postispop_create_intro_board')){ids.push(JSON.parse(options.body).p_request_id);if(ids.length===1)throw new TypeError('Response lost after atomic commit');return Response.json({id:'board-a',owner_id:'A'});}
  }});
  assert.equal((await app.request('boards',{})).status,500);assert.equal((await app.request('boards',{})).status,200);
  assert.equal(ids.length,2);assert.equal(ids[0],ids[1]);assert.equal(app.calls.filter(c=>c.options.method==='POST').length,3);
 });
 test('A late creation response cannot expose the previous account board after a session change',async()=>{
- const started=deferred(),delayed=deferred();const app=await setup({before:async(url)=>{if(url.includes('/rpc/postispop_create_board')){started.resolve();return delayed.promise;}}});
+ const started=deferred(),delayed=deferred();const app=await setup({before:async(url)=>{if(url.includes('/rpc/postispop_create_intro_board')){started.resolve();return delayed.promise;}}});
  const pending=app.request('boards',{});await started.promise;app.storage.setItem(SESSION,JSON.stringify(saved('B')));delayed.resolve(Response.json({id:'private-a',owner_id:'A'}));
  const response=await pending;assert.equal(response.status,401);assert.equal(response.data.error,'SESSION_CHANGED');
  assert.equal(app.calls.some(c=>c.url.includes('/rest/v1/boards?id=eq.private-a')),false);
@@ -137,7 +137,7 @@ test('A late creation response cannot expose the previous account board after a 
 
 test('Two clients creating concurrently reuse one pending account-scoped request ID',async()=>{
  const storage=disk(),ids=[],bothStarted=deferred(),release=deferred();
- const before=async(url,options)=>{if(!url.includes('/rpc/postispop_create_board'))return;
+ const before=async(url,options)=>{if(!url.includes('/rpc/postispop_create_intro_board'))return;
   ids.push(JSON.parse(options.body).p_request_id);if(ids.length===2)bothStarted.resolve();await release.promise;return Response.json({id:'board-a',owner_id:'A'});
  };
  const one=await setup({storage,before}),two=await setup({storage,before});

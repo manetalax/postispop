@@ -17,6 +17,7 @@ function fixture(count = 24) {
   return {id:'guest-board',title:'Mi pizarra',revision:1,order:notes.map(n=>n.id),expires:null,role:'owner',owner:'guest',notes,members:[],trash:[]};
 }
 async function isolatedContext(browser, viewport, board) {
+  if(board==null){board=fixture(6);board.notes.forEach(n=>Object.assign(n,{text:'',paper:0,doodle:''}));}
   const context = await browser.newContext({viewport,locale:'es-ES',serviceWorkers:'block',hasTouch:viewport.width<=700});
   const blocked = [],missing = [];
   await context.route('**/*', async route => {
@@ -51,8 +52,9 @@ async function run() {
   await fs.mkdir(RESULTS,{recursive:true});
   const browser = await chromium.launch(browserOptions());
   const report = {createdAt:new Date().toISOString(),site:ROOT,results:[],limitations:['Authenticated cloud, purchases and physical Android devices are not simulated by this isolated local suite. Legacy visitor fixtures verify migration to six notes.']};
-  const runCase = async (name, viewport, board, test) => {
+  const runCase = async (name, viewport, board, test, language) => {
     const {context,blocked,missing} = await isolatedContext(browser,viewport,board);
+    if(language)await context.addInitScript(language=>localStorage.setItem('pp:lang',language),language);
     const page = await context.newPage(),errors=[],consoleErrors=[];
     page.on('pageerror',e=>errors.push(e.message));
     page.on('console',message=>{if(message.type()==='error'){consoleErrors.push(message.text());if(/react|hydrat|minified|unhandled|uncaught/i.test(message.text()))errors.push(message.text());}});
@@ -108,6 +110,19 @@ async function run() {
         await search.fill('');
         await page.waitForFunction(()=>document.querySelectorAll('.sticky-note[data-note-id]').length===6);
       });
+    }
+    const {introNotes}=await import('../intro-notes.js');
+    for(const language of ['es','en','de','fr','pt','it','ja','ko']){
+      await runCase('welcome-'+language,{width:390,height:844},false,async(page)=>{
+        const saved=await page.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)),KEY);
+        assert.deepEqual(saved.notes.map(({text,paper,doodle})=>({text,paper,doodle})),introNotes(language));
+        const preferences=await page.evaluate(()=>JSON.parse(localStorage.getItem('postispop:board-preferences:guest-board')));
+        assert.deepEqual(preferences.favorites,['guest-note-0']);assert.deepEqual(preferences.pinned,['guest-note-0']);
+        assert.equal(await page.locator(NOTES).count(),6);
+        await noOverflow(page,'Welcome '+language);
+        await page.reload();await ready(page);
+        assert.deepEqual(await page.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).notes.map(n=>n.text),KEY),introNotes(language).map(n=>n.text),'Reload never resets examples');
+      },language);
     }
     await runCase('free-six-populated-limit',{width:390,height:844},fixture(6),async(page)=>{
       await page.getByRole('button',{name:'Añadir nota',exact:true}).click();

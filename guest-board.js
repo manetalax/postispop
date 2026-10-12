@@ -1,3 +1,4 @@
+import {introNotes,introPreferences} from './intro-notes.js';
 import {normalizeStyle} from './style-model.js';
 import {validateEnvelope} from './note-crypto.js';
 import {normalizeBackup} from './backup-import.js';
@@ -28,7 +29,13 @@ export function readGuest() {
     }
   } catch {}
   const notes=Array.from({length:FREE_NOTE_LIMIT},(_,i)=>makeNote(i));
-  return {id:'guest-board',title:'Mi pizarra',revision:1,schemaVersion:3,capacity:FREE_NOTE_LIMIT,legacyNoteIds:[],order:notes.map(n=>n.id),expires:null,role:'owner',owner:'guest',notes,members:[],trash:[]};
+  const board={id:'guest-board',title:'Mi pizarra',revision:1,schemaVersion:3,capacity:FREE_NOTE_LIMIT,legacyNoteIds:[],order:notes.map(n=>n.id),expires:null,role:'owner',owner:'guest',notes,members:[],trash:[]};
+  if(typeof document!=='undefined'){
+    introNotes().forEach((example,i)=>Object.assign(notes[i],example));
+    localStorage.setItem(KEY,JSON.stringify(board));
+    introPreferences(board.id,notes[0].id);
+  }
+  return board;
 }
 export function guestImportSlots(board,excluded=[]) {
   return board.order.map(id=>board.notes.find(n=>n.id===id)).filter(n=>n&&!excluded.includes(n.id)&&!n.text&&!n.marks?.length&&!n.doodle&&!n.image&&!n.protectedEnvelope&&!reserved(n)&&!n.style?.drawing?.strokes?.length);

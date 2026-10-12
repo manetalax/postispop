@@ -1,3 +1,4 @@
+import {introNotes,introPreferences} from './intro-notes.js';
 import {purgeOversizedBoard} from './backup-import.js';
 import {validateNoteWrite} from './backup-import.js';
 import { readGuest, guestRequest, guestImportSlots, purgeGuestNoteForSize } from './guest-board.js';
@@ -104,7 +105,8 @@ async function createBoard(user, rest, startedAt) {
   // ticket on a lost response so Premium retries do not create duplicates.
   const ticket=await importTicket(localStorage,user.id,'new-board',[],startedAt);
   try {
-    const board=await rest('rpc/postispop_create_board','',{method:'POST',body:JSON.stringify({p_request_id:ticket.requestId})});
+    const board=await rest('rpc/postispop_create_intro_board','',{method:'POST',body:JSON.stringify({p_request_id:ticket.requestId,p_notes:introNotes()})});
+    if(board.introFirstNote)introPreferences(board.id,board.introFirstNote);
     ticket.finish();return board;
   } catch(error) {
     if(error.body?.code==='PGRST202'||error.body?.code==='42883')throw Object.assign(new Error('CREATE_BOARD_UNAVAILABLE'),{status:503});
