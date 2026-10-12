@@ -248,5 +248,15 @@ await db.query('delete from notes where board_id=$1 and position=3',[introBoard.
 r=await asUser('9','select postispop_add_board_note($1)as n',[introBoard.id]);
 assert(r.rows[0].n.paper===0&&!r.rows[0].n.doodle&&!r.rows[0].n.text,'new cloud notes stay yellow and have no symbol or example');
 
+await db.exec(fs.readFileSync(new URL('../database/intro-signup.sql',import.meta.url),'utf8'));
+await db.query('insert into auth.users(id,email,email_confirmed_at)values($1,$2,now())',[userId(10),'signup-fixture@example.invalid']);
+r=await asUser('10','select postispop_create_board($1)as b',[requestId(230)]);const signupBoard=r.rows[0].b;
+await db.query('update boards set intro_pending=true where id=$1',[signupBoard.id]);
+await db.query('update notes set paper=0 where board_id=$1',[signupBoard.id]);
+r=await asUser('10','select postispop_initialize_intro_board($1,$2::jsonb)as intro',[signupBoard.id,JSON.stringify(introNotes('fr'))]);
+assert(Boolean(r.rows[0].intro.introFirstNote),'pending signup board receives localized examples on first access');
+r=await asUser('10','select text from notes where board_id=$1 and position=0',[signupBoard.id]);assert(r.rows[0].text===introNotes('fr')[0].text,'signup example follows the selected French language');
+r=await asUser('10','select postispop_initialize_intro_board($1,$2::jsonb)as intro',[signupBoard.id,JSON.stringify(introNotes('en'))]);assert(!r.rows[0].intro.introFirstNote,'signup examples only initialize once');
+await rejectQuery('9','select postispop_initialize_intro_board($1,$2::jsonb)',[signupBoard.id,JSON.stringify(introNotes('es'))],'OWNER_REQUIRED','another account cannot initialize someone else’s notes');
 console.log('PASS synthetic database integration; deployment schema and production remain unmodified');
 await db.close();

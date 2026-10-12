@@ -409,6 +409,10 @@ async function api(endpoint, init) {
     if (id === "guest-board") return json(readGuest());
     const boards = await rest("boards", `?id=eq.${id}&select=*`);
     if (!boards.length) return json({ error: "NOT_FOUND" }, 404);
+    if(boards[0].intro_pending&&boards[0].owner_id===user.id){
+      const intro=await rest('rpc/postispop_initialize_intro_board','',{method:'POST',body:JSON.stringify({p_board:id,p_notes:introNotes()})});
+      if(intro.introFirstNote)introPreferences(id,intro.introFirstNote);
+    }
     const access=await rest('rpc/postispop_board_access','',{method:'POST',body:JSON.stringify({p_board:id})});
     const notes = await rest("notes", `?board_id=eq.${id}&select=*&order=position.asc`);
     const members = await rest("board_members", `?board_id=eq.${id}&select=*`);
