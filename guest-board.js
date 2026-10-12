@@ -19,7 +19,7 @@ export function readGuest() {
       const order=[...new Set([...(saved.order||[]),...notes.map(note=>note.id)])].filter(id=>notes.some(note=>note.id===id));
       const trash=(saved.trash||[]).filter(item=>!removedIds.has(item.note?.id));
       const board={...saved,schemaVersion:3,capacity:FREE_NOTE_LIMIT,legacyNoteIds:[],notes,trash,order};
-      if(saved.schemaVersion!==3||removedIds.size){
+      if(removedIds.size){
         board.revision=(saved.revision||0)+1;
         localStorage.setItem(KEY,JSON.stringify(board));
         for(const id of removedIds)localStorage.removeItem('pp:protected-note:'+id);
