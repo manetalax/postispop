@@ -50,7 +50,7 @@ async function noOverflow(page,label) {
 async function run() {
   await fs.mkdir(RESULTS,{recursive:true});
   const browser = await chromium.launch(browserOptions());
-  const report = {createdAt:new Date().toISOString(),site:ROOT,results:[],limitations:['Authenticated cloud, purchases and physical Android devices are not simulated by this isolated local suite. Existing 24-note boards exercise premium-size paging without changing entitlements.']};
+  const report = {createdAt:new Date().toISOString(),site:ROOT,results:[],limitations:['Authenticated cloud, purchases and physical Android devices are not simulated by this isolated local suite. Legacy visitor fixtures verify migration to six notes.']};
   const runCase = async (name, viewport, board, test) => {
     const {context,blocked,missing} = await isolatedContext(browser,viewport,board);
     const page = await context.newPage(),errors=[],consoleErrors=[];
@@ -94,46 +94,19 @@ async function run() {
         await page.waitForFunction(({KEY,firstIdea})=>JSON.parse(localStorage.getItem(KEY))?.notes.some(n=>n.text===firstIdea),{KEY,firstIdea});
         assert.equal(await page.locator(NOTES).count(),6,'Reusing an empty slot never creates a seventh note');
       });
-      await runCase(`legacy24-${width}x${height}`,{width,height},fixture(),async(page,result)=>{
-        const size=width<=700?6:12,pages=24/size,seen=new Set();
-        const rects=await geometry(page);result.geometry=rects;
-        for(let p=0;p<pages;p++){
-          assert.equal(await page.locator(NOTES).count(),size,'Page note count');await noOverflow(page,'Page '+(p+1));
-          for(const r of await geometry(page)){assert.ok(Math.abs(r.w-r.h)<=2,'Square premium post-it');assert.ok(!seen.has(r.id),'No repeated note on multiple pages');seen.add(r.id);}
-          if(p<pages-1){await page.getByRole('button',{name:'Página siguiente',exact:true}).click();await page.waitForFunction(n=>document.querySelector('.board-frame').dataset.ppView===String(n),p+1);}
-        }
-        assert.equal(seen.size,24,'All legacy notes are reachable');
-        assert.equal(await page.getByRole('button',{name:'Página siguiente',exact:true}).isDisabled(),true);
-        await page.getByRole('button',{name:'Página anterior',exact:true}).click();
-        await page.waitForFunction(n=>document.querySelector('.board-frame').dataset.ppView===String(n),pages-2);
-        await page.getByRole('combobox',{name:'Ir a la página',exact:true}).selectOption('0');
-        await page.waitForFunction(()=>document.querySelector('.board-frame').dataset.ppView==='0');
+      await runCase(`legacy-guest-limit-${width}x${height}`,{width,height},fixture(),async(page,result)=>{
+        assert.equal(await page.locator(NOTES).count(),6,'Legacy visitors keep only six notes');
+        await noOverflow(page,'Migrated guest board');
+        result.geometry=await geometry(page);
+        const saved=await page.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)),KEY);
+        assert.equal(saved.notes.length,6);
+        assert.deepEqual(saved.notes.map(n=>n.text),fixture().notes.slice(0,6).map(n=>n.text),'The first six notes remain unchanged');
         const search=page.getByRole('searchbox',{name:'Buscar notas o etiquetas'});
         await search.fill('aguamarina-objetivo');
-        await page.waitForFunction(()=>document.querySelectorAll('.sticky-note[data-note-id]').length===1);
-        assert.match(await page.locator(NOTES).innerText(),/aguamarina-objetivo/,'Global search reaches last page');
-        await page.locator(NOTES).click();await page.waitForSelector('.pp-editor-toolbar');
-        assert.match(await page.locator('.editor-dialog textarea').inputValue(),/aguamarina-objetivo/,'Filtered result opens the correct note');
-        await page.keyboard.press('Escape');await page.waitForSelector('.editor-dialog',{state:'detached'});
-        await search.fill('nothing-matches-999');await page.waitForSelector('.pp-empty-search:visible');assert.equal(await page.locator(NOTES).count(),0);
-        await search.fill('');await page.waitForFunction(n=>document.querySelectorAll('.sticky-note[data-note-id]').length===n,size);
-        if(width<=700){
-          await search.blur();await page.locator('.board-frame').scrollIntoViewIfNeeded();
-          const rect=await page.locator('.board-frame').boundingBox();
-          const cdp=await page.context().newCDPSession(page);
-          const y=Math.min(rect.y+60,height-80),startX=width-25,endX=25;
-          await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:startX,y}]});
-          await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:(startX+endX)/2,y:y+3}]});
-          await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
-          await page.waitForFunction(()=>document.querySelector('.board-frame').dataset.ppView==='1');
-          assert.equal(await page.locator('.editor-dialog').count(),0,'Swipe does not accidentally open a note');
-          await page.waitForFunction(()=>!document.querySelector('.board-frame').dataset.swiping);
-          await page.getByRole('button',{name:'Página anterior',exact:true}).click();
-          await page.waitForFunction(()=>document.querySelector('.board-frame').dataset.ppView==='0');
-          await cdp.detach();
-        }
-        const saved=await page.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)),KEY);assert.equal(saved.notes.length,24,'Search and paging preserve all notes');
-        assert.deepEqual(saved.notes.map(n=>n.text),fixture().notes.map(n=>n.text),'Search and paging do not modify data');
+        await page.waitForSelector('.pp-empty-search:visible');
+        assert.equal(await page.locator(NOTES).count(),0,'Removed surplus is not searchable');
+        await search.fill('');
+        await page.waitForFunction(()=>document.querySelectorAll('.sticky-note[data-note-id]').length===6);
       });
     }
     await runCase('free-six-populated-limit',{width:390,height:844},fixture(6),async(page)=>{

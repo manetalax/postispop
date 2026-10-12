@@ -25,14 +25,14 @@ const KEY='postispop-guest-board-v1';
    assert.match(await page.locator('.pp-note-action-status').innerText(),/6 notas/);
    assert.equal(await page.locator('.editor-dialog').count(),0);assert.equal(await page.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).notes.length,KEY),6);
   });
-  const later=fixture(24);later.notes[17].text='';
-  await run('Plus clears search and color, navigates to an empty paper on a later page',later,async page=>{
+  const later=fixture(6);later.notes[4].text='';later.notes[5].text='aguamarina-objetivo';
+  await run('Plus clears search and color, opens another empty paper',later,async page=>{
    const search=page.getByRole('searchbox',{name:'Buscar notas o etiquetas'}),color=page.getByLabel('Filtrar por color',{exact:true});
    await search.fill('aguamarina-objetivo');await color.selectOption('5');await page.waitForFunction(()=>document.querySelectorAll('.sticky-note[data-note-id]').length===1);
    await page.getByRole('button',{name:'Añadir nota',exact:true}).click();await page.waitForSelector('.pp-editor-toolbar');
    assert.equal(await page.locator('.pp-note-search input[type=search]').inputValue(),'');assert.equal(await page.locator('.pp-note-search select[aria-label="Filtrar por color"]').inputValue(),'');assert.equal(await page.locator('.editor-dialog textarea').inputValue(),'');
-   assert.equal(await page.locator('.board-frame').getAttribute('data-pp-view'),'1');await page.locator('.editor-dialog textarea').fill('Hueco correcto');await page.keyboard.press('Escape');
-   await page.waitForFunction(KEY=>JSON.parse(localStorage.getItem(KEY)).notes[17].text==='Hueco correcto',KEY);
+   assert.equal(await page.locator('.board-frame').getAttribute('data-pp-view'),'0');await page.locator('.editor-dialog textarea').fill('Hueco correcto');await page.keyboard.press('Escape');
+   await page.waitForFunction(KEY=>JSON.parse(localStorage.getItem(KEY)).notes[4].text==='Hueco correcto',KEY);
   });
   const protectedSlot=fixture(6);protectedSlot.notes[0].text='';protectedSlot.notes[1].text='';
   await run('Plus excludes an attachment-only paper',protectedSlot,async page=>{
@@ -40,11 +40,6 @@ const KEY='postispop-guest-board-v1';
    await page.getByRole('button',{name:'Añadir nota',exact:true}).click();await page.waitForSelector('.pp-editor-toolbar');await page.locator('.editor-dialog textarea').fill('Segundo papel');await page.keyboard.press('Escape');
    await page.waitForFunction(KEY=>JSON.parse(localStorage.getItem(KEY)).notes[1].text==='Segundo papel',KEY);assert.equal(await page.evaluate(KEY=>JSON.parse(localStorage.getItem(KEY)).notes[0].text,KEY),'');
   });
-  await run('An authorized create response opens its new note on the correct page',fixture(12),async page=>{
-   await page.evaluate(KEY=>{const delegate=window.fetch.bind(window);window.fetch=async(input,init)=>{if(input==='/api/board/guest-board/notes'&&init?.method==='POST'){const board=JSON.parse(localStorage.getItem(KEY)),note={...board.notes[0],id:'guest-note-24',text:'',marks:[],doodle:'',image:null,style:null,revision:1};board.notes.push(note);board.order.push(note.id);board.revision++;localStorage.setItem(KEY,JSON.stringify(board));return Response.json(board);}return delegate(input,init);};},KEY);
-   await page.getByRole('button',{name:'Añadir nota',exact:true}).click();await page.waitForSelector('.pp-editor-toolbar');
-   assert.equal(await page.locator('.board-frame').getAttribute('data-pp-view'),'1');assert.equal(await page.locator('.editor-dialog textarea').inputValue(),'');await page.locator('.editor-dialog textarea').fill('Nueva nota autorizada');await page.keyboard.press('Escape');
-   await page.waitForFunction(KEY=>JSON.parse(localStorage.getItem(KEY)).notes.find(note=>note.id==='guest-note-24')?.text==='Nueva nota autorizada',KEY);
-  });
+
  }finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});
