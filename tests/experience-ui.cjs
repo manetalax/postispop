@@ -21,6 +21,8 @@ let observedErrors=[];
     try{await route.fulfill({status:200,headers:{'x-postispop-test-source':'staged'},contentType:types[path.extname(file)]||'application/octet-stream',body:await fs.readFile(file)});}catch{missing.push(name);await route.fulfill({status:404,body:'Missing staged asset'});}
   });
   await context.addInitScript(()=>{if(localStorage.getItem('pp:analytics-consent-v2')===null)localStorage.setItem('pp:analytics-consent-v2','no');});
+  const blank=require('./notes-first-ui.cjs').fixture(6);blank.notes.forEach(n=>Object.assign(n,{text:'',doodle:'',paper:0}));
+  await context.addInitScript(board=>{if(!localStorage.getItem('postispop-guest-board-v1'))localStorage.setItem('postispop-guest-board-v1',JSON.stringify(board));},blank);
   const page=reviewPage=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
   await fs.mkdir(results,{recursive:true});
   await page.goto('https://postispop.com/');await page.waitForSelector('.sticky-note:not([disabled])');await page.waitForSelector('.pp-board-options');
