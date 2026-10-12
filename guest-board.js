@@ -13,15 +13,22 @@ export function readGuest() {
   try {
     const saved=JSON.parse(localStorage.getItem(KEY));
     if(saved?.id==='guest-board' && Array.isArray(saved.notes)) {
-      // Keep all earlier notes readable and exportable. A reduced free allowance
-      // must never erase existing notes or strand their recoverable trash.
-      const legacyNoteIds=saved.schemaVersion===2?(saved.legacyNoteIds||[]):[...saved.notes,...(saved.trash||[]).map(item=>item.note)].filter(Boolean).map(note=>note.id);
-      const order=[...new Set([...(saved.order||[]),...saved.notes.map(note=>note.id)])].filter(id=>saved.notes.some(note=>note.id===id));
-      return {...saved,schemaVersion:2,capacity:FREE_NOTE_LIMIT,legacyNoteIds,order};
+      // Visitors keep six slots. Remove the surplus from older twelve-slot boards.
+      const notes=saved.notes.slice(0,FREE_NOTE_LIMIT);
+      const removedIds=new Set(saved.notes.slice(FREE_NOTE_LIMIT).map(note=>note.id));
+      const order=[...new Set([...(saved.order||[]),...notes.map(note=>note.id)])].filter(id=>notes.some(note=>note.id===id));
+      const trash=(saved.trash||[]).filter(item=>!removedIds.has(item.note?.id));
+      const board={...saved,schemaVersion:3,capacity:FREE_NOTE_LIMIT,legacyNoteIds:[],notes,trash,order};
+      if(saved.schemaVersion!==3||removedIds.size){
+        board.revision=(saved.revision||0)+1;
+        localStorage.setItem(KEY,JSON.stringify(board));
+        for(const id of removedIds)localStorage.removeItem('pp:protected-note:'+id);
+      }
+      return board;
     }
   } catch {}
   const notes=Array.from({length:FREE_NOTE_LIMIT},(_,i)=>makeNote(i));
-  return {id:'guest-board',title:'Mi pizarra',revision:1,schemaVersion:2,capacity:FREE_NOTE_LIMIT,legacyNoteIds:[],order:notes.map(n=>n.id),expires:null,role:'owner',owner:'guest',notes,members:[],trash:[]};
+  return {id:'guest-board',title:'Mi pizarra',revision:1,schemaVersion:3,capacity:FREE_NOTE_LIMIT,legacyNoteIds:[],order:notes.map(n=>n.id),expires:null,role:'owner',owner:'guest',notes,members:[],trash:[]};
 }
 export function guestImportSlots(board,excluded=[]) {
   return board.order.map(id=>board.notes.find(n=>n.id===id)).filter(n=>n&&!excluded.includes(n.id)&&!n.text&&!n.marks?.length&&!n.doodle&&!n.image&&!n.protectedEnvelope&&!reserved(n)&&!n.style?.drawing?.strokes?.length);

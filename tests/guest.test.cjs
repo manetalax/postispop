@@ -189,17 +189,21 @@ test('Free boards start with six notes and refuse a seventh without touching sav
   assert.equal((await request('restore/'+removed.data.trashId,{})).data.error,'BOARD_FULL');
 });
 
-test('A legacy twelve-note board stays readable, editable, exportable and recoverable at the six-note limit',async()=>{
+test('Legacy guest notes seven to twelve are deleted and cannot be edited, exported or restored',async()=>{
   storage.clear();
   const template=(await request('board/guest-board')).data;
-  const notes=Array.from({length:12},(_,i)=>({...template.notes[0],id:'guest-note-'+i,text:'Conservar '+i}));
-  storage.set('postispop-guest-board-v1',JSON.stringify({...template,schemaVersion:undefined,legacyNoteIds:undefined,capacity:12,notes,order:notes.map(n=>n.id)}));
-  const board=await request('board/guest-board');assert.equal(board.data.notes.length,12);assert.equal(board.data.capacity,6);
+  const notes=Array.from({length:12},(_,i)=>({...template.notes[0],id:'guest-note-'+i,text:'Nota '+i}));
+  storage.set('pp:protected-note:guest-note-11','1');
+  storage.set('postispop-guest-board-v1',JSON.stringify({...template,schemaVersion:2,capacity:12,notes,order:notes.map(n=>n.id).reverse(),trash:[{id:'guest-trash-old',note:notes[11],removed:true,expires:Date.now()+100000}]}));
+  const board=await request('board/guest-board');assert.equal(board.data.notes.length,6);assert.equal(board.data.capacity,6);
+  assert.equal(board.data.notes[0].text,'Nota 0');assert.equal(board.data.notes[5].text,'Nota 5');
+  assert.equal(board.data.order.length,6);assert.equal(board.data.trash.length,0);
+  assert.equal(storage.has('pp:protected-note:guest-note-11'),false);
+  assert.equal(JSON.parse(storage.get('postispop-guest-board-v1')).notes.length,6);
+  assert.equal((await request('board/guest-board/export')).data.notes.length,6);
+  assert.equal((await request('note/guest-note-11',{text:'No restaurar',marks:[],revision:1})).data.error,'NOT_FOUND');
+  assert.equal((await request('restore/guest-trash-old',{})).data.error,'TRASH_EXPIRED');
   assert.equal((await request('board/guest-board/notes',{})).data.error,'BOARD_FULL');
-  const last=await request('note/guest-note-11',{text:'Sigue accesible',marks:[],revision:1});assert.equal(last.status,200);
-  assert.equal((await request('board/guest-board/export')).data.notes[11].text,'Sigue accesible');
-  const removed=await request('note/guest-note-11/trash',{revision:2});assert.equal(removed.data.board.notes.length,11);
-  const restored=await request('restore/'+removed.data.trashId,{});assert.equal(restored.data.notes.length,12);assert.equal(restored.data.notes.find(n=>n.id==='guest-note-11').text,'Sigue accesible');
 });
 
 test('Guest image and doodle changes reject stale revisions and unsafe image URLs',async()=>{
