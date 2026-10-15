@@ -7,10 +7,11 @@ Límite estándar: 10.000.000 bytes por nota, sumando texto UTF-8, dibujos, meta
 | Oferta | Máximo por nota | Espacio de archivos por cuenta | Precio mensual propuesto |
 | --- | ---: | ---: | ---: |
 | Premium actual | 10 MB | Por definir antes de vender almacenamiento permanente | 2,95 € (actual) |
-| Plus | 25 MB | 2 GB | 4,95 € |
-| Max | 50 MB | 10 GB | 9,95 € |
+| Plus | 25 MB | 2,5 GB | 4,95 € |
+| Max | 50 MB | 10 GB (5 GB de notas activas como máximo) | 9,95 € |
+| Ultra | 100 MB | 10 GB | 19,90 € |
 
-Plus y Max serían planes completos que incluyen Premium, no suplementos acumulativos. Mantener el máximo actual de 100 notas. Estos precios son propuestas: no hay nuevos productos Stripe ni derechos de capacidad concedidos por el navegador. Activarlos requiere aceptar precios y desarrollar cuotas totales verificadas en servidor y renovación/cancelación. No ofrecer almacenamiento ampliado de por vida: sus costes siguen cada mes. Las copias compartidas caducan en siete días; no equivalen a almacenamiento permanente en la nube. Tras una bajada de plan, respetar la política de tamaño acordada y desarrollar avisos de cambio de cuota antes de activar los planes.
+Plus, Max y Ultra serían planes completos que incluyen Premium, no suplementos acumulativos. Mantener el máximo actual de 100 notas. Estos precios son propuestas: no hay nuevos productos Stripe ni derechos de capacidad concedidos por el navegador. Activarlos requiere aceptar precios y desarrollar cuotas totales verificadas en servidor y renovación/cancelación. No ofrecer almacenamiento ampliado de por vida: sus costes siguen cada mes. Las copias compartidas caducan en siete días; no equivalen a almacenamiento permanente en la nube. Tras una bajada de plan, respetar la política de tamaño acordada y desarrollar avisos de cambio de cuota antes de activar los planes.
 
 ## Hosting recomendado
 
@@ -27,3 +28,5 @@ Fuentes: https://supabase.com/pricing · https://supabase.com/docs/guides/storag
 ## Alerta activa
 
 Automatización de este chat `capacidad-de-postispop-al-80`, cada seis horas, consulta agregados de archivos y base de datos. Avisa al 80 %, 90 % y 95 %; ajusta cuotas si cambia el plan y evita repetir el mismo aviso. Depende de la ejecución local de Codex y de conexión a Supabase; no es un monitor externo permanente cuando el equipo está apagado.
+
+Ultra se ha preparado por petición del usuario: 100 notas de 100 MB, 10 GB efectivos, 19,90 €/mes (doble de Max). El estudio económico completo está en RENTABILIDAD_CAPACIDAD_20261011.md. Estos planes siguen sin venderse; el límite operativo publicado sigue en 10 MB.
